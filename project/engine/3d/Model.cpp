@@ -1,6 +1,9 @@
 #include "Model.h"
 #include <fstream>
 #include <filesystem>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include "ModelBase.h"
 #include "Matrix.h"
 #include "TextureManager.h"
@@ -73,75 +76,47 @@ MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& director
 // .objファイルの読み取り
 void Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
 {
-	// 1. 中で必要となる変数の宣言
-	std::vector<MyBase::Vector4> positions;		// 位置
-	std::vector<MyBase::Vector3> normals;		// 法線
-	std::vector<MyBase::Vector2> texcoords;		// テクスチャ座標
-	std::string line;							// ファイルから呼んだ1行を格納するもの
-
 	// 2. ファイルを開く
-	std::ifstream file(directoryPath + "/" + filename);		// ファイルを開く
-	assert(file.is_open());									// とりあえず開けなかったら止める
+	Assimp::Importer importer;
+	std::string filePath(directoryPath + "/" + filename);		// ファイルを開く
+	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	assert(scene->HasMeshes());									// メッシュがないのは対応しない
 
 	// 3. 実際にファイルを読み、ModelDataを構築していく
-	while (std::getline(file, line)) {
-		std::string identifier;
-		std::istringstream s(line);
-		s >> identifier;			// 先頭の識別子を読む
-
-		// identifierに応じた処理
-		if (identifier == "v")
-		{
-			MyBase::Vector4 position;
-			s >> position.x >> position.y >> position.z;
-			position.x *= -1.0f;
-			position.w = 1.0f;
-			positions.push_back(position);
-		}
-		else if (identifier == "vt") {
-			MyBase::Vector2 texcoord;
-			s >> texcoord.x >> texcoord.y;
-			texcoord.y = 1.0f - texcoord.y;
-			texcoords.push_back(texcoord);
-		}
-		else if (identifier == "vn") {
-			MyBase::Vector3 normal;
-			s >> normal.x >> normal.y >> normal.z;
-			normal.x *= -1.0f;
-			normals.push_back(normal);
-		}
-		else if (identifier == "mtllib")
-		{
-			// materialTemplateLibraryファイルの名前を取得する
-			std::string materialFilename;
-			s >> materialFilename;
-			// 基本的にobjファイルと同一階層にmtlは存在させるので、ディレクトリ名とファイル名を渡す
-			modelData_.material = LoadMaterialTemplateFile(directoryPath, materialFilename);
-		}
-		else if (identifier == "f") {
-			MyBase::ModelVertexData triangle[3];
-			// 面は三角形限定。その他は未対応
-			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-				std::string vertexDefinition;
-				s >> vertexDefinition;
-				// 頂点の要素へのIndexは「位置/UV/法線」で格納されているので、分解してIndexを取得する
-				std::istringstream v(vertexDefinition);
-				uint32_t elementIndeces[3];
-				for (int32_t element = 0; element < 3; ++element) {
-					std::string index;
-					std::getline(v, index, '/');		// 区切りでインデックスを読んでいく
-					elementIndeces[element] = std::stoi(index);
-				}
-				// 要素へのIndexから、実際の要素の値を取得して、頂点を構築する
-				MyBase::Vector4 position = positions[elementIndeces[0] - 1];
-				MyBase::Vector2 texcoord = texcoords[elementIndeces[1] - 1];
-				MyBase::Vector3 normal = normals[elementIndeces[2] - 1];
-				triangle[faceVertex] = { position, texcoord, normal };
+	// meshを解析
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+		aiMesh* mesh = scene->mMeshes[meshIndex];
+		assert(mesh->HasNormals());								// 法線がないMeshは今回は非対応
+		assert(mesh->HasTextureCoords(0));						// TexcoordがないMeshは今回は非対応
+		// ここからMeshの中身(face)の解析を行っていく
+		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+			aiFace& face = mesh->mFaces[faceIndex];
+			assert(face.mNumIndices == 3);						// 三角形のみサポート
+			// ここからFaceの中身(Vertex)の解析を行っていく
+			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+				uint32_t vertexIndex = face.mIndices[element];
+				aiVector3D& position = mesh->mVertices[vertexIndex];
+				aiVector3D& normal = mesh->mNormals[vertexIndex];
+				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+				MyBase::ModelVertexData vertex;
+				vertex.position = { position.x, position.y, position.z, 1.0f };
+				vertex.normal = { normal.x, normal.y, normal.z };
+				vertex.texcoord = { texcoord.x, texcoord.y };
+				// aiProcess_MakeLeftHandedは z*=-1 で、右手->左手に変換するので手動で対処
+				vertex.position.x *= -1.0f;
+				vertex.normal.x *= -1.0f;
+				modelData_.vertices.push_back(vertex);
 			}
-			// 頂点を逆順で登録することで、周り順を逆にする
-			modelData_.vertices.push_back(triangle[2]);
-			modelData_.vertices.push_back(triangle[1]);
-			modelData_.vertices.push_back(triangle[0]);
+		}
+	}
+	// materialを解析
+	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
+		aiMaterial* material = scene->mMaterials[materialIndex];
+		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
+			aiString textureFilePath;
+			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
+			std::string directoryFilePath = "resources";
+			modelData_.material.textureFilePath = directoryFilePath + "/" + textureFilePath.C_Str();
 		}
 	}
 }
