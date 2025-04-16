@@ -44,8 +44,8 @@ void Object3d::Update()
 	} else {
 		worldViewProjectionMatrix = worldMatrix;
 	}
-	transformationMatrixData_->WVP = worldViewProjectionMatrix;
-	transformationMatrixData_->World = worldMatrix;
+	transformationMatrixData_->WVP = Matrix::Multiply(model_->GetModelData().rootNode.localMatrix, worldViewProjectionMatrix);
+	transformationMatrixData_->World = Matrix::Multiply(model_->GetModelData().rootNode.localMatrix, worldMatrix);
 	transformationMatrixData_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldMatrix));
 }
 

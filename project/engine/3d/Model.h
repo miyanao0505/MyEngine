@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d12.h>
 #include <wrl.h>
+#include <assimp/scene.h>
 #include "MyBase.h"
 
 // 前方宣言
@@ -20,6 +21,7 @@ public:	// メンバ関数
 	void LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 public:	// getter
+	const MyBase::ModelData& GetModelData() const { return modelData_; }
 	const bool& GetEnableLighting() const { return materialData_->enableLighting; }
 
 public:	// setter
@@ -30,6 +32,8 @@ private:	// メンバ関数
 	void CreateVertexData();
 	// マテリアルデータ作成
 	void CreateMaterialData();
+	// Node情報を読み込む
+	MyBase::Node ReadNode(aiNode* node);
 
 private:	// メンバ変数
 	ModelBase* modelBase_ = nullptr;

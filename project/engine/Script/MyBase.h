@@ -305,11 +305,21 @@ public:
 	};
 
 	/// <summary>
+	/// Node
+	/// </summary>
+	struct Node {
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
+	/// <summary>
 	/// objモデルデータ
 	/// </summary>
 	struct ModelData {
 		std::vector<ModelVertexData> vertices;
 		MaterialData material;
+		Node rootNode;
 	};
 
 	/// <summary>
