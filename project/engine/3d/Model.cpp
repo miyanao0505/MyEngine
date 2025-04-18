@@ -122,6 +122,16 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 	modelData_.rootNode = ReadNode(scene->mRootNode);
 }
 
+void Model::SetTexture(const std::string& filename)
+{
+	modelData_.material.textureFilePath = filename;
+
+	// .objの参照しているテクスチャファイル読み込み
+	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
+	// 読み込んだテクスチャの番号を取得
+	modelData_.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(modelData_.material.textureFilePath);
+}
+
 // 頂点データ作成
 void Model::CreateVertexData()
 {

@@ -47,9 +47,9 @@ void TitleScene::Initialize()
 	for (uint32_t i = 0; i < 3; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize();
+		object->Initislize(modelFilePath1_.filename);
 		object->SetTranslate({ -2.5f + i * 2.5f, 0.0f, 0.0f });
-		object->SetModel(modelFilePath1_.filename);
+		//object->SetModel(modelFilePath1_.filename);
 		objects_.push_back(std::move(object));
 	}
 	objects_[1]->SetModel(modelFilePath2_.filename);

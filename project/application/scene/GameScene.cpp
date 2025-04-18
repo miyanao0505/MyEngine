@@ -16,12 +16,26 @@ void GameScene::Initialize()
 {
 	BaseScene::Initialize();
 
+#pragma region カメラ
+	CameraManager::GetInstance()->SetCamera("default");
+	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.75f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 100.0f, -120.0f });
+	CameraManager::GetInstance()->SetCamera("sub");
+	CameraManager::GetInstance()->FindCamera("sub");
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 4.0f, 10.0f });
+
+	CameraManager::GetInstance()->FindCamera("default");
+#pragma endregion
+
 #pragma region スプライト
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(filePath1_);
 	TextureManager::GetInstance()->LoadTexture(filePath2_);
 	//TextureManager::GetInstance()->LoadTexture(filePath3_);
 	//TextureManager::GetInstance()->LoadTexture(filePath4_);
+	TextureManager::GetInstance()->LoadTexture(filePath5_);
 
 	// スプライト
 	for (uint32_t i = 0; i < 5; ++i)
@@ -49,24 +63,29 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath2_.directoryPath, modelFilePath2_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath3_.directoryPath, modelFilePath3_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
+	ModelManager::GetInstance()->LoadModel(modelFilePath5_.directoryPath, modelFilePath5_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 1; ++i) {
+	for (uint32_t i = 0; i < 2; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize();
+		object->Initislize(modelFilePath5_.filename);
 		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
-		object->SetModel(modelFilePath1_.filename);
 		// お試し用設定
 		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 0.0f, 0.0f}, .intensity{0.0f}, .radius{5.0f}, .decay{1.0f} };
+		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 15.0f, 0.0f}, .intensity{1.0f}, .radius{1200.0f}, .decay{1.0f} };
 		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
-	//objects_[1]->SetModel(modelFilePath2_.filename);
+	objects_[0]->SetScale({ 0.025f, 1.0f, 0.025f });
+	objects_[0]->SetTranslate({ -30.f, 0.0f, 0.0f });
+	//objects_[0]->SetTexture(filePath5_);
+	objects_[1]->SetScale({ 0.025f, 1.0f, 0.025f });
+	objects_[1]->SetTranslate({ 30.f, 0.0f, 0.0f });
+	objects_[1]->SetTexture(filePath5_);
 	//objects_[2]->SetModel(modelFilePath3_.filename);
 #pragma endregion 3Dオブジェクト
 
