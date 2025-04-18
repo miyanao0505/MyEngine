@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include <imgui.h>
 #include "CameraManager.h"
+#include "LightManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
@@ -58,11 +59,11 @@ void GameScene::Initialize()
 		object->SetModel(modelFilePath1_.filename);
 		// お試し用設定
 		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
-		object->SetDirectionalLight(directionalLight);
+		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
 		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 0.0f, 0.0f}, .intensity{0.0f}, .radius{5.0f}, .decay{1.0f} };
-		object->SetPointLight(pointLight);
+		LightManager::GetInstance()->SetPointLight(pointLight);
 		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
-		object->SetSpotLight(spotLight);
+		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
 	//objects_[1]->SetModel(modelFilePath2_.filename);
@@ -398,7 +399,7 @@ void GameScene::Update()
 		{
 			// 平行光源フラグ
 			bool isEnableLighting = true;
-			//isEnableLighting = object->GetEnableLighting();
+			isEnableLighting = object->GetEnableLighting();
 
 			if (isEnableLighting)
 			{
@@ -407,14 +408,14 @@ void GameScene::Update()
 				{
 					// 平行光源
 					MyBase::DirectionalLight directionalLight{};
-					directionalLight = object->GetDirectionalLight();
+					directionalLight = LightManager::GetInstance()->GetDirectionalLight();
 					// 色
 					ImGui::ColorEdit4("Color", &directionalLight.color.x);
 					// 方向
 					ImGui::SliderFloat3("Direction", &directionalLight.direction.x, -1, 1);
 					// 輝度
 					ImGui::DragFloat("Intensity", &directionalLight.intensity, 0.01f);
-					object->SetDirectionalLight(directionalLight);
+					LightManager::GetInstance()->SetDirectionalLight(directionalLight);
 				}
 				ImGui::PopID();
 				ImGui::PushID("PointLight");
@@ -422,7 +423,7 @@ void GameScene::Update()
 				{
 					// 点光源
 					MyBase::PointLight pointLight{};
-					pointLight = object->GetPointLight();
+					pointLight = LightManager::GetInstance()->GetPointLight();
 					// 色
 					ImGui::ColorEdit4("Color", &pointLight.color.x);
 					// 位置
@@ -433,7 +434,7 @@ void GameScene::Update()
 					ImGui::DragFloat("Radius", &pointLight.radius, 0.01f, 0.0f);
 					// 減衰率
 					ImGui::DragFloat("Decay", &pointLight.decay, 0.01f, 0.0f);
-					object->SetPointLight(pointLight);
+					LightManager::GetInstance()->SetPointLight(pointLight);
 				}
 				ImGui::PopID();
 				ImGui::PushID("SpotLight");
@@ -441,7 +442,7 @@ void GameScene::Update()
 				{
 					// スポットライト
 					MyBase::SpotLight spotLight{};
-					spotLight = object->GetSpotLight();
+					spotLight = LightManager::GetInstance()->GetSpotLight();
 					// 色
 					ImGui::ColorEdit4("Color", &spotLight.color.x);
 					// 位置
@@ -456,7 +457,7 @@ void GameScene::Update()
 					ImGui::DragFloat("Decay", &spotLight.decay, 0.01f, 0.0f);
 					// 余弦
 					ImGui::SliderAngle("CosAngle", &spotLight.cosAngle);
-					object->SetSpotLight(spotLight);
+					LightManager::GetInstance()->SetSpotLight(spotLight);
 				}
 				ImGui::PopID();
 			}

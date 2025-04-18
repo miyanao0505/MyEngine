@@ -79,6 +79,12 @@
     <Filter Include="ヘッダー ファイル\application\scene">
       <UniqueIdentifier>{b0d2df59-3a70-482d-892e-d2da4ee27579}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\light">
+      <UniqueIdentifier>{3fea64b1-0028-4db2-8f5b-2200e0e601b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\light">
+      <UniqueIdentifier>{64d5c926-2c72-450e-bcea-30788b43675f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -180,6 +186,9 @@
     <ClCompile Include="engine\audio\AudioManager.cpp">
       <Filter>ソース ファイル\engine\audio</Filter>
     </ClCompile>
+    <ClCompile Include="engine\light\LightManager.cpp">
+      <Filter>ソース ファイル\engine\light</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -280,6 +289,9 @@
     </ClInclude>
     <ClInclude Include="engine\audio\AudioManager.h">
       <Filter>ヘッダー ファイル\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\light\LightManager.h">
+      <Filter>ヘッダー ファイル\engine\light</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

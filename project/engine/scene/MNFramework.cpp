@@ -54,6 +54,10 @@ void MNFramework::Initialize()
 
 	cameraManager_->FindCamera("default");
 
+	// ライトマネージャの初期化
+	lightManager_ = LightManager::GetInstance();
+	lightManager_->Initialize(dxBase_.get());
+
 	// テクスチャマネージャの初期化
 	textureManager_ = TextureManager::GetInstance();
 	textureManager_->Initialize(dxBase_.get(), srvManager_.get());
@@ -86,6 +90,7 @@ void MNFramework::Finalize()
 	modelManager_->Finalize();
 	particleManager_->Finalize();
 	textureManager_->Finalize();
+	lightManager_->Finalize();
 	cameraManager_->Finalize();
 #ifdef _DEBUG
 	imGuiManager_->Finalize();

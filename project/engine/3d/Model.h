@@ -22,7 +22,7 @@ public:	// メンバ関数
 
 public:	// getter
 	const MyBase::ModelData& GetModelData() const { return modelData_; }
-	const bool& GetEnableLighting() const { return materialData_->enableLighting; }
+	const int& GetEnableLighting() const { return materialData_->enableLighting; }
 
 public:	// setter
 	void SetEnableLighting(const bool& enableLighting) { materialData_->enableLighting = enableLighting; }

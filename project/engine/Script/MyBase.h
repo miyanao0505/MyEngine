@@ -297,6 +297,15 @@ public:
 	};
 
 	/// <summary>
+	/// ライトデータ
+	/// </summary>
+	struct LightData {
+		DirectionalLight directional;	//!< 平行光源
+		PointLight point;				//!< 点光源
+		SpotLight spot;					//!< スポットライト
+	};
+
+	/// <summary>
 	/// MaterialData
 	/// </summary>
 	struct MaterialData {

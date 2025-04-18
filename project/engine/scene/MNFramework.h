@@ -6,6 +6,7 @@
 #include "SrvManager.h"
 #include "ImGuiManager.h"
 #include "CameraManager.h"
+#include "LightManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include "ModelManager.h"
@@ -58,6 +59,8 @@ protected:	// メンバ変数
 #endif // _DEBUG
 	// カメラマネージャ
 	CameraManager* cameraManager_ = nullptr;
+	// ライトマネージャ
+	LightManager* lightManager_ = nullptr;
 	// テクスチャマネージャ
 	TextureManager* textureManager_ = nullptr;
 	// パーティクルマネージャ
