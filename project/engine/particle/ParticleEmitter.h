@@ -17,6 +17,10 @@ public:	// メンバ関数
 	// パーティクルの発生
 	void Emit();
 
+#ifdef _DEBUG
+	void Imgui();
+#endif // _DEBUG
+
 public:	// getter
 	const MyBase::Vector3& GetPosition() { return transform_.translate; }
 	const MyBase::Vector3& GetRotation() { return transform_.rotate; }

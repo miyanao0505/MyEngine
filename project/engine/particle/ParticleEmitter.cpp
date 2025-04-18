@@ -1,5 +1,6 @@
 #include "ParticleEmitter.h"
 #include "ParticleManager.h"
+#include <imgui.h>
 
 ParticleEmitter::ParticleEmitter()
 {
@@ -26,3 +27,14 @@ void ParticleEmitter::Emit()
 {
 	ParticleManager::GetInstance()->Emit(name_, transform_.translate, count_);
 }
+
+#ifdef _DEBUG
+
+void ParticleEmitter::Imgui()
+{
+	if (ImGui::CollapsingHeader("NewParticle")) {
+
+	}
+}
+
+#endif // _DEBUG

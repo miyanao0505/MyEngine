@@ -66,33 +66,30 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath5_.directoryPath, modelFilePath5_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 2; ++i) {
+	for (uint32_t i = 0; i < 1; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
 		object->Initislize(modelFilePath5_.filename);
 		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
 		// お試し用設定
-		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
+		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 15.0f, 0.0f}, .intensity{1.0f}, .radius{1200.0f}, .decay{1.0f} };
+		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 15.0f, 0.0f}, .intensity{0.0f}, .radius{1200.0f}, .decay{1.0f} };
 		LightManager::GetInstance()->SetPointLight(pointLight);
 		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
-	objects_[0]->SetScale({ 0.025f, 1.0f, 0.025f });
-	objects_[0]->SetTranslate({ -30.f, 0.0f, 0.0f });
-	//objects_[0]->SetTexture(filePath5_);
-	objects_[1]->SetScale({ 0.025f, 1.0f, 0.025f });
-	objects_[1]->SetTranslate({ 30.f, 0.0f, 0.0f });
-	objects_[1]->SetTexture(filePath5_);
+	objects_[0]->SetScale({ 0.05f, 1.0f, 0.05f });
+	objects_[0]->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	objects_[0]->SetTexture(filePath5_);
 	//objects_[2]->SetModel(modelFilePath3_.filename);
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
-	particleEmitter_->Initialize("circle", "resources/circle.png");
+	particleEmitter_->Initialize("hitEffect", "resources/circle.png");
 #pragma endregion パーティクル
 
 #pragma region オーディオ
@@ -103,7 +100,7 @@ void GameScene::Initialize()
 #pragma endregion オーディオ
 
 #pragma region 変数
-	isParticleActive_ = false;
+	isParticleActive_ = true;
 	particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
@@ -329,73 +326,72 @@ void GameScene::Update()
 
 		ImGui::Text("\n");
 	}
-	//if (ImGui::CollapsingHeader("particle")) {
-	//	static ImGuiComboFlags particleFlags = 0;
-	//	const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
-	//	static int selectID = 2;
+	if (ImGui::CollapsingHeader("particle")) {
+		static ImGuiComboFlags particleFlags = 0;
+		const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
+		static int selectID = 2;
 
-	//	const char* previewValue = blendModeIndex[selectID];
+		const char* previewValue = blendModeIndex[selectID];
 
-	//	if (ImGui::BeginCombo("Now Blend", previewValue, particleFlags))
-	//	{
-	//		for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
-	//		{
-	//			const bool isSelected = (selectID == n);
-	//			if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
-	//				selectID = n;
-	//				ParticleManager::GetInstance()->ChangeBlendMode(static_cast<ParticleBase::BlendMode>(n));
-	//			}
-	//			if (isSelected) {
-	//				ImGui::SetItemDefaultFocus();
-	//			}
-	//		}
-	//		ImGui::EndCombo();
-	//	}
+		if (ImGui::BeginCombo("Now Blend", previewValue, particleFlags)) {
+			for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
+			{
+				const bool isSelected = (selectID == n);
+				if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
+					selectID = n;
+					ParticleManager::GetInstance()->ChangeBlendMode(static_cast<ParticleBase::BlendMode>(n));
+				}
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 
-	//	/*size_t spriteCount = 0;
-	//	for (ParticleEmitter* particle : sprites) {*/
-	//	MyBase::Vector3 position = particleEmitter_->GetPosition();
-	//	ImGui::DragFloat2("particleEmitter_.Translate", &position.x, 0.1f);
-	//	/*if (position.y > 640.0f) {
-	//		position.y = 640.0f;
-	//	}*/
-	//	particleEmitter_->SetPosition(position);
+		/*size_t spriteCount = 0;
+		for (ParticleEmitter* particle : sprites) {*/
+		MyBase::Vector3 position = particleEmitter_->GetPosition();
+		ImGui::DragFloat2("particleEmitter_.Translate", &position.x, 0.1f);
+		/*if (position.y > 640.0f) {
+			position.y = 640.0f;
+		}*/
+		particleEmitter_->SetPosition(position);
 
-	//	/*Vector3 rotation = particleEmitter_->GetRotation();
-	//	ImGui::SliderAngle("particleEmitter_.Rotate", &rotation.x);
-	//	particleEmitter_->SetRotation(rotation);
+		/*Vector3 rotation = particleEmitter_->GetRotation();
+		ImGui::SliderAngle("particleEmitter_.Rotate", &rotation.x);
+		particleEmitter_->SetRotation(rotation);
 
-	//	Vector3 size = particleEmitter_->GetSize();
-	//	ImGui::DragFloat2("particleEmitter_.Scale", &size.x, 0.1f);
-	//	if (size.y > 360.0f) {
-	//		size.y = 360.0f;
-	//	}
-	//	particleEmitter_->SetSize(size);*/
+		Vector3 size = particleEmitter_->GetSize();
+		ImGui::DragFloat2("particleEmitter_.Scale", &size.x, 0.1f);
+		if (size.y > 360.0f) {
+			size.y = 360.0f;
+		}
+		particleEmitter_->SetSize(size);*/
 
-	//	int count = particleEmitter_->GetCount();
-	//	ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
-	//	particleEmitter_->SetCount(count);
+		int count = particleEmitter_->GetCount();
+		ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
+		particleEmitter_->SetCount(count);
 
-	//	float frequency = particleEmitter_->GetFrequency();
-	//	ImGui::DragFloat("particleEmitter_.frequency", &frequency, 0.1f);
-	//	particleEmitter_->SetFrequency(frequency);
+		float frequency = particleEmitter_->GetFrequency();
+		ImGui::DragFloat("particleEmitter_.frequency", &frequency, 0.1f);
+		particleEmitter_->SetFrequency(frequency);
 
-	//	if (ImGui::Button("ParticleEmit", { 100,50 })) {
-	//		particleEmitter_->Emit();
-	//	}
+		if (ImGui::Button("ParticleEmit", { 100,50 })) {
+			particleEmitter_->Emit();
+		}
 
-	//	bool isEmitUpdate = particleEmitter_->GetIsEmitUpdate();
-	//	ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate);
-	//	particleEmitter_->SetIsEmitUpdate(isEmitUpdate);
+		bool isEmitUpdate = particleEmitter_->GetIsEmitUpdate();
+		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate);
+		particleEmitter_->SetIsEmitUpdate(isEmitUpdate);
 
-	//	ImGui::Checkbox("IsAccelerationField", &isAccelerationField_);
+		ImGui::Checkbox("IsAccelerationField", &isAccelerationField_);
+	}
+
+	ImGui::Text("\n");
+
+	ImGui::Text("ParticleActive On / Off : SPACE");
+
 	//}
-
-	//ImGui::Text("\n");
-
-	//ImGui::Text("ParticleActive On / Off : SPACE");
-
-//	}
 //
 //	//// テクスチャ
 //	////ImGui::Checkbox("useMonsterBall", &useMonsterBall);

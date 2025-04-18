@@ -190,7 +190,8 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 		group.kNumInstance = kMaxInstance_;
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
-		group.particles.push_back(CreateParticle(randomEngine, position));
+		//group.particles.push_back(CreateParticle(randomEngine, position));
+		group.particles.push_back(MakeNewParticle(randomEngine, position));
 	}
 }
 
@@ -204,5 +205,19 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 	particle.velocity = { distribution(randomEngine), distribution(randomEngine), distribution(randomEngine) };
 	particle.color = { distribution(randomEngine), distribution(randomEngine), distribution(randomEngine), 1.0f };
 	particle.lifeTime = 2.0f;
+	return particle;
+}
+
+MyBase::Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate)
+{
+	MyBase::Particle particle;
+	particle.transform.scale = { 0.5f, 1.0f, 1.0f };	// 横に潰す
+	particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	particle.transform.translate = translate;
+	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
+	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	particle.lifeTime = 1.0f;
+	particle.currentTime = 0;
+	randomEngine;
 	return particle;
 }

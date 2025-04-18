@@ -63,6 +63,9 @@ public:	// メンバ関数
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups; }
 
+public:	// setter
+	
+
 private: // ローカル関数
 	/// <summary>
 	/// パーティクルの作成
@@ -71,6 +74,8 @@ private: // ローカル関数
 	/// <param name="position"></param>
 	/// <returns></returns>
 	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
+
+	MyBase::Particle MakeNewParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate);
 
 private:	// シングルトン
 	static ParticleManager* instance;
