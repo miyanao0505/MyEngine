@@ -29,6 +29,9 @@ void MNFramework::Initialize()
 	// SRVマネージャーの初期化
 	srvManager_.reset(new SrvManager());
 	srvManager_->Initialize(dxBase_.get());
+
+	// オフスクリーンの作成
+	dxBase_->CreateOffScreenSRV(srvManager_.get());
 #pragma endregion 基盤システム初期化
 
 #pragma region マネージャ初期化

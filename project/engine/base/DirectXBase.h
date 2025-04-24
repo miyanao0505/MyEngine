@@ -9,6 +9,9 @@
 #include "StringUtility.h"
 #include "WindowsAPI.h"
 #include "DirectXTex.h"
+#include "MyBase.h"
+
+class SrvManager;
 
 // DirectX基盤
 class DirectXBase
@@ -16,10 +19,16 @@ class DirectXBase
 public:	// メンバ関数
 	// 初期化
 	void Initialize(WindowsAPI* winApi);
+	// 描画前処理(RenderTexture)
+	void PreRenderTexture();
 	// 描画前処理
 	void PreDraw();
 	// 描画後処理
 	void PostDraw();
+
+	// オフスクリーンのSRV作成
+	void CreateOffScreenSRV(SrvManager* srvManager);
+	
 
 	/// <summary>
 	/// ShaderをCompileをする関数
@@ -38,6 +47,9 @@ public:	// メンバ関数
 
 	// TextureResource作成の関数
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
+
+	// RenderTextureの生成
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const MyBase::Vector4& clearColor);
 
 	// データを転送する関数
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
@@ -67,7 +79,7 @@ public:	// getter
 	ID3D12Device* GetDevice() const { return device_.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
 	// バックバッファの数を取得
-	size_t GetBackBufferCount() const { return swapChainResources_.size(); }
+	size_t GetBackBufferCount() const { return backBuffer_.size(); }
 
 private:
 	// デバイスの生成
@@ -98,7 +110,6 @@ private:
 	void CreateDxcCompiler();
 	// ImGuiの初期化
 	void InitializeImGui();
-
 	// FPS固定初期化
 	void InitializeFixFPS();
 	// FPS固定更新
@@ -115,6 +126,8 @@ private:	// メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 	// コマンドキュー
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
+	// オフセット
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_ = nullptr;
 	// スワップチェーン
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 	// 深度バッファ
@@ -123,10 +136,10 @@ private:	// メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 	// DSV用デスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
-	// SwapChainからResourceを引っ張ってきたリソース(バックバッファ)
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2> swapChainResources_;
+	// バックバッファ
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffer_;
 	// 取得したRTVハンドル
-	std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 2> rtvHandles_ ;
+	std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 3> rtvHandles_ ;
 	// Fence
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
 	// FenceのSignal
@@ -151,6 +164,7 @@ private:	// メンバ変数
 	// DSV用のDescriptorSIze
 	uint32_t descriptorSizeDSV_;
 
+	D3D12_CLEAR_VALUE clearValue_;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_;
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc_;
 

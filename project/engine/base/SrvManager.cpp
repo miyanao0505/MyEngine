@@ -79,6 +79,19 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 	dxBase_->GetDevice()->CreateShaderResourceView(pResource, &instancingSrvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
+void SrvManager::CreateSRVforRenderTexture(uint32_t srvIndex, ID3D12Resource* pResource)
+{
+	// SRVの設定。FormatはResourceと同じにしておく
+	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
+	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	renderTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	renderTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	renderTextureSrvDesc.Texture2D.MipLevels = 1;
+
+	// SRVの生成
+	dxBase_->GetDevice()->CreateShaderResourceView(pResource, &renderTextureSrvDesc, GetCPUDescriptorHandle(srvIndex));
+}
+
 // 描画前処理
 void SrvManager::PreDraw()
 {
