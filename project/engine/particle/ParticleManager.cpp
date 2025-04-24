@@ -75,6 +75,7 @@ void ParticleManager::Update()
 				group.kNumInstance--;
 				continue;
 			}
+			billoardMatrix = Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
 			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), billoardMatrix), Matrix::MakeTranslateMatrix(particle.transform.translate));
 			MyBase::Matrix4x4 worldViewProjectionMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
 			group.instancingData[index].World = worldMatrix;
@@ -210,9 +211,14 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 
 MyBase::Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate)
 {
+	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
+	std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
+
 	MyBase::Particle particle;
-	particle.transform.scale = { 0.5f, 1.0f, 1.0f };	// 横に潰す
-	particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	// 横に潰し、縦方向の大きさをランダムに入れる
+	particle.transform.scale = { 0.05f, distScale(randomEngine), 1.0f};
+	// ランダムに回転させる
+	particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
 	particle.transform.translate = translate;
 	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
 	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };

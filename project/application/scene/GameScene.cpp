@@ -19,8 +19,8 @@ void GameScene::Initialize()
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->FindCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.75f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 100.0f, -120.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.2f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 5.0f, -10.0f });
 	CameraManager::GetInstance()->SetCamera("sub");
 	CameraManager::GetInstance()->FindCamera("sub");
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
@@ -90,6 +90,7 @@ void GameScene::Initialize()
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
 	particleEmitter_->Initialize("hitEffect", "resources/circle.png");
+	particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
 #pragma endregion パーティクル
 
 #pragma region オーディオ
