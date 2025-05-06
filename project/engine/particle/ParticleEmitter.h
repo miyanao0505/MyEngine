@@ -5,11 +5,16 @@
 class ParticleEmitter
 {
 public:	// メンバ関数
+	enum ParticleType {
+		Box,		// 矩形
+		Ring,		// リング
+	};
+
 	// コンストラクタ
 	ParticleEmitter();
 
 	// 初期化
-	void Initialize(const std::string name, const std::string textureFilePath);
+	void Initialize(const std::string name, const std::string textureFilePath, const ParticleType type = Box);
 
 	// 更新
 	void Update();

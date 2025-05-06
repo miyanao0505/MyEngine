@@ -61,7 +61,7 @@ void ParticleManager::Update()
 		billoardMatrix.m[3][1] = 0.0f;
 		billoardMatrix.m[3][2] = 0.0f;
 	}
-	for (std::pair<const std::string, std::unique_ptr<ParticleGroup>>& pair : particleGroups) {
+	for (std::pair<const std::string, std::unique_ptr<ParticleGroup>>& pair : particleGroups_) {
 		ParticleGroup& group = *pair.second;
 		int index = 0;
 		for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
@@ -94,7 +94,7 @@ void ParticleManager::Draw()
 	particleBase_->SetCommonScreen();
 
 	// 全てのパーティクルグループについて処理
-	for (auto& [name, group] : particleGroups) {
+	for (auto& [name, group] : particleGroups_) {
 		dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &group->vertexBufferView);	// VBVを設定
 		dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);					// IBAを設定
 		// インスタンシングデータのSRVのDescriptorTableを設定
@@ -118,11 +118,11 @@ void ParticleManager::ChangeBlendMode(ParticleBase::BlendMode blendMode)
 
 void ParticleManager::CreateParticleGroup(const std::string name, const std::string textureFilePath)
 {
-	if (particleGroups.count(name) != 0) {
+	if (particleGroups_.count(name) != 0) {
 		return;
 	}
 
-	assert(particleGroups.count(name) == 0 && "ParticleGroup with this name already exists");
+	assert(particleGroups_.count(name) == 0 && "ParticleGroup with this name already exists");
 
 	// パーティクルグループの作成と初期化
 	auto group = std::make_unique<ParticleGroup>();
@@ -174,15 +174,82 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	group->srvIndexForInstancing = srvManager_->Allocate();
 	srvManager_->CreateSRVforStructuredBuffer(group->srvIndexForInstancing, group->instancingResource.Get(), kMaxInstance_, sizeof(MyBase::ParticleForGPU));
 
+	particleGroups_[name] = std::move(group);
+}
 
-	particleGroups[name] = std::move(group);
+/// パーティクルグループ(Ring)の生成
+void ParticleManager::CreateParticleGroupRing(const std::string name, const std::string textureFilePath)
+{
+	if (particleGroups_.count(name) != 0) {
+		return;
+	}
+
+	assert(particleGroups_.count(name) == 0 && "ParticleGroup with this name already exists");
+
+	// パーティクルグループの作成と初期化
+	auto group = std::make_unique<ParticleGroup>();
+	// .objの参照しているテクスチャファイル読み込み
+	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	group->materialData.textureFilePath = textureFilePath;
+
+	group->kNumInstance = 0;
+
+	// 頂点リソースの生成
+	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRadianPerDivide));
+
+	// 頂点バッファビューの生成
+	group->vertexBufferView.BufferLocation = group->vertexResource->GetGPUVirtualAddress();
+	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRadianPerDivide);
+	group->vertexBufferView.StrideInBytes = sizeof(MyBase::ParticleVertexData);
+	// 頂点リソースに頂点データを書き込む
+	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
+	// テクスチャの頂点
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+
+	// 頂点データを設定
+	for (uint32_t index = 0; index < kRingDivide; index++) {
+		float sin = std::sinf(index * kRadianPerDivide);
+		float cos = std::cosf(index * kRadianPerDivide);
+		float sinNext = std::sinf((index + 1) * kRadianPerDivide);
+		float cosNext = std::cosf((index + 1) * kRadianPerDivide);
+		float u = float(index) / float(kRingDivide);
+		float uNext = float(index + 1) / float(kRingDivide);
+
+		// positionとuv。normalは必要なら +z を設定する
+		group->vertexData[index * 4] = { { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f  }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 1] = { { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f     }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 2] = { { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 3] = { { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	}
+
+	// TextureManagerからGPUハンドルを取得
+	group->materialData.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
+
+	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	group->instancingResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleForGPU) * kMaxInstance_));
+	// 書き込むためのアドレスを取得
+	group->instancingResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&group->instancingData));
+	
+	// 単位行列を書き込んでおく
+	for (uint32_t index = 0; index < kMaxInstance_; index++) {
+		group->instancingData[index].World = Matrix::MakeIdentity4x4();
+		group->instancingData[index].WVP = Matrix::MakeIdentity4x4();
+		group->instancingData[index].color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
+	group->srvIndexForInstancing = srvManager_->Allocate();
+	srvManager_->CreateSRVforStructuredBuffer(group->srvIndexForInstancing, group->instancingResource.Get(), UINT(kMaxInstance_), sizeof(MyBase::ParticleForGPU));
+
+	particleGroups_[name] = std::move(group);
 }
 
 void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, uint32_t count)
 {
-	assert(particleGroups.count(name) > 0 && "ParticleGroup with this name does not exist.");
+	assert(particleGroups_.count(name) > 0 && "ParticleGroup with this name does not exist.");
 
-	ParticleGroup& group = *particleGroups[name];
+	ParticleGroup& group = *particleGroups_[name];
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	uint32_t nowInstance = group.kNumInstance;
@@ -216,9 +283,11 @@ MyBase::Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, co
 
 	MyBase::Particle particle;
 	// 横に潰し、縦方向の大きさをランダムに入れる
-	particle.transform.scale = { 0.05f, distScale(randomEngine), 1.0f};
+	//particle.transform.scale = { 0.05f, distScale(randomEngine), 1.0f};
+	particle.transform.scale = { 1.0f, 1.0f, 1.0f };
 	// ランダムに回転させる
-	particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
+	//particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
+	particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
 	particle.transform.translate = translate;
 	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
 	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };

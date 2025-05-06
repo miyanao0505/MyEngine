@@ -89,7 +89,9 @@ void GameScene::Initialize()
 #pragma region パーティクル
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
-	particleEmitter_->Initialize("hitEffect", "resources/circle.png");
+	//particleEmitter_->Initialize("hitEffect", "resources/circle.png");
+	//particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
+	particleEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
 	particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
 #pragma endregion パーティクル
 

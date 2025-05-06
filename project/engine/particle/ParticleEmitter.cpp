@@ -6,11 +6,17 @@ ParticleEmitter::ParticleEmitter()
 {
 }
 
-void ParticleEmitter::Initialize(const std::string name, const std::string textureFilePath)
+void ParticleEmitter::Initialize(const std::string name, const std::string textureFilePath, const ParticleType type)
 {
 	name_ = name;
 	textureFilePath_ = textureFilePath;
-	ParticleManager::GetInstance()->CreateParticleGroup(name_, textureFilePath_);
+
+	if (type == Box) {
+		ParticleManager::GetInstance()->CreateParticleGroup(name_, textureFilePath_);
+	}
+	if (type == Ring) {
+		ParticleManager::GetInstance()->CreateParticleGroupRing(name_, textureFilePath_);
+	}
 }
 
 void ParticleEmitter::Update()
