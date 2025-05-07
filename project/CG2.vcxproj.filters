@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\engine\light">
       <UniqueIdentifier>{64d5c926-2c72-450e-bcea-30788b43675f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\offscreen">
+      <UniqueIdentifier>{3792ce7a-7d06-4850-bbff-993b3fee8198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\offscreen">
+      <UniqueIdentifier>{c645cdc1-e83f-4bb1-b7b5-01e15eacf843}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -188,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="engine\light\LightManager.cpp">
       <Filter>ソース ファイル\engine\light</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\offscreen\OffScreen.cpp">
+      <Filter>ソース ファイル\engine\offscreen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +302,9 @@
     <ClInclude Include="engine\light\LightManager.h">
       <Filter>ヘッダー ファイル\engine\light</Filter>
     </ClInclude>
+    <ClInclude Include="engine\offscreen\OffScreen.h">
+      <Filter>ヘッダー ファイル\engine\offscreen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
@@ -313,6 +325,12 @@
     <FxCompile Include="resources\shaders\Particle.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\CopyImage.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\CopyImage.VS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">
@@ -322,6 +340,9 @@
       <Filter>シェダー ファイル</Filter>
     </None>
     <None Include="resources\shaders\Particle.hlsli">
+      <Filter>シェダー ファイル</Filter>
+    </None>
+    <None Include="resources\shaders\CopyImage.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
   </ItemGroup>

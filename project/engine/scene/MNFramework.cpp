@@ -32,6 +32,8 @@ void MNFramework::Initialize()
 
 	// オフスクリーンの作成
 	dxBase_->CreateOffScreenSRV(srvManager_.get());
+	offScreen_.reset(new OffScreen());
+	offScreen_->Initialize(dxBase_.get());
 #pragma endregion 基盤システム初期化
 
 #pragma region マネージャ初期化
@@ -120,7 +122,6 @@ void MNFramework::Update()
 #ifdef _DEBUG
 	imGuiManager_->Begin();
 #endif // _DEBUG
-
 	// シーンマネージャの更新処理
 	sceneManager_->Update();
 	

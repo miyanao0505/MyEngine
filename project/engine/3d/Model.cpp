@@ -135,7 +135,6 @@ void Model::CreateVertexData()
 	// 頂点リソースにデータを書き込む
 	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));									// 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(MyBase::ModelVertexData) * modelData_.vertices.size());	// 頂点データをリソースにコピー
-
 }
 
 // マテリアルデータ作成

@@ -28,7 +28,6 @@ public:	// メンバ関数
 
 	// オフスクリーンのSRV作成
 	void CreateOffScreenSRV(SrvManager* srvManager);
-	
 
 	/// <summary>
 	/// ShaderをCompileをする関数
@@ -64,6 +63,13 @@ public:	// メンバ関数
 	/// <returns>画像イメージデータ</returns>
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
+	/// <summary>
+	/// バリアを貼る
+	/// </summary>
+	/// <param name="pResource"></param>
+	/// <param name="Before"></param>
+	/// <param name="After"></param>
+	void BarrierTransition(ID3D12Resource* pResource, D3D12_RESOURCE_STATES Before, D3D12_RESOURCE_STATES After);
 
 public:	// getter
 
@@ -75,6 +81,10 @@ public:	// getter
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVCPUDescriptorHandle(uint32_t index);
 	// DSVの指定番号のGPUデスクリプタハンドルを取得
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDSVGPUDescriptorHandle(uint32_t index);
+	// RenderTextureのCPUデスクリプタハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE GetOffScreenSRVCPUDescriptorHandle() { return offScreenSrvHandleCPU_; };
+	// RenderTextureのGPUデスクリプタハンドルを取得
+	D3D12_GPU_DESCRIPTOR_HANDLE GetOffScreenSRVGPUDescriptorHandle() { return offScreenSrvHandleGPU_; };
 
 	ID3D12Device* GetDevice() const { return device_.Get(); }
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
@@ -163,6 +173,11 @@ private:	// メンバ変数
 	uint32_t descriptorSizeRTV_;
 	// DSV用のDescriptorSIze
 	uint32_t descriptorSizeDSV_;
+
+	// offScreen用のIndex
+	uint32_t offScreenSrvIndex_;
+	D3D12_CPU_DESCRIPTOR_HANDLE offScreenSrvHandleCPU_;        // SRV作成時に必要なCPUハンドル
+	D3D12_GPU_DESCRIPTOR_HANDLE offScreenSrvHandleGPU_;        // 描画コマンドに必要なGPUハンドル
 
 	D3D12_CLEAR_VALUE clearValue_;
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc_;
