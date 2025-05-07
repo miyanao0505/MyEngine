@@ -24,23 +24,23 @@ void GameScene::Initialize()
 	//TextureManager::GetInstance()->LoadTexture(filePath4_);
 
 	// スプライト
-	for (uint32_t i = 0; i < 5; ++i)
-	{
-		// スプライトの初期化
-		std::unique_ptr<Sprite> sprite(new Sprite());
-		sprite->Initialize(filePath1_);
-		sprite->SetPosition({ 200.0f * float(i), 100.0f });
-		sprite->SetSize({ 100.f, 100.f });
-		sprite->SetAnchorPoint({ 0.0f, 0.0f });
-		sprite->SetIsFlipX(false);
-		sprite->SetIsFlipY(false);
-		sprites_.push_back(std::move(sprite));
-	}
+	//for (uint32_t i = 0; i < 0; ++i)
+	//{
+	//	// スプライトの初期化
+	//	std::unique_ptr<Sprite> sprite(new Sprite());
+	//	sprite->Initialize(filePath1_);
+	//	sprite->SetPosition({ 200.0f * float(i), 100.0f });
+	//	sprite->SetSize({ 100.f, 100.f });
+	//	sprite->SetAnchorPoint({ 0.0f, 0.0f });
+	//	sprite->SetIsFlipX(false);
+	//	sprite->SetIsFlipY(false);
+	//	sprites_.push_back(std::move(sprite));
+	//}
 
-	sprites_[1]->SetTexture(filePath2_);
-	sprites_[1]->SetSize({ 100.0f, 100.0f });
-	sprites_[3]->SetTexture(filePath2_);
-	sprites_[3]->SetSize({ 100.0f, 100.0f });
+	//sprites_[1]->SetTexture(filePath2_);
+	//sprites_[1]->SetSize({ 100.0f, 100.0f });
+	//sprites_[3]->SetTexture(filePath2_);
+	//sprites_[3]->SetSize({ 100.0f, 100.0f });
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
@@ -51,23 +51,27 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 1; ++i) {
-		// 3Dオブジェクトの初期化
-		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize();
-		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
-		object->SetModel(modelFilePath4_.filename);
-		// お試し用設定
-		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
-		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 0.0f, 0.0f}, .intensity{0.0f}, .radius{5.0f}, .decay{1.0f} };
-		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
-		LightManager::GetInstance()->SetSpotLight(spotLight);
-		objects_.push_back(std::move(object));
-	}
+	//for (uint32_t i = 0; i < 0; ++i) {
+	//	// 3Dオブジェクトの初期化
+	//	std::unique_ptr<Object3d> object(new Object3d);
+	//	object->Initislize();
+	//	object->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	//	object->SetModel(modelFilePath4_.filename);
+	//	// お試し用設定
+	//	MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
+	//	LightManager::GetInstance()->SetDirectionalLight(directionalLight);
+	//	MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 0.0f, 0.0f}, .intensity{0.0f}, .radius{5.0f}, .decay{1.0f} };
+	//	LightManager::GetInstance()->SetPointLight(pointLight);
+	//	MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+	//	LightManager::GetInstance()->SetSpotLight(spotLight);
+	//	objects_.push_back(std::move(object));
+	//}
 	//objects_[1]->SetModel(modelFilePath2_.filename);
 	//objects_[2]->SetModel(modelFilePath3_.filename);
+
+	// プレイヤー
+	player_.reset(new Player);
+	player_->Initialize({ 0.0f, 0.0f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
@@ -176,6 +180,8 @@ void GameScene::Update()
 
 		ImGui::Text("\n");
 	}
+
+	player_->DebugDraw();
 
 	// スプライト
 //	if (ImGui::CollapsingHeader("Sprite"))
@@ -502,6 +508,9 @@ void GameScene::Update()
 		AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
 	}
 
+	// プレイヤーの更新処理
+	player_->Update();
+
 	// 3Dオブジェクトの更新処理
 	for (std::unique_ptr<Object3d>& object : objects_)
 	{
@@ -549,6 +558,9 @@ void GameScene::Draw()
 	{
 		object->Draw();
 	}
+
+	// プレイヤーの描画
+	player_->Draw();
 
 #pragma endregion 3Dオブジェクト
 

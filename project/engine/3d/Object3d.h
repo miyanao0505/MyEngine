@@ -22,6 +22,7 @@ public:	// getter
 	const MyBase::Vector3& GetScale() const { return transform_.scale; }
 	const MyBase::Vector3& GetRotate() const { return transform_.rotate; }
 	const MyBase::Vector3& GetTranslate() const { return transform_.translate; }
+	const MyBase::Transform& GetTransform() const { return transform_; }
 	const int& GetEnableLighting() const { return model_->GetEnableLighting(); }
 
 public:	// setter
@@ -30,6 +31,7 @@ public:	// setter
 	void SetScale(const MyBase::Vector3& scale) { transform_.scale = scale; }
 	void SetRotate(const MyBase::Vector3& rotate) { transform_.rotate = rotate; }
 	void SetTranslate(const MyBase::Vector3& translate) { transform_.translate = translate; }
+	void SetTransform(const MyBase::Transform& transform) { transform_ = transform; }
 	void SetEnableLighting(const bool& enableLighting) { model_->SetEnableLighting(enableLighting); }
 
 private:	// メンバ関数

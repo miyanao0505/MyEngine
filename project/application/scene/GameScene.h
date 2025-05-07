@@ -4,6 +4,7 @@
 #include <vector>
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Player.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -42,6 +43,9 @@ private:	// メンバ変数
 
 	// 3Dオブジェクト
 	std::vector<std::unique_ptr<Object3d>> objects_;
+
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
 
 	// パーティクル
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

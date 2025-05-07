@@ -46,9 +46,6 @@
     <Filter Include="ソース ファイル\engine\particle">
       <UniqueIdentifier>{04505abe-b3d7-48df-b4e7-a13400358a6c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\application\scene">
-      <UniqueIdentifier>{7c0b026f-2499-45a6-9a02-f70f006b300a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\engine">
       <UniqueIdentifier>{b9bc5ae2-d1f6-4b25-b2c9-0311c710dae9}</UniqueIdentifier>
     </Filter>
@@ -84,6 +81,21 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\engine\light">
       <UniqueIdentifier>{64d5c926-2c72-450e-bcea-30788b43675f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\application\collision">
+      <UniqueIdentifier>{0f6b6456-3c69-4a66-9902-b8ca0b90be8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\application\scene">
+      <UniqueIdentifier>{7c0b026f-2499-45a6-9a02-f70f006b300a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\collision">
+      <UniqueIdentifier>{74749759-d295-4801-8676-d4a46bf8fc71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\application\player">
+      <UniqueIdentifier>{93819aa0-10d3-4f80-a60e-d04930fbdd86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\player">
+      <UniqueIdentifier>{bd0471ea-4d76-4e32-9a67-6ce846490c7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +201,15 @@
     <ClCompile Include="engine\light\LightManager.cpp">
       <Filter>ソース ファイル\engine\light</Filter>
     </ClCompile>
+    <ClCompile Include="application\collision\Collider.cpp">
+      <Filter>ソース ファイル\application\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="application\collision\CollisionManager.cpp">
+      <Filter>ソース ファイル\application\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="application\player\Player.cpp">
+      <Filter>ソース ファイル\application\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -292,6 +313,18 @@
     </ClInclude>
     <ClInclude Include="engine\light\LightManager.h">
       <Filter>ヘッダー ファイル\engine\light</Filter>
+    </ClInclude>
+    <ClInclude Include="application\collision\Collider.h">
+      <Filter>ヘッダー ファイル\application\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="application\collision\CollisionConfig.h">
+      <Filter>ヘッダー ファイル\application\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="application\collision\CollisionManager.h">
+      <Filter>ヘッダー ファイル\application\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="application\player\Player.h">
+      <Filter>ヘッダー ファイル\application\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
