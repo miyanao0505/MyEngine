@@ -89,8 +89,8 @@ void GameScene::Initialize()
 #pragma region パーティクル
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
-	//particleEmitter_->Initialize("hitEffect", "resources/circle.png");
-	//particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
+	particleEmitter_->Initialize("hitEffect", "resources/circle.png", ParticleEmitter::Box);
+	particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
 	particleEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
 	particleEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
 #pragma endregion パーティクル
@@ -329,70 +329,11 @@ void GameScene::Update()
 
 		ImGui::Text("\n");
 	}
-	if (ImGui::CollapsingHeader("particle")) {
-		static ImGuiComboFlags particleFlags = 0;
-		const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
-		static int selectID = 2;
-
-		const char* previewValue = blendModeIndex[selectID];
-
-		if (ImGui::BeginCombo("Now Blend", previewValue, particleFlags)) {
-			for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
-			{
-				const bool isSelected = (selectID == n);
-				if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
-					selectID = n;
-					ParticleManager::GetInstance()->ChangeBlendMode(static_cast<ParticleBase::BlendMode>(n));
-				}
-				if (isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
-
-		/*size_t spriteCount = 0;
-		for (ParticleEmitter* particle : sprites) {*/
-		MyBase::Vector3 position = particleEmitter_->GetPosition();
-		ImGui::DragFloat2("particleEmitter_.Translate", &position.x, 0.1f);
-		/*if (position.y > 640.0f) {
-			position.y = 640.0f;
-		}*/
-		particleEmitter_->SetPosition(position);
-
-		/*Vector3 rotation = particleEmitter_->GetRotation();
-		ImGui::SliderAngle("particleEmitter_.Rotate", &rotation.x);
-		particleEmitter_->SetRotation(rotation);
-
-		Vector3 size = particleEmitter_->GetSize();
-		ImGui::DragFloat2("particleEmitter_.Scale", &size.x, 0.1f);
-		if (size.y > 360.0f) {
-			size.y = 360.0f;
-		}
-		particleEmitter_->SetSize(size);*/
-
-		int count = particleEmitter_->GetCount();
-		ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
-		particleEmitter_->SetCount(count);
-
-		float frequency = particleEmitter_->GetFrequency();
-		ImGui::DragFloat("particleEmitter_.frequency", &frequency, 0.1f);
-		particleEmitter_->SetFrequency(frequency);
-
-		if (ImGui::Button("ParticleEmit", { 100,50 })) {
-			particleEmitter_->Emit();
-		}
-
-		bool isEmitUpdate = particleEmitter_->GetIsEmitUpdate();
-		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate);
-		particleEmitter_->SetIsEmitUpdate(isEmitUpdate);
-
-		ImGui::Checkbox("IsAccelerationField", &isAccelerationField_);
-	}
+	
+	// パーティクル
+	ParticleManager::GetInstance()->Imgui();
 
 	ImGui::Text("\n");
-
-	ImGui::Text("ParticleActive On / Off : SPACE");
 
 	//}
 //

@@ -11,6 +11,8 @@ void ParticleEmitter::Initialize(const std::string name, const std::string textu
 	name_ = name;
 	textureFilePath_ = textureFilePath;
 
+	ParticleManager::GetInstance()->CreateIndexResource(type);
+
 	if (type == Box) {
 		ParticleManager::GetInstance()->CreateParticleGroup(name_, textureFilePath_);
 	}
@@ -38,8 +40,25 @@ void ParticleEmitter::Emit()
 
 void ParticleEmitter::Imgui()
 {
-	if (ImGui::CollapsingHeader("NewParticle")) {
-
+	if (ImGui::CollapsingHeader(name_.c_str())) {
+		// 座標
+		ImGui::DragFloat3("particleEmitter_.Translate", &transform_.translate.x, 0.1f);
+		// 回転
+		//ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
+		// 拡縮
+		ImGui::DragFloat3("particleEmitter_.Scale", &transform_.scale.x, 0.1f);
+		// 発生数
+		int count = count_;
+		ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
+		count_ = count;
+		// 発生頻度
+		ImGui::DragFloat("particleEmitter_.frequency", &frequency_, 0.1f);
+		// 発生させる
+		if (ImGui::Button("ParticleEmit", { 100,50 })) {
+			Emit();
+		}
+		// 連続発生
+		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate_);
 	}
 }
 

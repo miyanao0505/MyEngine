@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "ParticleBase.h"
+#include "ParticleEmitter.h"
 #include "random"
 #include "numbers"
 #include "MyBase.h"
@@ -40,6 +41,12 @@ public:	// メンバ関数
 	// 描画
 	void Draw();
 
+#ifdef _DEBUG
+	// Imgui
+	void Imgui();
+#endif // _DEBUG
+
+
 	/// <summary>
 	/// ブレンドモード変更
 	/// </summary>
@@ -67,6 +74,8 @@ public:	// メンバ関数
 	/// <param name="position"></param>
 	/// <param name="count"></param>
 	void Emit(const std::string name, const MyBase::Vector3& position, uint32_t count);
+
+	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
@@ -116,6 +125,8 @@ private:	// メンバ変数
 
 	// バッファリソースの使い道を遅くするバッファビュー
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	uint32_t particleIndexSize_ = 0;	// インデックスリソースのサイズ
 
 	// インスタンスの最大数
 	uint32_t kMaxInstance_ = 1000;

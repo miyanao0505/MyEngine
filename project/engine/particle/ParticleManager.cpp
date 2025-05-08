@@ -7,6 +7,11 @@
 #include "Matrix.h"
 #include<numbers>
 
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
+
+
 ParticleManager* ParticleManager::instance = nullptr;
 
 ParticleManager* ParticleManager::GetInstance()
@@ -34,19 +39,6 @@ void ParticleManager::Initialize(DirectXBase* dxBase, SrvManager* srvManager)
 	// ランダムエンジンの初期化
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
-
-	// インデックスリソースの生成
-	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kParticleIndexNum);
-
-	// インデックスバッファビューの生成
-	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * kParticleIndexNum;
-	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
-
-	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
-	indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
-	indexData_[3] = 1; indexData_[4] = 3; indexData_[5] = 2;
-	indexResource_->Unmap(0, nullptr);
 }
 
 void ParticleManager::Update()
@@ -102,9 +94,39 @@ void ParticleManager::Draw()
 		// SRVのDescriptorTableの先頭を設定、2はrootParameter[2]である
 		dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU(group->materialData.textureFilePath));
 		// DrawCall(インスタンシング描画)
-		dxBase_->GetCommandList()->DrawIndexedInstanced(6, group->kNumInstance, 0, 0, 0);
+		dxBase_->GetCommandList()->DrawIndexedInstanced(particleIndexSize_, group->kNumInstance, 0, 0, 0);
 	}
 }
+
+#ifdef _DEBUG
+void ParticleManager::Imgui()
+{
+	if (ImGui::CollapsingHeader("ParticleManager")) {
+		static ImGuiComboFlags particleFlags = 0;
+		const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
+		static int selectID = 2;
+
+		const char* previewValue = blendModeIndex[selectID];
+
+		if (ImGui::BeginCombo("Now Blend", previewValue, particleFlags)) {
+			for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
+			{
+				const bool isSelected = (selectID == n);
+				if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
+					selectID = n;
+					ChangeBlendMode(static_cast<ParticleBase::BlendMode>(n));
+				}
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+		ImGui::Text("ParticleGroupNum : %d", particleGroups_.size());
+
+	}
+}
+#endif // _DEBUG
 
 void ParticleManager::ChangeBlendMode(ParticleBase::BlendMode blendMode)
 {
@@ -195,11 +217,11 @@ void ParticleManager::CreateParticleGroupRing(const std::string name, const std:
 	group->kNumInstance = 0;
 
 	// 頂点リソースの生成
-	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRadianPerDivide));
+	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide));
 
 	// 頂点バッファビューの生成
 	group->vertexBufferView.BufferLocation = group->vertexResource->GetGPUVirtualAddress();
-	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRadianPerDivide);
+	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide);
 	group->vertexBufferView.StrideInBytes = sizeof(MyBase::ParticleVertexData);
 	// 頂点リソースに頂点データを書き込む
 	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
@@ -261,6 +283,43 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 		//group.particles.push_back(CreateParticle(randomEngine, position));
 		group.particles.push_back(MakeNewParticle(randomEngine, position));
 	}
+}
+
+void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
+{
+	particleIndexSize_ = 0;
+
+	if (type == ParticleEmitter::Box) {
+		particleIndexSize_ = kParticleIndexNum;
+	}
+	else if (type == ParticleEmitter::Ring) {
+		particleIndexSize_ = kParticleIndexNum * kRingDivide;
+	}
+
+	// インデックスリソースの生成
+	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * particleIndexSize_);
+
+	// インデックスバッファビューの生成
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * particleIndexSize_;
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+	if (type == ParticleEmitter::Box) {
+		indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
+		indexData_[3] = 1; indexData_[4] = 3; indexData_[5] = 2;
+	}
+	else if (type == ParticleEmitter::Ring) {
+		for (uint32_t index = 0; index < kRingDivide; index++) {
+			indexData_[index * 6] = index * 4;
+			indexData_[index * 6 + 1] = index * 4 + 1;
+			indexData_[index * 6 + 2] = index * 4 + 2;
+			indexData_[index * 6 + 3] = index * 4 + 1;
+			indexData_[index * 6 + 4] = index * 4 + 3;
+			indexData_[index * 6 + 5] = index * 4 + 2;
+		}
+	}
+	indexResource_->Unmap(0, nullptr);
 }
 
 MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& position) {
