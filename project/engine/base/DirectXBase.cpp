@@ -56,9 +56,6 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 // 描画前処理(RenderTexture)
 void DirectXBase::PreRenderTexture()
 {
-	// TransitionBarrierを張る
-	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
 	// 描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[2], false, &dsvHandle);
@@ -75,13 +72,13 @@ void DirectXBase::PreRenderTexture()
 void DirectXBase::PreDraw()
 {
 	// TransitionBarrierを張る
-	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	
 	// これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 	// TransitionBarrierを張る
 	BarrierTransition(backBuffer_[backBufferIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
+	
 	// 描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
@@ -96,12 +93,14 @@ void DirectXBase::PreDraw()
 void DirectXBase::PostDraw()
 {
 	HRESULT hr;
+	
+	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	// これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
 	// TransitionBarrierを張る
 	BarrierTransition(backBuffer_[backBufferIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-
+	
 	// コマンドリストの内容を確定させる。すべてコマンドを積んでからCloseすること
 	hr = commandList_->Close();
 	assert(SUCCEEDED(hr));
@@ -143,7 +142,7 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	// SRV確保
 	offScreenSrvIndex_ = srvManager->Allocate();
 
-	srvManager->CreateSRVforRenderTexture(offScreenSrvIndex_, renderTextureResource_.Get());
+	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, renderTextureResource_.Get(), DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, UINT(1));
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);
 	offScreenSrvHandleGPU_ = srvManager->GetGPUDescriptorHandle(offScreenSrvIndex_);
 }

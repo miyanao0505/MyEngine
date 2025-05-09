@@ -121,7 +121,6 @@ void OffScreen::CreateGraphicsPipeline()
 	depthStencilDesc.DepthEnable = false;
 	// DepthStencilの設定
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
-	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	// 実際に生成
 	graphicsPipelineState_ = nullptr;
