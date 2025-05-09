@@ -85,6 +85,9 @@
     <Filter Include="ヘッダー ファイル\engine\light">
       <UniqueIdentifier>{64d5c926-2c72-450e-bcea-30788b43675f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\engine\scene">
+      <UniqueIdentifier>{87eb9f37-4d17-4e5a-b2b8-afa71f9d8849}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -266,9 +269,6 @@
     <ClInclude Include="application\scene\MyGame.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\MNFramework.h">
-      <Filter>ヘッダー ファイル\application\scene</Filter>
-    </ClInclude>
     <ClInclude Include="application\scene\GameScene.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
     </ClInclude>
@@ -278,20 +278,23 @@
     <ClInclude Include="application\scene\TitleScene.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\SceneManager.h">
-      <Filter>ヘッダー ファイル\application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\scene\AbstractSceneFactory.h">
-      <Filter>ヘッダー ファイル\application\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\SceneFactory.h">
-      <Filter>ヘッダー ファイル\application\scene</Filter>
-    </ClInclude>
     <ClInclude Include="engine\audio\AudioManager.h">
       <Filter>ヘッダー ファイル\engine\audio</Filter>
     </ClInclude>
     <ClInclude Include="engine\light\LightManager.h">
       <Filter>ヘッダー ファイル\engine\light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\MNFramework.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\SceneFactory.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\SceneManager.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

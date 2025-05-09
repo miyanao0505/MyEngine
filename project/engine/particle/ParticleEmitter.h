@@ -5,17 +5,26 @@
 class ParticleEmitter
 {
 public:	// メンバ関数
+	enum ParticleType {
+		Box,		// 矩形
+		Ring,		// リング
+	};
+
 	// コンストラクタ
 	ParticleEmitter();
 
 	// 初期化
-	void Initialize(const std::string name, const std::string textureFilePath);
+	void Initialize(const std::string name, const std::string textureFilePath, const ParticleType type = Box);
 
 	// 更新
 	void Update();
 
 	// パーティクルの発生
 	void Emit();
+
+#ifdef _DEBUG
+	void Imgui();
+#endif // _DEBUG
 
 public:	// getter
 	const MyBase::Vector3& GetPosition() { return transform_.translate; }
@@ -40,9 +49,9 @@ private:	// メンバ変数
 	// 発生中心
 	MyBase::Transform transform_{};
 	// 発生数
-	uint32_t count_ = 20;
+	uint32_t count_ = 8;
 	// 発生頻度
-	float frequency_ = 0.5f;
+	float frequency_ = 1.5f;
 	// 頻度用時刻
 	float frequencyTime_ = 0.0f;
 	// 連続発生するか

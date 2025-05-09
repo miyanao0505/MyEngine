@@ -22,10 +22,12 @@ public:	// メンバ関数
 
 public:	// getter
 	const MyBase::ModelData& GetModelData() const { return modelData_; }
+	const std::string& GetTexture() const { return modelData_.material.textureFilePath; }
 	const int& GetEnableLighting() const { return materialData_->enableLighting; }
 
 public:	// setter
 	void SetEnableLighting(const bool& enableLighting) { materialData_->enableLighting = enableLighting; }
+	void SetTexture(const std::string& filename);
 
 private:	// メンバ関数
 	// 頂点データ作成

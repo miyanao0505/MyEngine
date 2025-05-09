@@ -12,7 +12,7 @@ class Object3d
 {
 public:	// メンバ関数
 	// 初期化
-	void Initislize();
+	void Initislize(const std::string& filePath);
 	// 更新処理
 	void Update();
 	// 描画処理
@@ -27,6 +27,7 @@ public:	// getter
 public:	// setter
 	void SetModel(Model* model) { model_ = model; }
 	void SetModel(const std::string& filePath);
+	void SetTexture(const std::string& filename);
 	void SetScale(const MyBase::Vector3& scale) { transform_.scale = scale; }
 	void SetRotate(const MyBase::Vector3& rotate) { transform_.rotate = rotate; }
 	void SetTranslate(const MyBase::Vector3& translate) { transform_.translate = translate; }
@@ -52,5 +53,8 @@ private:	// メンバ変数
 
 	// Transform
 	MyBase::Transform transform_;			// 3Dオブジェクト
+
+	// Texture
+	std::string textureFileName_;
 };
 

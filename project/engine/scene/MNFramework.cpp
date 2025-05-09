@@ -10,7 +10,7 @@ void MNFramework::Initialize()
 #pragma region ゲームウィンドウ作成
 	// WindowsAPIの初期化
 	winApi_.reset(new WindowsAPI());
-	winApi_->Initialize(L"GE3");
+	winApi_->Initialize(L"CG4");
 #pragma endregion ゲームウィンドウ作成
 
 #pragma region DirectX初期化
@@ -43,16 +43,6 @@ void MNFramework::Initialize()
 	// カメラマネージャの初期化
 	cameraManager_ = CameraManager::GetInstance();
 	cameraManager_->Initialize();
-	cameraManager_->SetCamera("default");
-	cameraManager_->FindCamera("default");
-	cameraManager_->GetCamera()->SetRotate({ 0.3f, 0.0f, 0.0f });
-	cameraManager_->GetCamera()->SetTranslate({ 0.0f, 4.0f, -10.0f });
-	cameraManager_->SetCamera("sub");
-	cameraManager_->FindCamera("sub");
-	cameraManager_->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
-	cameraManager_->GetCamera()->SetTranslate({ 0.0f, 4.0f, 10.0f });
-
-	cameraManager_->FindCamera("default");
 
 	// ライトマネージャの初期化
 	lightManager_ = LightManager::GetInstance();
