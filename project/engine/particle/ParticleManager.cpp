@@ -94,7 +94,7 @@ void ParticleManager::Draw()
 		// SRVのDescriptorTableの先頭を設定、2はrootParameter[2]である
 		dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(1, TextureManager::GetInstance()->GetSrvHandleGPU(group->materialData.textureFilePath));
 		// DrawCall(インスタンシング描画)
-		dxBase_->GetCommandList()->DrawIndexedInstanced(particleIndexSize_, group->kNumInstance, 0, 0, 0);
+		dxBase_->GetCommandList()->DrawIndexedInstanced(kParticleIndexNum[group->type], group->kNumInstance, 0, 0, 0);
 	}
 }
 
@@ -151,6 +151,8 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	group->materialData.textureFilePath = textureFilePath;
+
+	group->type = ParticleEmitter::Box;
 
 	group->kNumInstance = 0;
 
@@ -213,6 +215,8 @@ void ParticleManager::CreateParticleGroupRing(const std::string name, const std:
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	group->materialData.textureFilePath = textureFilePath;
+
+	group->type = ParticleEmitter::Ring;
 
 	group->kNumInstance = 0;
 
@@ -281,27 +285,22 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
 		//group.particles.push_back(CreateParticle(randomEngine, position));
-		group.particles.push_back(MakeNewParticle(randomEngine, position));
+		group.particles.push_back(CreateHitParticle(randomEngine, position, group.type));
 	}
 }
 
 void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 {
-	particleIndexSize_ = 0;
+	/*uint32_t preIndexNum = particleIndexSize_;*/
 
-	if (type == ParticleEmitter::Box) {
-		particleIndexSize_ = kParticleIndexNum;
-	}
-	else if (type == ParticleEmitter::Ring) {
-		particleIndexSize_ = kParticleIndexNum * kRingDivide;
-	}
+	particleIndexSize_ += kParticleIndexNum[type];
 
 	// インデックスリソースの生成
-	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * particleIndexSize_);
+	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kParticleIndexNum[type]);
 
 	// インデックスバッファビューの生成
 	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * particleIndexSize_;
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * kParticleIndexNum[type];
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
@@ -322,7 +321,7 @@ void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 	indexResource_->Unmap(0, nullptr);
 }
 
-MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& position) {
+MyBase::Particle ParticleManager::CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position) {
 	std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
 	MyBase::Particle particle{};
 	particle.transform.scale = { 1.0f, 1.0f, 1.0f };
@@ -335,18 +334,24 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 	return particle;
 }
 
-MyBase::Particle ParticleManager::MakeNewParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate)
+MyBase::Particle ParticleManager::CreateHitParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type)
 {
 	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-	std::uniform_real_distribution<float> distScale(0.4f, 1.5f);
+	std::uniform_real_distribution<float> distScale(1.0f, 3.0f);
 
 	MyBase::Particle particle;
-	// 横に潰し、縦方向の大きさをランダムに入れる
-	//particle.transform.scale = { 0.05f, distScale(randomEngine), 1.0f};
-	particle.transform.scale = { 1.0f, 1.0f, 1.0f };
-	// ランダムに回転させる
-	//particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
-	particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+
+	if (type == ParticleEmitter::Box) {
+		// 横に潰し、縦方向の大きさをランダムに入れる
+		particle.transform.scale = { 0.08f, distScale(randomEngine), 1.0f };
+		// ランダムに回転させる
+		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
+		
+	}
+	else if (type == ParticleEmitter::Ring) {
+		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
+		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	}
 	particle.transform.translate = translate;
 	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
 	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };

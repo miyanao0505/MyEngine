@@ -46,7 +46,8 @@ private:	// メンバ変数
 	std::vector<std::unique_ptr<Object3d>> objects_;
 
 	// パーティクル
-	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleHitEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleRingEmitter_ = nullptr;
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;

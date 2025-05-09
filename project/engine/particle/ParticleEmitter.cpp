@@ -40,7 +40,9 @@ void ParticleEmitter::Emit()
 
 void ParticleEmitter::Imgui()
 {
-	if (ImGui::CollapsingHeader(name_.c_str())) {
+	ImGui::Begin(name_.c_str());
+	{
+		ImGui::PushID(name_.c_str());
 		// 座標
 		ImGui::DragFloat3("particleEmitter_.Translate", &transform_.translate.x, 0.1f);
 		// 回転
@@ -59,7 +61,9 @@ void ParticleEmitter::Imgui()
 		}
 		// 連続発生
 		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate_);
+		ImGui::PopID();
 	}
+	ImGui::End();
 }
 
 #endif // _DEBUG

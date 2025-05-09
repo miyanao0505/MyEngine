@@ -24,6 +24,7 @@ public:	// パーティクルグループ構造体
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;						// バッファリソースの使い道を補足するバッファビュー
 		MyBase::ParticleVertexData* vertexData = nullptr;				// バッファリソース内のデータを指すポインタ
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
+		ParticleEmitter::ParticleType type;
 	};
 
 public:	// メンバ関数
@@ -90,9 +91,9 @@ private: // ローカル関数
 	/// <param name="randomEngine"></param>
 	/// <param name="position"></param>
 	/// <returns></returns>
-	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
+	MyBase::Particle CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
 
-	MyBase::Particle MakeNewParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate);
+	MyBase::Particle CreateHitParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 
 private:	// シングルトン
 	static ParticleManager* instance;
@@ -109,13 +110,14 @@ private:	// メンバ変数
 	std::unique_ptr<ParticleBase> particleBase_;
 
 	// 定数
-	const uint32_t kParticleVertexNum = 4;
-	const uint32_t kParticleIndexNum = 6;
 	// Ring用
 	const uint32_t kRingDivide = 32;		// 分割数
 	const float kOuterRadius = 1.0f;		// 外径
 	const float kInnerRadius = 0.2f;		// 内径
 	const float kRadianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
+	// 描画用
+	const uint32_t kParticleVertexNum = 4;
+	const uint32_t kParticleIndexNum[2] = { 6, 6 * kRingDivide };
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
