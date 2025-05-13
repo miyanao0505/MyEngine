@@ -51,18 +51,18 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 1; ++i) {
+	for (uint32_t i = 0; i < 2; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
 		object->Initislize();
-		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
+		object->SetTranslate({ -3.0f + 6.0f * i, 0.0f, 0.0f });
 		object->SetModel(modelFilePath1_.filename);
 		// お試し用設定
-		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{0.0f} };
+		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 0.0f, 0.0f}, .intensity{0.0f}, .radius{5.0f}, .decay{1.0f} };
+		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{1.0f}, .radius{5.0f}, .decay{1.0f}};
 		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
@@ -393,8 +393,12 @@ void GameScene::Update()
 
 	ImGui::Begin("LIghting");
 
+	uint32_t objectCount = 0;
+	std::string objectName = "Object";
 	for (std::unique_ptr<Object3d>& object : objects_)
 	{
+		objectName = objectName + std::to_string(objectCount);
+		ImGui::PushID(objectName.c_str());
 		if (ImGui::CollapsingHeader("Material"))
 		{
 			// 平行光源フラグ
@@ -462,6 +466,8 @@ void GameScene::Update()
 				ImGui::PopID();
 			}
 		}
+		objectCount++;
+		ImGui::PopID();
 	}
 	ImGui::End();
 
@@ -507,6 +513,13 @@ void GameScene::Update()
 	{
 		object->Update();
 	}
+	// 移動
+	MyBase::Vector3 translate = objects_[1]->GetTranslate();
+	translate.x += 0.01f;
+	if (translate.x > 4.0f) {
+		translate.x -= 2.0f;
+	}
+	objects_[1]->SetTranslate(translate);
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
