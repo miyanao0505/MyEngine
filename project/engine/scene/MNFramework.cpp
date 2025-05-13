@@ -30,20 +30,17 @@ void MNFramework::Initialize()
 	srvManager_.reset(new SrvManager());
 	srvManager_->Initialize(dxBase_.get());
 
-	// オフスクリーンの作成
-	dxBase_->CreateOffScreenSRV(srvManager_.get());
-	offScreen_.reset(new OffScreen());
-	offScreen_->Initialize(dxBase_.get());
-#pragma endregion 基盤システム初期化
-
-#pragma region マネージャ初期化
 #ifdef _DEBUG
-#pragma region ImGui初期化
 	// ImGuiManagerの初期化
 	imGuiManager_.reset(new ImGuiManager());
 	imGuiManager_->Initialize(winApi_.get(), dxBase_.get(), srvManager_.get());
-#pragma endregion
 #endif // _DEBUG
+
+	// オフスクリーンの作成
+	offScreen_.reset(new OffScreen());
+	offScreen_->Initialize(dxBase_.get());
+	dxBase_->CreateOffScreenSRV(srvManager_.get());
+#pragma endregion 基盤システム初期化
 
 	// カメラマネージャの初期化
 	cameraManager_ = CameraManager::GetInstance();
