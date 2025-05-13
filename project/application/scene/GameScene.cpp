@@ -69,9 +69,8 @@ void GameScene::Initialize()
 	for (uint32_t i = 0; i < 2; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize();
+		object->Initislize(modelFilePath1_.filename);
 		object->SetTranslate({ -3.0f + 6.0f * i, 0.0f, 0.0f });
-		object->SetModel(modelFilePath1_.filename);
 		// お試し用設定
 		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
