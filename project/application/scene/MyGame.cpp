@@ -35,7 +35,8 @@ void MyGame::Update()
 void MyGame::Draw()
 {
 	// DirectXの描画前処理。全ての描画に共通のグラフィックスコマンドを積む
-	dxBase_->PreDraw();
+	dxBase_->PreRenderTexture();
+	
 	srvManager_->PreDraw();
 
 	// カメラの更新
@@ -44,6 +45,9 @@ void MyGame::Draw()
 	// シーンマネージャの描画
 	sceneManager_->Draw();
 
+	// DirectXの描画前処理。全ての描画に共通のグラフィックスコマンドを積む
+	dxBase_->PreDraw();
+	offScreen_->Draw();
 	// 実際のcommandListのImGuiの描画コマンドを積む
 #ifdef _DEBUG
 	imGuiManager_->Draw();
