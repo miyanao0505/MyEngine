@@ -331,7 +331,10 @@
     <FxCompile Include="resources\shaders\CopyImage.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="resources\shaders\CopyImage.VS.hlsl">
+    <FxCompile Include="resources\shaders\Fullscreen.VS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Grayscale.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -345,7 +348,7 @@
     <None Include="resources\shaders\Particle.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
-    <None Include="resources\shaders\CopyImage.hlsli">
+    <None Include="resources\shaders\Fullscreen.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
   </ItemGroup>

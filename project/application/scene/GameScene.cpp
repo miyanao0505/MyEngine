@@ -19,8 +19,8 @@ void GameScene::Initialize()
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->FindCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.2f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 5.0f, -10.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.5f, -25.0f });
 	CameraManager::GetInstance()->SetCamera("sub");
 	CameraManager::GetInstance()->FindCamera("sub");
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
@@ -36,6 +36,7 @@ void GameScene::Initialize()
 	//TextureManager::GetInstance()->LoadTexture(filePath3_);
 	//TextureManager::GetInstance()->LoadTexture(filePath4_);
 	TextureManager::GetInstance()->LoadTexture(filePath5_);
+	TextureManager::GetInstance()->LoadTexture(filePath6_);
 
 	// スプライト
 	for (uint32_t i = 0; i < 5; ++i)
@@ -64,34 +65,38 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath3_.directoryPath, modelFilePath3_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath5_.directoryPath, modelFilePath5_.filename);
+	ModelManager::GetInstance()->LoadModel(modelFilePath6_.directoryPath, modelFilePath6_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 2; ++i) {
+	for (uint32_t i = 0; i < 1; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
 		object->Initislize(modelFilePath1_.filename);
-		object->SetTranslate({ -3.0f + 6.0f * i, 0.0f, 0.0f });
+		object->SetTranslate({ -3.0f + 6.0f * i, 1.5f, 0.0f });
 		// お試し用設定
 		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{1.0f}, .radius{5.0f}, .decay{1.0f}};
+		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{0.0f}, .radius{5.0f}, .decay{1.0f}};
 		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{2.0f, 1.25f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ -1.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
 	//objects_[1]->SetModel(modelFilePath2_.filename);
 	//objects_[2]->SetModel(modelFilePath3_.filename);
+	objects_[0]->SetModel(modelFilePath6_.filename);
+	objects_[0]->SetTexture(filePath6_);
+	objects_[0]->SetTranslate({ 0.0f, 0.0f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
 	particleHitEmitter_.reset(new ParticleEmitter);
 	particleHitEmitter_->Initialize("hitEffect", "resources/circle.png", ParticleEmitter::Box);
-	particleHitEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
+	particleHitEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
 	particleRingEmitter_.reset(new ParticleEmitter);
 	particleRingEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
-	particleRingEmitter_->SetPosition({ 0.0f, 3.0f, 0.0f });
+	particleRingEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
 	particleRingEmitter_->SetCount(1);
 	
 #pragma endregion パーティクル
@@ -104,7 +109,7 @@ void GameScene::Initialize()
 #pragma endregion オーディオ
 
 #pragma region 変数
-	isParticleActive_ = true;
+	isParticleActive_ = false;
 	particleHitEmitter_->SetIsEmitUpdate(isParticleActive_);
 	particleRingEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
@@ -478,12 +483,12 @@ void GameScene::Update()
 		object->Update();
 	}
 	// 移動
-	MyBase::Vector3 translate = objects_[1]->GetTranslate();
+	/*MyBase::Vector3 translate = objects_[1]->GetTranslate();
 	translate.x += 0.01f;
 	if (translate.x > 4.0f) {
 		translate.x -= 2.0f;
 	}
-	objects_[1]->SetTranslate(translate);
+	objects_[1]->SetTranslate(translate);*/
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {

@@ -31,6 +31,7 @@ private:	// メンバ変数
 	//std::string filePath3_ = { "resources/fence.png" };
 	//std::string filePath4_ = { "resources/circle.png" };
 	std::string filePath5_ = { "resources/ground.png" };
+	std::string filePath6_ = { "resources/grass.png" };
 
 	// スプライト
 	std::vector<std::unique_ptr<Sprite>> sprites_;
@@ -41,6 +42,7 @@ private:	// メンバ変数
 	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
 	MyBase::ModelFilePath modelFilePath4_ = { {"resources/sphere"}, {"sphere.obj"} };
 	MyBase::ModelFilePath modelFilePath5_ = { {"resources/ground"}, {"ground.obj"} };
+	MyBase::ModelFilePath modelFilePath6_ = { {"resources/terrain"}, {"terrain.obj"} };
 
 	// 3Dオブジェクト
 	std::vector<std::unique_ptr<Object3d>> objects_;
