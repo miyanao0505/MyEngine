@@ -337,6 +337,9 @@
     <FxCompile Include="resources\shaders\Grayscale.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\Vignette.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">
