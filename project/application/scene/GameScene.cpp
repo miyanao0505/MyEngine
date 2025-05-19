@@ -19,8 +19,8 @@ void GameScene::Initialize()
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->FindCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.5f, -25.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.4f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
 	CameraManager::GetInstance()->SetCamera("sub");
 	CameraManager::GetInstance()->FindCamera("sub");
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
@@ -78,7 +78,7 @@ void GameScene::Initialize()
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
 		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{0.0f}, .radius{5.0f}, .decay{1.0f}};
 		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{4.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
@@ -98,7 +98,10 @@ void GameScene::Initialize()
 	particleRingEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
 	particleRingEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
 	particleRingEmitter_->SetCount(1);
-	
+	particleCylinderEmitter_.reset(new ParticleEmitter);
+	particleCylinderEmitter_->Initialize("Cylinder", "resources/gradationLine.png", ParticleEmitter::Cylinder);
+	particleCylinderEmitter_->SetPosition({ 0.0f, 0.0f, 0.0f });
+	particleCylinderEmitter_->SetCount(1);
 #pragma endregion パーティクル
 
 #pragma region オーディオ
@@ -109,9 +112,10 @@ void GameScene::Initialize()
 #pragma endregion オーディオ
 
 #pragma region 変数
-	isParticleActive_ = false;
-	particleHitEmitter_->SetIsEmitUpdate(isParticleActive_);
-	particleRingEmitter_->SetIsEmitUpdate(isParticleActive_);
+	isParticleActive_ = true;
+	particleHitEmitter_->SetIsEmitUpdate(false);
+	particleRingEmitter_->SetIsEmitUpdate(false);
+	particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -341,6 +345,7 @@ void GameScene::Update()
 	ParticleManager::GetInstance()->Imgui();
 	particleHitEmitter_->Imgui();
 	particleRingEmitter_->Imgui();
+	particleCylinderEmitter_->Imgui();
 
 	ImGui::Text("\n");
 
@@ -454,6 +459,7 @@ void GameScene::Update()
 		isParticleActive_ = !isParticleActive_;
 		particleHitEmitter_->SetIsEmitUpdate(isParticleActive_);
 		particleRingEmitter_->SetIsEmitUpdate(isParticleActive_);
+		particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
 	}
 	// Lキーを押したら
 	if (input_->TriggerKey(DIK_L)) {
@@ -510,6 +516,7 @@ void GameScene::Update()
 	// パーティクルの更新処理
 	particleHitEmitter_->Update();
 	particleRingEmitter_->Update();
+	particleCylinderEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理

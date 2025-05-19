@@ -8,6 +8,7 @@ public:	// メンバ関数
 	enum ParticleType {
 		Box,		// 矩形
 		Ring,		// リング
+		Cylinder,	// 円柱
 	};
 
 	// コンストラクタ

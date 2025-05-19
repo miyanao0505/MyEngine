@@ -62,6 +62,19 @@ void ParticleManager::Update()
 			particle.currentTime += kDelTime_;
 			particle.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 			particle.transform.translate = MyTools::Add(particle.transform.translate, MyTools::Multiply(kDelTime_, particle.velocity));
+
+			if (group.type == ParticleEmitter::Cylinder) {
+				float value = 1.0f / float(kCylinderDivide) * 0.05f;
+				for (uint32_t i = 0; i < kCylinderDivide; i++) {
+					group.vertexData[i * 6].texcoord.x += value;
+					group.vertexData[i * 6 + 1].texcoord.x += value;
+					group.vertexData[i * 6 + 2].texcoord.x += value;
+					group.vertexData[i * 6 + 3].texcoord.x += value;
+					group.vertexData[i * 6 + 4].texcoord.x += value;
+					group.vertexData[i * 6 + 5].texcoord.x += value;
+				}
+			}
+
 			if (particle.lifeTime <= particle.currentTime) {
 				it = group.particles.erase(it);
 				group.kNumInstance--;
@@ -176,10 +189,10 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	float texBottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
 
 	// 頂点データを設定(四角形を構成)
-	group->vertexData[0] = { { -0.5f, -0.5f, 0.0f, 1.0f }, { texLeft, texBottom  }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-	group->vertexData[1] = { { -0.5f,  0.5f, 0.0f, 1.0f }, { texLeft, texTop     }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-	group->vertexData[2] = { {  0.5f, -0.5f, 0.0f, 1.0f }, { texRight, texBottom }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-	group->vertexData[3] = { {  0.5f,  0.5f, 0.0f, 1.0f }, { texRight, texTop }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	group->vertexData[0] = { { -0.5f, -0.5f, 0.0f, 1.0f }, { texLeft, texBottom  }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	group->vertexData[1] = { { -0.5f,  0.5f, 0.0f, 1.0f }, { texLeft, texTop     }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	group->vertexData[2] = { {  0.5f, -0.5f, 0.0f, 1.0f }, { texRight, texBottom }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	group->vertexData[3] = { {  0.5f,  0.5f, 0.0f, 1.0f }, { texRight, texTop }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
 
 	// TextureManagerからGPUハンドルを取得
 	group->materialData.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
@@ -244,10 +257,10 @@ void ParticleManager::CreateParticleGroupRing(const std::string name, const std:
 		float uNext = float(index + 1) / float(kRingDivide);
 
 		// positionとuv。normalは必要なら +z を設定する
-		group->vertexData[index * 4] = { { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f  }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 1] = { { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f     }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 2] = { { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 3] = { { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4] = { { -sin * kOuterRadius, cos * kOuterRadius, 0.0f, 1.0f }, { u, 0.0f  }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 1] = { { -sinNext * kOuterRadius, cosNext * kOuterRadius, 0.0f, 1.0f }, { uNext, 0.0f     }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 2] = { { -sin * kInnerRadius, cos * kInnerRadius, 0.0f, 1.0f }, { u, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 3] = { { -sinNext * kInnerRadius, cosNext * kInnerRadius, 0.0f, 1.0f }, { uNext, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
 	}
 
 	// TextureManagerからGPUハンドルを取得
@@ -258,6 +271,78 @@ void ParticleManager::CreateParticleGroupRing(const std::string name, const std:
 	// 書き込むためのアドレスを取得
 	group->instancingResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&group->instancingData));
 	
+	// 単位行列を書き込んでおく
+	for (uint32_t index = 0; index < kMaxInstance_; index++) {
+		group->instancingData[index].World = Matrix::MakeIdentity4x4();
+		group->instancingData[index].WVP = Matrix::MakeIdentity4x4();
+		group->instancingData[index].color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
+	group->srvIndexForInstancing = srvManager_->Allocate();
+	srvManager_->CreateSRVforStructuredBuffer(group->srvIndexForInstancing, group->instancingResource.Get(), UINT(kMaxInstance_), sizeof(MyBase::ParticleForGPU));
+
+	particleGroups_[name] = std::move(group);
+}
+
+/// パーティクルグループ(Cylinder)の生成
+void ParticleManager::CreateParticleGroupCylinder(const std::string name, const std::string textureFilePath)
+{
+	if (particleGroups_.count(name) != 0) {
+		return;
+	}
+
+	assert(particleGroups_.count(name) == 0 && "ParticleGroup with this name already exists");
+
+	// パーティクルグループの作成と初期化
+	auto group = std::make_unique<ParticleGroup>();
+	// .objの参照しているテクスチャファイル読み込み
+	TextureManager::GetInstance()->LoadTexture(textureFilePath);
+	group->materialData.textureFilePath = textureFilePath;
+
+	group->type = ParticleEmitter::Cylinder;
+
+	group->kNumInstance = 0;
+
+	// 頂点リソースの生成
+	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide));
+
+	// 頂点バッファビューの生成
+	group->vertexBufferView.BufferLocation = group->vertexResource->GetGPUVirtualAddress();
+	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide);
+	group->vertexBufferView.StrideInBytes = sizeof(MyBase::ParticleVertexData);
+	// 頂点リソースに頂点データを書き込む
+	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
+	// テクスチャの頂点
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+
+	// 頂点データを設定
+	for (uint32_t index = 0; index < kCylinderDivide; index++) {
+		float sin = std::sinf(index * kRadianPerDivideCylinder);
+		float cos = std::cosf(index * kRadianPerDivideCylinder);
+		float sinNext = std::sinf((index + 1) * kRadianPerDivideCylinder);
+		float cosNext = std::cosf((index + 1) * kRadianPerDivideCylinder);
+		float u = float(index) / float(kCylinderDivide);
+		float uNext = float(index + 1) / float(kCylinderDivide);
+
+		// position, texcoord, normal
+		group->vertexData[index * 4] = { { -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f }, { u, 0.0f  }, { -sin, 1.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 1] = { { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 2] = { { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		//group->vertexData[index * 4 + 3] = { { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		//group->vertexData[index * 4 + 4] = { { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 3] = { { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+	}
+
+	// TextureManagerからGPUハンドルを取得
+	group->materialData.textureIndex = TextureManager::GetInstance()->GetSrvIndex(textureFilePath);
+
+	// WVP用のリソースを作る。Matrix4x4 1つ分のサイズを用意する
+	group->instancingResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleForGPU) * kMaxInstance_));
+	// 書き込むためのアドレスを取得
+	group->instancingResource.Get()->Map(0, nullptr, reinterpret_cast<void**>(&group->instancingData));
+
 	// 単位行列を書き込んでおく
 	for (uint32_t index = 0; index < kMaxInstance_; index++) {
 		group->instancingData[index].World = Matrix::MakeIdentity4x4();
@@ -285,7 +370,7 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
 		//group.particles.push_back(CreateParticle(randomEngine, position));
-		group.particles.push_back(CreateHitParticle(randomEngine, position, group.type));
+		group.particles.push_back(CreateEstablishmentParticle(randomEngine, position, group.type));
 	}
 }
 
@@ -318,6 +403,16 @@ void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 			indexData_[index * 6 + 5] = index * 4 + 2;
 		}
 	}
+	else if (type == ParticleEmitter::Cylinder) {
+		for (uint32_t index = 0; index < kCylinderDivide; index++) {
+			indexData_[index * 6] = index * 4;
+			indexData_[index * 6 + 1] = index * 4 + 1;
+			indexData_[index * 6 + 2] = index * 4 + 2;
+			indexData_[index * 6 + 3] = index * 4 + 1;
+			indexData_[index * 6 + 4] = index * 4 + 3;
+			indexData_[index * 6 + 5] = index * 4 + 2;
+		}
+	}
 	indexResource_->Unmap(0, nullptr);
 }
 
@@ -334,29 +429,36 @@ MyBase::Particle ParticleManager::CreateMoveParticle(std::mt19937& randomEngine,
 	return particle;
 }
 
-MyBase::Particle ParticleManager::CreateHitParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type)
+MyBase::Particle ParticleManager::CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type)
 {
 	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
 	std::uniform_real_distribution<float> distScale(1.0f, 3.0f);
 
 	MyBase::Particle particle;
 
-	if (type == ParticleEmitter::Box) {
-		// 横に潰し、縦方向の大きさをランダムに入れる
-		particle.transform.scale = { 0.08f, distScale(randomEngine), 1.0f };
-		// ランダムに回転させる
-		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
-		
-	}
-	else if (type == ParticleEmitter::Ring) {
-		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
-		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-	}
 	particle.transform.translate = translate;
 	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
 	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	particle.lifeTime = 1.0f;
 	particle.currentTime = 0;
+
+	if (type == ParticleEmitter::Box) {
+		// 横に潰し、縦方向の大きさをランダムに入れる
+		particle.transform.scale = { 0.08f, distScale(randomEngine), 1.0f };
+		// ランダムに回転させる
+		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
+	}
+	else if (type == ParticleEmitter::Ring) {
+		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
+		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+	}
+	else if (type == ParticleEmitter::Cylinder) {
+		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
+		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+		particle.color = { 0.0f, 0.0f, 1.0f, 1.0f };
+		particle.lifeTime = 2.0f;
+	}
+	
 	randomEngine;
 	return particle;
 }

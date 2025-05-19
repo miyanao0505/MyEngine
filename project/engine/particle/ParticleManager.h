@@ -6,6 +6,8 @@
 #include "numbers"
 #include "MyBase.h"
 
+using namespace std::numbers;
+
 // 前方宣言
 class DirectXBase;
 class SrvManager;
@@ -69,6 +71,13 @@ public:	// メンバ関数
 	void CreateParticleGroupRing(const std::string name, const std::string textureFilePath);
 
 	/// <summary>
+	/// パーティクルグループ(Cylinder)の生成
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <param name="textureFilePath">テクスチャファイルパス</param>
+	void CreateParticleGroupCylinder(const std::string name, const std::string textureFilePath);
+
+	/// <summary>
 	/// パーティクルの発生
 	/// </summary>
 	/// <param name="name"></param>
@@ -93,7 +102,7 @@ private: // ローカル関数
 	/// <returns></returns>
 	MyBase::Particle CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
 
-	MyBase::Particle CreateHitParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+	MyBase::Particle CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 
 private:	// シングルトン
 	static ParticleManager* instance;
@@ -110,14 +119,21 @@ private:	// メンバ変数
 	std::unique_ptr<ParticleBase> particleBase_;
 
 	// 定数
+	// Box用
+	const uint32_t kParticleVertexNum = 4;
 	// Ring用
 	const uint32_t kRingDivide = 32;		// 分割数
 	const float kOuterRadius = 1.0f;		// 外径
 	const float kInnerRadius = 0.2f;		// 内径
-	const float kRadianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
+	const float kRadianPerDivide = 2.0f * pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
+	// Cylinder用
+	const uint32_t kCylinderDivide = 32;	// 分割数
+	const float kTopRadius = 1.0f;			// 上径
+	const float kBottomRadius = 1.0f;		// 下径
+	const float kHeight = 3.0f;				// 高さ
+	const float kRadianPerDivideCylinder = 2.0f * pi_v<float> / float(kCylinderDivide);	// 1つ分の角度(ラジアン)
 	// 描画用
-	const uint32_t kParticleVertexNum = 4;
-	const uint32_t kParticleIndexNum[2] = { 6, 6 * kRingDivide };
+	const uint32_t kParticleIndexNum[3] = { 6, 6 * kRingDivide, 6 * kCylinderDivide };
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
@@ -144,4 +160,3 @@ private:	// メンバ変数
 	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups_;
 
 };
-

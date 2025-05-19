@@ -19,6 +19,9 @@ void ParticleEmitter::Initialize(const std::string name, const std::string textu
 	if (type == Ring) {
 		ParticleManager::GetInstance()->CreateParticleGroupRing(name_, textureFilePath_);
 	}
+	if (type == Cylinder) {
+		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name_, textureFilePath_);
+	}
 }
 
 void ParticleEmitter::Update()

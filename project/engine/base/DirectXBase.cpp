@@ -621,7 +621,7 @@ void DirectXBase::InitializeRenderTargetView()
 	}
 
 	// RenderTextureのRTV生成
-	const MyBase::Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };	// 一目でわかりやすいように赤
+	const MyBase::Vector4 kRenderTargetClearValue{ 0.1f, 0.25f, 0.5f, 1.0f };
 	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kClientWidth, WindowsAPI::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 	// RTVハンドルの取得
 	rtvHandles_[2].ptr = rtvHandles_[1].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
