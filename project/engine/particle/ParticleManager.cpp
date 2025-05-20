@@ -327,12 +327,10 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string name, const 
 		float uNext = float(index + 1) / float(kCylinderDivide);
 
 		// position, texcoord, normal
-		group->vertexData[index * 4] = { { -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f }, { u, 0.0f  }, { -sin, 1.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 1] = { { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 2] = { { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		//group->vertexData[index * 4 + 3] = { { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f }, { -sin, 0.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		//group->vertexData[index * 4 + 4] = { { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 0.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
-		group->vertexData[index * 4 + 3] = { { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f }, { uNext, 1.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4] = { { -sin * kTopRadius, kHeight, cos * kTopRadius, 1.0f }, { u, 1.0f - 0.0f  }, { -sin, 1.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 1] = { { -sinNext * kTopRadius, kHeight, cosNext * kTopRadius, 1.0f }, { uNext, 1.0f - 0.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 2] = { { -sin * kBottomRadius, 0.0f, cos * kBottomRadius, 1.0f }, { u, 1.0f - 1.0f }, { -sin, 0.0f, cos }, { 1.0f, 1.0f, 1.0f, 1.0f } };
+		group->vertexData[index * 4 + 3] = { { -sinNext * kBottomRadius, 0.0f, cosNext * kBottomRadius, 1.0f }, { uNext, 1.0f - 1.0f }, { -sinNext, 0.0f, cosNext }, { 1.0f, 1.0f, 1.0f, 1.0f } };
 	}
 
 	// TextureManagerからGPUハンドルを取得
