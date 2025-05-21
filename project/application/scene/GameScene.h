@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Object3d.h"
 #include "Player.h"
+#include "Skydome.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -50,6 +51,9 @@ private:	// メンバ変数
 
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
+
+	// 天球
+	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// パーティクル
 	std::unique_ptr<ParticleEmitter> particleHitEmitter_ = nullptr;

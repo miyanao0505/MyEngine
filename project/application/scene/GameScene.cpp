@@ -89,6 +89,10 @@ void GameScene::Initialize()
 	// プレイヤー
 	player_.reset(new Player);
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
+
+	// 天球
+	skydome_.reset(new Skydome);
+	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
@@ -500,6 +504,9 @@ void GameScene::Update()
 	// プレイヤーの更新処理
 	player_->Update();
 
+	// 天球の更新
+	skydome_->Update();
+
 	// 3Dオブジェクトの更新処理
 	for (std::unique_ptr<Object3d>& object : objects_)
 	{
@@ -549,6 +556,9 @@ void GameScene::Draw()
 	{
 		object->Draw();
 	}
+
+	// 天球の描画
+	skydome_->Draw();
 
 	// プレイヤーの描画
 	player_->Draw();

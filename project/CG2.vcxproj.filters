@@ -106,6 +106,12 @@
     <Filter Include="ソース ファイル\application\scene">
       <UniqueIdentifier>{1d2a70d4-8b8b-4ef2-8e05-00631938b166}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\skydome">
+      <UniqueIdentifier>{128b797c-8b21-41c4-9d61-9c074ea53093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\skydome">
+      <UniqueIdentifier>{edeb293a-4bae-41ff-a8e0-bfb55e14054b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -230,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="application\scene\GameScene.cpp">
       <Filter>ソース ファイル\application\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\skydome\Skydome.cpp">
+      <Filter>ソース ファイル\application\skydome</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="application\scene\GameOverScene.h">
       <Filter>ヘッダー ファイル\application\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\skydome\Skydome.h">
+      <Filter>ヘッダー ファイル\application\skydome</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
