@@ -44,16 +44,13 @@ void GameOverScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath3_.directoryPath, modelFilePath3_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 3; ++i) {
+	for (uint32_t i = 0; i < 1; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize();
-		object->SetTranslate({ -2.5f + i * 2.5f, 0.0f, 0.0f });
-		object->SetModel(modelFilePath1_.filename);
+		object->Initislize(modelFilePath3_.filename);
+		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
 		objects_.push_back(std::move(object));
 	}
-	objects_[1]->SetModel(modelFilePath2_.filename);
-	objects_[2]->SetModel(modelFilePath3_.filename);
 
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
@@ -96,7 +93,7 @@ void GameOverScene::Update()
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(100, 10), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Title");
+	ImGui::Begin("GameOver");
 	ImGui::End();
 
 	// デモウィンドウの表示オン
@@ -377,10 +374,15 @@ void GameOverScene::Update()
 //	ImGui::End();
 #endif // _DEBUG
 
-	// ENTERキーを押したら
-	if (input_->TriggerKey(DIK_SPACE)) {
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAME");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
 	}
 
 	// 3Dオブジェクトの更新処理

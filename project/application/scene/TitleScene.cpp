@@ -42,18 +42,21 @@ void TitleScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath1_.directoryPath, modelFilePath1_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath2_.directoryPath, modelFilePath2_.filename);
 	ModelManager::GetInstance()->LoadModel(modelFilePath3_.directoryPath, modelFilePath3_.filename);
+	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
+	ModelManager::GetInstance()->LoadModel(modelFilePath5_.directoryPath, modelFilePath5_.filename);
+	ModelManager::GetInstance()->LoadModel(modelFilePath6_.directoryPath, modelFilePath6_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 3; ++i) {
+	for (uint32_t i = 0; i < 2; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize(modelFilePath1_.filename);
-		object->SetTranslate({ -2.5f + i * 2.5f, 0.0f, 0.0f });
-		//object->SetModel(modelFilePath1_.filename);
+		object->Initislize(modelFilePath6_.filename);
+		object->SetTranslate({ 0.0f, 0.0f, 0.0f });
 		objects_.push_back(std::move(object));
 	}
-	objects_[1]->SetModel(modelFilePath2_.filename);
-	objects_[2]->SetModel(modelFilePath3_.filename);
+	objects_[1]->SetModel(modelFilePath4_.filename);
+	objects_[1]->SetTexture(filePath2_);
+	objects_[1]->SetTranslate({ 0.0f, 1.5f, 0.0f });
 
 	// パーティクル
 	particleEmitter_.reset(new ParticleEmitter);
@@ -377,10 +380,15 @@ void TitleScene::Update()
 //	ImGui::End();
 #endif // _DEBUG
 
-	// ENTERキーを押したら
-	if (input_->TriggerKey(DIK_SPACE)) {
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene("GAME");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
 	}
 
 	// 3Dオブジェクトの更新処理

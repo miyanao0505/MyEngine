@@ -23,9 +23,9 @@ void Player::Initialize(MyBase::Vector3 position)
 	SetCollisionMask(0x00000001);
 	// モデルの初期化
 	object_ = std::make_unique<Object3d>();
-	object_->Initislize();
+	object_->Initislize("sphere.obj");
+	object_->SetTexture("resources/monsterBall.png");
 	object_->SetTranslate(position);
-	object_->SetModel("sphere.obj");
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });
 }
 

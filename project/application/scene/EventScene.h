@@ -38,6 +38,7 @@ private:	// メンバ変数
 	MyBase::ModelFilePath modelFilePath1_ = { {"resources/plane"}, {"plane.obj"} };
 	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
 	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
+	MyBase::ModelFilePath modelFilePath4_ = { {"resources/terrain"}, {"terrain.obj"} };
 
 	// 3Dオブジェクト
 	std::vector<std::unique_ptr<Object3d>> objects_;

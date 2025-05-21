@@ -117,7 +117,7 @@ void GameScene::Initialize()
 	isParticleActive_ = true;
 	particleHitEmitter_->SetIsEmitUpdate(false);
 	particleRingEmitter_->SetIsEmitUpdate(false);
-	particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
+	particleCylinderEmitter_->SetIsEmitUpdate(false);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -450,10 +450,20 @@ void GameScene::Update()
 
 #endif // _DEBUG
 
-	// SPACEキーを押したら
-	if (input_->TriggerKey(DIK_SPACE)) {
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene("CLEAR");
+	}
+	// Mキーを押したら
+	if (input_->TriggerKey(DIK_M)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
 	}
 
 	// Pキーを押したら
