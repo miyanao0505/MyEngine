@@ -31,6 +31,8 @@ private:	// メンバ変数
 	std::string filePath2_ = { "resources/monsterBall.png" };
 	//std::string filePath3_ = { "resources/fence.png" };
 	//std::string filePath4_ = { "resources/circle.png" };
+	std::string filePath5_ = { "resources/ground.png" };
+	std::string filePath6_ = { "resources/grass.png" };
 
 	// スプライト
 	std::vector<std::unique_ptr<Sprite>> sprites_;
@@ -40,6 +42,8 @@ private:	// メンバ変数
 	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
 	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
 	MyBase::ModelFilePath modelFilePath4_ = { {"resources/sphere"}, {"sphere.obj"} };
+	MyBase::ModelFilePath modelFilePath5_ = { {"resources/ground"}, {"ground.obj"} };
+	MyBase::ModelFilePath modelFilePath6_ = { {"resources/terrain"}, {"terrain.obj"} };
 
 	// 3Dオブジェクト
 	std::vector<std::unique_ptr<Object3d>> objects_;
@@ -48,7 +52,9 @@ private:	// メンバ変数
 	std::unique_ptr<Player> player_ = nullptr;
 
 	// パーティクル
-	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleHitEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleRingEmitter_ = nullptr;
+	std::unique_ptr<ParticleEmitter> particleCylinderEmitter_ = nullptr;
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;

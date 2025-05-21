@@ -10,7 +10,7 @@ void MNFramework::Initialize()
 #pragma region ゲームウィンドウ作成
 	// WindowsAPIの初期化
 	winApi_.reset(new WindowsAPI());
-	winApi_->Initialize(L"GE3");
+	winApi_->Initialize(L"CG5");
 #pragma endregion ゲームウィンドウ作成
 
 #pragma region DirectX初期化
@@ -29,30 +29,22 @@ void MNFramework::Initialize()
 	// SRVマネージャーの初期化
 	srvManager_.reset(new SrvManager());
 	srvManager_->Initialize(dxBase_.get());
-#pragma endregion 基盤システム初期化
 
-#pragma region マネージャ初期化
 #ifdef _DEBUG
-#pragma region ImGui初期化
 	// ImGuiManagerの初期化
 	imGuiManager_.reset(new ImGuiManager());
 	imGuiManager_->Initialize(winApi_.get(), dxBase_.get(), srvManager_.get());
-#pragma endregion
 #endif // _DEBUG
+
+	// オフスクリーンの作成
+	offScreen_.reset(new OffScreen());
+	offScreen_->Initialize(dxBase_.get());
+	dxBase_->CreateOffScreenSRV(srvManager_.get());
+#pragma endregion 基盤システム初期化
 
 	// カメラマネージャの初期化
 	cameraManager_ = CameraManager::GetInstance();
 	cameraManager_->Initialize();
-	cameraManager_->SetCamera("default");
-	cameraManager_->FindCamera("default");
-	cameraManager_->GetCamera()->SetRotate({ 0.3f, 0.0f, 0.0f });
-	cameraManager_->GetCamera()->SetTranslate({ 0.0f, 4.0f, -10.0f });
-	cameraManager_->SetCamera("sub");
-	cameraManager_->FindCamera("sub");
-	cameraManager_->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
-	cameraManager_->GetCamera()->SetTranslate({ 0.0f, 4.0f, 10.0f });
-
-	cameraManager_->FindCamera("default");
 
 	// ライトマネージャの初期化
 	lightManager_ = LightManager::GetInstance();
@@ -117,7 +109,6 @@ void MNFramework::Update()
 #ifdef _DEBUG
 	imGuiManager_->Begin();
 #endif // _DEBUG
-
 	// シーンマネージャの更新処理
 	sceneManager_->Update();
 	

@@ -8,10 +8,11 @@
 #include "LightManager.h"
 
 // 初期化
-void Object3d::Initislize()
+void Object3d::Initislize(const std::string& filePath)
 {
 	// メンバ変数に記録する
 	object3dBase_ = ModelManager::GetInstance()->GetObject3dBase();
+	SetModel(filePath);
 
 	// 座標変換行列データの作成
 	CreateTransformationMatrixData();
@@ -24,6 +25,9 @@ void Object3d::Initislize()
 
 	// Transform変数を作る
 	transform_ = { { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
+
+	// Texture
+	textureFileName_ = model_->GetTexture();
 }
 
 // 更新処理
@@ -56,6 +60,7 @@ void Object3d::Draw()
 
 	// 3Dモデルが割り当てられていれば描画する
 	if (model_) {
+		model_->SetTexture(textureFileName_);
 		model_->Draw();
 	}
 }
@@ -64,6 +69,11 @@ void Object3d::SetModel(const std::string& filePath)
 {
 	// モデルを検索してセットする
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
+}
+
+void Object3d::SetTexture(const std::string& filename)
+{
+	textureFileName_ = filename;
 }
 
 // 座標変換行列データ作成

@@ -1,8 +1,12 @@
 #pragma once
 #include <map>
 #include "ParticleBase.h"
+#include "ParticleEmitter.h"
 #include "random"
+#include "numbers"
 #include "MyBase.h"
+
+using namespace std::numbers;
 
 // 前方宣言
 class DirectXBase;
@@ -22,6 +26,7 @@ public:	// パーティクルグループ構造体
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;						// バッファリソースの使い道を補足するバッファビュー
 		MyBase::ParticleVertexData* vertexData = nullptr;				// バッファリソース内のデータを指すポインタ
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
+		ParticleEmitter::ParticleType type;
 	};
 
 public:	// メンバ関数
@@ -39,6 +44,12 @@ public:	// メンバ関数
 	// 描画
 	void Draw();
 
+#ifdef _DEBUG
+	// Imgui
+	void Imgui();
+#endif // _DEBUG
+
+
 	/// <summary>
 	/// ブレンドモード変更
 	/// </summary>
@@ -49,8 +60,22 @@ public:	// メンバ関数
 	/// パーティクルグループの生成
 	/// </summary>
 	/// <param name="name">名前</param>
-	/// <param name="textureFilePath"></param>
+	/// <param name="textureFilePath">テクスチャファイルパス</param>
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
+
+	/// <summary>
+	/// パーティクルグループ(Ring)の生成
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <param name="textureFilePath">テクスチャファイルパス</param>
+	void CreateParticleGroupRing(const std::string name, const std::string textureFilePath);
+
+	/// <summary>
+	/// パーティクルグループ(Cylinder)の生成
+	/// </summary>
+	/// <param name="name">名前</param>
+	/// <param name="textureFilePath">テクスチャファイルパス</param>
+	void CreateParticleGroupCylinder(const std::string name, const std::string textureFilePath);
 
 	/// <summary>
 	/// パーティクルの発生
@@ -60,8 +85,13 @@ public:	// メンバ関数
 	/// <param name="count"></param>
 	void Emit(const std::string name, const MyBase::Vector3& position, uint32_t count);
 
+	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+
 public:	// getter
-	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups; }
+	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
+
+public:	// setter
+	
 
 private: // ローカル関数
 	/// <summary>
@@ -70,7 +100,9 @@ private: // ローカル関数
 	/// <param name="randomEngine"></param>
 	/// <param name="position"></param>
 	/// <returns></returns>
-	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
+	MyBase::Particle CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
+
+	MyBase::Particle CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 
 private:	// シングルトン
 	static ParticleManager* instance;
@@ -87,8 +119,21 @@ private:	// メンバ変数
 	std::unique_ptr<ParticleBase> particleBase_;
 
 	// 定数
+	// Box用
 	const uint32_t kParticleVertexNum = 4;
-	const uint32_t kParticleIndexNum = 6;
+	// Ring用
+	const uint32_t kRingDivide = 32;		// 分割数
+	const float kOuterRadius = 1.0f;		// 外径
+	const float kInnerRadius = 0.2f;		// 内径
+	const float kRadianPerDivide = 2.0f * pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
+	// Cylinder用
+	const uint32_t kCylinderDivide = 32;	// 分割数
+	const float kTopRadius = 1.0f;			// 上径
+	const float kBottomRadius = 1.0f;		// 下径
+	const float kHeight = 3.0f;				// 高さ
+	const float kRadianPerDivideCylinder = 2.0f * pi_v<float> / float(kCylinderDivide);	// 1つ分の角度(ラジアン)
+	// 描画用
+	const uint32_t kParticleIndexNum[3] = { 6, 6 * kRingDivide, 6 * kCylinderDivide };
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
@@ -98,6 +143,8 @@ private:	// メンバ変数
 
 	// バッファリソースの使い道を遅くするバッファビュー
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	uint32_t particleIndexSize_ = 0;	// インデックスリソースのサイズ
 
 	// インスタンスの最大数
 	uint32_t kMaxInstance_ = 1000;
@@ -110,7 +157,6 @@ private:	// メンバ変数
 	const float kDelTime_ = 1.0f / 60.0f;
 
 	// パーティクルデータ
-	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups;
+	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups_;
 
 };
-
