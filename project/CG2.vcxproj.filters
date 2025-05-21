@@ -349,6 +349,12 @@
     <FxCompile Include="resources\shaders\GaussianFilter.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\LuminanceBasedOutline.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\DepthBasedOutline.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">

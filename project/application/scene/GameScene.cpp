@@ -68,25 +68,26 @@ void GameScene::Initialize()
 	ModelManager::GetInstance()->LoadModel(modelFilePath6_.directoryPath, modelFilePath6_.filename);
 
 	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 1; ++i) {
+	for (uint32_t i = 0; i < 2; ++i) {
 		// 3Dオブジェクトの初期化
 		std::unique_ptr<Object3d> object(new Object3d);
 		object->Initislize(modelFilePath1_.filename);
-		object->SetTranslate({ -3.0f + 6.0f * i, 1.5f, 0.0f });
+		//object->SetTranslate({ -3.0f + 6.0f * i, 1.5f, 0.0f });
 		// お試し用設定
 		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
 		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
 		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{0.0f}, .radius{5.0f}, .decay{1.0f}};
 		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
+		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{1.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
 		LightManager::GetInstance()->SetSpotLight(spotLight);
 		objects_.push_back(std::move(object));
 	}
-	//objects_[1]->SetModel(modelFilePath2_.filename);
-	//objects_[2]->SetModel(modelFilePath3_.filename);
 	objects_[0]->SetModel(modelFilePath6_.filename);
 	objects_[0]->SetTexture(filePath6_);
 	objects_[0]->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	objects_[1]->SetModel(modelFilePath4_.filename);
+	objects_[1]->SetTexture(filePath2_);
+	objects_[1]->SetTranslate({ 0.0f, 1.5f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
