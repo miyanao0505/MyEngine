@@ -1,7 +1,7 @@
 #include "ParticleBase.h"
 
 // 初期化
-void ParticleBase::Initislize(DirectXBase* dxBase)
+void ParticleBase::initialize(DirectXBase* dxBase)
 {
 	// 引数で受け取ってメンバ変数に記録する
 	dxBase_ = dxBase;
