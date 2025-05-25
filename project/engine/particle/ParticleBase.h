@@ -19,7 +19,7 @@ public:	// 列挙型
 	};
 public:	// メンバ関数
 	// 初期化
-	void Initislize(DirectXBase* dxBase);
+	void initialize(DirectXBase* dxBase);
 	// ルートシグネチャの作成
 	void CreateRootSignature();
 	// グラフィックスパイプラインの生成

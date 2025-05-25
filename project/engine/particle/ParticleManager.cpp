@@ -34,7 +34,7 @@ void ParticleManager::Initialize(DirectXBase* dxBase, SrvManager* srvManager)
 	srvManager_ = srvManager;
 
 	particleBase_ = std::make_unique_for_overwrite<ParticleBase>();
-	particleBase_->Initislize(dxBase_);
+	particleBase_->initialize(dxBase_);
 
 	// ランダムエンジンの初期化
 	std::random_device seedGenerator;
