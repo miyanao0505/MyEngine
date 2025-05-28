@@ -64,9 +64,25 @@ void ParticleEmitter::Imgui()
 		}
 		// 連続発生
 		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate_);
+		// ビルボード設定
+		bool isBillboard = GetIsBillboard(name_);
+		ImGui::Checkbox("IsBillboard", &isBillboard);
+		if (isBillboard != GetIsBillboard(name_)) {
+			SetBillboard(name_, isBillboard);
+		}
 		ImGui::PopID();
 	}
 	ImGui::End();
 }
 
 #endif // _DEBUG
+
+bool ParticleEmitter::GetIsBillboard(std::string name)
+{
+	return ParticleManager::GetInstance()->GetIsBillboard(name);
+}
+
+void ParticleEmitter::SetBillboard(std::string name, bool isBillboard)
+{
+	ParticleManager::GetInstance()->SetIsBillboard(name, isBillboard);
+}

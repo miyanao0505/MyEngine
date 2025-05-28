@@ -34,6 +34,7 @@ public:	// getter
 	uint32_t GetCount() { return count_; }
 	float GetFrequency() { return frequency_; }
 	bool GetIsEmitUpdate() { return isEmitUpdate_; }
+	bool GetIsBillboard(std::string name);
 
 public:	// setter
 	void SetPosition(const MyBase::Vector3& position) { transform_.translate = position; }
@@ -42,6 +43,7 @@ public:	// setter
 	void SetCount(uint32_t count) { count_ = count; }
 	void SetFrequency(float frequency) { frequency_ = frequency; }
 	void SetIsEmitUpdate(bool isEmitUpdate) { isEmitUpdate_ = isEmitUpdate; }
+	void SetBillboard(std::string name, bool isBillboard);
 
 private:	// メンバ変数
 	std::string name_;
