@@ -27,6 +27,7 @@ public:	// パーティクルグループ構造体
 		MyBase::ParticleVertexData* vertexData = nullptr;				// バッファリソース内のデータを指すポインタ
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
 		ParticleEmitter::ParticleType type;
+		bool isBillboard;	// ビルボードかどうか
 	};
 
 public:	// メンバ関数
@@ -89,9 +90,10 @@ public:	// メンバ関数
 
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
+	bool GetIsBillboard(const std::string& name);
 
 public:	// setter
-	
+	void SetIsBillboard(const std::string& name, bool isBillboard);
 
 private: // ローカル関数
 	/// <summary>
