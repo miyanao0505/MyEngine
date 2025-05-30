@@ -57,6 +57,38 @@ public:
 	};
 
 	/// <summary>
+	/// 範囲
+	/// </summary>
+	struct ScopeI {
+		uint32_t min;		// 最小値
+		uint32_t max;		// 最大値
+	};
+
+	/// <summary>
+	/// 範囲
+	/// </summary>
+	struct ScopeF {
+		float min;		// 最小値
+		float max;		// 最大値
+	};
+
+	/// <summary>
+	/// 範囲2D
+	/// </summary>
+	struct Scope2D {
+		Vector2 min;	// 最小値
+		Vector2 max;	// 最大値
+	};
+
+	/// <summary>
+	/// 範囲3D
+	/// </summary>
+	struct Scope3D {
+		Vector3 min;	// 最小値
+		Vector3 max;	// 最大値
+	};
+
+	/// <summary>
 	/// 円
 	/// </summary>
 	struct Ball {
