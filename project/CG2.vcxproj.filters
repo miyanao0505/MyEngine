@@ -112,6 +112,12 @@
     <Filter Include="ヘッダー ファイル\application\skydome">
       <UniqueIdentifier>{edeb293a-4bae-41ff-a8e0-bfb55e14054b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\enemy">
+      <UniqueIdentifier>{ed87e9b8-f000-44a4-8e40-0ff1393e82cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\enemy">
+      <UniqueIdentifier>{fdece29b-5092-4e5a-9a54-6241f75d0196}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -239,6 +245,9 @@
     </ClCompile>
     <ClCompile Include="application\skydome\Skydome.cpp">
       <Filter>ソース ファイル\application\skydome</Filter>
+    </ClCompile>
+    <ClCompile Include="application\enemy\Enemy.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="application\skydome\Skydome.h">
       <Filter>ヘッダー ファイル\application\skydome</Filter>
+    </ClInclude>
+    <ClInclude Include="application\enemy\Enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

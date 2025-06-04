@@ -6,6 +6,11 @@
 
 Player::Player()
 {
+	// プレイヤーの初期化
+	hp_ = 100;
+	isDead_ = false;
+	SetCollisionAttribute(0x00000001); // コリジョン属性
+	SetCollisionMask(0x00000001); // コリジョンマスク
 }
 
 /// デストラクタ

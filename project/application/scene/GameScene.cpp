@@ -34,6 +34,10 @@ void GameScene::Initialize()
 	player_.reset(new Player);
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
 
+	// 敵
+	enemy_.reset(new Enemy);
+	enemy_->Initialize();
+
 	// 天球
 	skydome_.reset(new Skydome);
 	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
@@ -430,6 +434,9 @@ void GameScene::Update()
 	// プレイヤーの更新処理
 	player_->Update();
 
+	// 敵の更新処理
+	enemy_->Update();
+
 	// 天球の更新
 	skydome_->Update();
 
@@ -468,6 +475,9 @@ void GameScene::Draw()
 	// 全ての3DObject個々の描画
 	// 天球の描画
 	skydome_->Draw();
+
+	// 敵の描画
+	enemy_->Draw();
 
 	// プレイヤーの描画
 	player_->Draw();
