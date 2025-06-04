@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Input.h"
+#include "ModelManager.h"
 #include "MyTools.h"
 #include "imgui.h"
 
@@ -22,9 +23,11 @@ void Player::Initialize(MyBase::Vector3 position)
 	SetCollisionAttribute(0x00000001);
 	SetCollisionMask(0x00000001);
 	// モデルの初期化
+	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
+	
 	object_ = std::make_unique<Object3d>();
 	object_->Initislize("sphere.obj");
-	object_->SetTexture("resources/monsterBall.png");
+	//object_->SetTexture("monsterBall.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });
 }

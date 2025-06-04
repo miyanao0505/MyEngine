@@ -26,24 +26,19 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = { "resources/uvChecker.png" };
-	std::string filePath2_ = { "resources/monsterBall.png" };
-	//std::string filePath3_ = { "resources/fence.png" };
-	//std::string filePath4_ = { "resources/circle.png" };
+	std::string clearTextureFilePath_ = "resources/texture/Clear.png";	// クリアテクスチャ
 
 	// スプライト
-	std::vector<std::unique_ptr<Sprite>> sprites_;
+	std::unique_ptr<Sprite> clearSprite_ = nullptr;	// クリアスプライト
 
 	// モデルファイルパス
-	MyBase::ModelFilePath modelFilePath1_ = { {"resources/plane"}, {"plane.obj"} };
-	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
-	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
+	
 
 	// 3Dオブジェクト
-	std::vector<std::unique_ptr<Object3d>> objects_;
+	
 
 	// パーティクル
-	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;
