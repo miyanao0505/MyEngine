@@ -91,12 +91,13 @@ void OffScreen::CreateGraphicsPipeline()
 	ComPtr<IDxcBlob> vertexShaderBlob = dxBase_->CompileShader(L"resources/Shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob != nullptr);
 
-	ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/CopyImage.PS.hlsl", L"ps_6_0");
+	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/CopyImage.PS.hlsl", L"ps_6_0");
 	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/Grayscale.PS.hlsl", L"ps_6_0");
 	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/Vignette.PS.hlsl", L"ps_6_0");
 	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/BoxFilter.PS.hlsl", L"ps_6_0");
 	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/LinearFilter.PS.hlsl", L"ps_6_0");
 	//ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/GaussianFilter.PS.hlsl", L"ps_6_0");
+	ComPtr<IDxcBlob> pixelShaderBlob = dxBase_->CompileShader(L"resources/Shaders/LuminanceBasedOutline.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob != nullptr);
 
 	// RasiterzerStateの設定
@@ -133,6 +134,14 @@ void OffScreen::CreateGraphicsPipeline()
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	// 全画面に対してなにか処理をほどこしたいだけだから、比較も書き込みも必要ないのでDepth自体不要
 	depthStencilDesc.DepthEnable = false;
+	// Depth用のSRVの作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
+	// DXGI_FORMAT_D24_UNORM_S8_UINTのDepthを読むときはDXGI_R24_UNORM_X8_TYPELESS
+	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;		// Depthのフォーマット
+	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;	// シェーダーのコンポーネントマッピング
+	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;	// 2Dテクスチャ
+	depthTextureSrvDesc.Texture2D.MipLevels = 1;
+	
 	// DepthStencilの設定
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
 	graphicsPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
