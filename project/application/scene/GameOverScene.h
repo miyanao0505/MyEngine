@@ -8,7 +8,7 @@
 #include "MyBase.h"
 
 // タイトルシーン
-class TitleScene : public BaseScene
+class GameOverScene : public BaseScene
 {
 public:	// メンバ関数
 	// 初期化
@@ -26,10 +26,10 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string titleTextureFilePath_ = "resources/texture/Title.png";	// タイトルテクスチャ
+	std::string gameOverTextureFilePath_ = "resources/texture/Gameover.png";	// ゲームオーバーテクスチャ
 
 	// スプライト
-	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
+	std::unique_ptr<Sprite> gameOverSprite_ = nullptr;	// ゲームオーバースプライト
 
 	// モデルファイルパス
 	

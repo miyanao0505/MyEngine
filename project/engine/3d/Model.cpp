@@ -64,7 +64,7 @@ MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& director
 			std::string textureFilename;
 			s >> textureFilename;
 			// 連結してファイルパスにする
-			materialData.textureFilePath = "resources/" + textureFilename;
+			materialData.textureFilePath = "resources/texture/" + textureFilename;
 		}
 	}
 
@@ -114,7 +114,7 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			std::string directoryFilePath = "resources";
+			std::string directoryFilePath = "resources/texture";
 			modelData_.material.textureFilePath = directoryFilePath + "/" + textureFilePath.C_Str();
 		}
 	}

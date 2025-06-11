@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "GameOverScene.h"
 #include <imgui.h>
 #include "CameraManager.h"
 #include "ModelManager.h"
@@ -8,18 +8,18 @@
 #include "MyTools.h"
 
 // 初期化
-void TitleScene::Initialize()
+void GameOverScene::Initialize()
 {
 	BaseScene::Initialize();
 
 #pragma region シーン初期化
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
+	TextureManager::GetInstance()->LoadTexture(gameOverTextureFilePath_);
 
 	// スプライト
-	titleSprite_.reset(new Sprite);
-	titleSprite_->Initialize(titleTextureFilePath_);
-	titleSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
+	gameOverSprite_.reset(new Sprite);
+	gameOverSprite_->Initialize(gameOverTextureFilePath_);
+	gameOverSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 	// .objファイルからモデルを読み込む
 	
@@ -42,18 +42,19 @@ void TitleScene::Initialize()
 }
 
 // 終了
-void TitleScene::Finalize()
+void GameOverScene::Finalize()
 {
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
 	
+
 	// スプライト
-	titleSprite_.reset();
+	gameOverSprite_.reset();
 }
 
 // 毎フレーム更新
-void TitleScene::Update()
+void GameOverScene::Update()
 {
 	BaseScene::Update();
 
@@ -61,7 +62,7 @@ void TitleScene::Update()
 	// Nキーを押したら
 	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAME");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 	// Bキーを押したら
 	if (input_->TriggerKey(DIK_B)) {
@@ -73,10 +74,13 @@ void TitleScene::Update()
 	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Title Scene");
-	ImGui::Text("N key : gameScene");
+	ImGui::Begin("GameOver");
+	ImGui::Text("N key : titleScene");
 	ImGui::Text("B key : eventScene");
 	ImGui::End();
+
+	// デモウィンドウの表示オン
+	//ImGui::ShowDemoWindow();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
@@ -104,11 +108,11 @@ void TitleScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	titleSprite_->Update();
+	gameOverSprite_->Update();
 }
 
 // 描画
-void TitleScene::Draw()
+void GameOverScene::Draw()
 {
 #pragma region 3Dオブジェクト
 
@@ -133,7 +137,7 @@ void TitleScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	titleSprite_->Draw();
+	gameOverSprite_->Draw();
 
 #pragma endregion スプライト
 

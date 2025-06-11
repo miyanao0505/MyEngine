@@ -16,106 +16,45 @@ void GameScene::Initialize()
 {
 	BaseScene::Initialize();
 
-#pragma region カメラ
-	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->FindCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.4f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
-	CameraManager::GetInstance()->SetCamera("sub");
-	CameraManager::GetInstance()->FindCamera("sub");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 4.0f, 10.0f });
-
-	CameraManager::GetInstance()->FindCamera("default");
-#pragma endregion
-
 #pragma region スプライト
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(filePath1_);
-	TextureManager::GetInstance()->LoadTexture(filePath2_);
-	//TextureManager::GetInstance()->LoadTexture(filePath3_);
-	//TextureManager::GetInstance()->LoadTexture(filePath4_);
-	TextureManager::GetInstance()->LoadTexture(filePath5_);
-	TextureManager::GetInstance()->LoadTexture(filePath6_);
+	TextureManager::GetInstance()->LoadTexture(gameTextureFilePath_);
 
 	// スプライト
-	for (uint32_t i = 0; i < 5; ++i)
-	{
-		// スプライトの初期化
-		std::unique_ptr<Sprite> sprite(new Sprite());
-		sprite->Initialize(filePath1_);
-		sprite->SetPosition({ 200.0f * float(i), 100.0f });
-		sprite->SetSize({ 100.f, 100.f });
-		sprite->SetAnchorPoint({ 0.0f, 0.0f });
-		sprite->SetIsFlipX(false);
-		sprite->SetIsFlipY(false);
-		sprites_.push_back(std::move(sprite));
-	}
-
-	sprites_[1]->SetTexture(filePath2_);
-	sprites_[1]->SetSize({ 100.0f, 100.0f });
-	sprites_[3]->SetTexture(filePath2_);
-	sprites_[3]->SetSize({ 100.0f, 100.0f });
+	gameSprite_.reset(new Sprite);
+	gameSprite_->Initialize(gameTextureFilePath_);
+	gameSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel(modelFilePath1_.directoryPath, modelFilePath1_.filename);
-	ModelManager::GetInstance()->LoadModel(modelFilePath2_.directoryPath, modelFilePath2_.filename);
-	ModelManager::GetInstance()->LoadModel(modelFilePath3_.directoryPath, modelFilePath3_.filename);
-	ModelManager::GetInstance()->LoadModel(modelFilePath4_.directoryPath, modelFilePath4_.filename);
-	ModelManager::GetInstance()->LoadModel(modelFilePath5_.directoryPath, modelFilePath5_.filename);
-	ModelManager::GetInstance()->LoadModel(modelFilePath6_.directoryPath, modelFilePath6_.filename);
+	
 
-	// 3Dオブジェクト
-	for (uint32_t i = 0; i < 1; ++i) {
-		// 3Dオブジェクトの初期化
-		std::unique_ptr<Object3d> object(new Object3d);
-		object->Initislize(modelFilePath1_.filename);
-		object->SetTranslate({ -3.0f + 6.0f * i, 1.5f, 0.0f });
-		// お試し用設定
-		MyBase::DirectionalLight directionalLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .direction{0.0f, 0.0f, 0.0f}, .intensity{1.0f} };
-		LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-		MyBase::PointLight pointLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position=object->GetTranslate(), .intensity{0.0f}, .radius{5.0f}, .decay{1.0f}};
-		LightManager::GetInstance()->SetPointLight(pointLight);
-		MyBase::SpotLight spotLight{ .color{1.0f, 1.0f, 1.0f, 1.0f}, .position{0.0f, 3.0f, 0.0f}, .intensity{0.0f}, .direction{MyTools::Normalize({ 0.0f, -1.0f, 0.0f })}, .distance{7.0f}, .decay{1.0f}, .cosAngle{std::cosf(std::numbers::pi_v<float> / 3.0f)} };
-		LightManager::GetInstance()->SetSpotLight(spotLight);
-		objects_.push_back(std::move(object));
-	}
-	//objects_[1]->SetModel(modelFilePath2_.filename);
-	//objects_[2]->SetModel(modelFilePath3_.filename);
-	objects_[0]->SetModel(modelFilePath6_.filename);
-	objects_[0]->SetTexture(filePath6_);
-	objects_[0]->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	// プレイヤー
+	player_.reset(new Player);
+	player_->Initialize({ 0.0f, 0.0f, 0.0f });
+
+	// 天球
+	skydome_.reset(new Skydome);
+	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
-	particleHitEmitter_.reset(new ParticleEmitter);
-	particleHitEmitter_->Initialize("hitEffect", "resources/circle.png", ParticleEmitter::Box);
-	particleHitEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
-	particleRingEmitter_.reset(new ParticleEmitter);
-	particleRingEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
-	particleRingEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
-	particleRingEmitter_->SetCount(1);
-	particleCylinderEmitter_.reset(new ParticleEmitter);
-	particleCylinderEmitter_->Initialize("Cylinder", "resources/gradationLine.png", ParticleEmitter::Cylinder);
-	particleCylinderEmitter_->SetPosition({ 0.0f, 0.0f, 0.0f });
-	particleCylinderEmitter_->SetCount(1);
+	/*particleEmitter_.reset(new ParticleEmitter);
+	particleEmitter_->Initialize("circle", "resources/circle.png");*/
 #pragma endregion パーティクル
 
 #pragma region オーディオ
 	// BGM
 
 	// お試し用
-	AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
+	AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
 #pragma endregion オーディオ
 
 #pragma region 変数
 	isParticleActive_ = true;
-	particleHitEmitter_->SetIsEmitUpdate(false);
-	particleRingEmitter_->SetIsEmitUpdate(false);
-	particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
+	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -128,15 +67,9 @@ void GameScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	for (std::unique_ptr<Object3d>& object : objects_)
-	{
-		object.reset();
-	}
+	
 	// スプライト
-	for (std::unique_ptr<Sprite>& sprite : sprites_)
-	{
-		sprite.reset();
-	}
+	gameSprite_.reset();
 }
 
 // 毎フレーム更新
@@ -145,29 +78,76 @@ void GameScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Qキーを押したら
-	if (input_->TriggerKey(DIK_Q)) {
-		// お試しの音を解放する
-		AudioManager::GetInstance()->UnLoadAudio("fanfare.wav");
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("CLEAR");
 	}
-	// Rキーを押したら
-	if (input_->TriggerKey(DIK_R)) {
-		// お試しの音をロードする
-		AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
+	// Mキーを押したら
+	if (input_->TriggerKey(DIK_M)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
+	}
+	
+	// Pキーを押したら
+	if (input_->TriggerKey(DIK_P)) {
+		// パーティクル描画フラグのOn / Off
+		//isParticleActive_ = particleEmitter_->GetIsEmitUpdate();
+		isParticleActive_ = !isParticleActive_;
+		//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
+	}
+	// Oキーを押したら
+	if (input_->TriggerKey(DIK_O)) {
+		// アクセラレーションのOn / Off
+		isAccelerationField_ = !isAccelerationField_;
 	}
 
-//	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	// Kキーを押したら
+	if (input_->TriggerKey(DIK_K)) {
+		// お試しの音を鳴らす
+		AudioManager::GetInstance()->PlayWave("audio/fanfare.wav");
+	}
+	// Uキーを押したら
+	if (input_->TriggerKey(DIK_U)) {
+		// お試しの音を解放する
+		AudioManager::GetInstance()->UnLoadAudio("audio/fanfare.wav");
+	}
+	// Lキーを押したら
+	if (input_->TriggerKey(DIK_L)) {
+		// お試しの音をロードする
+		AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
+	}
+
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Game");
+	ImGui::Text("N key : clearScene");
+	ImGui::Text("M key : gameOverScene");
+	ImGui::Text("B key : eventScene");
+	ImGui::Text("\n");
+	ImGui::Text("P key : particle On / Off");
+	ImGui::Text("O key : acceleration On / Off");
+	ImGui::Text("\n");
+	ImGui::Text("K key : sampleAudio Play");
+	ImGui::Text("U key : sampleAudio UnLoad");
+	ImGui::Text("L key : sampleAudio Load");
+	ImGui::End();
+
 
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
-//
-//	ImGui::Begin("Settings");
-//
-
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	
+	ImGui::Begin("Settings");
 	// カメラ
 	if (ImGui::CollapsingHeader("Camera"))
 	{
@@ -206,6 +186,8 @@ void GameScene::Update()
 
 		ImGui::Text("\n");
 	}
+
+	player_->DebugDraw();
 
 	// スプライト
 //	if (ImGui::CollapsingHeader("Sprite"))
@@ -318,34 +300,32 @@ void GameScene::Update()
 			}
 		}*/
 
-		for (std::unique_ptr<Object3d>& object : objects_)
-		{
-			ImGui::PushID(object.get());
-			if (ImGui::CollapsingHeader("Object"))
-			{
-				MyBase::Transform transform{ object->GetScale(), object->GetRotate(), object->GetTranslate() };
+		//for (std::unique_ptr<Object3d>& object : objects_)
+		//{
+		//	ImGui::PushID(object.get());
+		//	if (ImGui::CollapsingHeader("Object"))
+		//	{
+		//		MyBase::Transform transform{ object->GetScale(), object->GetRotate(), object->GetTranslate() };
 
-				// 移動
-				ImGui::SliderFloat3("Translate", &transform.translate.x, -5.0f, 5.0f);
-				object->SetTranslate(transform.translate);
-				// 回転
-				ImGui::SliderFloat3("Rotate", &transform.rotate.x, -3.14f, 3.14f);
-				object->SetRotate(transform.rotate);
-				// 拡縮
-				ImGui::SliderFloat3("Scale", &transform.scale.x, 0.0f, 3.0f);
-				object->SetScale(transform.scale);
-			}
-			ImGui::PopID();
-		}
+		//		// 移動
+		//		ImGui::SliderFloat3("Translate", &transform.translate.x, -5.0f, 5.0f);
+		//		object->SetTranslate(transform.translate);
+		//		// 回転
+		//		ImGui::SliderFloat3("Rotate", &transform.rotate.x, -3.14f, 3.14f);
+		//		object->SetRotate(transform.rotate);
+		//		// 拡縮
+		//		ImGui::SliderFloat3("Scale", &transform.scale.x, 0.0f, 3.0f);
+		//		object->SetScale(transform.scale);
+		//	}
+		//	ImGui::PopID();
+		//}
 
-		ImGui::Text("\n");
+		//ImGui::Text("\n");
 	}
 	
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
-	particleHitEmitter_->Imgui();
-	particleRingEmitter_->Imgui();
-	particleCylinderEmitter_->Imgui();
+	//particleEmitter_->Imgui();
 
 	ImGui::Text("\n");
 
@@ -361,140 +341,97 @@ void GameScene::Update()
 //
 	ImGui::End();
 
-	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	//ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	//ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("LIghting");
+	//ImGui::Begin("LIghting");
 
-	uint32_t objectCount = 0;
-	std::string objectName = "Object";
-	for (std::unique_ptr<Object3d>& object : objects_)
-	{
-		objectName = objectName + std::to_string(objectCount);
-		ImGui::PushID(objectName.c_str());
-		if (ImGui::CollapsingHeader("Material"))
-		{
-			// 平行光源フラグ
-			bool isEnableLighting = true;
-			isEnableLighting = object->GetEnableLighting();
+	//uint32_t objectCount = 0;
+	//std::string objectName = "Object";
+	//for (std::unique_ptr<Object3d>& object : objects_)
+	//{
+	//	objectName = objectName + std::to_string(objectCount);
+	//	ImGui::PushID(objectName.c_str());
+	//	if (ImGui::CollapsingHeader("Material"))
+	//	{
+	//		// 平行光源フラグ
+	//		bool isEnableLighting = true;
+	//		isEnableLighting = object->GetEnableLighting();
 
-			if (isEnableLighting)
-			{
-				ImGui::PushID("DirectionalLight");
-				if (ImGui::CollapsingHeader("DirectionalLight"))
-				{
-					// 平行光源
-					MyBase::DirectionalLight directionalLight{};
-					directionalLight = LightManager::GetInstance()->GetDirectionalLight();
-					// 色
-					ImGui::ColorEdit4("Color", &directionalLight.color.x);
-					// 方向
-					ImGui::SliderFloat3("Direction", &directionalLight.direction.x, -1, 1);
-					// 輝度
-					ImGui::DragFloat("Intensity", &directionalLight.intensity, 0.01f);
-					LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-				}
-				ImGui::PopID();
-				ImGui::PushID("PointLight");
-				if (ImGui::CollapsingHeader("PointLight"))
-				{
-					// 点光源
-					MyBase::PointLight pointLight{};
-					pointLight = LightManager::GetInstance()->GetPointLight();
-					// 色
-					ImGui::ColorEdit4("Color", &pointLight.color.x);
-					// 位置
-					ImGui::DragFloat3("Position", &pointLight.position.x, 0.01f);
-					// 輝度
-					ImGui::DragFloat("Intensity", &pointLight.intensity, 0.01f);
-					// ライトの届く最大距離
-					ImGui::DragFloat("Radius", &pointLight.radius, 0.01f, 0.0f);
-					// 減衰率
-					ImGui::DragFloat("Decay", &pointLight.decay, 0.01f, 0.0f);
-					LightManager::GetInstance()->SetPointLight(pointLight);
-				}
-				ImGui::PopID();
-				ImGui::PushID("SpotLight");
-				if (ImGui::CollapsingHeader("SpotLight"))
-				{
-					// スポットライト
-					MyBase::SpotLight spotLight{};
-					spotLight = LightManager::GetInstance()->GetSpotLight();
-					// 色
-					ImGui::ColorEdit4("Color", &spotLight.color.x);
-					// 位置
-					ImGui::DragFloat3("Position", &spotLight.position.x, 0.01f);
-					// 輝度
-					ImGui::DragFloat("Intensity", &spotLight.intensity, 0.01f);
-					// 方向
-					ImGui::DragFloat3("Direction", &spotLight.direction.x, 0.01f);
-					// ライトの届く最大距離
-					ImGui::DragFloat("Distance", &spotLight.distance, 0.01f, 0.0f);
-					// 減衰率
-					ImGui::DragFloat("Decay", &spotLight.decay, 0.01f, 0.0f);
-					// 余弦
-					ImGui::SliderAngle("CosAngle", &spotLight.cosAngle);
-					LightManager::GetInstance()->SetSpotLight(spotLight);
-				}
-				ImGui::PopID();
-			}
-		}
-		objectCount++;
-		ImGui::PopID();
-	}
-	ImGui::End();
+	//		if (isEnableLighting)
+	//		{
+	//			ImGui::PushID("DirectionalLight");
+	//			if (ImGui::CollapsingHeader("DirectionalLight"))
+	//			{
+	//				// 平行光源
+	//				MyBase::DirectionalLight directionalLight{};
+	//				directionalLight = LightManager::GetInstance()->GetDirectionalLight();
+	//				// 色
+	//				ImGui::ColorEdit4("Color", &directionalLight.color.x);
+	//				// 方向
+	//				ImGui::SliderFloat3("Direction", &directionalLight.direction.x, -1, 1);
+	//				// 輝度
+	//				ImGui::DragFloat("Intensity", &directionalLight.intensity, 0.01f);
+	//				LightManager::GetInstance()->SetDirectionalLight(directionalLight);
+	//			}
+	//			ImGui::PopID();
+	//			ImGui::PushID("PointLight");
+	//			if (ImGui::CollapsingHeader("PointLight"))
+	//			{
+	//				// 点光源
+	//				MyBase::PointLight pointLight{};
+	//				pointLight = LightManager::GetInstance()->GetPointLight();
+	//				// 色
+	//				ImGui::ColorEdit4("Color", &pointLight.color.x);
+	//				// 位置
+	//				ImGui::DragFloat3("Position", &pointLight.position.x, 0.01f);
+	//				// 輝度
+	//				ImGui::DragFloat("Intensity", &pointLight.intensity, 0.01f);
+	//				// ライトの届く最大距離
+	//				ImGui::DragFloat("Radius", &pointLight.radius, 0.01f, 0.0f);
+	//				// 減衰率
+	//				ImGui::DragFloat("Decay", &pointLight.decay, 0.01f, 0.0f);
+	//				LightManager::GetInstance()->SetPointLight(pointLight);
+	//			}
+	//			ImGui::PopID();
+	//			ImGui::PushID("SpotLight");
+	//			if (ImGui::CollapsingHeader("SpotLight"))
+	//			{
+	//				// スポットライト
+	//				MyBase::SpotLight spotLight{};
+	//				spotLight = LightManager::GetInstance()->GetSpotLight();
+	//				// 色
+	//				ImGui::ColorEdit4("Color", &spotLight.color.x);
+	//				// 位置
+	//				ImGui::DragFloat3("Position", &spotLight.position.x, 0.01f);
+	//				// 輝度
+	//				ImGui::DragFloat("Intensity", &spotLight.intensity, 0.01f);
+	//				// 方向
+	//				ImGui::DragFloat3("Direction", &spotLight.direction.x, 0.01f);
+	//				// ライトの届く最大距離
+	//				ImGui::DragFloat("Distance", &spotLight.distance, 0.01f, 0.0f);
+	//				// 減衰率
+	//				ImGui::DragFloat("Decay", &spotLight.decay, 0.01f, 0.0f);
+	//				// 余弦
+	//				ImGui::SliderAngle("CosAngle", &spotLight.cosAngle);
+	//				LightManager::GetInstance()->SetSpotLight(spotLight);
+	//			}
+	//			ImGui::PopID();
+	//		}
+	//	}
+	//	objectCount++;
+	//	ImGui::PopID();
+	//}
+	//ImGui::End();
 
 #endif // _DEBUG
 
-	// SPACEキーを押したら
-	if (input_->TriggerKey(DIK_SPACE)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-
-	// Pキーを押したら
-	if (input_->TriggerKey(DIK_P)) {
-		// パーティクル描画フラグのOn / Off
-		isParticleActive_ = particleHitEmitter_->GetIsEmitUpdate();
-		isParticleActive_ = !isParticleActive_;
-		particleHitEmitter_->SetIsEmitUpdate(isParticleActive_);
-		particleRingEmitter_->SetIsEmitUpdate(isParticleActive_);
-		particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
-	}
-	// Lキーを押したら
-	if (input_->TriggerKey(DIK_L)) {
-		// アクセラレーションのOn / Off
-		isAccelerationField_ = !isAccelerationField_;
-	}
-
-	// Kキーを押したら
-	if (input_->TriggerKey(DIK_K)) {
-		// お試しの音を鳴らす
-		AudioManager::GetInstance()->PlayWave("fanfare.wav");
-	}
-	// Oキーを押したら
-	if (input_->TriggerKey(DIK_O)) {
-		// お試しの音を解放する
-		AudioManager::GetInstance()->UnLoadAudio("fanfare.wav");
-	}
-	// Lキーを押したら
-	if (input_->TriggerKey(DIK_L)) {
-		// お試しの音をロードする
-		AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
-	}
-
 	// 3Dオブジェクトの更新処理
-	for (std::unique_ptr<Object3d>& object : objects_)
-	{
-		object->Update();
-	}
-	// 移動
-	/*MyBase::Vector3 translate = objects_[1]->GetTranslate();
-	translate.x += 0.01f;
-	if (translate.x > 4.0f) {
-		translate.x -= 2.0f;
-	}
-	objects_[1]->SetTranslate(translate);*/
+	// プレイヤーの更新処理
+	player_->Update();
+
+	// 天球の更新
+	skydome_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -514,16 +451,10 @@ void GameScene::Update()
 	}
 
 	// パーティクルの更新処理
-	particleHitEmitter_->Update();
-	particleRingEmitter_->Update();
-	particleCylinderEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	for (std::unique_ptr<Sprite>& sprite : sprites_)
-	{
-		sprite->Update();
-	}
+	gameSprite_->Update();
 }
 
 // 描画
@@ -535,10 +466,11 @@ void GameScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	for (std::unique_ptr<Object3d>& object : objects_)
-	{
-		object->Draw();
-	}
+	// 天球の描画
+	skydome_->Draw();
+
+	// プレイヤーの描画
+	player_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -555,10 +487,7 @@ void GameScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	/*for (std::unique_ptr<Sprite>& sprite : sprites_)
-	{
-		sprite->Draw();
-	}*/
+	gameSprite_->Draw();
 
 #pragma endregion スプライト
 }
