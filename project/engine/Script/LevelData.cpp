@@ -19,5 +19,5 @@ bool LevelData::LoadFromFile(const std::string& jsonFilePath)
 
 std::unique_ptr<Object3d>& LevelData::GetObjects(const std::string name) const
 {
-	// TODO: return ステートメントをここに挿入します
+    return const_cast<std::unique_ptr<Object3d>&>(objects_.at(name));
 }

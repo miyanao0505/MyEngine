@@ -86,8 +86,7 @@ vector<JsonLoader::LevelObjectData> JsonLoader::LoadFile(const string& filePath)
 					levelData.push_back(childObjectData);
 				}
 			}
-		}
-
-		return levelData;
+		}	
 	}
+	return levelData;
 }
