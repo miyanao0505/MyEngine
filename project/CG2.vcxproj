@@ -42,6 +42,8 @@
     <ClCompile Include="engine\particle\ParticleManager.cpp" />
     <ClCompile Include="engine\scene\MNFramework.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
+    <ClCompile Include="engine\Script\JsonLoader.cpp" />
+    <ClCompile Include="engine\Script\LevelData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\Script\Matrix.cpp" />
     <ClCompile Include="engine\Script\MyBase.cpp" />
@@ -80,6 +82,8 @@
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\MNFramework.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
+    <ClInclude Include="engine\Script\JsonLoader.h" />
+    <ClInclude Include="engine\Script\LevelData.h" />
     <ClInclude Include="engine\Script\Matrix.h" />
     <ClInclude Include="engine\Script\MyBase.h" />
     <ClInclude Include="engine\Script\MyTools.h" />
@@ -200,12 +204,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui;$(SolutionDir)externals\nlohmann</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui;$(SolutionDir)externals\nlohmann</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -218,7 +222,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\light;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\Script;$(ProjectDir)engine\light;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -244,7 +248,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\Script;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
