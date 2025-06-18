@@ -201,7 +201,7 @@
     <ClCompile Include="engine\offscreen\OffScreen.cpp">
       <Filter>ソース ファイル\engine\offscreen</Filter>
     </ClCompile>
-    <ClCompile Include="engine\particle\particleSystem.cpp">
+    <ClCompile Include="engine\particle\ParticleSystem.cpp">
       <Filter>ソース ファイル\engine\particle</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,7 +311,7 @@
     <ClInclude Include="engine\offscreen\OffScreen.h">
       <Filter>ヘッダー ファイル\engine\offscreen</Filter>
     </ClInclude>
-    <ClInclude Include="engine\particle\particleSystem.h">
+    <ClInclude Include="engine\particle\ParticleSystem.h">
       <Filter>ヘッダー ファイル\engine\particle</Filter>
     </ClInclude>
   </ItemGroup>

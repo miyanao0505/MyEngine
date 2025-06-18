@@ -84,7 +84,7 @@ public:	// メンバ関数
 	/// <param name="name"></param>
 	/// <param name="position"></param>
 	/// <param name="count"></param>
-	void Emit(const std::string name, const MyBase::Vector3& position, uint32_t count);
+	void Emit(const std::string name, const MyBase::Vector3& position, MyBase::ScopeI count);
 
 	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 

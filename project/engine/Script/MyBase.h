@@ -60,8 +60,8 @@ public:
 	/// 範囲
 	/// </summary>
 	struct ScopeI {
-		uint32_t min;		// 最小値
-		uint32_t max;		// 最大値
+		int min;		// 最小値
+		int max;		// 最大値
 	};
 
 	/// <summary>

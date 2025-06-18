@@ -97,11 +97,9 @@ void GameScene::Initialize()
 	particleRingEmitter_.reset(new ParticleEmitter);
 	particleRingEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
 	particleRingEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
-	particleRingEmitter_->SetCount(1);
 	particleCylinderEmitter_.reset(new ParticleEmitter);
 	particleCylinderEmitter_->Initialize("Cylinder", "resources/gradationLine.png", ParticleEmitter::Cylinder);
 	particleCylinderEmitter_->SetPosition({ 0.0f, 0.0f, 0.0f });
-	particleCylinderEmitter_->SetCount(1);
 #pragma endregion パーティクル
 
 #pragma region オーディオ
@@ -113,9 +111,6 @@ void GameScene::Initialize()
 
 #pragma region 変数
 	isParticleActive_ = true;
-	particleHitEmitter_->SetIsEmitUpdate(false);
-	particleRingEmitter_->SetIsEmitUpdate(false);
-	particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -343,9 +338,9 @@ void GameScene::Update()
 	
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
-	particleHitEmitter_->Imgui();
-	particleRingEmitter_->Imgui();
-	particleCylinderEmitter_->Imgui();
+	particleHitEmitter_->Imgui("Player");
+	particleRingEmitter_->Imgui("Enemy");
+	particleCylinderEmitter_->Imgui("Magic");
 
 	ImGui::Text("\n");
 
@@ -455,11 +450,7 @@ void GameScene::Update()
 	// Pキーを押したら
 	if (input_->TriggerKey(DIK_P)) {
 		// パーティクル描画フラグのOn / Off
-		isParticleActive_ = particleHitEmitter_->GetIsEmitUpdate();
 		isParticleActive_ = !isParticleActive_;
-		particleHitEmitter_->SetIsEmitUpdate(isParticleActive_);
-		particleRingEmitter_->SetIsEmitUpdate(isParticleActive_);
-		particleCylinderEmitter_->SetIsEmitUpdate(isParticleActive_);
 	}
 	// Lキーを押したら
 	if (input_->TriggerKey(DIK_L)) {
