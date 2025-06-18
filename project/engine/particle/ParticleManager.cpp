@@ -80,7 +80,14 @@ void ParticleManager::Update()
 				group.kNumInstance--;
 				continue;
 			}
-			billoardMatrix = Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
+			//billoardMatrix = Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
+			if (group.isBillboard) {
+				// ビルボード行列の生成
+				billoardMatrix = Matrix::Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
+			}
+			else {
+				billoardMatrix = Matrix::MakeIdentity4x4();
+			}
 			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), billoardMatrix), Matrix::MakeTranslateMatrix(particle.transform.translate));
 			MyBase::Matrix4x4 worldViewProjectionMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
 			group.instancingData[index].World = worldMatrix;
@@ -166,6 +173,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	group->materialData.textureFilePath = textureFilePath;
 
 	group->type = ParticleEmitter::Box;
+	group->isBillboard = true;
 
 	group->kNumInstance = 0;
 
@@ -230,6 +238,7 @@ void ParticleManager::CreateParticleGroupRing(const std::string name, const std:
 	group->materialData.textureFilePath = textureFilePath;
 
 	group->type = ParticleEmitter::Ring;
+	group->isBillboard = true;
 
 	group->kNumInstance = 0;
 
@@ -300,6 +309,7 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string name, const 
 	group->materialData.textureFilePath = textureFilePath;
 
 	group->type = ParticleEmitter::Cylinder;
+	group->isBillboard = false; // ビルボードではない
 
 	group->kNumInstance = 0;
 
@@ -354,7 +364,7 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string name, const 
 	particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, MyBase::ScopeI count)
 {
 	assert(particleGroups_.count(name) > 0 && "ParticleGroup with this name does not exist.");
 
@@ -362,8 +372,10 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	uint32_t nowInstance = group.kNumInstance;
-	group.kNumInstance += count;
-	if (group.kNumInstance + count >= kMaxInstance_) {
+	std::uniform_real_distribution<float> distCount((float)count.min, (float)count.max);
+	int countValue = (int)distCount(randomEngine);
+	group.kNumInstance += countValue;
+	if (group.kNumInstance + countValue >= kMaxInstance_) {
 		group.kNumInstance = kMaxInstance_;
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
@@ -412,6 +424,22 @@ void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 		}
 	}
 	indexResource_->Unmap(0, nullptr);
+}
+
+bool ParticleManager::GetIsBillboard(const std::string& name)
+{
+	if (particleGroups_.count(name) == 0) {
+		return false;
+	}
+	return particleGroups_[name]->isBillboard;
+}
+
+void ParticleManager::SetIsBillboard(const std::string& name, bool isBillboard)
+{
+	if (particleGroups_.count(name) == 0) {
+		return;
+	}
+	particleGroups_[name]->isBillboard = isBillboard;
 }
 
 MyBase::Particle ParticleManager::CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position) {

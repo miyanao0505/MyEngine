@@ -46,7 +46,7 @@ private:	// メンバ変数
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// パーティクル
-	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;

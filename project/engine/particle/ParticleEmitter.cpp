@@ -8,65 +8,92 @@ ParticleEmitter::ParticleEmitter()
 
 void ParticleEmitter::Initialize(const std::string name, const std::string textureFilePath, const ParticleType type)
 {
-	name_ = name;
+	particleGroupNames_.push_back(name);
 	textureFilePath_ = textureFilePath;
+
+	particleSystem_ = std::make_unique<ParticleSystem>();
+	particleSystem_->Initialize();
+	particleSystem_->AddParticleGroupData(name);
 
 	ParticleManager::GetInstance()->CreateIndexResource(type);
 
 	if (type == Box) {
-		ParticleManager::GetInstance()->CreateParticleGroup(name_, textureFilePath_);
+		ParticleManager::GetInstance()->CreateParticleGroup(name, textureFilePath_);
 	}
 	if (type == Ring) {
-		ParticleManager::GetInstance()->CreateParticleGroupRing(name_, textureFilePath_);
+		ParticleManager::GetInstance()->CreateParticleGroupRing(name, textureFilePath_);
 	}
 	if (type == Cylinder) {
-		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name_, textureFilePath_);
+		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name, textureFilePath_);
 	}
 }
 
 void ParticleEmitter::Update()
 {
-	if (!isEmitUpdate_) { return; }
-	frequencyTime_ -= kDeltaTime_;
-	if (frequencyTime_ <= 0.0f) {
-		frequencyTime_ = frequency_;
-		ParticleManager::GetInstance()->Emit(name_, transform_.translate, count_);
+	auto groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+
+	// 登録されている分だけパーティクルを発生させる
+	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+		groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+		if (groupData->isEmitUpdate) {
+			groupData->frequencyTime -= kDeltaTime_;
+			if (groupData->frequencyTime <= 0.0f) {
+				groupData->frequencyTime = groupData->frequency;
+				ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, groupData->count);
+			}
+		}
 	}
 }
 
 void ParticleEmitter::Emit()
 {
-	ParticleManager::GetInstance()->Emit(name_, transform_.translate, count_);
+	auto groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+
+	// 登録されている分だけパーティクルを発生させる
+	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+		groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+		ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, groupData->count);
+	}
 }
 
 #ifdef _DEBUG
 
-void ParticleEmitter::Imgui()
+void ParticleEmitter::Imgui(std::string name)
 {
-	ImGui::Begin(name_.c_str());
+	std::string ID = name + "ParticleEmitter";
+	ImGui::Begin(ID.c_str());
 	{
-		ImGui::PushID(name_.c_str());
+		ImGui::PushID(ID.c_str());
 		// 座標
-		ImGui::DragFloat3("particleEmitter_.Translate", &transform_.translate.x, 0.1f);
+		ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
 		// 回転
 		//ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
 		// 拡縮
-		ImGui::DragFloat3("particleEmitter_.Scale", &transform_.scale.x, 0.1f);
-		// 発生数
-		int count = count_;
-		ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
-		count_ = count;
-		// 発生頻度
-		ImGui::DragFloat("particleEmitter_.frequency", &frequency_, 0.1f);
+		ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+		particleSystem_->Imgui(name);
 		// 発生させる
-		if (ImGui::Button("ParticleEmit", { 100,50 })) {
+		if (ImGui::Button("Emit", { 100,50 })) {
 			Emit();
 		}
-		// 連続発生
-		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate_);
+		// ビルボード設定
+		bool isBillboard = GetIsBillboard(ID);
+		ImGui::Checkbox("IsBillboard", &isBillboard);
+		if (isBillboard != GetIsBillboard(ID)) {
+			SetBillboard(ID, isBillboard);
+		}
 		ImGui::PopID();
 	}
 	ImGui::End();
 }
 
 #endif // _DEBUG
+
+bool ParticleEmitter::GetIsBillboard(std::string name)
+{
+	return ParticleManager::GetInstance()->GetIsBillboard(name);
+}
+
+void ParticleEmitter::SetBillboard(std::string name, bool isBillboard)
+{
+	ParticleManager::GetInstance()->SetIsBillboard(name, isBillboard);
+}
