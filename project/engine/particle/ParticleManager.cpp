@@ -364,7 +364,7 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string name, const 
 	particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, uint32_t count)
+void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, MyBase::ScopeI count)
 {
 	assert(particleGroups_.count(name) > 0 && "ParticleGroup with this name does not exist.");
 
@@ -372,8 +372,10 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	uint32_t nowInstance = group.kNumInstance;
-	group.kNumInstance += count;
-	if (group.kNumInstance + count >= kMaxInstance_) {
+	std::uniform_real_distribution<float> distCount((float)count.min, (float)count.max);
+	int countValue = (int)distCount(randomEngine);
+	group.kNumInstance += countValue;
+	if (group.kNumInstance + countValue >= kMaxInstance_) {
 		group.kNumInstance = kMaxInstance_;
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {

@@ -47,7 +47,7 @@
     <ClCompile Include="engine\particle\ParticleBase.cpp" />
     <ClCompile Include="engine\particle\ParticleEmitter.cpp" />
     <ClCompile Include="engine\particle\ParticleManager.cpp" />
-    <ClCompile Include="engine\particle\particleSystem.cpp" />
+    <ClCompile Include="engine\particle\ParticleSystem.cpp" />
     <ClCompile Include="engine\scene\MNFramework.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="main.cpp" />
@@ -93,7 +93,7 @@
     <ClInclude Include="engine\particle\ParticleBase.h" />
     <ClInclude Include="engine\particle\ParticleEmitter.h" />
     <ClInclude Include="engine\particle\ParticleManager.h" />
-    <ClInclude Include="engine\particle\particleSystem.h" />
+    <ClInclude Include="engine\particle\ParticleSystem.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\MNFramework.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />

@@ -41,8 +41,15 @@ void GameScene::Initialize()
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_.reset(new ParticleEmitter);
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
+	particleHitEmitter_.reset(new ParticleEmitter);
+	particleHitEmitter_->Initialize("hitEffect", "resources/circle.png", ParticleEmitter::Box);
+	particleHitEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
+	particleRingEmitter_.reset(new ParticleEmitter);
+	particleRingEmitter_->Initialize("Ring", "resources/gradationLine.png", ParticleEmitter::Ring);
+	particleRingEmitter_->SetPosition({ 0.0f, 1.0f, 0.0f });
+	particleCylinderEmitter_.reset(new ParticleEmitter);
+	particleCylinderEmitter_->Initialize("Cylinder", "resources/gradationLine.png", ParticleEmitter::Cylinder);
+	particleCylinderEmitter_->SetPosition({ 0.0f, 0.0f, 0.0f });
 #pragma endregion パーティクル
 
 #pragma region オーディオ
@@ -54,7 +61,6 @@ void GameScene::Initialize()
 
 #pragma region 変数
 	isParticleActive_ = true;
-	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -325,7 +331,9 @@ void GameScene::Update()
 	
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
-	//particleEmitter_->Imgui();
+	particleHitEmitter_->Imgui("Player");
+	particleRingEmitter_->Imgui("Enemy");
+	particleCylinderEmitter_->Imgui("Magic");
 
 	ImGui::Text("\n");
 
