@@ -191,6 +191,8 @@ void GameScene::Update()
 
 	player_->DebugDraw();
 
+	enemy_->DebugDraw();
+
 	// スプライト
 //	if (ImGui::CollapsingHeader("Sprite"))
 //	{
@@ -274,8 +276,8 @@ void GameScene::Update()
 	rotate = objects_[1]->GetRotate();
 	rotate.z += 0.02f;
 	objects_[1]->SetRotate(rotate);*/
-	if (ImGui::CollapsingHeader("3dObject"))
-	{
+	//if (ImGui::CollapsingHeader("3dObject"))
+	//{
 		// ブレンドモード
 		/*if (ImGui::CollapsingHeader("BlendMode3dObject")) {
 			static ImGuiComboFlags spriteFlags = 0;
@@ -323,13 +325,13 @@ void GameScene::Update()
 		//}
 
 		//ImGui::Text("\n");
-	}
+	//}
 	
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
 	
 
-	ImGui::Text("\n");
+	//ImGui::Text("\n");
 
 	//}
 //

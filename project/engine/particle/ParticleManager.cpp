@@ -144,6 +144,7 @@ void ParticleManager::Imgui()
 		}
 		ImGui::Text("ParticleGroupNum : %d", particleGroups_.size());
 
+		ImGui::Text("\n");
 	}
 }
 #endif // _DEBUG

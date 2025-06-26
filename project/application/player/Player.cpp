@@ -60,15 +60,17 @@ void Player::DebugDraw()
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Player"))
 	{
-		MyBase::Transform transform = object_->GetTransform();
+		MyBase::Transform transform = {object_->GetScale(), object_->GetRotate(), object_->GetTranslate()};
 
 		// 移動
-		ImGui::SliderFloat3("Translate", &transform.translate.x, -5.0f, 5.0f);
+		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
 		// 回転
-		ImGui::SliderFloat3("Rotate", &transform.rotate.x, -3.14f, 3.14f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
 		// 拡縮
-		ImGui::SliderFloat3("Scale", &transform.scale.x, 0.0f, 3.0f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
 		object_->SetTransform(transform);
+
+		ImGui::Text("\n");
 	}
 	ImGui::PopID();
 }
