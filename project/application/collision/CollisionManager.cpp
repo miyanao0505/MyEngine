@@ -15,14 +15,14 @@ CollisionManager::~CollisionManager()
 void CollisionManager::CheckAllCollisions()
 {
 	// リスト内のペアを総当たり
-	std::vector<Collider*>::iterator itrA = colliders_.begin();
+	std::list<Collider*>::iterator itrA = colliders_.begin();
 	for (; itrA != colliders_.end(); ++itrA)
 	{
 		// イテレータAからコライダーAを取得する
 		Collider* colliderA = *itrA;
 
 		// イテレータBはイテレータAの次の要素から回す(重複判定を回避)
-		std::vector<Collider*> ::iterator itrB = itrA;
+		std::list<Collider*> ::iterator itrB = itrA;
 		itrB++;
 
 		for (; itrB != colliders_.end(); ++itrB)
@@ -40,8 +40,7 @@ void CollisionManager::CheckAllCollisions()
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
 {
 	// 衝突フィルタリング
-	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 ||
-		(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0) {
+	if (!colliderA->IsCollisionEnabled() || !colliderB->IsCollisionEnabled()) {
 		return;
 	}
 
@@ -56,8 +55,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	if (length <= colliderA->GetRadius() + colliderB->GetRadius())
 	{
 		// 衝突した場合の処理
-		colliderA->OnCollision();
-		colliderB->OnCollision();
+		colliderA->OnCollision(colliderB);
+		colliderB->OnCollision(colliderA);
 	}
 }
 

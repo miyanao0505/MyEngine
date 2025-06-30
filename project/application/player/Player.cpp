@@ -1,16 +1,14 @@
 #include "Player.h"
 #include "Input.h"
 #include "ModelManager.h"
+#include"CollisionConfig.h"
 #include "MyTools.h"
 #include "imgui.h"
 
 Player::Player()
 {
 	// プレイヤーの初期化
-	hp_ = 100;
-	isDead_ = false;
-	SetCollisionAttribute(0x00000001); // コリジョン属性
-	SetCollisionMask(0x00000001); // コリジョンマスク
+	Initialize({ 0.0f, 0.0f, 0.0f });
 }
 
 /// デストラクタ
@@ -25,16 +23,24 @@ void Player::Initialize(MyBase::Vector3 position)
 	// プレイヤーのコライダーの初期化
 	SetRadius(1.0f);
 	SetSize({ 1.0f, 1.0f });
-	SetCollisionAttribute(0x00000001);
-	SetCollisionMask(0x00000001);
+	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
 	
+	// プレイヤーのオブジェクトの初期化
 	object_ = std::make_unique<Object3d>();
 	object_->Initislize("sphere.obj");
 	//object_->SetTexture("monsterBall.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });
+
+	// 弾の初期化
+	bullets_.clear();
+
+	// ステータスの初期化
+	hp_ = 100;
+	attackCoolTime_ = 0;
+	isDead_ = false;
 }
 
 /// 更新
@@ -43,7 +49,30 @@ void Player::Update()
 	// 移動処理
 	Move();
 
+	// オブジェクトの更新
 	object_->Update();
+
+	// 攻撃
+	Attaack();
+
+	// 弾更新
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+		const bool isDead = (*it)->IsDead();
+		const float distance = MyTools::Length(MyTools::Subtract((*it)->GetWorldPosition(), GetWorldPosition()));
+
+		if (isDead || distance >= kBulletDrawDistance_) {
+			it = bullets_.erase(it); // listから完全に削除
+		}
+		else {
+			it->get()->Update(); // 弾の更新
+			++it;
+		}
+	}
+
+	// 攻撃のクールタイムを減らす
+	if (attackCoolTime_ > 0) {
+		attackCoolTime_--;
+	}
 }
 
 /// 描画
@@ -51,6 +80,12 @@ void Player::Draw()
 {
 	// プレイヤー
 	object_->Draw();
+
+	// 弾の描画
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+		it->get()->Draw();
+		++it;
+	}
 }
 
 #ifdef _DEBUG
@@ -103,11 +138,19 @@ void Player::Move()
 /// 攻撃
 void Player::Attaack()
 {
-
+	if (Input::GetInstance()->PushKey(DIK_SPACE) && bullets_.size() < kMaxBulletCount_ && attackCoolTime_ <= 0)
+	{
+		// 弾の生成
+		auto bullet = std::make_unique<PlayerBullet>();
+		bullet->Initialize(object_->GetTranslate());
+		bullets_.emplace_back(std::move(bullet));
+		// 攻撃のクールタイムを設定
+		attackCoolTime_ = kAttackCoolTime_;
+	}
 }
 
 /// 衝突を検出したら呼び出されるコールバック関数
-void Player::OnCollision()
+void Player::OnCollision([[maybe_unused]] Collider* other)
 {
 
 }

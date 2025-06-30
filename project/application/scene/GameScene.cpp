@@ -55,6 +55,12 @@ void GameScene::Initialize()
 	AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
 #pragma endregion オーディオ
 
+#pragma region コリジョン
+	// コリジョンマネージャー
+	collisionManager_.reset(new CollisionManager);
+	collisionManager_->Clear();
+#pragma endregion コリジョン
+
 #pragma region 変数
 	isParticleActive_ = true;
 	isAccelerationField_ = false;

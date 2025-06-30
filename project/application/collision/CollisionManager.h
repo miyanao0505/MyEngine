@@ -1,6 +1,6 @@
 #pragma once
 #include "Collider.h"
-#include <vector>
+#include <list>
 
 class CollisionManager
 {
@@ -23,11 +23,11 @@ public:	// メンバ関数
 
 public:	// setter
 	// コライダーリストに登録する
-	void SetCollider(Collider* collider) { colliders_.push_back(collider); }
+	void AddCollider(Collider* collider) { colliders_.push_back(collider); }
 
 private:	// メンバ変数
 	// コライダーリスト
-	std::vector<Collider*> colliders_;
+	std::list<Collider*> colliders_;
 
 };
 

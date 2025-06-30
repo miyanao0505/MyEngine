@@ -255,6 +255,9 @@
     <ClCompile Include="engine\math\WorldTransform.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
+    <ClCompile Include="application\player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\application\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="engine\math\WorldTransform.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="application\player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\application\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

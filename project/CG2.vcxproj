@@ -15,6 +15,7 @@
     <ClCompile Include="application\collision\CollisionManager.cpp" />
     <ClCompile Include="application\enemy\Enemy.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
+    <ClCompile Include="application\player\PlayerBullet.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\ClearScene.cpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="application\collision\CollisionManager.h" />
     <ClInclude Include="application\enemy\Enemy.h" />
     <ClInclude Include="application\player\Player.h" />
+    <ClInclude Include="application\player\PlayerBullet.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="application\scene\ClearScene.h" />
