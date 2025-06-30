@@ -3,6 +3,7 @@
 #include <list>
 #include "Object3d.h"
 #include "TextureManager.h"
+#include "PlayerBullet.h"
 
 // プレイヤー
 class Player : public Collider
@@ -15,7 +16,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="position">初期座標</param>
-	void Initialize(MyBase::Vector3 position);
+	void Initialize(Vector3 position);
 
 	/// <summary>
 	/// 更新
@@ -48,7 +49,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision() override;
+	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
 	// 
@@ -61,12 +62,26 @@ private:	// メンバ変数
 	// モデル
 	std::unique_ptr<Object3d> object_ = nullptr;
 	
+	// プレイヤーの弾リスト
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	
 	// ステータス
 	int hp_;
 	bool isDead_ = false;
 	
 	// プレイヤーの移動速度
 	const float kmoveSpeed_ = 0.2f;
+
+	// プレイヤーの攻撃クールタイム
+	const int kAttackCoolTime_ = 30;	// 30フレーム
+	int32_t attackCoolTime_ = 0;		// 現在のクールタイム
+
+	// 弾の上限
+	const int kMaxBulletCount_ = 10; // 最大弾数
+	// 弾の発射位置
+	Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
+	// 弾の描画距離
+	const float kBulletDrawDistance_ = 100.0f;
 
 };
 

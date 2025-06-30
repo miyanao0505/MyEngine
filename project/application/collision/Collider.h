@@ -7,8 +7,8 @@
 class Collider : public MyBase
 {
 public:	// メンバ関数
-	// 衝突時に呼ばれる関数
-	virtual void OnCollision();
+	// 衝突時のコールバック関数
+	virtual void OnCollision([[maybe_unused]] Collider* other) {};
 
 public:	// gettere
 	// 半径を取得
@@ -19,9 +19,10 @@ public:	// gettere
 	virtual Vector3 GetWorldPosition() = 0;
 
 	// 衝突属性(自分)を取得
-	uint32_t GetCollisionAttribute() const { return collisionAttribute_; }
-	// 衝突マスク(相手)を取得
-	uint32_t GetCollisionMask() const { return collisionMask_; }
+	uint32_t GetTypeId() const { return typeID_; }
+
+	// 衝突判定の有効/無効を取得
+	bool IsCollisionEnabled() const { return isCollisionEnabled_; }
 
 public:	// setter
 	// 半径を設定
@@ -30,9 +31,10 @@ public:	// setter
 	void SetSize(const Vector2& size) { size_ = size; }
 
 	// 衝突属性(自分)を設定
-	void SetCollisionAttribute(uint32_t attribute) { collisionAttribute_ = attribute; }
-	// 衝突マスク(相手)を設定
-	void SetCollisionMask(uint32_t mask) { collisionMask_ = mask; }
+	void SetTypeId(uint32_t typeId) { typeID_ = typeId; }
+
+	// 衝突判定の有効/無効を設定
+	void SetCollisionEnabled(bool isEnabled) { isCollisionEnabled_ = isEnabled; }
 
 private:	// メンバ変数
 	// 半径
@@ -40,9 +42,10 @@ private:	// メンバ変数
 	// サイズ
 	Vector2 size_ = { 1.0f, 1.0f };
 
-	// 衝突属性(自分)
-	uint32_t collisionAttribute_ = 0xffffffff;
-	// 衝突マスク(相手)
-	uint32_t collisionMask_ = 0xffffffff;
+	// 衝突属性
+	uint32_t typeID_ = 0u;
+
+
+	bool isCollisionEnabled_ = true; // 衝突判定を有効にするかどうか
 };
 

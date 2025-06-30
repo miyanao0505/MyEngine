@@ -1,16 +1,12 @@
 #include "Enemy.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
+#include "CollisionConfig.h"
 #include <imgui.h>
 
 Enemy::Enemy()
 {
-	// 敵の初期化
-	hp_ = 100; // 初期HP
-	isDead_ = false; // 初期状態は生存
-	SetCollisionAttribute(0x00000001); // コリジョン属性
-	SetCollisionMask(0x00000001); // コリジョンマスク
-
+	Initialize();
 }
 
 Enemy::~Enemy()
@@ -21,11 +17,10 @@ Enemy::~Enemy()
 // 初期化
 void Enemy::Initialize()
 {
-	// 敵の初期化
+	// 敵のコライダーの初期化
 	SetRadius(1.0f); // 半径1.0fの球体コライダー
 	SetSize({ 1.0f, 1.0f });
-	SetCollisionAttribute(0x00000001); // コリジョン属性
-	SetCollisionMask(0x00000001); // コリジョンマスク
+	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)); // コリジョン属性
 
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
@@ -36,6 +31,10 @@ void Enemy::Initialize()
 	object_->SetTexture("resources/texture/uvChecker.png");
 	object_->SetTranslate({ 0.0f, 0.0f, 15.0f }); // 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f }); // 初期スケール
+
+	// 敵のステータスの初期化
+	hp_ = 100; // 初期HP
+	isDead_ = false; // 初期状態は生存
 }
 
 // 更新
@@ -87,7 +86,7 @@ void Enemy::DebugDraw()
 #endif // _DEBUG
 
 // 当たり判定
-void Enemy::OnCollision()
+void Enemy::OnCollision([[maybe_unused]] Collider* other)
 {
 
 }
