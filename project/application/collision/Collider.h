@@ -1,12 +1,16 @@
 #pragma once
 #include "MyBase.h"
 
+
 /// <summary>
 /// 衝突判定オブジェクト
 /// </summary>
 class Collider : public MyBase
 {
 public:	// メンバ関数
+	Collider();
+	virtual ~Collider();
+
 	// 衝突時のコールバック関数
 	virtual void OnCollision([[maybe_unused]] Collider* other) {};
 

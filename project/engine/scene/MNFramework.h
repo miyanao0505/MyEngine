@@ -4,8 +4,9 @@
 #include "DirectXBase.h"
 #include "Input.h"
 #include "SrvManager.h"
-#include "OffScreen.h"
 #include "ImGuiManager.h"
+#include "OffScreen.h"
+#include "CollisionManager.h"
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "TextureManager.h"
@@ -54,12 +55,14 @@ protected:	// メンバ変数
 	Input* input_ = nullptr;
 	// SRVマネージャ
 	std::unique_ptr<SrvManager> srvManager_ = nullptr;
-	// オフスクリーン
-	std::unique_ptr<OffScreen> offScreen_ = nullptr;
 #ifdef _DEBUG
 	// ImGuiManagerの宣言
 	std::unique_ptr<ImGuiManager> imGuiManager_ = nullptr;
 #endif // _DEBUG
+	// オフスクリーン
+	std::unique_ptr<OffScreen> offScreen_ = nullptr;
+	// コリジョンマネージャー
+	CollisionManager* collisionManager_ = nullptr;
 	// カメラマネージャ
 	CameraManager* cameraManager_ = nullptr;
 	// ライトマネージャ

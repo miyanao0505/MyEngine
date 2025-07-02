@@ -8,7 +8,6 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "ParticleEmitter.h"
-#include "CollisionManager.h"
 #include "MyBase.h"
 
 // ゲームプレイシーン
@@ -47,9 +46,6 @@ private:	// メンバ変数
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// パーティクル
-
-	// コリジョンマネージャー
-	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	
 #pragma endregion シーン初期化
 

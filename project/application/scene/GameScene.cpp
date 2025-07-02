@@ -27,9 +27,6 @@ void GameScene::Initialize()
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
-	// .objファイルからモデルを読み込む
-	
-
 	// プレイヤー
 	player_.reset(new Player);
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
@@ -54,12 +51,6 @@ void GameScene::Initialize()
 	// お試し用
 	AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
 #pragma endregion オーディオ
-
-#pragma region コリジョン
-	// コリジョンマネージャー
-	collisionManager_.reset(new CollisionManager);
-	collisionManager_->Clear();
-#pragma endregion コリジョン
 
 #pragma region 変数
 	isParticleActive_ = true;
