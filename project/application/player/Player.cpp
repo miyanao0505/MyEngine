@@ -25,11 +25,11 @@ void Player::Initialize(MyBase::Vector3 position)
 	SetSize({ 1.0f, 1.0f });
 	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
+	ModelManager::GetInstance()->LoadModel("resources/model/player", "player.obj");
 	
 	// プレイヤーのオブジェクトの初期化
 	object_ = std::make_unique<Object3d>();
-	object_->Initislize("sphere.obj");
+	object_->Initislize("player.obj");
 	//object_->SetTexture("monsterBall.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });

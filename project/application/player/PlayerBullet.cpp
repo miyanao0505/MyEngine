@@ -16,6 +16,7 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
 	object_ = std::make_unique<Object3d>();
 	object_->Initislize("sphere.obj");
+	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 	
