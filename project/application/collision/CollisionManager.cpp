@@ -1,14 +1,36 @@
 #include "CollisionManager.h"
 #include "MyTools.h"
 
-CollisionManager::CollisionManager()
-{
+CollisionManager* CollisionManager::instance = nullptr;
 
+CollisionManager* CollisionManager::GetInstance()
+{
+	if (instance == nullptr) {
+		instance = new CollisionManager;
+	}
+	return instance;
 }
 
-CollisionManager::~CollisionManager()
+// 終了
+void CollisionManager::Finalize()
 {
+	// コライダーリストをクリア
+	Clear();
+	// シングルトンインスタンスを削除
+	delete instance;
+	instance = nullptr;
+}
 
+// 更新
+void CollisionManager::Update()
+{
+	// コライダーリストが空なら何もしない
+	if (colliders_.empty()) {
+		return;
+	}
+
+	// 衝突判定と応答を行う
+	CheckAllCollisions();
 }
 
 // 衝突判定と応答

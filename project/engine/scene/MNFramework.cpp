@@ -40,6 +40,10 @@ void MNFramework::Initialize()
 	offScreen_.reset(new OffScreen());
 	offScreen_->Initialize(dxBase_.get());
 	dxBase_->CreateOffScreenSRV(srvManager_.get());
+
+	// コリジョンマネージャの初期化
+	collisionManager_ = CollisionManager::GetInstance();
+	collisionManager_->Clear();
 #pragma endregion 基盤システム初期化
 
 	// カメラマネージャの初期化
@@ -84,6 +88,7 @@ void MNFramework::Finalize()
 	textureManager_->Finalize();
 	lightManager_->Finalize();
 	cameraManager_->Finalize();
+	collisionManager_->Finalize();
 #ifdef _DEBUG
 	imGuiManager_->Finalize();
 #endif // _DEBUG
@@ -111,6 +116,8 @@ void MNFramework::Update()
 #endif // _DEBUG
 	// シーンマネージャの更新処理
 	sceneManager_->Update();
+	// コリジョンマネージャーの更新処理
+	collisionManager_->Update();
 	
 	// ImGuiの内部コマンドを生成する
 #ifdef _DEBUG
