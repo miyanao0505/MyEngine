@@ -10,7 +10,7 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 	// プレイヤー弾のコライダーの初期化
 	SetRadius(0.5f);
 	SetSize({ 0.5f, 0.5f });
-	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer)); // プレイヤー弾
+	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)); // プレイヤー弾
 
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
@@ -18,7 +18,7 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 	object_->Initislize("sphere.obj");
 	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);
-	object_->SetScale({ 0.5f, 0.5f, 0.5f });
+	object_->SetScale({ 0.25f, 0.25f, 0.25f });
 	
 	deathTimer_ = kLifeTime;
 }
@@ -51,9 +51,19 @@ void PlayerBullet::DebugDraw()
 {
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("PlayerBullet")) {
-		
-		ImGui::PopID();
+		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
+
+		// 移動
+		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		// 回転
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		// 拡縮
+		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+		object_->SetTransform(transform);
+
+		ImGui::Text("\n");
 	}
+	ImGui::PopID();
 }
 #endif // _DEBUG
 

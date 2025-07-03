@@ -80,7 +80,6 @@ void ParticleManager::Update()
 				group.kNumInstance--;
 				continue;
 			}
-			//billoardMatrix = Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
 			if (group.isBillboard) {
 				// ビルボード行列の生成
 				billoardMatrix = Matrix::Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
@@ -365,7 +364,7 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string name, const 
 	particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, MyBase::ScopeI count)
+void ParticleManager::Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData)
 {
 	assert(particleGroups_.count(name) > 0 && "ParticleGroup with this name does not exist.");
 
@@ -373,7 +372,7 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
 	uint32_t nowInstance = group.kNumInstance;
-	std::uniform_real_distribution<float> distCount((float)count.min, (float)count.max);
+	std::uniform_real_distribution<float> distCount((float)particleGroupData.count.min, (float)particleGroupData.count.max);
 	int countValue = (int)distCount(randomEngine);
 	group.kNumInstance += countValue;
 	if (group.kNumInstance + countValue >= kMaxInstance_) {

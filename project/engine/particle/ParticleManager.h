@@ -81,10 +81,10 @@ public:	// メンバ関数
 	/// <summary>
 	/// パーティクルの発生
 	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="position"></param>
-	/// <param name="count"></param>
-	void Emit(const std::string name, const MyBase::Vector3& position, MyBase::ScopeI count);
+	/// <param name="name">名前</param>
+	/// <param name="position">位置</param>
+	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
+	void Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
 
 	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
 

@@ -3,6 +3,7 @@
 #include <list>
 #include "Object3d.h"
 #include "TextureManager.h"
+#include "ParticleEmitter.h"
 
 class Enemy : public Collider
 {
@@ -44,6 +45,9 @@ public:	// setter
 private:	/// メンバ変数
 	// モデル
 	std::unique_ptr<Object3d> object_ = nullptr;
+
+	// パーティクルエミッター
+	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 	// ステータス
 	int hp_;

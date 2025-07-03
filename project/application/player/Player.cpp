@@ -32,7 +32,7 @@ void Player::Initialize(MyBase::Vector3 position)
 	object_->Initislize("player.obj");
 	//object_->SetTexture("monsterBall.png");
 	object_->SetTranslate(position);
-	object_->SetScale({ 1.0f, 1.0f, 1.0f });
+	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	// 弾の初期化
 	bullets_.clear();

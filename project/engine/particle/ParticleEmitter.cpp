@@ -39,7 +39,7 @@ void ParticleEmitter::Update()
 			groupData->frequencyTime -= kDeltaTime_;
 			if (groupData->frequencyTime <= 0.0f) {
 				groupData->frequencyTime = groupData->frequency;
-				ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, groupData->count);
+				ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupData);
 			}
 		}
 	}
@@ -52,7 +52,7 @@ void ParticleEmitter::Emit()
 	// 登録されている分だけパーティクルを発生させる
 	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
 		groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
-		ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, groupData->count);
+		ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupData);
 	}
 }
 
@@ -70,16 +70,21 @@ void ParticleEmitter::Imgui(std::string name)
 		//ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
 		// 拡縮
 		ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+		// 各パーティクルグループの設定を表示
 		particleSystem_->Imgui(name);
+		// ビルボード設定
+		auto groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+		for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+			groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+			bool isBillboard = GetIsBillboard(ID);
+			if (isBillboard != GetIsBillboard(ID)) {
+				SetBillboard(ID, isBillboard);
+			}
+		}
+
 		// 発生させる
 		if (ImGui::Button("Emit", { 100,50 })) {
 			Emit();
-		}
-		// ビルボード設定
-		bool isBillboard = GetIsBillboard(ID);
-		ImGui::Checkbox("IsBillboard", &isBillboard);
-		if (isBillboard != GetIsBillboard(ID)) {
-			SetBillboard(ID, isBillboard);
 		}
 		ImGui::PopID();
 	}
