@@ -33,6 +33,7 @@ void ParticleSystem::Imgui(std::string name)
 			ImGui::DragFloat3("Local Velocity", &groupData->localVelocity.x, 0.01f, -10.0f, 10.0f);
 			ImGui::DragFloat3("Random Velocity", &groupData->rndomVelocity.x, 0.01f, -10.0f, 10.0f);
 			ImGui::DragFloat("Frequency", &groupData->frequency, 0.01f, 0.1f, 5.0f);
+			ImGui::Checkbox("IsBillboard", &groupData->isBillboard);
 			ImGui::Checkbox("IsEmitUpdate", &groupData->isEmitUpdate);
 		}
 		ImGui::PopID();

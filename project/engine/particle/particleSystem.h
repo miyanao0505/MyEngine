@@ -18,6 +18,7 @@ public: // 構造体
 		MyBase::Vector3 rndomVelocity = { 0.0f, 0.0f, 0.0f };	// ランダムな速度
 		float frequency = 1.5f;									// 発生頻度
 		float frequencyTime = 0.0f;								// 頻度用時刻
+		bool isBillboard = false;								// ビルボードかどうか
 		bool isEmitUpdate = true;								// 更新時に発生するか
 	};
 

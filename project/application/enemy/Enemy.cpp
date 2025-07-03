@@ -30,7 +30,26 @@ void Enemy::Initialize()
 	object_->Initislize("sphere.obj");
 	object_->SetTexture("resources/texture/uvChecker.png");
 	object_->SetTranslate({ 0.0f, 0.0f, 15.0f }); // 初期位置
-	object_->SetScale({ 1.0f, 1.0f, 1.0f }); // 初期スケール
+	object_->SetScale({ 0.50f, 0.50f, 0.50f }); // 初期スケール
+
+	// パーティクルエミッターの初期化
+	particleEmitter_ = std::make_unique<ParticleEmitter>();
+	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleEmitter::Box);
+	particleEmitter_->SetPosition(object_->GetTranslate());
+	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
+	
+	ParticleSystem::ParticleGroupData hitEffect = {
+		.size = { 1000.0f, 1500.0f },
+		.energy = { 1.0f, 1.0f },
+		.count = { 10, 15 },
+		.worldVelocity = { 0.0f, 0.0f, 0.0f },
+		.localVelocity = { 0.0f, 0.0f, 0.0f },
+		.rndomVelocity = { 0.0f, 0.0f, 0.0f },
+		.frequency = 1.5f,
+		.isBillboard = false,
+		.isEmitUpdate = true
+	};
+
 
 	// 敵のステータスの初期化
 	hp_ = 100; // 初期HP
@@ -80,6 +99,11 @@ void Enemy::DebugDraw()
 		object_->SetTransform(transform);
 
 		ImGui::Text("\n");
+
+		// パーティクルエミッターのデバッグUI
+		if (particleEmitter_) {
+			particleEmitter_->Imgui("Enemy");
+		}
 	}
 	ImGui::PopID();
 }
@@ -88,5 +112,11 @@ void Enemy::DebugDraw()
 // 当たり判定
 void Enemy::OnCollision([[maybe_unused]] Collider* other)
 {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeId();
 
+	// プレイヤー弾が当たった時の処理
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
+		particleEmitter_->Emit(); // パーティクルを発生させる
+	}
 }
