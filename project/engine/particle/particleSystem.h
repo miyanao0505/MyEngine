@@ -13,9 +13,9 @@ public: // 構造体
 		MyBase::ScopeF size{ 1.0f, 1.0f };						// パーティクルのサイズ
 		MyBase::ScopeF energy{ 1.0f, 1.0f };					// パーティクルの寿命
 		MyBase::ScopeI count{ 1, 1 };							// パーティクルの発生数
-		MyBase::Vector3 worldVelocity = { 0.0f, 0.0f, 0.0f };	// ワールド空間での速度
-		MyBase::Vector3 localVelocity = { 0.0f, 0.0f, 0.0f };	// ローカル空間での速度
-		MyBase::Vector3 rndomVelocity = { 0.0f, 0.0f, 0.0f };	// ランダムな速度
+		MyBase::ScopeF speed{ 1.0f, 1.0f };						// パーティクルの速度
+		MyBase::Vector3 direction = { 0.0f, 0.0f, 0.0f };		// パーティクルの方向
+		MyBase::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };		// パーティクルの色
 		float frequency = 1.5f;									// 発生頻度
 		float frequencyTime = 0.0f;								// 頻度用時刻
 		bool isBillboard = false;								// ビルボードかどうか
