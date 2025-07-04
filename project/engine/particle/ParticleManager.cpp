@@ -172,7 +172,7 @@ void ParticleManager::CreateParticleGroup(const std::string name, const std::str
 	TextureManager::GetInstance()->LoadTexture(textureFilePath);
 	group->materialData.textureFilePath = textureFilePath;
 
-	group->type = ParticleEmitter::Box;
+	group->type = ParticleEmitter::Ellipse;
 	group->isBillboard = true;
 
 	group->kNumInstance = 0;
@@ -379,8 +379,7 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 		group.kNumInstance = kMaxInstance_;
 	}
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
-		//group.particles.push_back(CreateParticle(randomEngine, position));
-		group.particles.push_back(CreateEstablishmentParticle(randomEngine, position, group.type));
+		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
 	}
 }
 
@@ -399,7 +398,7 @@ void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
-	if (type == ParticleEmitter::Box) {
+	if (type == ParticleEmitter::Ellipse) {
 		indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
 		indexData_[3] = 1; indexData_[4] = 3; indexData_[5] = 2;
 	}
@@ -442,49 +441,36 @@ void ParticleManager::SetIsBillboard(const std::string& name, bool isBillboard)
 	particleGroups_[name]->isBillboard = isBillboard;
 }
 
-MyBase::Particle ParticleManager::CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position) {
-	std::uniform_real_distribution<float> distribution(-1.0f, 1.0f);
-	MyBase::Particle particle{};
-	particle.transform.scale = { 1.0f, 1.0f, 1.0f };
-	particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-	MyBase::Vector3 popPosition = position;
-	particle.transform.translate = popPosition;
-	particle.velocity = { distribution(randomEngine), distribution(randomEngine), distribution(randomEngine) };
-	particle.color = { distribution(randomEngine), distribution(randomEngine), distribution(randomEngine), 1.0f };
-	particle.lifeTime = 2.0f;
-	return particle;
-}
-
-MyBase::Particle ParticleManager::CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type)
+/// パーティクルの生成
+MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleEmitter::ParticleType type)
 {
 	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
-	std::uniform_real_distribution<float> distScale(1.0f, 3.0f);
+	std::uniform_real_distribution<float> distScale(particleGroupData.size.min, particleGroupData.size.max);
+	std::uniform_real_distribution<float> distSpeed(particleGroupData.speed.min, particleGroupData.speed.max);
+	std::uniform_real_distribution<float> distLifeTime(particleGroupData.energy.min, particleGroupData.energy.max);
+	MyBase::Particle particle{};
 
-	MyBase::Particle particle;
-
+	// 共通の設定
 	particle.transform.translate = translate;
-	particle.velocity = { 0.0f, 0.0f, 0.0f };			// 動かない
-	particle.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	particle.lifeTime = 1.0f;
-	particle.currentTime = 0;
+	particle.velocity = MyTools::Multiply(distSpeed(randomEngine), particleGroupData.direction);
+	particle.color = particleGroupData.color;
+	particle.lifeTime = distLifeTime(randomEngine);
 
-	if (type == ParticleEmitter::Box) {
+	if (type == ParticleEmitter::Ellipse) {
 		// 横に潰し、縦方向の大きさをランダムに入れる
-		particle.transform.scale = { 0.08f, distScale(randomEngine), 1.0f };
+		particle.transform.scale = { distScale(randomEngine) * 0.08f, distScale(randomEngine), 1.0f };
 		// ランダムに回転させる
 		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
 	}
 	else if (type == ParticleEmitter::Ring) {
-		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
+		particle.transform.scale = { distScale(randomEngine), distScale(randomEngine), distScale(randomEngine) };
 		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
 	}
 	else if (type == ParticleEmitter::Cylinder) {
-		particle.transform.scale = { 1.0f, 1.0f, 1.0f };
+		particle.transform.scale = { distScale(randomEngine), distScale(randomEngine), distScale(randomEngine) };
 		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-		particle.color = { 0.0f, 0.0f, 1.0f, 1.0f };
 		particle.lifeTime = 2.0f;
 	}
 	
-	randomEngine;
 	return particle;
 }

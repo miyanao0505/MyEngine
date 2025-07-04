@@ -34,21 +34,21 @@ void Enemy::Initialize()
 
 	// パーティクルエミッターの初期化
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleEmitter::Box);
+	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleEmitter::Ellipse);
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
-	
 	ParticleSystem::ParticleGroupData hitEffect = {
-		.size = { 1000.0f, 1500.0f },
+		.size = { 5.f, 10.0f },
 		.energy = { 1.0f, 1.0f },
 		.count = { 10, 15 },
-		.worldVelocity = { 0.0f, 0.0f, 0.0f },
-		.localVelocity = { 0.0f, 0.0f, 0.0f },
-		.rndomVelocity = { 0.0f, 0.0f, 0.0f },
+		.speed = { 0.0f, 0.0f },
+		.direction = { 0.0f, 0.0f, 0.0f },
+		.color = { 1.0f, 1.0f, 1.0f, 1.0f },
 		.frequency = 1.5f,
 		.isBillboard = false,
 		.isEmitUpdate = true
 	};
+	particleEmitter_->SetParticleGroupData("hitEffectEnemy", hitEffect);
 
 
 	// 敵のステータスの初期化

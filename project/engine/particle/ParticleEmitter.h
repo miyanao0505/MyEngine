@@ -7,7 +7,7 @@ class ParticleEmitter
 {
 public:	// メンバ関数
 	enum ParticleType {
-		Box,		// 矩形
+		Ellipse,	// 楕円
 		Ring,		// リング
 		Cylinder,	// 円柱
 	};
@@ -16,7 +16,7 @@ public:	// メンバ関数
 	ParticleEmitter();
 
 	// 初期化
-	void Initialize(const std::string name, const std::string textureFilePath, const ParticleType type = Box);
+	void Initialize(const std::string name, const std::string textureFilePath, const ParticleType type = Ellipse);
 
 	// 更新
 	void Update();
@@ -32,12 +32,14 @@ public:	// getter
 	const MyBase::Vector3& GetPosition() { return transform_.translate; }
 	const MyBase::Vector3& GetRotation() { return transform_.rotate; }
 	const MyBase::Vector3& GetSize() { return transform_.scale; }
+	const ParticleSystem::ParticleGroupData& GetParticleGroupData(std::string name);
 	bool GetIsBillboard(std::string name);
 
 public:	// setter
 	void SetPosition(const MyBase::Vector3& position) { transform_.translate = position; }
 	void SetRotation(const MyBase::Vector3& rotation) { transform_.rotate = rotation; }
 	void SetSize(const MyBase::Vector3& size) { transform_.scale = size; }
+	void SetParticleGroupData(const std::string& name, ParticleSystem::ParticleGroupData& particleGroupData);
 	void SetBillboard(std::string name, bool isBillboard);
 
 private:	// メンバ変数

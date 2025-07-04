@@ -86,7 +86,7 @@ public:	// メンバ関数
 	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
 	void Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
 
-	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
@@ -97,14 +97,14 @@ public:	// setter
 
 private: // ローカル関数
 	/// <summary>
-	/// パーティクルの作成
+	/// パーティクルの生成
 	/// </summary>
-	/// <param name="randomEngine"></param>
-	/// <param name="position"></param>
+	/// <param name="randomEngine">乱数</param>
+	/// <param name="translate">位置</param>
+	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
+	/// <param name="type">パーティクルのタイプ</param>
 	/// <returns></returns>
-	MyBase::Particle CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
-
-	MyBase::Particle CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 private:	// シングルトン
 	static ParticleManager* instance;

@@ -17,7 +17,7 @@ void ParticleEmitter::Initialize(const std::string name, const std::string textu
 
 	ParticleManager::GetInstance()->CreateIndexResource(type);
 
-	if (type == Box) {
+	if (type == Ellipse) {
 		ParticleManager::GetInstance()->CreateParticleGroup(name, textureFilePath_);
 	}
 	if (type == Ring) {
@@ -93,9 +93,36 @@ void ParticleEmitter::Imgui(std::string name)
 
 #endif // _DEBUG
 
+/// getter
+// パーティクルグループ毎のデータを取得
+const ParticleSystem::ParticleGroupData& ParticleEmitter::GetParticleGroupData(std::string name)
+{
+	auto groupData = particleSystem_->GetParticleGroupData(name);
+	if (groupData) {
+		return *groupData; // データを返す
+	}
+	else {
+		static ParticleSystem::ParticleGroupData emptyData; // 空のデータを返す
+		return emptyData; // グループが存在しない場合は空のデータを返す
+	}
+}
+
 bool ParticleEmitter::GetIsBillboard(std::string name)
 {
 	return ParticleManager::GetInstance()->GetIsBillboard(name);
+}
+
+/// setter
+// パーティクルグループ毎のデータを設定
+void ParticleEmitter::SetParticleGroupData(const std::string& name, ParticleSystem::ParticleGroupData& particleGroupData)
+{
+	auto groupData = particleSystem_->GetParticleGroupData(name);
+	if (groupData) {
+		*groupData = particleGroupData; // データを更新
+	}
+	else {
+		return; // グループが存在しない場合は何もしない
+	}
 }
 
 void ParticleEmitter::SetBillboard(std::string name, bool isBillboard)
