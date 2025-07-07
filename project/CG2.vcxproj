@@ -11,11 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="application\scene\BaseScene.cpp" />
+    <ClCompile Include="application\collision\Collider.cpp" />
+    <ClCompile Include="application\collision\CollisionManager.cpp" />
+    <ClCompile Include="application\enemy\Enemy.cpp" />
+    <ClCompile Include="application\player\Player.cpp" />
+    <ClCompile Include="application\player\PlayerBullet.cpp" />
+    <ClCompile Include="engine\loader\JsonLoader.cpp" />
+    <ClCompile Include="engine\loader\LevelData.cpp" />
+    <ClCompile Include="engine\math\WorldTransform.cpp" />
+    <ClCompile Include="engine\scene\BaseScene.cpp" />
+    <ClCompile Include="application\scene\ClearScene.cpp" />
+    <ClCompile Include="application\scene\EventScene.cpp" />
+    <ClCompile Include="application\scene\GameOverScene.cpp" />
     <ClCompile Include="application\scene\GameScene.cpp" />
     <ClCompile Include="application\scene\MyGame.cpp" />
     <ClCompile Include="application\scene\SceneFactory.cpp" />
     <ClCompile Include="application\scene\TitleScene.cpp" />
+    <ClCompile Include="application\skydome\Skydome.cpp" />
     <ClCompile Include="engine\2d\Sprite.cpp" />
     <ClCompile Include="engine\2d\SpriteBase.cpp" />
     <ClCompile Include="engine\2d\TextureManager.cpp" />
@@ -36,25 +48,37 @@
     <ClCompile Include="engine\base\WindowsAPI.cpp" />
     <ClCompile Include="engine\input\Input.cpp" />
     <ClCompile Include="engine\light\LightManager.cpp" />
+    <ClCompile Include="engine\math\Matrix.cpp" />
+    <ClCompile Include="engine\math\MyBase.cpp" />
+    <ClCompile Include="engine\math\MyTools.cpp" />
     <ClCompile Include="engine\offscreen\OffScreen.cpp" />
     <ClCompile Include="engine\particle\ParticleBase.cpp" />
     <ClCompile Include="engine\particle\ParticleEmitter.cpp" />
     <ClCompile Include="engine\particle\ParticleManager.cpp" />
+    <ClCompile Include="engine\particle\ParticleSystem.cpp" />
     <ClCompile Include="engine\scene\MNFramework.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
-    <ClCompile Include="engine\Script\JsonLoader.cpp" />
-    <ClCompile Include="engine\Script\LevelData.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\Script\Matrix.cpp" />
-    <ClCompile Include="engine\Script\MyBase.cpp" />
-    <ClCompile Include="engine\Script\MyTools.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="application\scene\BaseScene.h" />
+    <ClInclude Include="application\collision\Collider.h" />
+    <ClInclude Include="application\collision\CollisionConfig.h" />
+    <ClInclude Include="application\collision\CollisionManager.h" />
+    <ClInclude Include="application\enemy\Enemy.h" />
+    <ClInclude Include="application\player\Player.h" />
+    <ClInclude Include="application\player\PlayerBullet.h" />
+    <ClInclude Include="engine\loader\JsonLoader.h" />
+    <ClInclude Include="engine\loader\LevelData.h" />
+    <ClInclude Include="engine\math\WorldTransform.h" />
+    <ClInclude Include="engine\scene\BaseScene.h" />
+    <ClInclude Include="application\scene\ClearScene.h" />
+    <ClInclude Include="application\scene\EventScene.h" />
+    <ClInclude Include="application\scene\GameOverScene.h" />
     <ClInclude Include="application\scene\GameScene.h" />
     <ClInclude Include="application\scene\MyGame.h" />
     <ClInclude Include="application\scene\SceneFactory.h" />
     <ClInclude Include="application\scene\TitleScene.h" />
+    <ClInclude Include="application\skydome\Skydome.h" />
     <ClInclude Include="engine\2d\Sprite.h" />
     <ClInclude Include="engine\2d\SpriteBase.h" />
     <ClInclude Include="engine\2d\TextureManager.h" />
@@ -75,18 +99,17 @@
     <ClInclude Include="engine\base\WindowsAPI.h" />
     <ClInclude Include="engine\input\Input.h" />
     <ClInclude Include="engine\light\LightManager.h" />
+    <ClInclude Include="engine\math\Matrix.h" />
+    <ClInclude Include="engine\math\MyBase.h" />
+    <ClInclude Include="engine\math\MyTools.h" />
     <ClInclude Include="engine\offscreen\OffScreen.h" />
     <ClInclude Include="engine\particle\ParticleBase.h" />
     <ClInclude Include="engine\particle\ParticleEmitter.h" />
     <ClInclude Include="engine\particle\ParticleManager.h" />
+    <ClInclude Include="engine\particle\ParticleSystem.h" />
     <ClInclude Include="engine\scene\AbstractSceneFactory.h" />
     <ClInclude Include="engine\scene\MNFramework.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
-    <ClInclude Include="engine\Script\JsonLoader.h" />
-    <ClInclude Include="engine\Script\LevelData.h" />
-    <ClInclude Include="engine\Script\Matrix.h" />
-    <ClInclude Include="engine\Script\MyBase.h" />
-    <ClInclude Include="engine\Script\MyTools.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -222,7 +245,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\Script;$(ProjectDir)engine\light;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -248,7 +271,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\Script;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)engine\Script;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)externals\assimp\include;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

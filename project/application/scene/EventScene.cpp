@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+#include "EventScene.h"
 #include <imgui.h>
 #include "CameraManager.h"
 #include "ModelManager.h"
@@ -8,18 +8,18 @@
 #include "MyTools.h"
 
 // 初期化
-void TitleScene::Initialize()
+void EventScene::Initialize()
 {
 	BaseScene::Initialize();
 
 #pragma region シーン初期化
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
+	TextureManager::GetInstance()->LoadTexture(filePath1_);
 
 	// スプライト
-	titleSprite_.reset(new Sprite);
-	titleSprite_->Initialize(titleTextureFilePath_);
-	titleSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
+	sprite_.reset(new Sprite);
+	sprite_->Initialize(filePath1_);
+	sprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 	// .objファイルからモデルを読み込む
 	
@@ -28,12 +28,13 @@ void TitleScene::Initialize()
 	
 
 	// パーティクル
-	/*particleEmitter_.reset(new ParticleEmitter);
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
+	//particleEmitter_.reset(new ParticleEmitter);
+	//particleEmitter_->Initialize("circle", "resources/circle.png");
 #pragma endregion シーン初期化
 
 #pragma region 変数
 	isParticleActive_ = true;
+	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -41,18 +42,19 @@ void TitleScene::Initialize()
 }
 
 // 終了
-void TitleScene::Finalize()
+void EventScene::Finalize()
 {
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
 	
+
 	// スプライト
-	titleSprite_.reset();
+	sprite_.reset();
 }
 
 // 毎フレーム更新
-void TitleScene::Update()
+void EventScene::Update()
 {
 	BaseScene::Update();
 
@@ -60,22 +62,19 @@ void TitleScene::Update()
 	// Nキーを押したら
 	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAME");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
-	}
-
+	
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Title Scene");
-	ImGui::Text("N key : gameScene");
-	ImGui::Text("B key : eventScene");
+	ImGui::Begin("Event");
+	ImGui::Text("N key : titleScene");
 	ImGui::End();
+
+	// デモウィンドウの表示オン
+	//ImGui::ShowDemoWindow();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
@@ -103,11 +102,11 @@ void TitleScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	titleSprite_->Update();
+	sprite_->Update();
 }
 
 // 描画
-void TitleScene::Draw()
+void EventScene::Draw()
 {
 #pragma region 3Dオブジェクト
 
@@ -132,7 +131,7 @@ void TitleScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	titleSprite_->Draw();
+	sprite_->Draw();
 
 #pragma endregion スプライト
 

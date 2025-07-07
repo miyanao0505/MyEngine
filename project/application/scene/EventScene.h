@@ -8,7 +8,7 @@
 #include "MyBase.h"
 
 // タイトルシーン
-class TitleScene : public BaseScene
+class EventScene : public BaseScene
 {
 public:	// メンバ関数
 	// 初期化
@@ -26,10 +26,10 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string titleTextureFilePath_ = "resources/texture/Title.png";	// タイトルテクスチャ
+	std::string filePath1_ = { "resources/texture/uvChecker.png" };
 
 	// スプライト
-	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
+	std::unique_ptr<Sprite> sprite_;
 
 	// モデルファイルパス
 	

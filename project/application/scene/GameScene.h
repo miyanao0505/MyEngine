@@ -4,6 +4,9 @@
 #include <vector>
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Skydome.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -26,31 +29,24 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = { "resources/uvChecker.png" };
-	std::string filePath2_ = { "resources/monsterBall.png" };
-	//std::string filePath3_ = { "resources/fence.png" };
-	//std::string filePath4_ = { "resources/circle.png" };
-	std::string filePath5_ = { "resources/ground.png" };
-	std::string filePath6_ = { "resources/grass.png" };
+	std::string gameTextureFilePath_ = "resources/texture/Game.png";	// タイトルテクスチャ
 
 	// スプライト
-	std::vector<std::unique_ptr<Sprite>> sprites_;
+	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト
 
 	// モデルファイルパス
-	MyBase::ModelFilePath modelFilePath1_ = { {"resources/plane"}, {"plane.obj"} };
-	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
-	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
-	MyBase::ModelFilePath modelFilePath4_ = { {"resources/sphere"}, {"sphere.obj"} };
-	MyBase::ModelFilePath modelFilePath5_ = { {"resources/ground"}, {"ground.obj"} };
-	MyBase::ModelFilePath modelFilePath6_ = { {"resources/terrain"}, {"terrain.obj"} };
+	
 
 	// 3Dオブジェクト
-	std::vector<std::unique_ptr<Object3d>> objects_;
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+	// 敵
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+	// 天球
+	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// パーティクル
-	std::unique_ptr<ParticleEmitter> particleHitEmitter_ = nullptr;
-	std::unique_ptr<ParticleEmitter> particleRingEmitter_ = nullptr;
-	std::unique_ptr<ParticleEmitter> particleCylinderEmitter_ = nullptr;
+	
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;
