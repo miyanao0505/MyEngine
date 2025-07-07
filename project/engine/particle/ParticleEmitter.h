@@ -24,6 +24,9 @@ public:	// メンバ関数
 	// パーティクルの発生
 	void Emit();
 
+	// パーティクルグループの作成
+	void CreateParticleGroup(const std::string name, const std::string textureFilePath, const ParticleType type = Ellipse);
+
 #ifdef _DEBUG
 	void Imgui(std::string name);
 #endif // _DEBUG
@@ -39,12 +42,11 @@ public:	// setter
 	void SetPosition(const MyBase::Vector3& position) { transform_.translate = position; }
 	void SetRotation(const MyBase::Vector3& rotation) { transform_.rotate = rotation; }
 	void SetSize(const MyBase::Vector3& size) { transform_.scale = size; }
+	void SetParticleGroupName(const std::string& name);
 	void SetParticleGroupData(const std::string& name, ParticleSystem::ParticleGroupData& particleGroupData);
 	void SetBillboard(std::string name, bool isBillboard);
 
 private:	// メンバ変数
-	std::string textureFilePath_;
-
 	// 発生中心
 	MyBase::Transform transform_{};
 

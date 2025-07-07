@@ -38,18 +38,32 @@ void Enemy::Initialize()
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffect = {
-		.size = { 5.f, 10.0f },
+		.size = { 1.f, 5.0f },
 		.energy = { 1.0f, 1.0f },
 		.count = { 10, 15 },
 		.speed = { 0.0f, 0.0f },
 		.direction = { 0.0f, 0.0f, 0.0f },
-		.color = { 1.0f, 1.0f, 1.0f, 1.0f },
+		.color = { 0.88f, 0.28f, 0.0f, 1.0f },
 		.frequency = 1.5f,
-		.isBillboard = false,
+		.isBillboard = true,
 		.isEmitUpdate = true
 	};
 	particleEmitter_->SetParticleGroupData("hitEffectEnemy", hitEffect);
-
+	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "resources/texture/gradationLine.png", ParticleEmitter::Ring);
+	particleEmitter_->SetPosition(object_->GetTranslate());
+	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
+	ParticleSystem::ParticleGroupData hitEffectRing = {
+		.size = { 1.5f, 1.5f },
+		.energy = { 1.0f, 1.0f },
+		.count = { 1, 5 },
+		.speed = { 0.0f, 0.0f },
+		.direction = { 0.0f, 0.0f, 0.0f },
+		.color = { 0.88f, 0.28f, 0.0f, 1.0f },
+		.frequency = 1.5f,
+		.isBillboard = true,
+		.isEmitUpdate = true
+	};
+	particleEmitter_->SetParticleGroupData("hitEffectRingEnemy", hitEffectRing);
 
 	// 敵のステータスの初期化
 	hp_ = 100; // 初期HP

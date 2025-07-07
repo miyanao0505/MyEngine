@@ -90,6 +90,7 @@ public:	// メンバ関数
 
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
+	ParticleGroup* GetParticleGroup(const std::string& name);
 	bool GetIsBillboard(const std::string& name);
 
 public:	// setter

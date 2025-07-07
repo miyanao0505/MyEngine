@@ -45,19 +45,12 @@ public:	// メンバ関数
 	void Imgui(std::string name);
 #endif // _DEBUG
 
-	/// <summary>
-	/// パーティクルグループデータの追加
-	/// </summary>
-	/// <param name="groupName">パーティクルグループ名</param>
-	void AddParticleGroupData(const std::string& groupName);
-
 public: // getter
 	/// <summary>
 	/// パーティクルグループデータの取得
 	/// </summary>
 	/// <returns>パーティクルグループデータのマップ</returns>
 	const std::map<std::string, std::unique_ptr<ParticleGroupData>>& GetParticleGroupDatas() { return particleGroupDatas_; }
-
 
 	/// <summary>
 	/// パーティクルグループデータの取得
@@ -74,13 +67,17 @@ public: // getter
 
 public: // setter
 	/// <summary>
-	/// パーティクルグループデータの設定
+	/// パーティクルグループ名の設定
+	/// </summary>
+	/// <param name="groupName"></param>
+	void SetParticleGroupName(const std::string& groupName);
+
+	/// <summary>
+	/// パーティクルグループデータの追加
 	/// </summary>
 	/// <param name="groupName">パーティクルグループ名</param>
 	/// <param name="data">パーティクルグループデータ</param>
-	void SetParticleGroupData(const std::string& groupName, std::unique_ptr<ParticleGroupData> data) {
-		particleGroupDatas_[groupName] = std::move(data);
-	}
+	void SetParticleGroupData(const std::string& groupName, ParticleGroupData& data);
 
 private: // メンバ変数
 	std::map<std::string, std::unique_ptr<ParticleGroupData>> particleGroupDatas_;		// パーティクルグループ名とパーティクルデータのリスト
