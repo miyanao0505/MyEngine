@@ -381,6 +381,7 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
 		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
 	}
+	group.isBillboard = particleGroupData.isBillboard;
 }
 
 void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
@@ -425,6 +426,15 @@ void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 	indexResource_->Unmap(0, nullptr);
 }
 
+ParticleManager::ParticleGroup* ParticleManager::GetParticleGroup(const std::string& name)
+{
+	auto it = particleGroups_.find(name);
+	if (it != particleGroups_.end()) {
+		return it->second.get();
+	}
+	return nullptr;
+}
+
 bool ParticleManager::GetIsBillboard(const std::string& name)
 {
 	if (particleGroups_.count(name) == 0) {
@@ -464,7 +474,7 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 	}
 	else if (type == ParticleEmitter::Ring) {
 		particle.transform.scale = { distScale(randomEngine), distScale(randomEngine), distScale(randomEngine) };
-		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
+		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
 	}
 	else if (type == ParticleEmitter::Cylinder) {
 		particle.transform.scale = { distScale(randomEngine), distScale(randomEngine), distScale(randomEngine) };

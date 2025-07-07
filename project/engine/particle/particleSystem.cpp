@@ -41,12 +41,20 @@ void ParticleSystem::Imgui(std::string name)
 }
 #endif // _DEBUG
 
-// パーティクルグループデータの追加
-void ParticleSystem::AddParticleGroupData(const std::string& groupName)
+// パーティクルグループ名の設定
+void ParticleSystem::SetParticleGroupName(const std::string& groupName)
 {
 	if (particleGroupDatas_.empty() || particleGroupDatas_.count(groupName) == 0) {
-		// 新しいパーティクルグループデータを追加
-		ParticleGroupData newGroupData;
-		particleGroupDatas_[groupName] = std::make_unique<ParticleGroupData>(newGroupData);
+		// 新しいパーティクルグループ名を追加
+		particleGroupDatas_[groupName] = std::make_unique<ParticleGroupData>();
+	}
+}
+
+// パーティクルグループデータの追加
+void ParticleSystem::SetParticleGroupData(const std::string& groupName, ParticleGroupData& data)
+{
+	if (!particleGroupDatas_.empty()) {
+		// パーティクルグループデータのセット
+		particleGroupDatas_[groupName] = std::make_unique<ParticleGroupData>(data);
 	}
 }
