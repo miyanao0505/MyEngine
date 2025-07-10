@@ -11,11 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\collision\BaseObjectCollider.cpp" />
     <ClCompile Include="application\collision\Collider.cpp" />
     <ClCompile Include="application\collision\CollisionManager.cpp" />
     <ClCompile Include="application\enemy\Enemy.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\player\PlayerBullet.cpp" />
+    <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
     <ClCompile Include="engine\loader\LevelData.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
@@ -61,12 +63,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\collision\BaseObjectCollider.h" />
     <ClInclude Include="application\collision\Collider.h" />
     <ClInclude Include="application\collision\CollisionConfig.h" />
     <ClInclude Include="application\collision\CollisionManager.h" />
     <ClInclude Include="application\enemy\Enemy.h" />
     <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\player\PlayerBullet.h" />
+    <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="engine\loader\LevelData.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />

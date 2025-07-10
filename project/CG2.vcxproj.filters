@@ -270,6 +270,12 @@
     <ClCompile Include="engine\loader\LevelData.cpp">
       <Filter>ソース ファイル\engine\loader</Filter>
     </ClCompile>
+    <ClCompile Include="engine\3d\BaseObject.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="application\collision\BaseObjectCollider.cpp">
+      <Filter>ソース ファイル\application\collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -418,6 +424,12 @@
     </ClInclude>
     <ClInclude Include="engine\loader\LevelData.h">
       <Filter>ヘッダー ファイル\engine\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\BaseObject.h">
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="application\collision\BaseObjectCollider.h">
+      <Filter>ヘッダー ファイル\application\collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,25 +1,32 @@
 #include "PlayerBullet.h"
 #include "ModelManager.h"
 #include "MyTools.h"
+#include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
 #include "imgui.h"
+
+using namespace std;
 
 // 初期化
 void PlayerBullet::Initialize(MyBase::Vector3 position)
 {
-	// プレイヤー弾のコライダーの初期化
-	SetRadius(0.5f);
-	SetSize({ 0.5f, 0.5f });
-	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)); // プレイヤー弾
-
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
-	object_ = std::make_unique<Object3d>();
-	object_->Initislize("sphere.obj");
+
+	// ベースオブジェクトの初期化
+	BaseObject::Initialize("sphere.obj");
+
 	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.25f, 0.25f, 0.25f });
-	
+
+	// プレイヤー弾のコライダーの初期化
+	auto col = make_unique<BaseObjectCollider>(this);
+	col->SetRadius(0.5f);
+	col->SetSize({ 0.5f, 0.5f });
+	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)); // プレイヤー弾
+	SetCollider(std::move(col)); // コライダーをセット
+
 	deathTimer_ = kLifeTime;
 }
 

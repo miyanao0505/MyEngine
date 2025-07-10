@@ -1,11 +1,10 @@
 #pragma once
-#include "Collider.h"
+#include "BaseObject.h"
 #include <list>
-#include "Object3d.h"
 #include "TextureManager.h"
 #include "ParticleEmitter.h"
 
-class Enemy : public Collider
+class Enemy : public BaseObject
 {
 public:	// メンバ関数
 	Enemy();
@@ -37,15 +36,12 @@ public:	// メンバ関数
 
 public:	// getter
 	// 
-	Vector3 GetWorldPosition() override { return object_->GetTranslate(); };
+	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
 
 
 private:	/// メンバ変数
-	// モデル
-	std::unique_ptr<Object3d> object_ = nullptr;
-
 	// パーティクルエミッター
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
