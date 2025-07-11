@@ -20,6 +20,7 @@
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
     <ClCompile Include="engine\loader\LevelData.cpp" />
+    <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\ClearScene.cpp" />
@@ -73,6 +74,7 @@
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="engine\loader\LevelData.h" />
+    <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="application\scene\ClearScene.h" />

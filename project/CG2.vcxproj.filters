@@ -276,6 +276,9 @@
     <ClCompile Include="application\collision\BaseObjectCollider.cpp">
       <Filter>ソース ファイル\application\collision</Filter>
     </ClCompile>
+    <ClCompile Include="engine\math\Quaternion.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="application\collision\BaseObjectCollider.h">
       <Filter>ヘッダー ファイル\application\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Quaternion.h">
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

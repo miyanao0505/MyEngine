@@ -42,6 +42,8 @@ public:	// getter
 	Object3d* GetObject3d() const { return object_.get(); }
 
 public:	// setter
+	void SetModel(const std::string& modelPath) { if (object_) { object_->SetModel(modelPath); } }
+	void SetObject3d(std::unique_ptr<Object3d> object) { object_ = std::move(object); }
 	void SetCollider(std::unique_ptr<Collider> collider) { collider_ = std::move(collider); }
 
 protected:	// メンバ変数

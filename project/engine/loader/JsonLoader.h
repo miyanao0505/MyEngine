@@ -13,10 +13,13 @@ public:	// 構造体
 	struct LevelObjectData {
 		std::string name;
 		std::string meshName;
-		std::string textureName;
+		std::string objectName;
 		MyBase::Vector3 translation;
 		MyBase::Vector3 rotation;
 		MyBase::Vector3 scale;
+		float radius;
+		MyBase::AABB aabb;
+		MyBase::OBB obb;
 	};
 
 public:	// メンバ関数
@@ -25,8 +28,10 @@ public:	// メンバ関数
 	/// JSONファイルを読み込む
 	/// </summary>
 	/// <param name="filePath">読み込むJSONファイルのパス</param>
-	/// <returns>読み込み成功ならtrue</returns>
+	/// <returns></returns>
 	static std::vector<LevelObjectData> LoadFile(const std::string& filePath);
+
+
 
 public:	// getter
 	/// <summary>
