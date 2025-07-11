@@ -25,7 +25,7 @@ bool LevelData::LoadFromFile(const string& jsonFilePath)
 		gameObject->GetObject3d()->SetTranslate(objData.translation);
 		gameObject->GetObject3d()->SetRotate(objData.rotation);
 		gameObject->GetObject3d()->SetScale(objData.scale);
-		gameObject->GetObject3d()->SetTexture("resources/textures/" + objData.textureName + ".png");
+		gameObject->GetObject3d()->SetTexture("resources/textures/" + objData.objectName + ".png");
 		gameObject->GetObject3d()->SetEnableLighting(true); // ライティングを有効にする
 
 		// コライダーを生成してGameObjectにセット

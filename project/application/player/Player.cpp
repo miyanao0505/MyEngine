@@ -37,7 +37,8 @@ void Player::Initialize(MyBase::Vector3 position)
 	// プレイヤーのコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
 	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
-	col->SetSize({ 1.0f, 1.0f });
+	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
+	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	SetCollider(std::move(col)); // コライダーをセット
 

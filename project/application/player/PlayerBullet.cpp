@@ -22,8 +22,9 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 
 	// プレイヤー弾のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
-	col->SetRadius(0.5f);
-	col->SetSize({ 0.5f, 0.5f });
+	col->SetRadius(0.50f); // 半径0.50fの球体コライダー
+	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
+	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)); // プレイヤー弾
 	SetCollider(std::move(col)); // コライダーをセット
 
