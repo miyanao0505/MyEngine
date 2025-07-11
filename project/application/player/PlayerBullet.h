@@ -1,8 +1,7 @@
 #pragma once
-#include "Collider.h"
-#include "Object3d.h"
+#include "BaseObject.h"
 
-class PlayerBullet : public Collider
+class PlayerBullet : public BaseObject
 {
 public:	// メンバ関数
 	virtual ~PlayerBullet() = default;	// 仮想デストラクタ
@@ -42,7 +41,7 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
-	Vector3 GetWorldPosition() override { return object_->GetTranslate(); };
+	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 	bool IsDead() const { return isDead_; }	// 弾が消滅したかどうか
 
@@ -50,9 +49,6 @@ public:	// setter
 
 
 private:	// メンバ変数
-	// モデル
-	std::unique_ptr<Object3d> object_ = nullptr;
-
 	// ステータス
 	bool isDead_ = false;
 

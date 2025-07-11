@@ -1,9 +1,12 @@
 #include "Player.h"
 #include "Input.h"
 #include "ModelManager.h"
+#include "BaseObjectCollider.h"
 #include"CollisionConfig.h"
 #include "MyTools.h"
 #include "imgui.h"
+
+using namespace std;
 
 Player::Player()
 {
@@ -20,19 +23,24 @@ Player::~Player()
 /// 初期化
 void Player::Initialize(MyBase::Vector3 position)
 {
-	// プレイヤーのコライダーの初期化
-	SetRadius(1.0f);
-	SetSize({ 1.0f, 1.0f });
-	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/player", "player.obj");
-	
+
+	// ベースオブジェクトの初期化
+	BaseObject::Initialize("player.obj");
+
 	// プレイヤーのオブジェクトの初期化
-	object_ = std::make_unique<Object3d>();
 	object_->Initislize("player.obj");
-	//object_->SetTexture("monsterBall.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	// プレイヤーのコライダーの初期化
+	auto col = make_unique<BaseObjectCollider>(this);
+	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
+	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
+	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
+	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
+	SetCollider(std::move(col)); // コライダーをセット
 
 	// 弾の初期化
 	bullets_.clear();

@@ -11,11 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\collision\BaseObjectCollider.cpp" />
     <ClCompile Include="application\collision\Collider.cpp" />
     <ClCompile Include="application\collision\CollisionManager.cpp" />
     <ClCompile Include="application\enemy\Enemy.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\player\PlayerBullet.cpp" />
+    <ClCompile Include="engine\3d\BaseObject.cpp" />
+    <ClCompile Include="engine\loader\JsonLoader.cpp" />
+    <ClCompile Include="engine\loader\LevelData.cpp" />
+    <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
     <ClCompile Include="application\scene\ClearScene.cpp" />
@@ -59,12 +64,17 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\collision\BaseObjectCollider.h" />
     <ClInclude Include="application\collision\Collider.h" />
     <ClInclude Include="application\collision\CollisionConfig.h" />
     <ClInclude Include="application\collision\CollisionManager.h" />
     <ClInclude Include="application\enemy\Enemy.h" />
     <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\player\PlayerBullet.h" />
+    <ClInclude Include="engine\3d\BaseObject.h" />
+    <ClInclude Include="engine\loader\JsonLoader.h" />
+    <ClInclude Include="engine\loader\LevelData.h" />
+    <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />
     <ClInclude Include="engine\scene\BaseScene.h" />
     <ClInclude Include="application\scene\ClearScene.h" />
@@ -223,12 +233,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui;$(SolutionDir)externals\nlohmann</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)..\generated\obj\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)..\generated\outputs\$(Configuration)\</OutDir>
-    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui</IncludePath>
+    <IncludePath>$(SolutionDir)externals\DirectXTex;$(SolutionDir)externals\imgui;$(SolutionDir)externals\nlohmann</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -1,8 +1,11 @@
 #include "Enemy.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
+#include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
 #include <imgui.h>
+
+using namespace std;
 
 Enemy::Enemy()
 {
@@ -17,21 +20,27 @@ Enemy::~Enemy()
 // 初期化
 void Enemy::Initialize()
 {
-	// 敵のコライダーの初期化
-	SetRadius(1.0f); // 半径1.0fの球体コライダー
-	SetSize({ 1.0f, 1.0f });
-	SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)); // コリジョン属性
-
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
 	TextureManager::GetInstance()->LoadTexture("resources/texture/uvChecker.png");
 
-	object_ = std::make_unique<Object3d>();
+	// ベースオブジェクトの初期化
+	BaseObject::Initialize("sphere.obj");
+	
+	// 3Dオブジェクトの初期化
 	object_->Initislize("sphere.obj");
 	object_->SetTexture("resources/texture/uvChecker.png");
 	object_->SetTranslate({ 0.0f, 0.0f, 15.0f }); // 初期位置
 	object_->SetScale({ 0.50f, 0.50f, 0.50f }); // 初期スケール
 
+	// 敵のコライダーの初期化
+	auto col = make_unique<BaseObjectCollider>(this);
+	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
+	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
+	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
+	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)); // コリジョン属性
+	SetCollider(std::move(col)); // コライダーをセット
+	
 	// パーティクルエミッターの初期化
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleEmitter::Ellipse);

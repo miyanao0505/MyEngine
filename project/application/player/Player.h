@@ -1,12 +1,11 @@
 #pragma once
-#include "Collider.h"
+#include "BaseObject.h"
 #include <list>
-#include "Object3d.h"
 #include "TextureManager.h"
 #include "PlayerBullet.h"
 
 // プレイヤー
-class Player : public Collider
+class Player : public BaseObject
 {
 public:	// メンバ関数
 	Player();
@@ -53,15 +52,12 @@ public:	// メンバ関数
 
 public:	// getter
 	// 
-	Vector3 GetWorldPosition() override { return object_->GetTranslate(); };
+	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
 
 
-private:	// メンバ変数
-	// モデル
-	std::unique_ptr<Object3d> object_ = nullptr;
-	
+private:	// メンバ変数	
 	// プレイヤーの弾リスト
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 	

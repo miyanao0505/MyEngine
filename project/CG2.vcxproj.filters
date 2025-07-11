@@ -31,9 +31,6 @@
     <Filter Include="ソース ファイル\engine\audio">
       <UniqueIdentifier>{0b038d45-ab7f-43b7-83ca-9a2fea9cd6a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\engine\math">
-      <UniqueIdentifier>{52af18ad-6c51-47bf-9e55-b617bb791c8a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\engine\scene">
       <UniqueIdentifier>{505b9bbf-5d58-4654-bdd2-40cbba5967f6}</UniqueIdentifier>
     </Filter>
@@ -63,9 +60,6 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\engine\Input">
       <UniqueIdentifier>{5fef2883-4e23-4c76-a6f3-9967996d1092}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\engine\math">
-      <UniqueIdentifier>{7fad104e-79ca-4566-9ed9-4ecc643c2503}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\engine\particle">
       <UniqueIdentifier>{db79a3b4-49d6-49ef-bd83-973d1cf41c20}</UniqueIdentifier>
@@ -117,6 +111,18 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\application\enemy">
       <UniqueIdentifier>{fdece29b-5092-4e5a-9a54-6241f75d0196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\math">
+      <UniqueIdentifier>{3124476f-16bd-4e9d-a7af-89c900f3c64f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\math">
+      <UniqueIdentifier>{9af9f3ec-f44c-419f-9fdc-20baa78c03d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\loader">
+      <UniqueIdentifier>{52af18ad-6c51-47bf-9e55-b617bb791c8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\loader">
+      <UniqueIdentifier>{7fad104e-79ca-4566-9ed9-4ecc643c2503}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +246,12 @@
     <ClCompile Include="application\enemy\Enemy.cpp">
       <Filter>ソース ファイル\application\enemy</Filter>
     </ClCompile>
+    <ClCompile Include="engine\scene\BaseScene.cpp">
+      <Filter>ソース ファイル\engine\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\application\player</Filter>
+    </ClCompile>
     <ClCompile Include="engine\math\Matrix.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
@@ -249,14 +261,23 @@
     <ClCompile Include="engine\math\MyTools.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\scene\BaseScene.cpp">
-      <Filter>ソース ファイル\engine\scene</Filter>
-    </ClCompile>
     <ClCompile Include="engine\math\WorldTransform.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="application\player\PlayerBullet.cpp">
-      <Filter>ソース ファイル\application\player</Filter>
+    <ClCompile Include="engine\loader\JsonLoader.cpp">
+      <Filter>ソース ファイル\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\loader\LevelData.cpp">
+      <Filter>ソース ファイル\engine\loader</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\BaseObject.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="application\collision\BaseObjectCollider.cpp">
+      <Filter>ソース ファイル\application\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Quaternion.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -383,6 +404,12 @@
     <ClInclude Include="application\enemy\Enemy.h">
       <Filter>ヘッダー ファイル\application\enemy</Filter>
     </ClInclude>
+    <ClInclude Include="engine\scene\BaseScene.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\application\player</Filter>
+    </ClInclude>
     <ClInclude Include="engine\math\Matrix.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
@@ -392,14 +419,23 @@
     <ClInclude Include="engine\math\MyTools.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="engine\scene\BaseScene.h">
-      <Filter>ヘッダー ファイル\engine\scene</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\WorldTransform.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="application\player\PlayerBullet.h">
-      <Filter>ヘッダー ファイル\application\player</Filter>
+    <ClInclude Include="engine\loader\JsonLoader.h">
+      <Filter>ヘッダー ファイル\engine\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\loader\LevelData.h">
+      <Filter>ヘッダー ファイル\engine\loader</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\BaseObject.h">
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="application\collision\BaseObjectCollider.h">
+      <Filter>ヘッダー ファイル\application\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Quaternion.h">
+      <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
