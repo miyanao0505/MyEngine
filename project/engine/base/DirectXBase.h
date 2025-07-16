@@ -91,7 +91,7 @@ public:	// getter
 	// バックバッファの数を取得
 	size_t GetBackBufferCount() const { return backBuffer_.size(); }
 
-private:
+private:	// メンバ関数
 	// デバイスの生成
 	void CreateDevice();
 	// コマンド関連の生成

@@ -12,25 +12,42 @@ void TitleScene::Initialize()
 {
 	BaseScene::Initialize();
 
-#pragma region シーン初期化
+#pragma region スプライト
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
+	// テスト用テクスチャの読み込み
+	TextureManager::GetInstance()->LoadTexture(testTextureFilePath_);
 
 	// スプライト
 	titleSprite_.reset(new Sprite);
 	titleSprite_->Initialize(titleTextureFilePath_);
 	titleSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
+#pragma endregion スプライト
+
+#pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
 	
 
 	// 3Dオブジェクト
-	
+	// Skybox
+	skybox_ = std::make_unique<Skybox>();
+	skybox_->Initislize()
 
+#pragma endregion 3Dオブジェクト
+
+#pragma region パーティクル
 	// パーティクル
 	/*particleEmitter_.reset(new ParticleEmitter);
 	particleEmitter_->Initialize("circle", "resources/circle.png");*/
-#pragma endregion シーン初期化
+
+#pragma endregion パーティクル
+
+#pragma region オーディオ
+	// BGM
+
+	
+#pragma endregion オーディオ
 
 #pragma region 変数
 	isParticleActive_ = true;
@@ -48,6 +65,7 @@ void TitleScene::Finalize()
 	// 3Dオブジェクト
 	
 	// スプライト
+	testSprite_.reset();
 	titleSprite_.reset();
 }
 
@@ -79,7 +97,8 @@ void TitleScene::Update()
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
-	
+	// 天球の更新
+	skydome_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -104,6 +123,7 @@ void TitleScene::Update()
 
 	// スプライトの更新処理
 	titleSprite_->Update();
+	testSprite_->Update();
 }
 
 // 描画
@@ -115,7 +135,8 @@ void TitleScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	
+	// 天球の描画
+	skydome_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -133,6 +154,7 @@ void TitleScene::Draw()
 
 	// 全てのSprite個々の描画
 	titleSprite_->Draw();
+	testSprite_->Draw();
 
 #pragma endregion スプライト
 

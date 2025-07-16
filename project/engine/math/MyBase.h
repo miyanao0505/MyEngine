@@ -255,6 +255,13 @@ public:
 	};
 
 	/// <summary>
+	/// 頂点データ(スカイボックス用)
+	/// </summary>
+	struct ModelSkyboxVertexData {
+		Vector4 position;		//!< 頂点位置
+	};
+
+	/// <summary>
 	/// 頂点データ(パーティクル)
 	/// </summary>
 	struct ParticleVertexData {

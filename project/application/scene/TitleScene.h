@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Object3d.h"
+#include "Skybox.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -27,15 +27,14 @@ private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
 	std::string titleTextureFilePath_ = "resources/texture/Title.png";	// タイトルテクスチャ
+	std::string testTextureFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";	// テスト用テクスチャ
 
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
 
-	// モデルファイルパス
-	
-
 	// 3Dオブジェクト
-	
+	// Skybox
+	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

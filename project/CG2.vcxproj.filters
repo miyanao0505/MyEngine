@@ -279,6 +279,9 @@
     <ClCompile Include="engine\math\Quaternion.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
+    <ClCompile Include="engine\3d\Skybox.cpp">
+      <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -437,6 +440,9 @@
     <ClInclude Include="engine\math\Quaternion.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="engine\3d\Skybox.h">
+      <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resources\shaders\Object3d.PS.hlsl">
@@ -478,6 +484,12 @@
     <FxCompile Include="resources\shaders\GaussianFilter.PS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\Skybox.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Skybox.VS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">
@@ -490,6 +502,9 @@
       <Filter>シェダー ファイル</Filter>
     </None>
     <None Include="resources\shaders\Fullscreen.hlsli">
+      <Filter>シェダー ファイル</Filter>
+    </None>
+    <None Include="resources\shaders\Skybox.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
   </ItemGroup>
