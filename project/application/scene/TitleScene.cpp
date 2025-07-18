@@ -32,7 +32,7 @@ void TitleScene::Initialize()
 	// 3Dオブジェクト
 	// Skybox
 	skybox_ = std::make_unique<Skybox>();
-	skybox_->Initislize()
+	skybox_->Initislize(testTextureFilePath_, { 50.0f, 50.0f, 50.0f });
 
 #pragma endregion 3Dオブジェクト
 
@@ -63,9 +63,9 @@ void TitleScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	
+	skybox_.reset();
+
 	// スプライト
-	testSprite_.reset();
 	titleSprite_.reset();
 }
 
@@ -86,19 +86,13 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("EVENT");
 	}
 
-	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	DebugDraw();
 
-	ImGui::Begin("Title Scene");
-	ImGui::Text("N key : gameScene");
-	ImGui::Text("B key : eventScene");
-	ImGui::End();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
 	// 天球の更新
-	skydome_->Update();
+	skybox_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -123,7 +117,6 @@ void TitleScene::Update()
 
 	// スプライトの更新処理
 	titleSprite_->Update();
-	testSprite_->Update();
 }
 
 // 描画
@@ -136,7 +129,7 @@ void TitleScene::Draw()
 
 	// 全ての3DObject個々の描画
 	// 天球の描画
-	skydome_->Draw();
+	skybox_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -154,8 +147,63 @@ void TitleScene::Draw()
 
 	// 全てのSprite個々の描画
 	titleSprite_->Draw();
-	testSprite_->Draw();
 
 #pragma endregion スプライト
+}
 
+// デバッグ描画
+void TitleScene::DebugDraw()
+{
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
+	ImGui::Begin("Title Scene");
+	ImGui::Text("N key : gameScene");
+	ImGui::Text("B key : eventScene");
+	ImGui::End();
+
+	ImGui::Begin("Settings");
+	// カメラ
+	if (ImGui::CollapsingHeader("Camera"))
+	{
+		// 変更するための変数
+		MyBase::Transform transformCamera{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+
+		static ImGuiComboFlags flags = 0;
+		const char* cameraNames[] = { "default", "sub" };
+		static int cameraIndex = 0;
+
+		const char* cameraNowVlue = cameraNames[cameraIndex];
+
+		if (ImGui::BeginCombo("Now Camera", cameraNowVlue, flags))
+		{
+			for (int i = 0; i < IM_ARRAYSIZE(cameraNames); i++)
+			{
+				const bool isSelected = (cameraIndex == i);
+				if (ImGui::Selectable(cameraNames[i], isSelected)) {
+					cameraIndex = i;
+					CameraManager::GetInstance()->FindCamera(cameraNames[i]);
+				}
+
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		transformCamera.translate = CameraManager::GetInstance()->GetCamera()->GetTranslate();
+		ImGui::DragFloat3("translate", &transformCamera.translate.x, 0.05f);
+		CameraManager::GetInstance()->GetCamera()->SetTranslate(transformCamera.translate);
+		transformCamera.rotate = CameraManager::GetInstance()->GetCamera()->GetRotate();
+		ImGui::DragFloat3("rotate", &transformCamera.rotate.x, 0.05f);
+		CameraManager::GetInstance()->GetCamera()->SetRotate(transformCamera.rotate);
+
+		ImGui::Text("\n");
+	}
+	// Skybox
+	skybox_->DebugDraw();
+
+	ImGui::End();
 }

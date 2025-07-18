@@ -7,10 +7,10 @@
 const uint32_t SrvManager::kMaxSRVCount = 512;
 
 // 初期化
-void SrvManager::Initialize(DirectXBase* dxBase)
+void SrvManager::Initialize()
 {
 	// メンバ変数に記録
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 
 	// SRV用のでスクリプタヒープの生成

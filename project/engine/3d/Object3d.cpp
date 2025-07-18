@@ -21,7 +21,7 @@ void Object3d::Initislize(const std::string& filePath)
 	CreateCameraData();
 
 	// ライトの初期化
-	LightManager::GetInstance()->Initialize(object3dBase_->GetDxBase());
+	LightManager::GetInstance()->Initialize();
 
 	// 3DオブジェクトのTransformの初期化
 	worldTransform_ = std::make_unique<WorldTransform>();

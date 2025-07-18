@@ -23,6 +23,9 @@ public:	//メンバ関数
 	// 描画
 	virtual void Draw();
 
+	// デバック描画
+	virtual void DebugDraw();
+
 public:	// setter
 	// シーンマネージャのセット
 	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }

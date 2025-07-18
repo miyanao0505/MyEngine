@@ -17,8 +17,12 @@ class SrvManager;
 class DirectXBase
 {
 public:	// メンバ関数
+	static DirectXBase* GetInstance();
+
 	// 初期化
 	void Initialize(WindowsAPI* winApi);
+	// 終了
+	void Finalize();
 	// 描画前処理(RenderTexture)
 	void PreRenderTexture();
 	// 描画前処理
@@ -124,6 +128,14 @@ private:	// メンバ関数
 	void InitializeFixFPS();
 	// FPS固定更新
 	void UpdateFixFPS();
+
+private:	// シングルトンインスタンス
+	static DirectXBase* instance;
+
+	DirectXBase() = default;
+	~DirectXBase() = default;
+	DirectXBase(DirectXBase&) = default;
+	DirectXBase& operator=(DirectXBase&) = delete;
 
 private:	// メンバ変数
 	// DirectX12デバイス

@@ -4,7 +4,6 @@
 #include "Object3dBase.h"
 #include "CameraManager.h"
 
-
 enum class LightType {
 	Directional,
 	Point,
@@ -21,7 +20,7 @@ public:	// メンバ関数
 	void Finalize();
 
 	// 初期化
-	void Initialize(DirectXBase* dxBase);
+	void Initialize();
 
 	// 描画処理
 	void Draw(Object3dBase* object3dBase);

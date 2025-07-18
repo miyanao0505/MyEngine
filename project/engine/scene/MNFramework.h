@@ -50,7 +50,7 @@ protected:	// メンバ変数
 	// windowsAPI
 	std::unique_ptr<WindowsAPI> winApi_ = nullptr;
 	// DirectXBase
-	std::unique_ptr<DirectXBase> dxBase_ = nullptr;
+	DirectXBase* dxBase_ = nullptr;
 	// 入力
 	Input* input_ = nullptr;
 	// SRVマネージャ

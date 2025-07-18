@@ -26,6 +26,9 @@ public:	// メンバ関数
 	// 描画
 	void Draw() override;
 
+	// デバッグ描画
+	void DebugDraw() override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス

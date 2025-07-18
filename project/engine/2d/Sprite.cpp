@@ -121,7 +121,7 @@ void Sprite::SetTexture(std::string textureFilePath)
 void Sprite::CreateVertexData()
 {
 	// VertexResourceを作る
-	vertexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::SpriteVertexData) * 6);
+	vertexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::SpriteVertexData) * 4);
 	// IndexResourceを作る
 	indexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(uint32_t) * 6);
 	

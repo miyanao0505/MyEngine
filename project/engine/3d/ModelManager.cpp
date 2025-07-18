@@ -19,15 +19,15 @@ void ModelManager::Finalize()
 }
 
 // 初期化
-void ModelManager::Initialize(DirectXBase* dxBase)
+void ModelManager::Initialize()
 {
 	// モデル共通部の初期化
 	modelBase_ = std::make_unique<ModelBase>();
-	modelBase_->Initislize(dxBase);
+	modelBase_->Initislize();
 
 	// 3dオブジェクト共通部の初期化
 	object3dBase_ = std::make_unique<Object3dBase>();
-	object3dBase_->Initislize(dxBase);
+	object3dBase_->Initislize();
 }
 
 /// モデルファイルの読み込み

@@ -4,10 +4,10 @@
 #include <imgui_impl_dx12.h>
 
 // 初期化
-void ImGuiManager::Initialize(WindowsAPI* winBase, DirectXBase* dxBase, SrvManager* srvManager)
+void ImGuiManager::Initialize(WindowsAPI* winBase, SrvManager* srvManager)
 {
 	// 引数をセット
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 	srvManager_ = srvManager;
 
 	// ImGuiのコンテキストを生成

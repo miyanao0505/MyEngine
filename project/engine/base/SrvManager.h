@@ -6,7 +6,7 @@ class SrvManager
 {
 public:	// メンバ関数
 	// 初期化
-	void Initialize(DirectXBase* dxBase);
+	void Initialize();
 
 	// Allocationの確保
 	uint32_t Allocate();

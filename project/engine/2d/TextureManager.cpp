@@ -22,9 +22,9 @@ void TextureManager::Finalize()
 }
 
 // 初期化
-void TextureManager::Initialize(DirectXBase* dxBase, SrvManager* srvManager)
+void TextureManager::Initialize(SrvManager* srvManager)
 {
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 	srvManager_ = srvManager;
 

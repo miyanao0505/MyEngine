@@ -15,6 +15,17 @@ using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
 
+DirectXBase* DirectXBase::instance = nullptr;
+
+// シングルトンインスタンスの取得
+DirectXBase* DirectXBase::GetInstance()
+{
+	if (instance == nullptr) {
+		instance = new DirectXBase();
+	}
+	return instance;
+}
+
 // 初期化
 void DirectXBase::Initialize(WindowsAPI* winApi)
 {
@@ -51,6 +62,12 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 	CreateDxcCompiler();
 	// ImGuiの初期化
 	//InitializeImGui();
+}
+
+void DirectXBase::Finalize()
+{
+	delete instance;
+	instance = nullptr;
 }
 
 // 描画前処理(RenderTexture)

@@ -15,7 +15,7 @@ void MNFramework::Initialize()
 
 #pragma region DirectX初期化
 	// DirectXBaseの初期化
-	dxBase_.reset(new DirectXBase());
+	dxBase_ = DirectXBase::GetInstance();
 	dxBase_->Initialize(winApi_.get());
 #pragma endregion DirectX初期化
 
@@ -28,17 +28,17 @@ void MNFramework::Initialize()
 #pragma region 基盤システム初期化
 	// SRVマネージャーの初期化
 	srvManager_.reset(new SrvManager());
-	srvManager_->Initialize(dxBase_.get());
+	srvManager_->Initialize();
 
 #ifdef _DEBUG
 	// ImGuiManagerの初期化
 	imGuiManager_.reset(new ImGuiManager());
-	imGuiManager_->Initialize(winApi_.get(), dxBase_.get(), srvManager_.get());
+	imGuiManager_->Initialize(winApi_.get(), srvManager_.get());
 #endif // _DEBUG
 
 	// オフスクリーンの作成
 	offScreen_.reset(new OffScreen());
-	offScreen_->Initialize(dxBase_.get());
+	offScreen_->Initialize();
 	dxBase_->CreateOffScreenSRV(srvManager_.get());
 
 	// コリジョンマネージャの初期化
@@ -52,19 +52,19 @@ void MNFramework::Initialize()
 
 	// ライトマネージャの初期化
 	lightManager_ = LightManager::GetInstance();
-	lightManager_->Initialize(dxBase_.get());
+	lightManager_->Initialize();
 
 	// テクスチャマネージャの初期化
 	textureManager_ = TextureManager::GetInstance();
-	textureManager_->Initialize(dxBase_.get(), srvManager_.get());
+	textureManager_->Initialize(srvManager_.get());
 
 	// パーティクルマネージャの初期化
 	particleManager_ = ParticleManager::GetInstance();
-	particleManager_->Initialize(dxBase_.get(), srvManager_.get());
+	particleManager_->Initialize(srvManager_.get());
 
 	// モデルマネージャの初期化
 	modelManager_ = ModelManager::GetInstance();
-	modelManager_->Initialize(dxBase_.get());
+	modelManager_->Initialize();
 
 	// オーディオマネージャの初期化
 	audioManager_ = AudioManager::GetInstance();
@@ -93,6 +93,7 @@ void MNFramework::Finalize()
 	imGuiManager_->Finalize();
 #endif // _DEBUG
 	input_->Finalize();
+	dxBase_->Finalize();
 	winApi_->Finalize();
 }
 

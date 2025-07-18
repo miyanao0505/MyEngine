@@ -28,9 +28,9 @@ void ParticleManager::Finalize()
 	instance = nullptr;
 }
 
-void ParticleManager::Initialize(DirectXBase* dxBase, SrvManager* srvManager)
+void ParticleManager::Initialize(SrvManager* srvManager)
 {
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 	srvManager_ = srvManager;
 
 	particleBase_ = std::make_unique_for_overwrite<ParticleBase>();

@@ -16,7 +16,7 @@ public:	// メンバ関数
 	void Finalize();
 
 	// 初期化
-	void Initialize(DirectXBase* dxBase);
+	void Initialize();
 
 	/// <summary>
 	/// モデルファイルの読み込み

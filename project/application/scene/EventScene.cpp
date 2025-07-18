@@ -64,17 +64,8 @@ void EventScene::Update()
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-	
-	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Event");
-	ImGui::Text("N key : titleScene");
-	ImGui::End();
-
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
+	DebugDraw();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
@@ -135,4 +126,19 @@ void EventScene::Draw()
 
 #pragma endregion スプライト
 
+}
+
+// デバッグ描画
+void EventScene::DebugDraw()
+{
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
+	ImGui::Begin("Event");
+	ImGui::Text("N key : titleScene");
+	ImGui::End();
+
+	// デモウィンドウの表示オン
+	//ImGui::ShowDemoWindow();
 }

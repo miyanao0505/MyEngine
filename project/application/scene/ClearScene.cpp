@@ -70,17 +70,7 @@ void ClearScene::Update()
 		SceneManager::GetInstance()->ChangeScene("EVENT");
 	}
 
-	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-
-	ImGui::Begin("Clear");
-	ImGui::Text("N key : titleScene");
-	ImGui::Text("B key : eventScene");
-	ImGui::End();
-
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
+	DebugDraw();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
@@ -141,4 +131,20 @@ void ClearScene::Draw()
 
 #pragma endregion スプライト
 
+}
+
+// デバッグ描画
+void ClearScene::DebugDraw()
+{
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
+	ImGui::Begin("Clear");
+	ImGui::Text("N key : titleScene");
+	ImGui::Text("B key : eventScene");
+	ImGui::End();
+
+	// デモウィンドウの表示オン
+	//ImGui::ShowDemoWindow();
 }

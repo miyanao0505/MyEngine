@@ -122,6 +122,83 @@ void GameScene::Update()
 		AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
 	}
 
+	DebugDraw();
+#endif // _DEBUG
+
+	// 3Dオブジェクトの更新処理
+	// プレイヤーの更新処理
+	player_->Update();
+
+	// 敵の更新処理
+	enemy_->Update();
+
+	// 天球の更新
+	skydome_->Update();
+
+	if (isAccelerationField_) {
+		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
+			ParticleManager::ParticleGroup& group = *pair.second;
+			int index = 0;
+			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
+				MyBase::Particle& particle = *it;
+
+				if (MyTools::IsCollision(area_, particle.transform.translate)) {
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+				}
+
+				++it;
+				++index;
+			}
+		}
+	}
+
+	// パーティクルの更新処理
+	ParticleManager::GetInstance()->Update();
+
+	// スプライトの更新処理
+	gameSprite_->Update();
+}
+
+// 描画
+void GameScene::Draw()
+{
+#pragma region 3Dオブジェクト
+
+	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
+	ModelManager::GetInstance()->SetCommonScreen();
+
+	// 全ての3DObject個々の描画
+	// 天球の描画
+	skydome_->Draw();
+
+	// 敵の描画
+	enemy_->Draw();
+
+	// プレイヤーの描画
+	player_->Draw();
+
+#pragma endregion 3Dオブジェクト
+
+#pragma region パーティクル
+
+	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
+	ParticleManager::GetInstance()->Draw();
+
+#pragma endregion パーティクル
+
+#pragma region スプライト
+
+	// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
+	TextureManager::GetInstance()->SetCommonScreen();
+
+	// 全てのSprite個々の描画
+	gameSprite_->Draw();
+
+#pragma endregion スプライト
+}
+
+void GameScene::DebugDraw()
+{
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
@@ -139,13 +216,12 @@ void GameScene::Update()
 	ImGui::Text("L key : sampleAudio Load");
 	ImGui::End();
 
-
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-	
+
 	ImGui::Begin("Settings");
 	// カメラ
 	if (ImGui::CollapsingHeader("Camera"))
@@ -323,10 +399,10 @@ void GameScene::Update()
 
 		//ImGui::Text("\n");
 	//}
-	
+
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
-	
+
 
 	//ImGui::Text("\n");
 
@@ -424,77 +500,4 @@ void GameScene::Update()
 	//	ImGui::PopID();
 	//}
 	//ImGui::End();
-
-#endif // _DEBUG
-
-	// 3Dオブジェクトの更新処理
-	// プレイヤーの更新処理
-	player_->Update();
-
-	// 敵の更新処理
-	enemy_->Update();
-
-	// 天球の更新
-	skydome_->Update();
-
-	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
-			ParticleManager::ParticleGroup& group = *pair.second;
-			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
-
-				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
-				}
-
-				++it;
-				++index;
-			}
-		}
-	}
-
-	// パーティクルの更新処理
-	ParticleManager::GetInstance()->Update();
-
-	// スプライトの更新処理
-	gameSprite_->Update();
-}
-
-// 描画
-void GameScene::Draw()
-{
-#pragma region 3Dオブジェクト
-
-	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
-	ModelManager::GetInstance()->SetCommonScreen();
-
-	// 全ての3DObject個々の描画
-	// 天球の描画
-	skydome_->Draw();
-
-	// 敵の描画
-	enemy_->Draw();
-
-	// プレイヤーの描画
-	player_->Draw();
-
-#pragma endregion 3Dオブジェクト
-
-#pragma region パーティクル
-
-	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	ParticleManager::GetInstance()->Draw();
-
-#pragma endregion パーティクル
-
-#pragma region スプライト
-
-	// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
-	TextureManager::GetInstance()->SetCommonScreen();
-
-	// 全てのSprite個々の描画
-	gameSprite_->Draw();
-
-#pragma endregion スプライト
 }

@@ -20,9 +20,9 @@ void LightManager::Finalize()
 }
 
 // 初期化
-void LightManager::Initialize(DirectXBase* dxBase)
+void LightManager::Initialize()
 {
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 	// 平行光源データの作成
 	CreateDirectionalLightData();

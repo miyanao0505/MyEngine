@@ -1,13 +1,14 @@
 #include "Skybox.h"
-#include <CameraManager.h>
-#include <LightManager.h>
-#include <TextureManager.h>
+#include "CameraManager.h"
+#include "LightManager.h"
+#include "TextureManager.h"
+#include "imgui.h"
 
 // 初期化
-void Skybox::Initislize(DirectXBase* dxBase, const std::string& filePath)
+void Skybox::Initislize(const std::string& filePath, MyBase::Vector3 scale)
 {
+	dxBase_ = DirectXBase::GetInstance();
 	// 引数で受け取ってメンバ変数に記録する
-	dxBase_ = dxBase;
 	textureFileName_ = filePath;
 
 	// グラフィックスパイプラインの生成
@@ -15,6 +16,9 @@ void Skybox::Initislize(DirectXBase* dxBase, const std::string& filePath)
 
 	// 頂点データの作成
 	CreateVertexData();
+
+	// インデックスデータの作成
+	CreateIndexData();
 
 	// マテリアルデータの作成
 	CreateMaterialData();
@@ -28,6 +32,7 @@ void Skybox::Initislize(DirectXBase* dxBase, const std::string& filePath)
 	// 3DオブジェクトのTransformの初期化
 	worldTransform_ = std::make_unique<WorldTransform>();
 	worldTransform_->Initialize();
+	worldTransform_->SetScale(scale);	// スケールを設定
 
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(textureFileName_);
@@ -56,6 +61,8 @@ void Skybox::Update()
 // 描画
 void Skybox::Draw()
 {
+	SetCommonScreen();
+
 	// WVP用のCBufferの場所を設定
 	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_.Get()->GetGPUVirtualAddress());
 	// カメラ用のCBufferの場所を設定
@@ -65,13 +72,33 @@ void Skybox::Draw()
 
 	// VBVの設定
 	dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	// IndexBufferViewを設定
+	dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 	// マテリアルCBufferの場所を設定
 	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
-	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_);
-	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
-	dxBase_->GetCommandList()->DrawInstanced(UINT(24), 1, 0, 0);
+	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_));
+	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。
+	dxBase_->GetCommandList()->DrawIndexedInstanced(UINT(kIndexCount), 1, 0, 0, 0);
 
+}
+
+// デバック描画
+void Skybox::DebugDraw()
+{
+	ImGui::PushID(this);
+	if (ImGui::CollapsingHeader("Skybox"))
+	{
+		// 変更するための変数
+		MyBase::Transform transform = GetTransform();
+		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.00f, 100.0f);
+		SetTransform(transform);
+
+		ImGui::Text("\n");
+	}
+	ImGui::PopID();
 }
 
 // ルートシグネチャの作成
@@ -153,7 +180,7 @@ void Skybox::CreateGraphicsPipeline()
 	CreateRootSignature();
 
 	// InputLayer
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -162,10 +189,6 @@ void Skybox::CreateGraphicsPipeline()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-	inputElementDescs[2].SemanticName = "NORMAL";
-	inputElementDescs[2].SemanticIndex = 0;
-	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -265,8 +288,18 @@ void Skybox::CreateCameraData()
 // 頂点データ作成
 void Skybox::CreateVertexData()
 {
+	// 頂点リソースを作る
+	vertexResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelSkyboxVertexData) * kVertexCount);
+	// 頂点バッファビューを作成する
+	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
+	vertexBufferView_.SizeInBytes = UINT(sizeof(MyBase::ModelSkyboxVertexData) * kVertexCount);		// 使用するリソースのサイズは頂点のサイズ
+	vertexBufferView_.StrideInBytes = sizeof(MyBase::ModelSkyboxVertexData);						// 頂点あたりのサイズ
+
+	// 頂点リソースにデータを書き込む
+	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));			// 書き込むためのアドレスを取得
+
 	// 頂点データをセットする
-	// 右面。描画インデックスは[0,1,2][2,3,0]で内側を向く
+	// 右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
 	vertexData_[0].position =  {  1.0f,  1.0f,  1.0f,  1.0f };
 	vertexData_[1].position =  {  1.0f,  1.0f, -1.0f,  1.0f };
 	vertexData_[2].position =  {  1.0f, -1.0f,  1.0f,  1.0f };
@@ -296,16 +329,38 @@ void Skybox::CreateVertexData()
 	vertexData_[21].position = {  1.0f, -1.0f,  1.0f,  1.0f };
 	vertexData_[22].position = { -1.0f, -1.0f, -1.0f,  1.0f };
 	vertexData_[23].position = {  1.0f, -1.0f, -1.0f,  1.0f };
+}
 
-	// 頂点リソースを作る
-	vertexResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelSkyboxVertexData) * size_t(24));
-	// 頂点バッファビューを作成する
-	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
-	vertexBufferView_.SizeInBytes = UINT(sizeof(MyBase::ModelSkyboxVertexData) * size_t(24));		// 使用するリソースのサイズは頂点のサイズ
-	vertexBufferView_.StrideInBytes = sizeof(MyBase::ModelSkyboxVertexData);						// 頂点あたりのサイズ
-
-	// 頂点リソースにデータを書き込む
-	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));			// 書き込むためのアドレスを取得
+// インデックスデータ作成
+void Skybox::CreateIndexData()
+{
+	// インデックスリソースを作る
+	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kIndexCount);
+	// インデックスバッファビューを作成する
+	indexBufferView_.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
+	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * kIndexCount);				// 使用するリソースのサイズはインデックスのサイズ
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;										// インデックスはuint32_tとする
+	// インデックスリソースにデータを書き込む
+	indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));			// 書き込むためのアドレスを取得
+	// インデックスデータをセットする
+	// 右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
+	indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
+	indexData_[3] = 2; indexData_[4] = 1; indexData_[5] = 3;
+	// 左面。描画インデックスは[4,5,6][6,5,7]
+	indexData_[6] = 4; indexData_[7] = 5; indexData_[8] = 6;
+	indexData_[9] = 6; indexData_[10] = 5; indexData_[11] = 7;
+	// 前面。描画インデックスは[8,9,10][10,9,11]
+	indexData_[12] = 8; indexData_[13] = 9; indexData_[14] = 10;
+	indexData_[15] = 10; indexData_[16] = 9; indexData_[17] = 11;
+	// 後面。描画インデックスは[12,13,14][14,13,15]
+	indexData_[18] = 12; indexData_[19] = 13; indexData_[20] = 14;
+	indexData_[21] = 14; indexData_[22] = 13; indexData_[23] = 15;
+	// 上面。描画インデックスは[16,17,18][18,17,19]
+	indexData_[24] = 16; indexData_[25] = 17; indexData_[26] = 18;
+	indexData_[27] = 18; indexData_[28] = 17; indexData_[29] = 19;
+	// 底面。描画インデックスは[20,21,22][22,21,23]
+	indexData_[30] = 20; indexData_[31] = 21; indexData_[32] = 22;
+	indexData_[33] = 22; indexData_[34] = 21; indexData_[35] = 23;
 }
 
 // マテリアルデータ作成
