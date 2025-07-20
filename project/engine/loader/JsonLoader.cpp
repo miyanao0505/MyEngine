@@ -1,12 +1,11 @@
 #include "JsonLoader.h"
 #include <fstream>
 #include <iostream>
-#include "LevelData.h"
 
 using namespace std;
 using namespace nlohmann;
 
-vector<JsonLoader::LevelObjectData> JsonLoader::LoadFile(const string& filePath)
+LevelData* JsonLoader::LoadFile(const string& filePath)
 {
 	// 連結してフルパスを得る
 	const string fullpath = "resources/jsons/" + filePath;
@@ -38,105 +37,70 @@ vector<JsonLoader::LevelObjectData> JsonLoader::LoadFile(const string& filePath)
 	assert(name.compare("scene") == 0);
 
 	// レベルデータを格納するマップ
-	vector<LevelObjectData> levelObjectData;
+	LevelData* levelData = new LevelData();
 
 	// "objects"の全オブジェクトを走査
 	for (json& object : deserialized["objects"]) {
-		assert(object.contains("type"));
+		
+		ParseObject(object, *levelData);
+	}
+	return levelData;
+}
 
-		// 種別を取得
-		string type = object["type"].get<string>();
+void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData)
+{
+	assert(object.contains("type"));
 
-		/// 種類ごとの処理
-		// MESH
-		if (type.compare("MESH") == 0) {
-			// オブジェクトデータを生成
-			LevelObjectData objectData;
-			// 必要なデータを取得
-			objectData.name = object["name"];
-			json& transform = object["transform"];
-			// 平行移動
-			objectData.translation = { (float)transform["translation"][0], (float)transform["translation"][2], (float)transform["translation"][1] };
-			// 回転
-			objectData.rotation = { -(float)transform["rotation"][0], -(float)transform["rotation"][2], -(float)transform["rotation"][1] };
-			// 拡大縮小
-			objectData.scale = { (float)transform["scaling"][0], (float)transform["scaling"][2], (float)transform["scaling"][1] };
-			// オブジェクト名があれば取得
-			if (object.contains("file_name")) {
-				objectData.objectName = object["file_name"];
+	// 種別を取得
+	string type = object["type"].get<string>();
+
+	/// 種類ごとの処理
+	// MESH
+	if (type.compare("MESH") == 0) {
+		// オブジェクトデータを生成
+		ObjectData objectData;
+		// 必要なデータを取得
+		objectData.name = object["name"];
+		json transform = object["transform"];
+		// 平行移動
+		objectData.translation = { (float)transform["translation"][0], (float)transform["translation"][2], (float)transform["translation"][1] };
+		// 回転
+		objectData.rotation = { -(float)transform["rotation"][0], -(float)transform["rotation"][2], -(float)transform["rotation"][1] };
+		// 拡大縮小
+		objectData.scale = { (float)transform["scaling"][0], (float)transform["scaling"][2], (float)transform["scaling"][1] };
+		// オブジェクト名があれば取得
+		if (object.contains("file_name")) {
+			objectData.objectName = object["file_name"];
+		}
+		// コライダーがあれば取得
+		if (object.contains("collider")) {
+			json collider = object["collider"];
+			objectData.meshName = collider["type"];
+			if (objectData.meshName.compare("SPHERE") == 0) {
+				objectData.radius = (float)collider["radius"];
 			}
-			// コライダーがあれば取得
-			if (object.contains("collider")) {
-				json& collider = object["collider"];
-				objectData.meshName = collider["type"];
-				if (objectData.meshName.compare("SPHERE") == 0) {
-					objectData.radius = (float)collider["radius"];
-				}
-				else if (objectData.meshName.compare("AABB") == 0) {
-					// AABBコライダーの場合
-					json& aabb = object["Collider"]["aabb"];
-					objectData.aabb.min = { (float)aabb["min"][0], (float)aabb["min"][2], (float)aabb["min"][1] };
-					objectData.aabb.max = { (float)aabb["max"][0], (float)aabb["max"][2], (float)aabb["max"][1] };
-				}
-				else if (objectData.meshName.compare("OBB") == 0) {
-					// OBBコライダーの場合
-					json& obb = object["Collider"]["obb"];
-					objectData.obb.center = { (float)obb["center"][0], (float)obb["center"][2], (float)obb["center"][1] };
-					objectData.obb.size = { (float)obb["size"][0], (float)obb["size"][2], (float)obb["size"][1] };
-				}
+			else if (objectData.meshName.compare("AABB") == 0) {
+				// AABBコライダーの場合
+				json aabb = object["Collider"]["aabb"];
+				objectData.aabb.min = { (float)aabb["min"][0], (float)aabb["min"][2], (float)aabb["min"][1] };
+				objectData.aabb.max = { (float)aabb["max"][0], (float)aabb["max"][2], (float)aabb["max"][1] };
 			}
-			
-			// レベルデータに追加
-			levelObjectData.push_back(objectData);
+			else if (objectData.meshName.compare("OBB") == 0) {
+				// OBBコライダーの場合
+				json obb = object["Collider"]["obb"];
+				objectData.obb.center = { (float)obb["center"][0], (float)obb["center"][2], (float)obb["center"][1] };
+				objectData.obb.size = { (float)obb["size"][0], (float)obb["size"][2], (float)obb["size"][1] };
+			}
 		}
 
-		/// 再帰処理
+		// 子オブジェクトがあれば再帰的に処理
 		if (object.contains("children")) {
-			// 子オブジェクトがある場合は再帰的に処理
-			for (json& child : object["children"]) {
-				assert(child.contains("type"));
-				// 子オブジェクトのタイプを取得
-				string childType = child["type"].get<string>();
-				// 子オブジェクトがMESHの場合は同様に処理
-				if (childType.compare("MESH") == 0) {
-					// オブジェクトデータを生成
-					LevelObjectData objectData;
-					// 必要なデータを取得
-					objectData.name = object["name"];
-					json& transform = object["transform"];
-					// 平行移動
-					objectData.translation = { (float)transform["translation"][0], (float)transform["translation"][2], (float)transform["translation"][1] };
-					// 回転
-					objectData.rotation = { -(float)transform["rotation"][0], -(float)transform["rotation"][2], -(float)transform["rotation"][1] };
-					// 拡大縮小
-					objectData.scale = { (float)transform["scaling"][0], (float)transform["scaling"][2], (float)transform["scaling"][1] };
-					// オブジェクト名があれば取得
-					if (object.contains("file_name")) {
-						objectData.objectName = object["file_name"];
-					}
-					// コライダーがあれば取得
-					if (object.contains("collider")) {
-						json& collider = object["collider"];
-						objectData.meshName = collider["type"];
-						if (objectData.meshName.compare("SPHERE") == 0) {
-							objectData.radius = (float)collider["radius"];
-						}
-						else if (objectData.meshName.compare("AABB") == 0) {
-							// AABBコライダーの場合
-							json& aabb = object["Collider"]["aabb"];
-							objectData.aabb.min = { (float)aabb["min"][0], (float)aabb["min"][2], (float)aabb["min"][1] };
-							objectData.aabb.max = { (float)aabb["max"][0], (float)aabb["max"][2], (float)aabb["max"][1] };
-						}
-						else if (objectData.meshName.compare("OBB") == 0) {
-							// OBBコライダーの場合
-							json& obb = object["Collider"]["obb"];
-							objectData.obb.center = { (float)obb["center"][0], (float)obb["center"][2], (float)obb["center"][1] };
-							objectData.obb.size = { (float)obb["size"][0], (float)obb["size"][2], (float)obb["size"][1] };
-						}
-					}
-				}
+			for (const auto& child : object["children"]) {
+				ParseObject(child, levelData);
 			}
-		}	
+		}
+
+		// レベルデータに追加
+		levelData.objects.push_back(objectData);
 	}
-	return levelObjectData;
 }

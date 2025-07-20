@@ -267,9 +267,6 @@
     <ClCompile Include="engine\loader\JsonLoader.cpp">
       <Filter>ソース ファイル\engine\loader</Filter>
     </ClCompile>
-    <ClCompile Include="engine\loader\LevelData.cpp">
-      <Filter>ソース ファイル\engine\loader</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\BaseObject.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
@@ -426,9 +423,6 @@
       <Filter>ヘッダー ファイル\engine\math</Filter>
     </ClInclude>
     <ClInclude Include="engine\loader\JsonLoader.h">
-      <Filter>ヘッダー ファイル\engine\loader</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\loader\LevelData.h">
       <Filter>ヘッダー ファイル\engine\loader</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\BaseObject.h">

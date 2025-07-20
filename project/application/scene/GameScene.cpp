@@ -45,6 +45,29 @@ void GameScene::Initialize()
 	
 #pragma endregion パーティクル
 
+#pragma region シーン初期化
+	// jsonローダー
+	jsonLoader_.reset(new JsonLoader);
+	// レベルデータの読み込み
+	LevelData* levelData = jsonLoader_->LoadFile("gameScene.json");
+	// 3Dオブジェクトの読み込み
+	for (const ObjectData& objectData : levelData->objects) {
+		// オブジェクトの種類ごとに処理
+		if (objectData.name == "Player") {
+			// プレイヤーの初期化
+			
+		}
+		else if (objectData.name == "Enemy") {
+			// 敵の初期化
+			
+		}
+		else if (objectData.name == "Skydome") {
+			// 天球の初期化
+			
+		}
+	}
+#pragma endregion シーン初期化
+
 #pragma region オーディオ
 	// BGM
 

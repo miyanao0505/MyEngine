@@ -11,7 +11,7 @@ void MyGame::Initialize()
 	MNFramework::Initialize();
 
 	// シーンマネージャに最初のシーンをセット
-	SceneManager::GetInstance()->ChangeScene("TITLE");
+	SceneManager::GetInstance()->ChangeScene("GAME");
 
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");

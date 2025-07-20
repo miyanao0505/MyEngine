@@ -4,44 +4,36 @@
 #include <vector>
 #include "MyBase.h"
 
+struct ObjectData {
+	std::string name;
+	std::string meshName;
+	std::string objectName;
+	MyBase::Vector3 translation;
+	MyBase::Vector3 rotation;
+	MyBase::Vector3 scale;
+	float radius;
+	MyBase::AABB aabb;
+	MyBase::OBB obb;
+};
+struct LevelData {
+	std::vector<ObjectData> objects;
+};
+
 /// <summary>
 /// Jsonファイルを読み込むクラス
 /// </summary>
 class JsonLoader
 {
-public:	// 構造体
-	struct LevelObjectData {
-		std::string name;
-		std::string meshName;
-		std::string objectName;
-		MyBase::Vector3 translation;
-		MyBase::Vector3 rotation;
-		MyBase::Vector3 scale;
-		float radius;
-		MyBase::AABB aabb;
-		MyBase::OBB obb;
-	};
-
 public:	// メンバ関数
 
 	/// <summary>
-	/// JSONファイルを読み込む
+	/// JSONファイルを読み込みLevelDataを返す
 	/// </summary>
 	/// <param name="filePath">読み込むJSONファイルのパス</param>
 	/// <returns></returns>
-	static std::vector<LevelObjectData> LoadFile(const std::string& filePath);
+	LevelData* LoadFile(const std::string& filePath);
 
-
-
-public:	// getter
-	/// <summary>
-	/// 読み込んだJSONデータを取得する
-	/// </summary>
-	/// <returns>読み込んだJSONデータ</returns>
-	const nlohmann::json& GetJsonData() const { return jsonData_; }
-
-private:	// メンバ変数
-	// JSONデータ
-	nlohmann::json jsonData_;
+private:	// メンバ関数
+	void ParseObject(const nlohmann::json& object, LevelData& levelData);
 };
 

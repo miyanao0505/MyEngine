@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
+#include "JsonLoader.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -49,6 +50,9 @@ private:	// メンバ変数
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// パーティクル
+
+	// jsonローダー
+	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
 	
 #pragma endregion シーン初期化
 
