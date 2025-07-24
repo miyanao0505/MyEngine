@@ -375,80 +375,10 @@ void GameScene::DebugDraw()
 //		}
 //	}
 //
-	// 3Dオブジェクト
-	/*MyBase::Vector3 rotate = objects_[0]->GetRotate();
-	rotate.y += 0.02f;
-	objects_[0]->SetRotate(rotate);
-	rotate = objects_[1]->GetRotate();
-	rotate.z += 0.02f;
-	objects_[1]->SetRotate(rotate);*/
-	//if (ImGui::CollapsingHeader("3dObject"))
-	//{
-		// ブレンドモード
-		/*if (ImGui::CollapsingHeader("BlendMode3dObject")) {
-			static ImGuiComboFlags spriteFlags = 0;
-			const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
-			static int selectID = 1;
-
-			const char* previewValue = blendModeIndex[selectID];
-
-			if (ImGui::BeginCombo("now Blend", previewValue, spriteFlags))
-			{
-				for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
-				{
-					const bool isSelected = (selectID == n);
-					if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
-						selectID = n;
-						ModelManager::GetInstance()->GetObject3dBase()->SetBlendMode(static_cast<Object3dBase::BlendMode>(n));
-					}
-
-					if (isSelected) {
-						ImGui::SetItemDefaultFocus();
-					}
-				}
-				ImGui::EndCombo();
-			}
-		}*/
-
-		//for (std::unique_ptr<Object3d>& object : objects_)
-		//{
-		//	ImGui::PushID(object.get());
-		//	if (ImGui::CollapsingHeader("Object"))
-		//	{
-		//		MyBase::Transform transform{ object->GetScale(), object->GetRotate(), object->GetTranslate() };
-
-		//		// 移動
-		//		ImGui::SliderFloat3("Translate", &transform.translate.x, -5.0f, 5.0f);
-		//		object->SetTranslate(transform.translate);
-		//		// 回転
-		//		ImGui::SliderFloat3("Rotate", &transform.rotate.x, -3.14f, 3.14f);
-		//		object->SetRotate(transform.rotate);
-		//		// 拡縮
-		//		ImGui::SliderFloat3("Scale", &transform.scale.x, 0.0f, 3.0f);
-		//		object->SetScale(transform.scale);
-		//	}
-		//	ImGui::PopID();
-		//}
-
-		//ImGui::Text("\n");
-	//}
 
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
 
-
-	//ImGui::Text("\n");
-
-	//}
-//
-//	//// テクスチャ
-//	////ImGui::Checkbox("useMonsterBall", &useMonsterBall);
-//
-//	//// UV
-//	///*ImGui::DragFloat2("UVTranslate", &uvTransformSprite.translate.x, 0.01f, -10.0f, 10.0f);
-//	//ImGui::DragFloat2("UVScale", &uvTransformSprite.scale.x, 0.01f, -10.0f, 10.0f);
-//	//ImGui::SliderAngle("UVRotate", &uvTransformSprite.rotate.z);*/
-//
 	ImGui::End();
 
 	//ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
