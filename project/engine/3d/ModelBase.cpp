@@ -1,8 +1,7 @@
 #include "ModelBase.h"
 
 // 初期化
-void ModelBase::Initislize(DirectXBase* dxBase)
+void ModelBase::Initislize()
 {
-	// 引数で受け取ってメンバ変数に記録する
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 }

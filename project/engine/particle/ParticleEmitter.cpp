@@ -1,5 +1,6 @@
 #include "ParticleEmitter.h"
 #include "ParticleManager.h"
+#include "ParticleSystem.h"
 #include <imgui.h>
 
 ParticleEmitter::ParticleEmitter()
@@ -8,65 +9,136 @@ ParticleEmitter::ParticleEmitter()
 
 void ParticleEmitter::Initialize(const std::string name, const std::string textureFilePath, const ParticleType type)
 {
-	name_ = name;
-	textureFilePath_ = textureFilePath;
+	particleGroupNames_.push_back(name);
 
-	ParticleManager::GetInstance()->CreateIndexResource(type);
+	particleSystem_ = std::make_unique<ParticleSystem>();
+	particleSystem_->Initialize();
 
-	if (type == Box) {
-		ParticleManager::GetInstance()->CreateParticleGroup(name_, textureFilePath_);
-	}
-	if (type == Ring) {
-		ParticleManager::GetInstance()->CreateParticleGroupRing(name_, textureFilePath_);
-	}
-	if (type == Cylinder) {
-		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name_, textureFilePath_);
-	}
+	CreateParticleGroup(name, textureFilePath, type);
 }
 
 void ParticleEmitter::Update()
 {
-	if (!isEmitUpdate_) { return; }
-	frequencyTime_ -= kDeltaTime_;
-	if (frequencyTime_ <= 0.0f) {
-		frequencyTime_ = frequency_;
-		ParticleManager::GetInstance()->Emit(name_, transform_.translate, count_);
+	auto groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+
+	// 登録されている分だけパーティクルを発生させる
+	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+		groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+		if (groupData->isEmitUpdate) {
+			groupData->frequencyTime -= kDeltaTime_;
+			if (groupData->frequencyTime <= 0.0f) {
+				groupData->frequencyTime = groupData->frequency;
+				ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupData);
+			}
+		}
 	}
 }
 
 void ParticleEmitter::Emit()
 {
-	ParticleManager::GetInstance()->Emit(name_, transform_.translate, count_);
+	auto groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+
+	// 登録されている分だけパーティクルを発生させる
+	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+		groupData = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+		if (groupData) {
+			ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupData);
+		}
+	}
+}
+
+void ParticleEmitter::CreateParticleGroup(const std::string name, const std::string textureFilePath, const ParticleType type)
+{
+	SetParticleGroupName(name);
+
+	ParticleManager::GetInstance()->CreateIndexResource(type);
+
+	if (type == Ellipse) {
+		ParticleManager::GetInstance()->CreateParticleGroup(name, textureFilePath);
+	}
+	if (type == Ring) {
+		ParticleManager::GetInstance()->CreateParticleGroupRing(name, textureFilePath);
+	}
+	if (type == Cylinder) {
+		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name, textureFilePath);
+	}
 }
 
 #ifdef _DEBUG
 
-void ParticleEmitter::Imgui()
+void ParticleEmitter::Imgui(std::string name)
 {
-	ImGui::Begin(name_.c_str());
+	std::string ID = name + "ParticleEmitter";
+	ImGui::Begin(ID.c_str());
 	{
-		ImGui::PushID(name_.c_str());
+		ImGui::PushID(ID.c_str());
 		// 座標
-		ImGui::DragFloat3("particleEmitter_.Translate", &transform_.translate.x, 0.1f);
+		ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
 		// 回転
 		//ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
 		// 拡縮
-		ImGui::DragFloat3("particleEmitter_.Scale", &transform_.scale.x, 0.1f);
-		// 発生数
-		int count = count_;
-		ImGui::DragInt("particleEmitter_.count", &count, 1, 0, 1000);
-		count_ = count;
-		// 発生頻度
-		ImGui::DragFloat("particleEmitter_.frequency", &frequency_, 0.1f);
+		ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+		// 各パーティクルグループの設定を表示
+		particleSystem_->Imgui(name);
+
 		// 発生させる
-		if (ImGui::Button("ParticleEmit", { 100,50 })) {
+		if (ImGui::Button("Emit", { 100,50 })) {
 			Emit();
 		}
-		// 連続発生
-		ImGui::Checkbox("IsEmitUpdate", &isEmitUpdate_);
 		ImGui::PopID();
 	}
 	ImGui::End();
 }
 
 #endif // _DEBUG
+
+/// getter
+// パーティクルグループ毎のデータを取得
+const ParticleSystem::ParticleGroupData& ParticleEmitter::GetParticleGroupData(std::string name)
+{
+	auto groupData = particleSystem_->GetParticleGroupData(name);
+	if (groupData) {
+		return *groupData; // データを返す
+	}
+	else {
+		static ParticleSystem::ParticleGroupData emptyData; // 空のデータを返す
+		return emptyData; // グループが存在しない場合は空のデータを返す
+	}
+}
+
+bool ParticleEmitter::GetIsBillboard(std::string name)
+{
+	return ParticleManager::GetInstance()->GetIsBillboard(name);
+}
+
+/// setter
+// パーティクルグループ名を設定
+void ParticleEmitter::SetParticleGroupName(const std::string& name)
+{
+	// 既に存在するか確認
+	auto it = std::find(particleGroupNames_.begin(), particleGroupNames_.end(), name);
+	if (particleGroupNames_.empty() || it == particleGroupNames_.end()) {
+		// 新しいパーティクルグループ名を追加
+		particleGroupNames_.push_back(name);
+		particleSystem_->SetParticleGroupName(name);
+	}
+	else {
+		// 既存のパーティクルグループ名を更新
+		particleSystem_->SetParticleGroupName(name);
+	}
+}
+
+// パーティクルグループ毎のデータを設定
+void ParticleEmitter::SetParticleGroupData(const std::string& name, ParticleSystem::ParticleGroupData& particleGroupData)
+{
+	//auto groupDatas = particleSystem_->GetParticleGroupDatas();
+	//if (groupDatas.empty() || groupDatas.count(name) == 0) {
+	//	// 新しいパーティクルグループデータを追加
+		particleSystem_->SetParticleGroupData(name, particleGroupData);
+	//}
+}
+
+void ParticleEmitter::SetBillboard(std::string name, bool isBillboard)
+{
+	ParticleManager::GetInstance()->SetIsBillboard(name, isBillboard);
+}

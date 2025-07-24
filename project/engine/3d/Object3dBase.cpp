@@ -1,10 +1,9 @@
 #include "Object3dBase.h"
 
 // 初期化
-void Object3dBase::Initislize(DirectXBase* dxBase)
+void Object3dBase::Initislize()
 {
-	// 引数で受け取ってメンバ変数に記録する
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 	// グラフィックスパイプラインの生成
 	CreateGraphicsPipeline();

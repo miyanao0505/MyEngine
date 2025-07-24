@@ -57,6 +57,38 @@ public:
 	};
 
 	/// <summary>
+	/// 範囲
+	/// </summary>
+	struct ScopeI {
+		int min;		// 最小値
+		int max;		// 最大値
+	};
+
+	/// <summary>
+	/// 範囲
+	/// </summary>
+	struct ScopeF {
+		float min;		// 最小値
+		float max;		// 最大値
+	};
+
+	/// <summary>
+	/// 範囲2D
+	/// </summary>
+	struct Scope2D {
+		Vector2 min;	// 最小値
+		Vector2 max;	// 最大値
+	};
+
+	/// <summary>
+	/// 範囲3D
+	/// </summary>
+	struct Scope3D {
+		Vector3 min;	// 最小値
+		Vector3 max;	// 最大値
+	};
+
+	/// <summary>
 	/// 円
 	/// </summary>
 	struct Ball {
@@ -220,6 +252,13 @@ public:
 		Vector4 position;
 		Vector2 texcoord;
 		Vector3 normal;
+	};
+
+	/// <summary>
+	/// 頂点データ(スカイボックス用)
+	/// </summary>
+	struct ModelSkyboxVertexData {
+		Vector4 position;		//!< 頂点位置
 	};
 
 	/// <summary>

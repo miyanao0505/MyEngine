@@ -15,6 +15,17 @@ using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
 
+DirectXBase* DirectXBase::instance = nullptr;
+
+// シングルトンインスタンスの取得
+DirectXBase* DirectXBase::GetInstance()
+{
+	if (instance == nullptr) {
+		instance = new DirectXBase();
+	}
+	return instance;
+}
+
 // 初期化
 void DirectXBase::Initialize(WindowsAPI* winApi)
 {
@@ -51,6 +62,12 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 	CreateDxcCompiler();
 	// ImGuiの初期化
 	//InitializeImGui();
+}
+
+void DirectXBase::Finalize()
+{
+	delete instance;
+	instance = nullptr;
 }
 
 // 描画前処理(RenderTexture)
@@ -142,7 +159,17 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	// SRV確保
 	offScreenSrvIndex_ = srvManager->Allocate();
 
-	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, renderTextureResource_.Get(), DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, UINT(1));
+	DirectX::TexMetadata metadata;
+	metadata.width = 1024;
+	metadata.height = 1024;
+	metadata.arraySize = 1;
+	metadata.depth = 1;
+	metadata.miscFlags = 0;
+	metadata.miscFlags2 = 0;
+	metadata.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	metadata.mipLevels = 1;
+
+	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);
 	offScreenSrvHandleGPU_ = srvManager->GetGPUDescriptorHandle(offScreenSrvIndex_);
 }
@@ -372,12 +399,25 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 	// テクスチャファイルを読んでプログラムで扱えるようにする
 	ScratchImage image{};
 	std::wstring filePathW = ConvertString(filePath);
-	HRESULT hr = LoadFromWICFile(filePathW.c_str(), WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	HRESULT hr;
+	// .ddsで終わっていたらddsとみなす。
+	if(filePathW.ends_with(L".dds")) {
+		// DDSファイルを読み込む
+		hr = LoadFromDDSFile(filePathW.c_str(), DDS_FLAGS_NONE, nullptr, image);
+	} else {
+		// WICファイルを読み込む
+		hr = LoadFromWICFile(filePathW.c_str(), WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	}
 	assert(SUCCEEDED(hr));
 
 	//ミニマップの作成
 	ScratchImage mipImages{};
-	hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), TEX_FILTER_SRGB, 0, mipImages);
+	// 圧縮フォーマットかどうかを調べる
+	if (IsCompressed(image.GetMetadata().format)) {
+		mipImages = std::move(image);	// 圧縮フォーマットならそのまま使うのでmoveする
+	} else {
+		hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), TEX_FILTER_SRGB, 4, mipImages);
+	}
 	assert(SUCCEEDED(hr));
 
 	// ミニマップ付きのデータを返す

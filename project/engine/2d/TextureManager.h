@@ -27,7 +27,7 @@ public:	// メンバ関数
 	void Finalize();
 
 	// 初期化
-	void Initialize(DirectXBase* dxBase, SrvManager* srvManager);
+	void Initialize(SrvManager* srvManager);
 
 	/// <summary>
 	/// テクスチャファイルの読み込み

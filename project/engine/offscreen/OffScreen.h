@@ -10,7 +10,7 @@ class OffScreen
 
 public:	// メンバ関数
 	// 初期化
-	void Initialize(DirectXBase* dxBase);
+	void Initialize();
 	// ルートシグネチャの作成
 	void CreateRootSignature();
 	// グラフィックスパイプラインの生成

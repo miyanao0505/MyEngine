@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Object3d.h"
+#include "Skybox.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -23,27 +23,27 @@ public:	// メンバ関数
 	// 描画
 	void Draw() override;
 
+	// デバッグ描画
+	void DebugDraw() override;
+
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = { "resources/uvChecker.png" };
-	std::string filePath2_ = { "resources/monsterBall.png" };
-	//std::string filePath3_ = { "resources/fence.png" };
-	//std::string filePath4_ = { "resources/circle.png" };
+	std::string titleTextureFilePath_ = "resources/texture/Title.png";
+	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
 
 	// スプライト
-	std::vector<std::unique_ptr<Sprite>> sprites_;
-
-	// モデルファイルパス
-	MyBase::ModelFilePath modelFilePath1_ = { {"resources/plane"}, {"plane.obj"} };
-	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
-	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
+	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
 
 	// 3Dオブジェクト
-	std::vector<std::unique_ptr<Object3d>> objects_;
+	// Skybox
+	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// パーティクル
-	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;

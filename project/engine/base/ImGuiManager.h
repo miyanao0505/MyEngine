@@ -10,7 +10,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(WindowsAPI* winBase, DirectXBase* dxBase, SrvManager* srvManager);
+	void Initialize(WindowsAPI* winBase, SrvManager* srvManager);
 
 	/// <summary>
 	/// 終了

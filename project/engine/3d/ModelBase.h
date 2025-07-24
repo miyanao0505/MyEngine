@@ -6,7 +6,7 @@ class ModelBase
 {
 public:	// メンバ関数
 	// 初期化
-	void Initislize(DirectXBase* dxBase);
+	void Initislize();
 
 public:	// getter
 	DirectXBase* GetDxBase() const { return dxBase_; }

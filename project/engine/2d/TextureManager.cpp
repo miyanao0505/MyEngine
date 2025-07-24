@@ -2,6 +2,7 @@
 
 using namespace DirectX;
 using namespace StringUtility;
+using namespace std;
 
 TextureManager* TextureManager::instance = nullptr;
 
@@ -22,20 +23,20 @@ void TextureManager::Finalize()
 }
 
 // 初期化
-void TextureManager::Initialize(DirectXBase* dxBase, SrvManager* srvManager)
+void TextureManager::Initialize(SrvManager* srvManager)
 {
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 	srvManager_ = srvManager;
 
-	spriteBase_ = std::make_unique<SpriteBase>();
+	spriteBase_ = make_unique<SpriteBase>();
 	spriteBase_->Initialize(dxBase_);
 
 	// SRVの数と同数
 	textureDatas_.reserve(SrvManager::kMaxSRVCount);
 }
 
-void TextureManager::LoadTexture(const std::string& filePath)
+void TextureManager::LoadTexture(const string& filePath)
 {
 	// 読み込み済みテクスチャを検索
 	if (textureDatas_.contains(filePath)) {
@@ -61,16 +62,16 @@ void TextureManager::LoadTexture(const std::string& filePath)
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
 	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
 
-	srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.resource.Get(), textureData.metadata.format, UINT(textureData.metadata.mipLevels));
+	srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
 }
 
 // SRVインデックスの開始番号
-uint32_t TextureManager::GetSrvIndex(const std::string& filePath)
+uint32_t TextureManager::GetSrvIndex(const string& filePath)
 {
 	// 読み込み済みテクスチャを検索
 	if (textureDatas_.contains(filePath)) {
 		// 読み込み済みなら要素番号を返す
-		uint32_t textureIndex = static_cast<uint32_t>(std::distance(textureDatas_.begin(), textureDatas_.end()));
+		uint32_t textureIndex = static_cast<uint32_t>(distance(textureDatas_.begin(), textureDatas_.end()));
 		return textureIndex;
 	}
 	assert(0);
@@ -78,7 +79,7 @@ uint32_t TextureManager::GetSrvIndex(const std::string& filePath)
 }
 
 // テクスチャ番号からGPUハンドルを取得
-D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& filePath)
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePath)
 {
 	// 範囲外指定違反チェック
 	assert(srvManager_->isSecure());
@@ -87,7 +88,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const std::string& f
 }
 
 // メタデータを取得
-const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& filePath)
+const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath)
 {
 	// 範囲外指定違反チェック
 	assert(srvManager_->isSecure());

@@ -3,7 +3,10 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Object3d.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Skydome.h"
+#include "JsonLoader.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -23,30 +26,39 @@ public:	// メンバ関数
 	// 描画
 	void Draw() override;
 
+	// デバッグ描画
+	void DebugDraw() override;
+
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = { "resources/uvChecker.png" };
-	std::string filePath2_ = { "resources/monsterBall.png" };
-	//std::string filePath3_ = { "resources/fence.png" };
-	//std::string filePath4_ = { "resources/circle.png" };
-	std::string filePath5_ = { "resources/ground.png" };
-	std::string filePath6_ = { "resources/grass.png" };
+	const std::string gameTextureFilePath_ = "resources/texture/Game.png";
 
 	// スプライト
-	std::vector<std::unique_ptr<Sprite>> sprites_;
+	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト
 
 	// モデルファイルパス
-	MyBase::ModelFilePath modelFilePath1_ = { {"resources/plane"}, {"plane.obj"} };
-	MyBase::ModelFilePath modelFilePath2_ = { {"resources/axis"}, {"axis.obj"} };
-	MyBase::ModelFilePath modelFilePath3_ = { {"resources/fence"}, {"fence.obj"} };
-	MyBase::ModelFilePath modelFilePath4_ = { {"resources/sphere"}, {"sphere.obj"} };
-	MyBase::ModelFilePath modelFilePath5_ = { {"resources/ground"}, {"ground.obj"} };
-	MyBase::ModelFilePath modelFilePath6_ = { {"resources/terrain"}, {"terrain.obj"} };
+	
 
 	// 3Dオブジェクト
-	std::vector<std::unique_ptr<Object3d>> objects_;
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+	// 敵
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+	// 天球
+	std::unique_ptr<Skydome> skydome_ = nullptr;
+	
+	// test
+	std::vector<std::unique_ptr<BaseObject>> testObjects_;
 
+	// パーティクル
+
+	// jsonローダー
+	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
+	
 #pragma endregion シーン初期化
 
 	bool isParticleActive_;

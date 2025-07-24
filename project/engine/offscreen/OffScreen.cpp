@@ -5,10 +5,10 @@ using namespace Microsoft::WRL;
 using namespace Logger;
 
 // 初期化
-void OffScreen::Initialize(DirectXBase* dxBase)
+void OffScreen::Initialize()
 {
 	// 引数で受け取ってメンバ変数に記録する
-	dxBase_ = dxBase;
+	dxBase_ = DirectXBase::GetInstance();
 
 	// グラフィックスパイプラインの生成
 	CreateGraphicsPipeline();

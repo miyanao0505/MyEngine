@@ -21,10 +21,11 @@ void Object3d::Initislize(const std::string& filePath)
 	CreateCameraData();
 
 	// ライトの初期化
-	LightManager::GetInstance()->Initialize(object3dBase_->GetDxBase());
+	LightManager::GetInstance()->Initialize();
 
-	// Transform変数を作る
-	transform_ = { { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f } };
+	// 3DオブジェクトのTransformの初期化
+	worldTransform_ = std::make_unique<WorldTransform>();
+	worldTransform_->Initialize();
 
 	// Texture
 	textureFileName_ = model_->GetTexture();
@@ -34,18 +35,18 @@ void Object3d::Initislize(const std::string& filePath)
 void Object3d::Update()
 {
 	// WorldMatrixの作成
-	MyBase::Matrix4x4 worldMatrix = Matrix::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
+	worldTransform_->UpdateWorldMatrix();
 	MyBase::Matrix4x4 worldViewProjectionMatrix;
 	if (CameraManager::GetInstance()->GetCamera()) {
 		const MyBase::Matrix4x4& viewProjectionMatrix = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
-		worldViewProjectionMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
+		worldViewProjectionMatrix = Matrix::Multiply(worldTransform_->GetWorldMatrix(), viewProjectionMatrix);
 		cameraData_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 	} else {
-		worldViewProjectionMatrix = worldMatrix;
+		worldViewProjectionMatrix = worldTransform_->GetWorldMatrix();
 	}
 	transformationMatrixData_->WVP = Matrix::Multiply(model_->GetModelData().rootNode.localMatrix, worldViewProjectionMatrix);
-	transformationMatrixData_->World = Matrix::Multiply(model_->GetModelData().rootNode.localMatrix, worldMatrix);
-	transformationMatrixData_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldMatrix));
+	transformationMatrixData_->World = Matrix::Multiply(model_->GetModelData().rootNode.localMatrix, worldTransform_->GetWorldMatrix());
+	transformationMatrixData_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldTransform_->GetWorldMatrix()));
 }
 
 // 描画処理
@@ -69,6 +70,13 @@ void Object3d::SetModel(const std::string& filePath)
 {
 	// モデルを検索してセットする
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
+
+	if (!model_) {
+		size_t dotPos = filePath.find('.');
+		const std::string folderPath = (dotPos != std::string::npos) ? filePath.substr(0, dotPos) : filePath;
+		ModelManager::GetInstance()->LoadModel(folderPath, filePath);
+		model_ = ModelManager::GetInstance()->FindModel(filePath);
+	}
 }
 
 void Object3d::SetTexture(const std::string& filename)

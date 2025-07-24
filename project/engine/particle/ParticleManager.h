@@ -1,9 +1,9 @@
 #pragma once
 #include <map>
+#include <random>
+#include <numbers>
 #include "ParticleBase.h"
 #include "ParticleEmitter.h"
-#include "random"
-#include "numbers"
 #include "MyBase.h"
 
 using namespace std::numbers;
@@ -27,6 +27,7 @@ public:	// パーティクルグループ構造体
 		MyBase::ParticleVertexData* vertexData = nullptr;				// バッファリソース内のデータを指すポインタ
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
 		ParticleEmitter::ParticleType type;
+		bool isBillboard;	// ビルボードかどうか
 	};
 
 public:	// メンバ関数
@@ -36,7 +37,7 @@ public:	// メンバ関数
 	void Finalize();
 
 	// 初期化
-	void Initialize(DirectXBase* dxBase, SrvManager* srvManager);
+	void Initialize(SrvManager* srvManager);
 
 	// 更新
 	void Update();
@@ -80,29 +81,31 @@ public:	// メンバ関数
 	/// <summary>
 	/// パーティクルの発生
 	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="position"></param>
-	/// <param name="count"></param>
-	void Emit(const std::string name, const MyBase::Vector3& position, uint32_t count);
+	/// <param name="name">名前</param>
+	/// <param name="position">位置</param>
+	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
+	void Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
 
-	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 public:	// getter
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
+	ParticleGroup* GetParticleGroup(const std::string& name);
+	bool GetIsBillboard(const std::string& name);
 
 public:	// setter
-	
+	void SetIsBillboard(const std::string& name, bool isBillboard);
 
 private: // ローカル関数
 	/// <summary>
-	/// パーティクルの作成
+	/// パーティクルの生成
 	/// </summary>
-	/// <param name="randomEngine"></param>
-	/// <param name="position"></param>
+	/// <param name="randomEngine">乱数</param>
+	/// <param name="translate">位置</param>
+	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
+	/// <param name="type">パーティクルのタイプ</param>
 	/// <returns></returns>
-	MyBase::Particle CreateMoveParticle(std::mt19937& randomEngine, const MyBase::Vector3& position);
-
-	MyBase::Particle CreateEstablishmentParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, ParticleEmitter::ParticleType type = ParticleEmitter::Box);
+	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 private:	// シングルトン
 	static ParticleManager* instance;
