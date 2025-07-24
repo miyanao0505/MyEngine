@@ -11,12 +11,12 @@ using namespace std;
 void PlayerBullet::Initialize(MyBase::Vector3 position)
 {
 	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
+	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("sphere.obj");
 
-	object_->SetTexture("resources/texture/playerBullet.png");
+	object_->SetTexture("playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.25f, 0.25f, 0.25f });
 

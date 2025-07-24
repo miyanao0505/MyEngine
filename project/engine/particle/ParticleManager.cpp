@@ -5,7 +5,6 @@
 #include"CameraManager.h"
 #include "MyTools.h"
 #include "Matrix.h"
-#include<numbers>
 
 #ifdef _DEBUG
 #include <imgui.h>

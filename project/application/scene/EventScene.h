@@ -26,10 +26,13 @@ public:	// メンバ関数
 	// デバッグ描画
 	void DebugDraw() override;
 
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = { "resources/texture/uvChecker.png" };
+	std::string filePath1_ = "uvChecker.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;

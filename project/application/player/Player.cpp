@@ -24,13 +24,12 @@ Player::~Player()
 void Player::Initialize(MyBase::Vector3 position)
 {
 	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("resources/model/player", "player.obj");
+	ModelManager::GetInstance()->LoadModel("player", "player.obj");
 
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("player.obj");
 
-	// プレイヤーのオブジェクトの初期化
-	object_->Initislize("player.obj");
+	// プレイヤーのオブジェクトの設定
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 

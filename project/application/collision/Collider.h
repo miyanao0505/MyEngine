@@ -55,7 +55,6 @@ private:	// メンバ変数
 	// 衝突属性
 	uint32_t typeID_ = 0u;
 
-
 	bool isCollisionEnabled_ = true; // 衝突判定を有効にするかどうか
 };
 

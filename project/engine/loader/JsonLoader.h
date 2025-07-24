@@ -14,6 +14,7 @@ struct ObjectData {
 	float radius;
 	MyBase::AABB aabb;
 	MyBase::OBB obb;
+	std::vector<ObjectData> children;
 };
 struct LevelData {
 	std::vector<ObjectData> objects;
@@ -34,6 +35,6 @@ public:	// メンバ関数
 	LevelData* LoadFile(const std::string& filePath);
 
 private:	// メンバ関数
-	void ParseObject(const nlohmann::json& object, LevelData& levelData);
+	void ParseObject(const nlohmann::json& object, LevelData& levelData, ObjectData* parent = nullptr);
 };
 

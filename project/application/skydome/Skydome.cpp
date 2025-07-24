@@ -13,7 +13,7 @@ Skydome::~Skydome()
 
 void Skydome::Initialize(MyBase::Vector3 position)
 {
-	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
+	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 	object_ = std::make_unique<Object3d>();
 
 	filePath_ = "resources/texture/skydome.png";

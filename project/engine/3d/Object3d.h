@@ -25,7 +25,7 @@ public:	// getter
 	const MyBase::Vector3& GetScale() const { return worldTransform_->GetScale(); }
 	const MyBase::Vector3& GetRotate() const { return worldTransform_->GetRotation(); }
 	const MyBase::Vector3& GetTranslate() const { return worldTransform_->GetPosition(); }
-	const WorldTransform& GetWorldTransform() const { return *worldTransform_; }
+	WorldTransform* GetWorldTransform() const { return worldTransform_.get(); }
 	const int& GetEnableLighting() const { return model_->GetEnableLighting(); }
 
 public:	// setter

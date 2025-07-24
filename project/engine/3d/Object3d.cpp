@@ -70,6 +70,13 @@ void Object3d::SetModel(const std::string& filePath)
 {
 	// モデルを検索してセットする
 	model_ = ModelManager::GetInstance()->FindModel(filePath);
+
+	if (!model_) {
+		size_t dotPos = filePath.find('.');
+		const std::string folderPath = (dotPos != std::string::npos) ? filePath.substr(0, dotPos) : filePath;
+		ModelManager::GetInstance()->LoadModel(folderPath, filePath);
+		model_ = ModelManager::GetInstance()->FindModel(filePath);
+	}
 }
 
 void Object3d::SetTexture(const std::string& filename)

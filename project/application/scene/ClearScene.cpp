@@ -17,7 +17,7 @@ void ClearScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(clearTextureFilePath_);
 
 	// スプライト
-	clearSprite_.reset(new Sprite);
+	clearSprite_ = std::make_unique<Sprite>();
 	clearSprite_->Initialize(clearTextureFilePath_);
 	clearSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
@@ -28,7 +28,7 @@ void ClearScene::Initialize()
 	
 
 	// パーティクル
-	//particleEmitter_.reset(new ParticleEmitter);
+	//particleEmitter_ = std::make_unique<ParticleEmitter>();
 	//particleEmitter_->Initialize("circle", "resources/circle.png");
 #pragma endregion シーン初期化
 
@@ -147,4 +147,10 @@ void ClearScene::DebugDraw()
 
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
+}
+
+// jsonファイルの読み込み
+void ClearScene::LoadJsonFile(const std::string& filePath)
+{
+	filePath;
 }

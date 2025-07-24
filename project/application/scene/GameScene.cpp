@@ -8,12 +8,13 @@
 #include "AudioManager.h"
 #include"SceneManager.h"
 #include "MyTools.h"
-#include <numbers>
 
+using namespace std;
 
 // 初期化
 void GameScene::Initialize()
 {
+#pragma region シーン初期化
 	BaseScene::Initialize();
 
 #pragma region スプライト
@@ -21,22 +22,22 @@ void GameScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(gameTextureFilePath_);
 
 	// スプライト
-	gameSprite_.reset(new Sprite);
+	gameSprite_ = std::make_unique<Sprite>();
 	gameSprite_->Initialize(gameTextureFilePath_);
 	gameSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
 	// プレイヤー
-	player_.reset(new Player);
+	player_ = std::make_unique<Player>();
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
 
 	// 敵
-	enemy_.reset(new Enemy);
+	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
 
 	// 天球
-	skydome_.reset(new Skydome);
+	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
 #pragma endregion 3Dオブジェクト
 
@@ -45,28 +46,11 @@ void GameScene::Initialize()
 	
 #pragma endregion パーティクル
 
-#pragma region シーン初期化
+#pragma region jsonローダー
 	// jsonローダー
-	jsonLoader_.reset(new JsonLoader);
-	// レベルデータの読み込み
-	LevelData* levelData = jsonLoader_->LoadFile("gameScene.json");
-	// 3Dオブジェクトの読み込み
-	for (const ObjectData& objectData : levelData->objects) {
-		// オブジェクトの種類ごとに処理
-		if (objectData.name == "Player") {
-			// プレイヤーの初期化
-			
-		}
-		else if (objectData.name == "Enemy") {
-			// 敵の初期化
-			
-		}
-		else if (objectData.name == "Skydome") {
-			// 天球の初期化
-			
-		}
-	}
-#pragma endregion シーン初期化
+	jsonLoader_ = std::make_unique<JsonLoader>();
+	LoadJsonFile("gameScene.json");
+#pragma endregion jsonローダー
 
 #pragma region オーディオ
 	// BGM
@@ -81,6 +65,8 @@ void GameScene::Initialize()
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
 #pragma endregion 変数
+
+#pragma endregion シーン初期化
 }
 
 // 終了
@@ -89,6 +75,9 @@ void GameScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
+	for (auto& obj : testObjects_) {
+		obj.reset();
+	}
 	
 	// スプライト
 	gameSprite_.reset();
@@ -158,6 +147,11 @@ void GameScene::Update()
 	// 天球の更新
 	skydome_->Update();
 
+	// test
+	for (auto& obj : testObjects_) {
+		obj->Update();
+	}
+
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
@@ -199,6 +193,11 @@ void GameScene::Draw()
 
 	// プレイヤーの描画
 	player_->Draw();
+
+	// test
+	for (auto& obj : testObjects_) {
+		obj->Draw();
+	}
 
 #pragma endregion 3Dオブジェクト
 
@@ -288,6 +287,17 @@ void GameScene::DebugDraw()
 	player_->DebugDraw();
 
 	enemy_->DebugDraw();
+
+	int num = 0;
+	// test
+	for (auto& obj : testObjects_) {
+		ImGui::PushID(obj.get() + num);
+		if (ImGui::CollapsingHeader("testObj")) {
+			obj->DebugDraw();
+		}
+		ImGui::PopID();
+		num++;
+	}
 
 	// スプライト
 //	if (ImGui::CollapsingHeader("Sprite"))
@@ -523,4 +533,45 @@ void GameScene::DebugDraw()
 	//	ImGui::PopID();
 	//}
 	//ImGui::End();
+}
+
+// JSONファイルの読み込み
+void GameScene::LoadJsonFile(const std::string& filePath)
+{
+	// レベルデータの読み込み
+	LevelData* levelData = jsonLoader_->LoadFile(filePath);
+	
+	// 3Dオブジェクトの読み込み
+	for (const ObjectData& objectData : levelData->objects) {
+		// オブジェクトの種類ごとに処理
+		if (objectData.name == "Player") {
+			// プレイヤーの初期化
+			player_->GetObject3d()->SetModel(objectData.objectName);
+			player_->SetName(objectData.name.c_str());
+			player_->GetObject3d()->SetTranslate(objectData.translation);
+			player_->GetObject3d()->SetRotate(objectData.rotation);
+			player_->GetObject3d()->SetScale(objectData.scale);
+		}
+		else if (objectData.name == "Enemy") {
+			// 敵の初期化
+
+		}
+		else if (objectData.name == "Skydome") {
+			// 天球の初期化
+
+		}
+		else {
+			// その他のObjectはBaseObjectとして構築
+			ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
+			ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
+			TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
+			BaseObject* obj = CreateObjectFromData(objectData);
+			testObjects_.emplace_back(obj);
+			for (const auto& childData : objectData.children) {
+				BaseObject* childObj = CreateObjectFromData(childData);
+				childObj->GetObject3d()->GetWorldTransform()->SetParent(obj->GetObject3d()->GetWorldTransform());
+				testObjects_.emplace_back(childObj);
+			}
+		}
+	}
 }

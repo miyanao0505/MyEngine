@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 #include"Input.h"
+#include "JsonLoader.h"
+#include "BaseObject.h"
 
 // 前方宣言
 class SceneManager;
@@ -25,6 +27,11 @@ public:	//メンバ関数
 
 	// デバック描画
 	virtual void DebugDraw();
+
+	// オブジェクト構築
+	BaseObject* CreateObjectFromData(const ObjectData& data);
+	// jsonファイルの読み込み
+	virtual void LoadJsonFile(const std::string& filePath) = 0;
 
 public:	// setter
 	// シーンマネージャのセット

@@ -21,17 +21,16 @@ Enemy::~Enemy()
 void Enemy::Initialize()
 {
 	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("resources/model/debug/sphere", "sphere.obj");
+	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 	TextureManager::GetInstance()->LoadTexture("resources/texture/uvChecker.png");
 
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("sphere.obj");
 	
 	// 3Dオブジェクトの初期化
-	object_->Initislize("sphere.obj");
 	object_->SetTexture("resources/texture/uvChecker.png");
-	object_->SetTranslate({ 0.0f, 0.0f, 15.0f }); // 初期位置
-	object_->SetScale({ 0.50f, 0.50f, 0.50f }); // 初期スケール
+	object_->SetTranslate({ 0.0f, 0.0f, 15.0f });	// 初期位置
+	object_->SetScale({ 0.50f, 0.50f, 0.50f });		// 初期スケール
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);

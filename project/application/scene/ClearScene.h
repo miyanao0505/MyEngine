@@ -26,10 +26,13 @@ public:	// メンバ関数
 	// デバッグ描画
 	void DebugDraw() override;
 
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string clearTextureFilePath_ = "resources/texture/Clear.png";	// クリアテクスチャ
+	std::string clearTextureFilePath_ = "Clear.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> clearSprite_ = nullptr;	// クリアスプライト

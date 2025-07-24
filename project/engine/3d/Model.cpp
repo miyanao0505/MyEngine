@@ -64,7 +64,7 @@ MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& director
 			std::string textureFilename;
 			s >> textureFilename;
 			// 連結してファイルパスにする
-			materialData.textureFilePath = "resources/texture/" + textureFilename;
+			materialData.textureFilePath = textureFilename;
 		}
 	}
 
@@ -114,8 +114,7 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			std::string directoryFilePath = "resources/texture";
-			modelData_.material.textureFilePath = directoryFilePath + "/" + textureFilePath.C_Str();
+			modelData_.material.textureFilePath = std::string("resources/texture/") + textureFilePath.C_Str();
 		}
 	}
 	// Scene全体の階層構造を作る

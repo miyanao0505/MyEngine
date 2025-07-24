@@ -17,7 +17,7 @@ void EventScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(filePath1_);
 
 	// スプライト
-	sprite_.reset(new Sprite);
+	sprite_ = std::make_unique<Sprite>();
 	sprite_->Initialize(filePath1_);
 	sprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
@@ -28,7 +28,7 @@ void EventScene::Initialize()
 	
 
 	// パーティクル
-	//particleEmitter_.reset(new ParticleEmitter);
+	//particleEmitter_ = std::make_unique<ParticleEmitter>();
 	//particleEmitter_->Initialize("circle", "resources/circle.png");
 #pragma endregion シーン初期化
 
@@ -141,4 +141,10 @@ void EventScene::DebugDraw()
 
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
+}
+
+// jsonファイルの読み込み
+void EventScene::LoadJsonFile(const std::string& filePath)
+{
+	filePath;
 }

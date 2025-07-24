@@ -26,11 +26,14 @@ public:	// メンバ関数
 	// デバッグ描画
 	void DebugDraw() override;
 
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string titleTextureFilePath_ = "resources/texture/Title.png";	// タイトルテクスチャ
-	std::string testTextureFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";	// テスト用テクスチャ
+	std::string titleTextureFilePath_ = "Title.png";
+	std::string skyBoxFilePath_ = "rostock_laage_airport_4k.dds";
 
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト

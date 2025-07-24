@@ -45,7 +45,7 @@
         },
         {
             "type": "MESH",
-            "name": "ICO球",
+            "name": "Player",
             "transform": {
                 "translation": [
                     0.0,
@@ -58,34 +58,43 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
+                    0.5,
+                    0.5,
+                    0.5
                 ]
             },
-            "file_name": "ico_ball",
-            "collider": {
-                "type": "BOX",
-                "center": [
+            "file_name": "player.obj"
+        },
+        {
+            "type": "MESH",
+            "name": "Sphere",
+            "transform": {
+                "translation": [
                     0.0,
-                    0.0,
+                    5.0,
                     0.0
                 ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    0.5,
+                    0.5,
+                    0.5
                 ]
             },
+            "file_name": "sphere.obj",
             "children": [
                 {
                     "type": "MESH",
-                    "name": "ICO球.001",
+                    "name": "hummer",
                     "transform": {
                         "translation": [
-                            3.0,
-                            3.0,
-                            3.0
+                            0.5,
+                            0.0,
+                            0.0
                         ],
                         "rotation": [
                             0.0,
@@ -98,20 +107,7 @@
                             1.0
                         ]
                     },
-                    "file_name": "ico_ball",
-                    "collider": {
-                        "type": "BOX",
-                        "center": [
-                            0.0,
-                            0.0,
-                            0.0
-                        ],
-                        "size": [
-                            2.0,
-                            2.0,
-                            2.0
-                        ]
-                    }
+                    "file_name": "hummer.obj"
                 }
             ]
         }

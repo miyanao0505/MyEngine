@@ -17,7 +17,7 @@ void GameOverScene::Initialize()
 	TextureManager::GetInstance()->LoadTexture(gameOverTextureFilePath_);
 
 	// スプライト
-	gameOverSprite_.reset(new Sprite);
+	gameOverSprite_ = std::make_unique<Sprite>();
 	gameOverSprite_->Initialize(gameOverTextureFilePath_);
 	gameOverSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
@@ -28,7 +28,7 @@ void GameOverScene::Initialize()
 	
 
 	// パーティクル
-	/*particleEmitter_.reset(new ParticleEmitter);
+	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("circle", "resources/circle.png");*/
 #pragma endregion シーン初期化
 
@@ -147,4 +147,10 @@ void GameOverScene::DebugDraw()
 
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
+}
+
+// jsonファイルの読み込み
+void GameOverScene::LoadJsonFile(const std::string& filePath)
+{
+	filePath;
 }

@@ -1,6 +1,7 @@
 #include "JsonLoader.h"
 #include <fstream>
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 using namespace nlohmann;
@@ -41,13 +42,12 @@ LevelData* JsonLoader::LoadFile(const string& filePath)
 
 	// "objects"の全オブジェクトを走査
 	for (json& object : deserialized["objects"]) {
-		
 		ParseObject(object, *levelData);
 	}
 	return levelData;
 }
 
-void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData)
+void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData, ObjectData* parent)
 {
 	assert(object.contains("type"));
 
@@ -96,11 +96,18 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData)
 		// 子オブジェクトがあれば再帰的に処理
 		if (object.contains("children")) {
 			for (const auto& child : object["children"]) {
-				ParseObject(child, levelData);
+				ObjectData childData;
+				ParseObject(child, levelData, &childData);
+				objectData.children.push_back(childData);
 			}
 		}
 
-		// レベルデータに追加
-		levelData.objects.push_back(objectData);
+		if (parent) {
+			*parent = objectData;
+		}
+		else {
+			// レベルデータに追加
+			levelData.objects.push_back(objectData);
+		}
 	}
 }

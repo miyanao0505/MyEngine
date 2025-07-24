@@ -16,10 +16,10 @@ void TitleScene::Initialize()
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
 	// テスト用テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(testTextureFilePath_);
+	TextureManager::GetInstance()->LoadTexture(skyBoxFilePath_);
 
 	// スプライト
-	titleSprite_.reset(new Sprite);
+	titleSprite_ = std::make_unique<Sprite>();
 	titleSprite_->Initialize(titleTextureFilePath_);
 	titleSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
@@ -32,13 +32,13 @@ void TitleScene::Initialize()
 	// 3Dオブジェクト
 	// Skybox
 	skybox_ = std::make_unique<Skybox>();
-	skybox_->Initislize(testTextureFilePath_, { 50.0f, 50.0f, 50.0f });
+	skybox_->Initislize(skyBoxFilePath_, { 50.0f, 50.0f, 50.0f });
 
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_.reset(new ParticleEmitter);
+	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("circle", "resources/circle.png");*/
 
 #pragma endregion パーティクル
@@ -206,4 +206,10 @@ void TitleScene::DebugDraw()
 	skybox_->DebugDraw();
 
 	ImGui::End();
+}
+
+// jsonファイルの読み込み
+void TitleScene::LoadJsonFile(const std::string& filePath)
+{
+	filePath;
 }

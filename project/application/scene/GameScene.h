@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Object3d.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
@@ -30,10 +29,13 @@ public:	// メンバ関数
 	// デバッグ描画
 	void DebugDraw() override;
 
+	// jsonファイルの読み込み
+	void LoadJsonFile(const std::string& filePath) override;
+
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string gameTextureFilePath_ = "resources/texture/Game.png";	// タイトルテクスチャ
+	const std::string gameTextureFilePath_ = "Game.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト
@@ -48,6 +50,9 @@ private:	// メンバ変数
 	std::unique_ptr<Enemy> enemy_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
+	
+	// test
+	std::vector<std::unique_ptr<BaseObject>> testObjects_;
 
 	// パーティクル
 

@@ -20,18 +20,18 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
 
 #ifdef _DEBUG
 	/// <summary>
 	/// デバック描画
 	/// </summary>
-	void DebugDraw();
+	void DebugDraw() override;
 #endif // _DEBUG
 
 
