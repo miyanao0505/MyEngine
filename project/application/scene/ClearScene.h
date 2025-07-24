@@ -32,7 +32,7 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string clearTextureFilePath_ = "Clear.png";
+	std::string clearTextureFilePath_ = "resources/texture/Clear.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> clearSprite_ = nullptr;	// クリアスプライト

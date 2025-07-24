@@ -35,7 +35,7 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	const std::string gameTextureFilePath_ = "Game.png";
+	const std::string gameTextureFilePath_ = "resources/texture/Game.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト

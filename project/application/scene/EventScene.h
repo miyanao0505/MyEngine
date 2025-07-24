@@ -32,7 +32,7 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string filePath1_ = "uvChecker.png";
+	std::string filePath1_ = "resources/texture/uvChecker.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;

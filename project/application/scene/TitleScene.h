@@ -32,8 +32,8 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string titleTextureFilePath_ = "Title.png";
-	std::string skyBoxFilePath_ = "rostock_laage_airport_4k.dds";
+	std::string titleTextureFilePath_ = "resources/texture/Title.png";
+	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
 
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト

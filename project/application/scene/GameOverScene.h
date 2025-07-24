@@ -32,7 +32,7 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string gameOverTextureFilePath_ = "Gameover.png";
+	std::string gameOverTextureFilePath_ = "resources/texture/Gameover.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> gameOverSprite_ = nullptr;	// ゲームオーバースプライト
