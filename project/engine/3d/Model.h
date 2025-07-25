@@ -28,6 +28,7 @@ public:	// getter
 public:	// setter
 	void SetEnableLighting(const bool& enableLighting) { materialData_->enableLighting = enableLighting; }
 	void SetTexture(const std::string& filename);
+	void SetEnvironmentTexture(const std::string& textureName) { environmentTexture_ = textureName; }
 
 private:	// メンバ関数
 	// 頂点データ作成
@@ -42,6 +43,8 @@ private:	// メンバ変数
 
 	// objファイルのデータ
 	MyBase::ModelData modelData_;
+	// 環境光用のテクスチャ
+	std::string environmentTexture_;
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex

@@ -101,6 +101,13 @@ void Skybox::DebugDraw()
 	ImGui::PopID();
 }
 
+void Skybox::SetTexture(const std::string& textureName)
+{
+	textureFileName_ = textureName;
+
+	TextureManager::GetInstance()->LoadTexture(textureFileName_);
+}
+
 // ルートシグネチャの作成
 void Skybox::CreateRootSignature()
 {

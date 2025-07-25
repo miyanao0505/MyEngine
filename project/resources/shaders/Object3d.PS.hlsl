@@ -1,8 +1,9 @@
 #include "object3d.hlsli"
 
-ConstantBuffer<Material> gMaterial : register(b0);
-Texture2D<float4> gTexture : register(t0);
+Texture2D<float32_t4> gTexture : register(t0);
+TextureCube<float32_t4> gEnvironmentTexture : register(t1);
 SamplerState gSampler : register(s0);
+ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 ConstantBuffer<Camera> gCamera : register(b2);
 ConstantBuffer<PointLight> gPointLight : register(b3);
@@ -88,8 +89,13 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		// 拡散反射 + 鏡面反射
         float32_t3 spotLightColor = diffuseSpotLight + specularSpotLight;
 		
+		// 環境マップによるLighting
+        float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+        float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+        float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+
 		// 拡散反射 + 鏡面反射
-        output.color.rgb = directionLightColor + pointLightColor + spotLightColor;
+        output.color.rgb = directionLightColor + pointLightColor + spotLightColor + environmentColor.rgb;
 		output.color.a = gMaterial.color.a * textureColor.a;
 	}
 	else { // Lightingしない場合。前回までと同じ演算

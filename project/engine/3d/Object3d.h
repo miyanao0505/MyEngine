@@ -22,6 +22,7 @@ public:	// メンバ関数
 	void Draw();
 
 public:	// getter
+	Model* GetModel() const { return model_; }
 	const MyBase::Vector3& GetScale() const { return worldTransform_->GetScale(); }
 	const MyBase::Vector3& GetRotate() const { return worldTransform_->GetRotation(); }
 	const MyBase::Vector3& GetTranslate() const { return worldTransform_->GetPosition(); }

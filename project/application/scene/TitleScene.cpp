@@ -27,12 +27,17 @@ void TitleScene::Initialize()
 
 #pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
-	
+	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 
 	// 3Dオブジェクト
 	// Skybox
 	skybox_ = std::make_unique<Skybox>();
 	skybox_->Initislize(skyBoxFilePath_, { 50.0f, 50.0f, 50.0f });
+	// sphere
+	sphere_ = std::make_unique<BaseObject>();
+	sphere_->Initialize("sphere.obj");
+	sphere_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	sphere_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
 
 #pragma endregion 3Dオブジェクト
 
@@ -93,6 +98,8 @@ void TitleScene::Update()
 	// 3Dオブジェクトの更新処理
 	// 天球の更新
 	skybox_->Update();
+	// sphereの更新
+	sphere_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -130,6 +137,8 @@ void TitleScene::Draw()
 	// 全ての3DObject個々の描画
 	// 天球の描画
 	skybox_->Draw();
+	// sphereの描画
+	sphere_->Draw();
 
 #pragma endregion 3Dオブジェクト
 

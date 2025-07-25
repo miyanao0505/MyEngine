@@ -22,6 +22,7 @@ public:	// getter
 	MyBase::Vector3 GetScale() const { return worldTransform_->GetScale(); }
 	MyBase::Vector3 GetRotate() const { return worldTransform_->GetRotation(); }
 	MyBase::Vector3 GetTranslate() const { return worldTransform_->GetPosition(); }
+	const std::string& GetTextureName() { return textureFileName_; }
 
 public:	// setter
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
@@ -29,6 +30,7 @@ public:	// setter
 	void SetScale(const MyBase::Vector3& scale) { worldTransform_->SetScale(scale); }
 	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotation(rotate); }
 	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetPosition(translate); }
+	void SetTexture(const std::string& textureName);
 
 private:	// メンバ関数
 	// ルートシグネチャの作成

@@ -41,6 +41,8 @@ private:	// メンバ変数
 	// 3Dオブジェクト
 	// Skybox
 	std::unique_ptr<Skybox> skybox_ = nullptr;
+	// Sphere
+	std::unique_ptr<BaseObject> sphere_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
