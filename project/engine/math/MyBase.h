@@ -277,10 +277,11 @@ public:
 	/// </summary>
 	struct ModelMaterial {
 		Vector4 color;
-		int enableLighting;
-		float padding[3];
 		Matrix4x4 uvTransform;
 		float shininess;
+		float reflectivity;
+		int enableLighting;
+		float padding[2];
 	};
 
 	/// <summary>

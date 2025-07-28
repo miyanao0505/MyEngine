@@ -38,7 +38,10 @@ void Model::Draw()
 	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
 	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
-	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexture_));
+	// 環境マップのテクスチャがある場合のみ設定。
+	if (!environmentTexture_.empty()) {
+		modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexture_));
+	}
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
 	modelBase_->GetDxBase()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
@@ -156,12 +159,14 @@ void Model::CreateMaterialData()
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	// 白で読み込む
 	materialData_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	// Lightingを有効にする
-	materialData_->enableLighting = true;
 	// 単位行列で初期化
 	materialData_->uvTransform = Matrix::MakeIdentity4x4();
 	// 光沢度
 	materialData_->shininess = 40.80f;
+	// 反射強度
+	materialData_->reflectivity = 0.0f;
+	// Lightingを有効にする
+	materialData_->enableLighting = true;
 }
 
 // Node情報を読み込む

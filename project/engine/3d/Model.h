@@ -23,11 +23,13 @@ public:	// メンバ関数
 public:	// getter
 	const MyBase::ModelData& GetModelData() const { return modelData_; }
 	const std::string& GetTexture() const { return modelData_.material.textureFilePath; }
+	MyBase::ModelMaterial* GetModelMaterial() const { return (materialData_ == nullptr) ? nullptr : materialData_; }
 	const int& GetEnableLighting() const { return materialData_->enableLighting; }
 
 public:	// setter
 	void SetEnableLighting(const bool& enableLighting) { materialData_->enableLighting = enableLighting; }
 	void SetTexture(const std::string& filename);
+	void SetModelMaterial(MyBase::ModelMaterial* materialData) { materialData_ = materialData; }
 	void SetEnvironmentTexture(const std::string& textureName) { environmentTexture_ = textureName; }
 
 private:	// メンバ関数

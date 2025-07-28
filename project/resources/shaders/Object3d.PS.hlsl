@@ -89,15 +89,17 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		// 拡散反射 + 鏡面反射
         float32_t3 spotLightColor = diffuseSpotLight + specularSpotLight;
 		
+		// 拡散反射 + 鏡面反射
+        output.color.rgb = directionLightColor + pointLightColor + spotLightColor;
+		output.color.a = gMaterial.color.a * textureColor.a;
+		
 		// 環境マップによるLighting
         float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
         float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
         float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
-
-		// 拡散反射 + 鏡面反射
-        output.color.rgb = directionLightColor + pointLightColor + spotLightColor + environmentColor.rgb;
-		output.color.a = gMaterial.color.a * textureColor.a;
-	}
+		// 反射強度による変更
+        output.color = lerp(output.color, environmentColor, gMaterial.reflectivity);
+    }
 	else { // Lightingしない場合。前回までと同じ演算
 		output.color = gMaterial.color * textureColor;
 		

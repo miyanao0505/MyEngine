@@ -16,9 +16,10 @@ struct TransformationMatrix
 struct Material
 {
 	float4 color;
+    float4x4 uvTransform;
+    float shininess;
+    float reflectivity;
 	int enableLighting;
-	float4x4 uvTransform;
-	float shininess;
 };
 
 struct DirectionalLight
