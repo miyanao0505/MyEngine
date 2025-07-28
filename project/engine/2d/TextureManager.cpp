@@ -62,7 +62,15 @@ void TextureManager::LoadTexture(const string& filePath)
 	textureData.srvHandleCPU = srvManager_->GetCPUDescriptorHandle(textureData.srvIndex);
 	textureData.srvHandleGPU = srvManager_->GetGPUDescriptorHandle(textureData.srvIndex);
 
-	srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
+	// キューブマップか2Dか判定してSRV作成
+	if ((textureData.metadata.miscFlags & TEX_MISC_TEXTURECUBE) != 0) {
+		// キューブマップとしてSRV作成
+		srvManager_->CreateSRVforTextureCube(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
+	}
+	else {
+		// 通常の2Dテクスチャ
+		srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
+	}
 }
 
 // SRVインデックスの開始番号

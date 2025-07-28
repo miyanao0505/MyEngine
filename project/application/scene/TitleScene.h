@@ -38,11 +38,12 @@ private:	// メンバ変数
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
 
-	// 3Dオブジェクト
 	// Skybox
 	std::unique_ptr<Skybox> skybox_ = nullptr;
-	// Sphere
-	std::unique_ptr<BaseObject> sphere_ = nullptr;
+
+	// 3Dオブジェクト
+	// hummer
+	std::unique_ptr<BaseObject> hummer_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

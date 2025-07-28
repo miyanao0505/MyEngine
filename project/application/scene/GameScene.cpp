@@ -75,9 +75,9 @@ void GameScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	for (auto& obj : testObjects_) {
+	/*for (auto& obj : testObjects_) {
 		obj.reset();
-	}
+	}*/
 	
 	// スプライト
 	gameSprite_.reset();
@@ -148,9 +148,9 @@ void GameScene::Update()
 	skydome_->Update();
 
 	// test
-	for (auto& obj : testObjects_) {
+	/*for (auto& obj : testObjects_) {
 		obj->Update();
-	}
+	}*/
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -195,9 +195,9 @@ void GameScene::Draw()
 	player_->Draw();
 
 	// test
-	for (auto& obj : testObjects_) {
+	/*for (auto& obj : testObjects_) {
 		obj->Draw();
-	}
+	}*/
 
 #pragma endregion 3Dオブジェクト
 
@@ -288,93 +288,16 @@ void GameScene::DebugDraw()
 
 	enemy_->DebugDraw();
 
-	int num = 0;
+	//int num = 0;
 	// test
-	for (auto& obj : testObjects_) {
+	/*for (auto& obj : testObjects_) {
 		ImGui::PushID(obj.get() + num);
 		if (ImGui::CollapsingHeader("testObj")) {
 			obj->DebugDraw();
 		}
 		ImGui::PopID();
 		num++;
-	}
-
-	// スプライト
-//	if (ImGui::CollapsingHeader("Sprite"))
-//	{
-//		// ブレンドモード
-//		if (ImGui::CollapsingHeader("BlendModeSprite")) {
-//			static ImGuiComboFlags spriteFlags = 0;
-//			const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
-//			static int selectID = 1;
-//
-//			const char* previewValue = blendModeIndex[selectID];
-//
-//			if (ImGui::BeginCombo("now Blend", previewValue, spriteFlags))
-//			{
-//				for (int n = 0; n < IM_ARRAYSIZE(blendModeIndex); n++)
-//				{
-//					const bool isSelected = (selectID == n);
-//					if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
-//						selectID = n;
-//						spriteBase_->SetBlendMode(static_cast<SpriteBase::BlendMode>(n));
-//					}
-//
-//					if (isSelected) {
-//						ImGui::SetItemDefaultFocus();
-//					}
-//				}
-//				ImGui::EndCombo();
-//			}
-//		}
-//		for (std::unique_ptr<Sprite>& sprite : sprites_)
-//		{
-//			ImGui::PushID(sprite.get());
-//			if (ImGui::CollapsingHeader("Object"))
-//			{
-//				// 移動
-//				MyBase::Vector2 translate = sprite->GetPosition();
-//				ImGui::SliderFloat2("Translate", &translate.x, 0.0f, 640.0f);
-//				sprite->SetPosition(translate);
-//				// 回転
-//				float rotation = sprite->GetRotation();
-//				ImGui::SliderAngle("Rotate", &rotation);
-//				sprite->SetRotation(rotation);
-//				// 拡縮
-//				MyBase::Vector2 size = sprite->GetSize();
-//				ImGui::SliderFloat2("Scale", &size.x, 0.0f, 640.f);
-//				sprite->SetSize(size);
-//				// アンカーポイント
-//				MyBase::Vector2 anchorPoint = sprite->GetAnchorPoint();
-//				ImGui::DragFloat2("AnchorPoint", &anchorPoint.x, 0.05f, -1.0f, 2.0f);
-//				sprite->SetAnchorPoint(anchorPoint);
-//				// フリップ
-//				bool isFlipX = sprite->GetIsFlipX();
-//				ImGui::Checkbox("isFlipX", &isFlipX);
-//				sprite->SetIsFlipX(isFlipX);
-//				bool isFlipY = sprite->GetIsFlipY();
-//				ImGui::Checkbox("isFlipY", &isFlipY);
-//				sprite->SetIsFlipY(isFlipY);
-//				// テクスチャ範囲指定
-//				MyBase::Vector2 textureLeftTop = sprite->GetTextureLeftTop();
-//				ImGui::SliderFloat2("textureLeftTop", &textureLeftTop.x, 0.0f, max(sprite->GetSpriteSize().x, sprite->GetSpriteSize().y));
-//				sprite->SetTextureLeftTop(textureLeftTop);
-//				MyBase::Vector2 textureSize = sprite->GetTextureSize();
-//				ImGui::SliderFloat2("textureSize", &textureSize.x, 0.0f, max(sprite->GetSpriteSize().x, sprite->GetSpriteSize().y) * 2.f);
-//				sprite->SetTextureSize(textureSize);
-//
-//				if (ImGui::CollapsingHeader("Material"))
-//				{
-//					// 色
-//					MyBase::Vector4 color = sprite->GetColor();
-//					ImGui::ColorEdit4("color", &color.x);
-//					sprite->SetColor(color);
-//				}
-//			}
-//			ImGui::PopID();
-//		}
-//	}
-//
+	}*/
 
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
@@ -492,7 +415,7 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 		}
 		else {
 			// その他のObjectはBaseObjectとして構築
-			ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
+			/*ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 			ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
 			TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
 			BaseObject* obj = CreateObjectFromData(objectData);
@@ -501,7 +424,7 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 				BaseObject* childObj = CreateObjectFromData(childData);
 				childObj->GetObject3d()->GetWorldTransform()->SetParent(obj->GetObject3d()->GetWorldTransform());
 				testObjects_.emplace_back(childObj);
-			}
+			}*/
 		}
 	}
 }

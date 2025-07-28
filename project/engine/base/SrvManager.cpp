@@ -56,16 +56,8 @@ void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, DirectX::TexMetadata m
 	// SRVの設定
 	srvDesc.Format = metaData.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	
-	if (metaData.IsCubemap()) {
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-		srvDesc.TextureCube.MostDetailedMip = 0;					// unionがTexureCubeになったが、内部パラメータの意味はTexture2dと変わらない
-		srvDesc.TextureCube.MipLevels = UINT_MAX;
-		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-	} else {
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;							// 2Dテクスチャ
-		srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
-	}
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
 
 	// 設定をもとにSRVを生成
 	dxBase_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
@@ -85,6 +77,21 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 	instancingSrvDesc.Buffer.StructureByteStride = structureByteStride;
 	// 設定をもとにSRVを生成
 	dxBase_->GetDevice()->CreateShaderResourceView(pResource, &instancingSrvDesc, GetCPUDescriptorHandle(srvIndex));
+}
+
+// SRV生成(キューブマップ用)
+void SrvManager::CreateSRVforTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource)
+{
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = static_cast<UINT>(metaData.mipLevels);
+	srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	srvDesc.Format = metaData.format;
+
+	// 設定をもとにSRVを生成
+	dxBase_->GetDevice()->CreateShaderResourceView(pResource, &srvDesc, GetCPUDescriptorHandle(srvIndex));
 }
 
 // 描画前処理

@@ -25,19 +25,22 @@ void TitleScene::Initialize()
 
 #pragma endregion スプライト
 
-#pragma region 3Dオブジェクト
-	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
-
-	// 3Dオブジェクト
+#pragma region Skybox
 	// Skybox
 	skybox_ = std::make_unique<Skybox>();
 	skybox_->Initislize(skyBoxFilePath_, { 50.0f, 50.0f, 50.0f });
-	// sphere
-	sphere_ = std::make_unique<BaseObject>();
-	sphere_->Initialize("sphere.obj");
-	sphere_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });
-	sphere_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
+#pragma endregion Skybox
+
+#pragma region 3Dオブジェクト
+	// .objファイルからモデルを読み込む
+	ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
+
+	// 3Dオブジェクト
+	// hummer
+	hummer_ = std::make_unique<BaseObject>();
+	hummer_->Initialize("hummer.obj");
+	hummer_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });
+	hummer_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
 
 #pragma endregion 3Dオブジェクト
 
@@ -95,11 +98,12 @@ void TitleScene::Update()
 
 #endif // _DEBUG
 
-	// 3Dオブジェクトの更新処理
-	// 天球の更新
+	// Skyboxの更新
 	skybox_->Update();
-	// sphereの更新
-	sphere_->Update();
+
+	// 3Dオブジェクトの更新処理
+	// hummerの更新
+	hummer_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -129,16 +133,19 @@ void TitleScene::Update()
 // 描画
 void TitleScene::Draw()
 {
+#pragma region Skybox
+	// 天球の描画
+	skybox_->Draw();
+#pragma endregion Skybox
+
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// 天球の描画
-	skybox_->Draw();
-	// sphereの描画
-	sphere_->Draw();
+	// hummerの描画
+	hummer_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -213,6 +220,9 @@ void TitleScene::DebugDraw()
 	}
 	// Skybox
 	skybox_->DebugDraw();
+
+	// hummer
+	hummer_->DebugDraw();
 
 	ImGui::End();
 }
