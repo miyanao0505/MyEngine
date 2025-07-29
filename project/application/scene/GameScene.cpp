@@ -214,7 +214,7 @@ void GameScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	gameSprite_->Draw();
+	//gameSprite_->Draw();
 
 #pragma endregion スプライト
 }
