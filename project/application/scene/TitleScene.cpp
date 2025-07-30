@@ -36,11 +36,7 @@ void TitleScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
 
 	// 3Dオブジェクト
-	// hummer
-	hummer_ = std::make_unique<BaseObject>();
-	hummer_->Initialize("hummer.obj");
-	hummer_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });
-	hummer_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
+
 
 #pragma endregion 3Dオブジェクト
 
@@ -102,8 +98,7 @@ void TitleScene::Update()
 	skybox_->Update();
 
 	// 3Dオブジェクトの更新処理
-	// hummerの更新
-	hummer_->Update();
+
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -144,8 +139,7 @@ void TitleScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// hummerの描画
-	hummer_->Draw();
+
 
 #pragma endregion 3Dオブジェクト
 
@@ -221,8 +215,7 @@ void TitleScene::DebugDraw()
 	// Skybox
 	skybox_->DebugDraw();
 
-	// hummer
-	hummer_->DebugDraw();
+
 
 	ImGui::End();
 }
