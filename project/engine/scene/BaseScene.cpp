@@ -21,9 +21,11 @@ void BaseScene::Draw()
 {
 }
 
+#ifdef _DEBUG
 void BaseScene::DebugDraw()
 {
 }
+#endif // _DEBUG
 
 // オブジェクト構築
 BaseObject* BaseScene::CreateObjectFromData(const ObjectData& data)
