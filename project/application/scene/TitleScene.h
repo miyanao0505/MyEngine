@@ -23,8 +23,10 @@ public:	// メンバ関数
 	// 描画
 	void Draw() override;
 
+#ifdef _DEBUG
 	// デバッグ描画
 	void DebugDraw() override;
+#endif // _DEBUG
 
 	// jsonファイルの読み込み
 	void LoadJsonFile(const std::string& filePath) override;

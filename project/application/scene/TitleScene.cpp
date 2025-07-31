@@ -167,6 +167,7 @@ void TitleScene::Draw()
 #pragma endregion スプライト
 }
 
+#ifdef _DEBUG
 // デバッグ描画
 void TitleScene::DebugDraw()
 {
@@ -226,6 +227,7 @@ void TitleScene::DebugDraw()
 
 	ImGui::End();
 }
+#endif // _DEBUG
 
 // jsonファイルの読み込み
 void TitleScene::LoadJsonFile(const std::string& filePath)

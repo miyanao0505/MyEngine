@@ -219,6 +219,7 @@ void GameScene::Draw()
 #pragma endregion スプライト
 }
 
+#ifdef _DEBUG
 void GameScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
@@ -387,6 +388,7 @@ void GameScene::DebugDraw()
 	//}
 	//ImGui::End();
 }
+#endif // _DEBUG
 
 // JSONファイルの読み込み
 void GameScene::LoadJsonFile(const std::string& filePath)

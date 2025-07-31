@@ -128,6 +128,7 @@ void EventScene::Draw()
 
 }
 
+#ifdef _DEBUG
 // デバッグ描画
 void EventScene::DebugDraw()
 {
@@ -142,6 +143,7 @@ void EventScene::DebugDraw()
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
 }
+#endif // _DEBUG
 
 // jsonファイルの読み込み
 void EventScene::LoadJsonFile(const std::string& filePath)
