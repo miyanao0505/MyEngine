@@ -23,6 +23,7 @@ public:	// getter
 	MyBase::Vector3 GetRotate() const { return worldTransform_->GetRotation(); }
 	MyBase::Vector3 GetTranslate() const { return worldTransform_->GetPosition(); }
 	const std::string& GetTextureName() { return textureFileName_; }
+	bool IsUsingEnvironmentMap() const { return useEnvironmentMap_; }
 
 public:	// setter
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
@@ -31,6 +32,7 @@ public:	// setter
 	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotation(rotate); }
 	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetPosition(translate); }
 	void SetTexture(const std::string& textureName);
+	void SetUseEnvironmentMap(bool use) { useEnvironmentMap_ = use; }
 
 private:	// メンバ関数
 	// ルートシグネチャの作成
@@ -85,5 +87,9 @@ private:	// メンバ変数
 
 	// Texture
 	std::string textureFileName_;
+
+	// 使用フラグ
+	bool useEnvironmentMap_ = false;	// デフォルトOFF
+
 };
 
