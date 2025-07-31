@@ -20,8 +20,8 @@ void MyGame::Initialize()
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
 	CameraManager::GetInstance()->SetCamera("sub");
 	CameraManager::GetInstance()->FindCamera("sub");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 3.1f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 4.0f, 10.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 1.57f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ -15.0f, 7.0f, 0.0f });
 
 	CameraManager::GetInstance()->FindCamera("default");
 #pragma endregion

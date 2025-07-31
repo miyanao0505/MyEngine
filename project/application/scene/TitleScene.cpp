@@ -180,45 +180,13 @@ void TitleScene::DebugDraw()
 	ImGui::Text("B key : eventScene");
 	ImGui::End();
 
+	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
 	ImGui::Begin("Settings");
-	// カメラ
-	if (ImGui::CollapsingHeader("Camera"))
-	{
-		// 変更するための変数
-		MyBase::Transform transformCamera{ {1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+	// Camera
+	CameraManager::GetInstance()->DebugDraw();
 
-		static ImGuiComboFlags flags = 0;
-		const char* cameraNames[] = { "default", "sub" };
-		static int cameraIndex = 0;
-
-		const char* cameraNowVlue = cameraNames[cameraIndex];
-
-		if (ImGui::BeginCombo("Now Camera", cameraNowVlue, flags))
-		{
-			for (int i = 0; i < IM_ARRAYSIZE(cameraNames); i++)
-			{
-				const bool isSelected = (cameraIndex == i);
-				if (ImGui::Selectable(cameraNames[i], isSelected)) {
-					cameraIndex = i;
-					CameraManager::GetInstance()->FindCamera(cameraNames[i]);
-				}
-
-				if (isSelected) {
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
-
-		transformCamera.translate = CameraManager::GetInstance()->GetCamera()->GetTranslate();
-		ImGui::DragFloat3("translate", &transformCamera.translate.x, 0.05f);
-		CameraManager::GetInstance()->GetCamera()->SetTranslate(transformCamera.translate);
-		transformCamera.rotate = CameraManager::GetInstance()->GetCamera()->GetRotate();
-		ImGui::DragFloat3("rotate", &transformCamera.rotate.x, 0.05f);
-		CameraManager::GetInstance()->GetCamera()->SetRotate(transformCamera.rotate);
-
-		ImGui::Text("\n");
-	}
 	// Skybox
 	skybox_->DebugDraw();
 
