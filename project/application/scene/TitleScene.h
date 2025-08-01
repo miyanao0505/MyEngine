@@ -4,6 +4,8 @@
 #include <vector>
 #include "Sprite.h"
 #include "Skybox.h"
+#include "Player.h"
+#include "Enemy.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -44,8 +46,16 @@ private:	// メンバ変数
 	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// 3Dオブジェクト
-	// hummer
-	std::unique_ptr<BaseObject> hummer_ = nullptr;
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+	// 敵
+	std::unique_ptr<Enemy> enemy_ = nullptr;
+
+	// test
+	std::vector<std::unique_ptr<BaseObject>> testObjects_;
+
+	// jsonローダー
+	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
