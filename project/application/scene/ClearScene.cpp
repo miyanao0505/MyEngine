@@ -133,6 +133,7 @@ void ClearScene::Draw()
 
 }
 
+#ifdef _DEBUG
 // デバッグ描画
 void ClearScene::DebugDraw()
 {
@@ -148,6 +149,7 @@ void ClearScene::DebugDraw()
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
 }
+#endif // _DEBUG
 
 // jsonファイルの読み込み
 void ClearScene::LoadJsonFile(const std::string& filePath)

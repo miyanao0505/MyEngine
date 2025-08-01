@@ -133,6 +133,7 @@ void GameOverScene::Draw()
 
 }
 
+#ifdef _DEBUG
 // デバッグ描画
 void GameOverScene::DebugDraw()
 {
@@ -148,6 +149,7 @@ void GameOverScene::DebugDraw()
 	// デモウィンドウの表示オン
 	//ImGui::ShowDemoWindow();
 }
+#endif // _DEBUG
 
 // jsonファイルの読み込み
 void GameOverScene::LoadJsonFile(const std::string& filePath)

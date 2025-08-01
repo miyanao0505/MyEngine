@@ -16,6 +16,7 @@ public:	// getter
 	const MyBase::Matrix4x4& GetViewMatrix() const { return viewMatrix_; }
 	const MyBase::Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
 	const MyBase::Matrix4x4& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
+	const MyBase::Transform& GetTransform() const { return transform_; }
 	const MyBase::Vector3& GetRotate() const { return transform_.rotate; }
 	const MyBase::Vector3& GetTranslate() const { return transform_.translate; }
 	const float& GetFovY() const { return fovY_; }
@@ -24,6 +25,7 @@ public:	// getter
 	const float& GetFarClip() const { return farClip_; }
 
 public:	// setter
+	void SetTransform(const MyBase::Transform& transform) { transform_ = transform; }
 	void SetRotate(const MyBase::Vector3& rotate) { transform_.rotate = rotate; }
 	void SetTranslate(const MyBase::Vector3& translate) { transform_.translate = translate; };
 	void SetFovY(const float& fovY) { fovY_ = fovY; }

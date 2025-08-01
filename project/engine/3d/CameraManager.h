@@ -28,6 +28,15 @@ public:	// メンバ関数
 	/// <param name="cameraName">カメラの名前</param>
 	void FindCamera(const std::string& cameraName);
 
+#ifdef _DEBUG
+	// デバック用の描画
+	void DebugDraw();
+#endif // _DEBUG
+
+
+public:	// getter
+	std::vector<std::string> GetAllName();
+
 private:	// シングルトン
 	static CameraManager* instance;
 

@@ -25,8 +25,10 @@ public:	//メンバ関数
 	// 描画
 	virtual void Draw();
 
+#ifdef _DEBUG
 	// デバック描画
 	virtual void DebugDraw();
+#endif // _DEBUG
 
 	// オブジェクト構築
 	BaseObject* CreateObjectFromData(const ObjectData& data);
