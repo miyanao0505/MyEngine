@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include <cassert>
+#include <imgui.h>
 
 SceneManager* SceneManager::instance = nullptr;
 
@@ -25,6 +26,26 @@ void SceneManager::Finalize()
 // 更新
 void SceneManager::Update()
 {
+#ifdef _DEBUG
+	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::Begin("scene");
+	if (ImGui::Button("TitleScene")) {
+		nextScene_ = sceneFactory_->CreateScene("TITLE");
+	}
+	if (ImGui::Button("GameScene")) {
+		nextScene_ = sceneFactory_->CreateScene("GAME");
+	}
+	if (ImGui::Button("ClearScene")) {
+		nextScene_ = sceneFactory_->CreateScene("CLEAR");
+	}
+	if (ImGui::Button("GameOverScene")) {
+		nextScene_ = sceneFactory_->CreateScene("GAMEOVER");
+	}
+	ImGui::End();
+#endif // _DEBUG
+
+
 	// シーン切り替え機構
 	// 次シーンの予約があるなら
 	if (nextScene_) {

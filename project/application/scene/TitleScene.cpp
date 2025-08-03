@@ -38,25 +38,16 @@ void TitleScene::Initialize()
 
 #pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
+
 
 	// 3Dオブジェクト
-	// プレイヤー
-	player_ = std::make_unique<Player>();
-	player_->Initialize({ 0.0f, 0.0f, 0.0f });
-	player_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
-
-	// 敵
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize();
-	enemy_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
+	
 
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
+	
 
 #pragma endregion パーティクル
 
@@ -73,10 +64,7 @@ void TitleScene::Initialize()
 #pragma endregion オーディオ
 
 #pragma region 変数
-	isParticleActive_ = true;
-	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	
 #pragma endregion 変数
 }
 
@@ -89,9 +77,7 @@ void TitleScene::Finalize()
 	skybox_.reset();
 
 	// 3Dオブジェクト
-	for (auto& obj : testObjects_) {
-		obj.reset();
-	}
+	
 
 	// スプライト
 	titleSprite_.reset();
@@ -122,36 +108,9 @@ void TitleScene::Update()
 	skybox_->Update();
 
 	// 3Dオブジェクトの更新処理
-	// プレイヤーの更新処理
-	player_->Update();
-
-	// 敵の更新処理
-	enemy_->Update();
-
-	// test
-	for (auto& obj : testObjects_) {
-		obj->Update();
-	}
-
-	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
-			ParticleManager::ParticleGroup& group = *pair.second;
-			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
-
-				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
-				}
-
-				++it;
-				++index;
-			}
-		}
-	}
+	
 
 	// パーティクルの更新処理
-	//particleEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
@@ -172,16 +131,7 @@ void TitleScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// 敵の描画
-	enemy_->Draw();
-
-	// プレイヤーの描画
-	player_->Draw();
-
-	// test
-	for (auto& obj : testObjects_) {
-		obj->Draw();
-	}
+	
 
 #pragma endregion 3Dオブジェクト
 
@@ -219,29 +169,12 @@ void TitleScene::DebugDraw()
 	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Settings");
+	ImGui::Begin("Settings"); 
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
 
 	// Skybox
 	skybox_->DebugDraw();
-
-	// プレイヤー
-	player_->DebugDraw();
-
-	// 敵
-	enemy_->DebugDraw();
-
-	int num = 0;
-	// test
-	for (auto& obj : testObjects_) {
-		ImGui::PushID(obj.get() + num);
-		if (ImGui::CollapsingHeader("testObj")) {
-			obj->DebugDraw();
-		}
-		ImGui::PopID();
-		num++;
-	}
 
 	ImGui::End();
 }
@@ -255,45 +188,6 @@ void TitleScene::LoadJsonFile(const std::string& filePath)
 
 	// 3Dオブジェクトの読み込み
 	for (const ObjectData& objectData : levelData->objects) {
-		// オブジェクトの種類ごとに処理
-		if (objectData.name == "Player") {
-			// プレイヤーの初期化
-			player_->GetObject3d()->SetModel(objectData.objectName);
-			player_->SetName(objectData.name.c_str());
-			player_->GetObject3d()->SetTranslate(objectData.translation);
-			player_->GetObject3d()->SetRotate(objectData.rotation);
-			player_->GetObject3d()->SetScale(objectData.scale);
-		}
-		else if (objectData.name == "Enemy") {
-			// 敵の初期化
-			enemy_->GetObject3d()->SetModel(objectData.objectName);
-			enemy_->SetName(objectData.name.c_str());
-			enemy_->GetObject3d()->SetTranslate(objectData.translation);
-			enemy_->GetObject3d()->SetRotate(objectData.rotation);
-			enemy_->GetObject3d()->SetScale(objectData.scale);
-			for (const auto& childData : objectData.children) {
-				ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
-				TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
-				BaseObject* childObj = CreateObjectFromData(childData);
-				childObj->GetObject3d()->GetWorldTransform()->SetParent(enemy_->GetObject3d()->GetWorldTransform());
-				testObjects_.emplace_back(childObj);
-			}
-		}
-		else if (objectData.name == "Skydome") {
-			// 天球の初期化
-
-		}
-		else {
-			// その他のObjectはBaseObjectとして構築
-			ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
-			TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
-			BaseObject* obj = CreateObjectFromData(objectData);
-			testObjects_.emplace_back(obj);
-			for (const auto& childData : objectData.children) {
-				BaseObject* childObj = CreateObjectFromData(childData);
-				childObj->GetObject3d()->GetWorldTransform()->SetParent(obj->GetObject3d()->GetWorldTransform());
-				testObjects_.emplace_back(childObj);
-			}
-		}
+		objectData;
 	}
 }
