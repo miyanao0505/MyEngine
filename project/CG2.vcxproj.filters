@@ -124,6 +124,12 @@
     <Filter Include="ヘッダー ファイル\engine\loader">
       <UniqueIdentifier>{7fad104e-79ca-4566-9ed9-4ecc643c2503}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\enemy\state">
+      <UniqueIdentifier>{5c4d5c0d-4c8e-4d38-b67c-7be5ccf229ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\enemy\state">
+      <UniqueIdentifier>{85ec514d-bd3d-4e8c-80b8-13d8cb82d477}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -278,6 +284,12 @@
     </ClCompile>
     <ClCompile Include="engine\3d\Skybox.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="application\enemy\state\EnemyBaseState.cpp">
+      <Filter>ソース ファイル\application\enemy\state</Filter>
+    </ClCompile>
+    <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp">
+      <Filter>ソース ファイル\application\enemy\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -436,6 +448,12 @@
     </ClInclude>
     <ClInclude Include="engine\3d\Skybox.h">
       <Filter>ヘッダー ファイル\engine\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="application\enemy\state\EnemyBaseState.h">
+      <Filter>ヘッダー ファイル\application\enemy\state</Filter>
+    </ClInclude>
+    <ClInclude Include="application\enemy\state\EnemyStateRoot.h">
+      <Filter>ヘッダー ファイル\application\enemy\state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
