@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
+#include "Skybox.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -37,12 +38,15 @@ private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
 	const std::string gameTextureFilePath_ = "resources/texture/Game.png";
+	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
 
 	// スプライト
 	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト
 
 	// モデルファイルパス
 	
+	// Skybox
+	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// 3Dオブジェクト
 	// プレイヤー

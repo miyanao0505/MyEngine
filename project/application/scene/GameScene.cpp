@@ -27,18 +27,27 @@ void GameScene::Initialize()
 	gameSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 #pragma endregion スプライト
 
+#pragma region Skybox
+	// Skybox
+	skybox_ = std::make_unique<Skybox>();
+	skybox_->Initislize(skyBoxFilePath_, { 50.0f, 50.0f, 50.0f });
+#pragma endregion Skybox
+
 #pragma region 3Dオブジェクト
 	// プレイヤー
 	player_ = std::make_unique<Player>();
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
+	player_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
 
 	// 敵
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
+	enemy_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
+	
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
@@ -73,6 +82,9 @@ void GameScene::Initialize()
 void GameScene::Finalize()
 {
 	BaseScene::Finalize();
+
+	// Skybox
+	skybox_.reset();
 
 	// 3Dオブジェクト
 	/*for (auto& obj : testObjects_) {
@@ -137,6 +149,9 @@ void GameScene::Update()
 	DebugDraw();
 #endif // _DEBUG
 
+	// Skyboxの更新
+	skybox_->Update();
+
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
 	player_->Update();
@@ -179,6 +194,11 @@ void GameScene::Update()
 // 描画
 void GameScene::Draw()
 {
+#pragma region Skybox
+	// 天球の描画
+	skybox_->Draw();
+#pragma endregion Skybox
+
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
@@ -248,6 +268,9 @@ void GameScene::DebugDraw()
 	ImGui::Begin("Settings");
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
+
+	// Skybox
+	skybox_->DebugDraw();
 
 	// プレイヤー
 	player_->DebugDraw();

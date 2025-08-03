@@ -4,7 +4,7 @@
 #include "BaseObjectCollider.h"
 #include"CollisionConfig.h"
 #include "MyTools.h"
-#include "imgui.h"
+#include <imgui.h>
 
 using namespace std;
 
@@ -149,7 +149,7 @@ void Player::Attaack()
 	{
 		// 弾の生成
 		auto bullet = std::make_unique<PlayerBullet>();
-		bullet->Initialize(object_->GetTranslate());
+		bullet->Initialize(MyTools::Add(object_->GetTranslate(), {0.0f, 0.0f, 1.0f}));
 		bullets_.emplace_back(std::move(bullet));
 		// 攻撃のクールタイムを設定
 		attackCoolTime_ = kAttackCoolTime_;

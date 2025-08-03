@@ -104,6 +104,12 @@ void TitleScene::Update()
 
 #endif // _DEBUG
 
+	// ゲームシーンへの遷移
+	if (input_->TriggerKey(DIK_RETURN)) {
+		SceneManager::GetInstance()->ChangeScene("GAME");
+		return;
+	}
+
 	// Skyboxの更新
 	skybox_->Update();
 

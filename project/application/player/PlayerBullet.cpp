@@ -18,7 +18,7 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 
 	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);
-	object_->SetScale({ 0.25f, 0.25f, 0.25f });
+	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 
 	// プレイヤー弾のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);

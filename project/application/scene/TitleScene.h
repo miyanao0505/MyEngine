@@ -36,7 +36,6 @@ private:	// メンバ変数
 	// テクスチャファイルパス
 	std::string titleTextureFilePath_ = "resources/texture/Title.png";
 	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
-	
 
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト

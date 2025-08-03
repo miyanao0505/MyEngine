@@ -1,8 +1,8 @@
 #pragma once
-#include "Object3d.h"
+#include "BaseObject.h"
 #include "TextureManager.h"
 
-class Skydome
+class Skydome : public BaseObject
 {
 public:	// メンバ関数
 	Skydome();
@@ -15,15 +15,24 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update() override;
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
 	
+#ifdef _DEBUG
+	/// <summary>
+	/// デバック描画
+	/// </summary>
+	void DebugDraw() override;
+#endif // _DEBUG
+
+public:	// getter
+	// 
+	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+
 private:	// メンバ変数
-	std::unique_ptr<Object3d> object_;
-	std::string filePath_;
 	
 };
 

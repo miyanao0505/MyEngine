@@ -30,7 +30,7 @@ void Enemy::Initialize()
 	// 3Dオブジェクトの初期化
 	object_->SetTexture("resources/texture/uvChecker.png");
 	object_->SetTranslate({ 0.0f, 0.0f, 15.0f });	// 初期位置
-	object_->SetScale({ 0.50f, 0.50f, 0.50f });		// 初期スケール
+	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
@@ -46,7 +46,7 @@ void Enemy::Initialize()
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffect = {
-		.size = { 1.f, 5.0f },
+		.size = { 1.f, 10.0f },
 		.energy = { 1.0f, 1.0f },
 		.count = { 10, 15 },
 		.speed = { 0.0f, 0.0f },
@@ -61,7 +61,7 @@ void Enemy::Initialize()
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffectRing = {
-		.size = { 1.5f, 1.5f },
+		.size = { 1.75f, 1.75f },
 		.energy = { 1.0f, 1.0f },
 		.count = { 1, 5 },
 		.speed = { 0.0f, 0.0f },
