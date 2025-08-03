@@ -1,8 +1,11 @@
 #pragma once
 #include "BaseObject.h"
 #include <list>
+#include "EnemyBaseState.h"
 #include "TextureManager.h"
 #include "ParticleEmitter.h"
+
+class Player;
 
 class Enemy : public BaseObject
 {
@@ -22,6 +25,9 @@ public:	// メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	// Updateのステートチェンジ
+	void ChangeState(std::unique_ptr<EnemyBaseState> state);
+
 #ifdef _DEBUG
 	/// <summary>
 	/// デバック描画
@@ -35,11 +41,12 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
-	// 
+	Player* GetPlayer() { return player_; }
+	bool IsDead() { return isDead_; }
 	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
-
+	void SetPlayer(Player* player) { player_ = player; }
 
 private:	/// メンバ変数
 	// パーティクルエミッター
@@ -48,6 +55,9 @@ private:	/// メンバ変数
 	// ステータス
 	int hp_;
 	bool isDead_ = false;
+	std::unique_ptr<EnemyBaseState> state_;
 
+	// プレイヤー
+	Player* player_;
 };
 

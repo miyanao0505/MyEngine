@@ -73,6 +73,12 @@ void ClearScene::Update()
 	DebugDraw();
 #endif // _DEBUG
 
+	// ゲームシーンへの遷移
+	if (input_->TriggerKey(DIK_RETURN)) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+		return;
+	}
+
 	// 3Dオブジェクトの更新処理
 	
 

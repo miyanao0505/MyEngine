@@ -42,6 +42,7 @@ void GameScene::Initialize()
 	// 敵
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
+	enemy_->SetPlayer(player_.get());
 	enemy_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
 
 	// 天球
@@ -148,6 +149,12 @@ void GameScene::Update()
 
 	DebugDraw();
 #endif // _DEBUG
+
+	if (enemy_->IsDead()) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		return;
+	}
 
 	// Skyboxの更新
 	skybox_->Update();

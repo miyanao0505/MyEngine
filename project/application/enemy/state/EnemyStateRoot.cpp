@@ -4,7 +4,7 @@
 // 初期化
 void EnemyStateRoot::Initialize()
 {
-
+	
 }
 
 // 更新
