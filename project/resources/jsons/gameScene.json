@@ -58,20 +58,20 @@
                     0.0
                 ],
                 "scaling": [
-                    0.5,
-                    0.5,
-                    0.5
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "file_name": "player.obj"
         },
         {
             "type": "MESH",
-            "name": "Sphere",
+            "name": "Enemy",
             "transform": {
                 "translation": [
                     0.0,
-                    5.0,
+                    30.0,
                     0.0
                 ],
                 "rotation": [
@@ -80,9 +80,9 @@
                     0.0
                 ],
                 "scaling": [
-                    0.5,
-                    0.5,
-                    0.5
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "file_name": "sphere.obj",
@@ -92,7 +92,7 @@
                     "name": "hummer",
                     "transform": {
                         "translation": [
-                            0.5,
+                            1.0,
                             0.0,
                             0.0
                         ],

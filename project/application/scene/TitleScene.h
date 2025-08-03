@@ -36,6 +36,7 @@ private:	// メンバ変数
 	// テクスチャファイルパス
 	std::string titleTextureFilePath_ = "resources/texture/Title.png";
 	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
+	
 
 	// スプライト
 	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
@@ -44,19 +45,15 @@ private:	// メンバ変数
 	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// 3Dオブジェクト
-	// hummer
-	std::unique_ptr<BaseObject> hummer_ = nullptr;
+	
+
+	// jsonローダー
+	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
 
 	// パーティクル
-	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
+	
 #pragma endregion シーン初期化
 
-	bool isParticleActive_;
-	bool isAccelerationField_;
-	MyBase::Vector3 acceleration_{};
-	MyBase::AABB area_{};
-
-	// デルタイム
-	const float kDeltaTime_ = 1.0f / 60.0f;
+	
 };
 

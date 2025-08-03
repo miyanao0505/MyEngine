@@ -12,6 +12,11 @@ void TitleScene::Initialize()
 {
 	BaseScene::Initialize();
 
+#pragma region カメラ
+	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 20.0f, -40.0f });
+#pragma endregion カメラ
+
 #pragma region スプライト
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
@@ -33,23 +38,24 @@ void TitleScene::Initialize()
 
 #pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
+
 
 	// 3Dオブジェクト
-	// hummer
-	hummer_ = std::make_unique<BaseObject>();
-	hummer_->Initialize("hummer.obj");
-	hummer_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });
-	hummer_->GetObject3d()->GetModel()->SetEnvironmentTexture(skyBoxFilePath_);
+	
 
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
+	
 
 #pragma endregion パーティクル
+
+#pragma region jsonローダー
+	// jsonローダー
+	jsonLoader_ = std::make_unique<JsonLoader>();
+	LoadJsonFile("gameScene.json");
+#pragma endregion jsonローダー
 
 #pragma region オーディオ
 	// BGM
@@ -58,10 +64,7 @@ void TitleScene::Initialize()
 #pragma endregion オーディオ
 
 #pragma region 変数
-	isParticleActive_ = true;
-	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	
 #pragma endregion 変数
 }
 
@@ -70,8 +73,11 @@ void TitleScene::Finalize()
 {
 	BaseScene::Finalize();
 
-	// 3Dオブジェクト
+	// Skybox
 	skybox_.reset();
+
+	// 3Dオブジェクト
+	
 
 	// スプライト
 	titleSprite_.reset();
@@ -102,28 +108,9 @@ void TitleScene::Update()
 	skybox_->Update();
 
 	// 3Dオブジェクトの更新処理
-	// hummerの更新
-	hummer_->Update();
-
-	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
-			ParticleManager::ParticleGroup& group = *pair.second;
-			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
-
-				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
-				}
-
-				++it;
-				++index;
-			}
-		}
-	}
+	
 
 	// パーティクルの更新処理
-	//particleEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
@@ -144,8 +131,7 @@ void TitleScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// hummerの描画
-	hummer_->Draw();
+	
 
 #pragma endregion 3Dオブジェクト
 
@@ -183,15 +169,12 @@ void TitleScene::DebugDraw()
 	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
-	ImGui::Begin("Settings");
+	ImGui::Begin("Settings"); 
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
 
 	// Skybox
 	skybox_->DebugDraw();
-
-	// hummer
-	hummer_->DebugDraw();
 
 	ImGui::End();
 }
@@ -200,5 +183,11 @@ void TitleScene::DebugDraw()
 // jsonファイルの読み込み
 void TitleScene::LoadJsonFile(const std::string& filePath)
 {
-	filePath;
+	// レベルデータの読み込み
+	LevelData* levelData = jsonLoader_->LoadFile(filePath);
+
+	// 3Dオブジェクトの読み込み
+	for (const ObjectData& objectData : levelData->objects) {
+		objectData;
+	}
 }
