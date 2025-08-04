@@ -20,6 +20,7 @@ struct Material
     float shininess;
     float reflectivity;
 	int enableLighting;
+    int enableReflection;
 };
 
 struct DirectionalLight
