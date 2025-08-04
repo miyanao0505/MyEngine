@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "Player.h"
 #include <imgui.h>
 
 using namespace std;
@@ -74,7 +75,7 @@ void Enemy::Initialize()
 	particleEmitter_->SetParticleGroupData("hitEffectRingEnemy", hitEffectRing);
 
 	// 敵のステータスの初期化
-	hp_ = 100; // 初期HP
+	hp_ = 50; // 初期HP
 	isDead_ = false; // 初期状態は生存
 }
 
@@ -101,6 +102,13 @@ void Enemy::Draw()
 
 	// モデルの描画
 	object_->Draw();
+}
+
+// Updateのステートチェンジ
+void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
+{
+	state_ = std::move(state);
+	state_->Initialize();
 }
 
 #ifdef _DEBUG
@@ -140,5 +148,9 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 	// プレイヤー弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
 		particleEmitter_->Emit(); // パーティクルを発生させる
+		hp_ -= player_->GetAttackPower();
+		if (hp_ <= 0) {
+			isDead_ = true;
+		}
 	}
 }

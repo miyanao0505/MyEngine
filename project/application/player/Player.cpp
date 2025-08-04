@@ -46,6 +46,7 @@ void Player::Initialize(MyBase::Vector3 position)
 
 	// ステータスの初期化
 	hp_ = 100;
+	attackPower_ = 10;
 	attackCoolTime_ = 0;
 	isDead_ = false;
 }

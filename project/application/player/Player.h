@@ -52,10 +52,11 @@ public:	// メンバ関数
 
 public:	// getter
 	// 
+	int GetAttackPower() const { return attackPower_; }
 	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
-
+	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
 
 private:	// メンバ変数	
 	// プレイヤーの弾リスト
@@ -63,6 +64,7 @@ private:	// メンバ変数
 	
 	// ステータス
 	int hp_;
+	int attackPower_ = 1;
 	bool isDead_ = false;
 	
 	// プレイヤーの移動速度
