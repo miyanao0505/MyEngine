@@ -6,7 +6,6 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
-#include "Skybox.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -45,9 +44,6 @@ private:	// メンバ変数
 
 	// モデルファイルパス
 	
-	// Skybox
-	//std::unique_ptr<Skybox> skybox_ = nullptr;
-
 	// 3Dオブジェクト
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
