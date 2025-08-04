@@ -130,6 +130,18 @@
     <Filter Include="ヘッダー ファイル\application\enemy\state">
       <UniqueIdentifier>{85ec514d-bd3d-4e8c-80b8-13d8cb82d477}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\engine\3d\camera">
+      <UniqueIdentifier>{b28246e3-db3a-4e9a-a317-7a0c464e4f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\3d\camera">
+      <UniqueIdentifier>{587758a2-3fec-40db-b347-cd68781194c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\application\camera">
+      <UniqueIdentifier>{2e4f02e3-ea14-413b-8bb8-7e1706e3df7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\camera">
+      <UniqueIdentifier>{f907a3eb-018e-4ae0-9680-2255e8eb7ce7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,12 +187,6 @@
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\3d\ModelManager.cpp">
-      <Filter>ソース ファイル\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\Camera.cpp">
-      <Filter>ソース ファイル\engine\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\CameraManager.cpp">
       <Filter>ソース ファイル\engine\3d</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\SrvManager.cpp">
@@ -291,6 +297,15 @@
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp">
       <Filter>ソース ファイル\application\enemy\state</Filter>
     </ClCompile>
+    <ClCompile Include="engine\3d\camera\Camera.cpp">
+      <Filter>ソース ファイル\engine\3d\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\camera\CameraManager.cpp">
+      <Filter>ソース ファイル\engine\3d\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="application\camera\RailCamera.cpp">
+      <Filter>ソース ファイル\application\camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -333,12 +348,6 @@
       <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\ModelManager.h">
-      <Filter>ヘッダー ファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\Camera.h">
-      <Filter>ヘッダー ファイル\engine\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\CameraManager.h">
       <Filter>ヘッダー ファイル\engine\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\base\SrvManager.h">
@@ -454,6 +463,15 @@
     </ClInclude>
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h">
       <Filter>ヘッダー ファイル\application\enemy\state</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\camera\Camera.h">
+      <Filter>ヘッダー ファイル\engine\3d\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\camera\CameraManager.h">
+      <Filter>ヘッダー ファイル\engine\3d\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\RailCamera.h">
+      <Filter>ヘッダー ファイル\application\camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

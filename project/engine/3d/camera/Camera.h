@@ -9,7 +9,7 @@ public:	// メンバ関数
 	Camera();
 
 	// 更新
-	void Update();
+	virtual void Update();
 
 public:	// getter
 	const MyBase::Matrix4x4& GetWorldMatrix() const { return worldMatrix_; }
@@ -33,7 +33,7 @@ public:	// setter
 	void SetNearClip(const float& nearClip) { nearClip_ = nearClip; }
 	void SetFarClip(const float& farClip) { farClip_ = farClip; }
 
-private:	// メンバ変数
+protected:	// メンバ変数
 	// ビュー関連データ
 	MyBase::Transform transform_;
 	MyBase::Matrix4x4 worldMatrix_;
