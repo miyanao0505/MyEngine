@@ -49,7 +49,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		float32_t specularPow = pow(saturate(NdotH), gMaterial.shininess); // 反射強度
 		float32_t3 specularDirectionalLight = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
 		// 拡散反射 + 鏡面反射
-        float32_t3 directionLightColor = diffuseDirectionalLight + specularDirectionalLight;
+		float32_t3 directionLightColor = diffuseDirectionalLight + specularDirectionalLight;
 		
 		// 点光源の方向を算出
 		float32_t3 pointLightdirection = normalize(input.worldPosition - gPointLight.position);
@@ -67,7 +67,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		specularPow = pow(saturate(NdotH), gMaterial.shininess);
 		float32_t3 specularPointLight = LightColor.rgb * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
 		// 拡散反射 + 鏡面反射
-        float32_t3 pointLightColor = diffusePointLight + specularPointLight;
+		float32_t3 pointLightColor = diffusePointLight + specularPointLight;
 		
 		// スポットライト
 		float32_t3 spotLightDirectionOnSurface = normalize(input.worldPosition - gSpotLight.position);			// 入射光を算出
@@ -75,30 +75,33 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		float32_t attenuationFactor = pow(saturate(-distance / gSpotLight.distance + 1.0f), gSpotLight.decay);	// 距離による減衰
 		float32_t cosAngle = dot(spotLightDirectionOnSurface, gSpotLight.direction);
 		float32_t falloffFactor = saturate((cosAngle - gSpotLight.cosAngle) / (1.0f - gSpotLight.cosAngle));
-        LightColor = gSpotLight.color.rgb * gSpotLight.intensity * attenuationFactor * falloffFactor;
+		LightColor = gSpotLight.color.rgb * gSpotLight.intensity * attenuationFactor * falloffFactor;
 		// 拡散反射
-        NdotL = dot(normalize(input.normal), -spotLightDirectionOnSurface);
-        cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
-        float32_t3 diffuseSpotLight = gMaterial.color.rgb * textureColor.rgb * LightColor.rgb;
+		NdotL = dot(normalize(input.normal), -spotLightDirectionOnSurface);
+		cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
+		float32_t3 diffuseSpotLight = gMaterial.color.rgb * textureColor.rgb * LightColor.rgb;
 		// 鏡面反射
 		// 入射角の反射ベクトル
-        halfVector = normalize(-spotLightDirectionOnSurface + toEye);
-        NdotH = dot(normalize(input.normal), halfVector);
-        specularPow = pow(saturate(NdotH), gMaterial.shininess);
-        float32_t3 specularSpotLight = LightColor.rgb * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
+		halfVector = normalize(-spotLightDirectionOnSurface + toEye);
+		NdotH = dot(normalize(input.normal), halfVector);
+		specularPow = pow(saturate(NdotH), gMaterial.shininess);
+		float32_t3 specularSpotLight = LightColor.rgb * specularPow * float32_t3(1.0f, 1.0f, 1.0f);
 		// 拡散反射 + 鏡面反射
-        float32_t3 spotLightColor = diffuseSpotLight + specularSpotLight;
+		float32_t3 spotLightColor = diffuseSpotLight + specularSpotLight;
 		
 		// 拡散反射 + 鏡面反射
-        output.color.rgb = directionLightColor + pointLightColor + spotLightColor;
+		output.color.rgb = directionLightColor + pointLightColor + spotLightColor;
 		output.color.a = gMaterial.color.a * textureColor.a;
 		
-		// 環境マップによるLighting
-        float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
-        float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
-        float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
-		// 反射強度による変更
-        output.color = lerp(output.color, environmentColor, gMaterial.reflectivity);
+		if (gMaterial.enableReflection)
+        {
+			// 環境マップによるLighting(条件付き)
+            float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+            float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+            float32_t4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+			// 反射強度による変更
+            output.color = lerp(output.color, environmentColor, gMaterial.reflectivity);
+        }
     }
 	else { // Lightingしない場合。前回までと同じ演算
 		output.color = gMaterial.color * textureColor;

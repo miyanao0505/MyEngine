@@ -281,7 +281,8 @@ public:
 		float shininess;
 		float reflectivity;
 		int enableLighting;
-		float padding[2];
+		int enableReflection;
+		float padding[1];
 	};
 
 	/// <summary>

@@ -46,7 +46,7 @@ private:	// メンバ変数
 	// モデルファイルパス
 	
 	// Skybox
-	std::unique_ptr<Skybox> skybox_ = nullptr;
+	//std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// 3Dオブジェクト
 	// プレイヤー
