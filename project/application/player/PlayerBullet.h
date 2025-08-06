@@ -41,7 +41,7 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
-	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 	bool IsDead() const { return isDead_; }	// 弾が消滅したかどうか
 

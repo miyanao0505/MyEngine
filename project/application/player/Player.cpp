@@ -11,7 +11,7 @@ using namespace std;
 Player::Player()
 {
 	// プレイヤーの初期化
-	Initialize({ 0.0f, 0.0f, 0.0f });
+	Initialize(MyBase::Vector3{ 0.0f, 0.0f, 0.0f });
 }
 
 /// デストラクタ
@@ -139,7 +139,7 @@ void Player::Move()
 	}
 	
 	// 座標更新
-	Vector3 newPos = MyTools::Add(object_->GetTranslate(), velocity);
+	MyBase::Vector3 newPos = MyTools::Add(object_->GetTranslate(), velocity);
 	object_->SetTranslate(newPos);
 }
 

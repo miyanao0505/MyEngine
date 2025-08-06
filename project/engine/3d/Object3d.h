@@ -24,8 +24,8 @@ public:	// メンバ関数
 public:	// getter
 	Model* GetModel() const { return model_; }
 	const MyBase::Vector3& GetScale() const { return worldTransform_->GetScale(); }
-	const MyBase::Vector3& GetRotate() const { return worldTransform_->GetRotation(); }
-	const MyBase::Vector3& GetTranslate() const { return worldTransform_->GetPosition(); }
+	const MyBase::Vector3& GetRotate() const { return worldTransform_->GetRotate(); }
+	const MyBase::Vector3& GetTranslate() const { return worldTransform_->GetTranslate(); }
 	WorldTransform* GetWorldTransform() const { return worldTransform_.get(); }
 	const int& GetEnableLighting() const { return model_->GetEnableLighting(); }
 
@@ -34,9 +34,9 @@ public:	// setter
 	void SetModel(const std::string& filePath);
 	void SetTexture(const std::string& filename);
 	void SetScale(const MyBase::Vector3& scale) { worldTransform_->SetScale(scale); }
-	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotation(rotate); }
-	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetPosition(translate); }
-	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotation(transform.rotate); worldTransform_->SetPosition(transform.translate); }
+	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotate(rotate); }
+	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetTranslate(translate); }
+	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotate(transform.rotate); worldTransform_->SetTranslate(transform.translate); }
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
 	void SetEnableLighting(const bool& enableLighting) { model_->SetEnableLighting(enableLighting); }
 

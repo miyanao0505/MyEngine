@@ -18,19 +18,19 @@ public:	// メンバ関数
 public:	// getter
 	DirectXBase* GetDxBase() const { return dxBase_; }
 	WorldTransform* GetWorldTransform() const { return worldTransform_.get(); }
-	MyBase::Transform GetTransform() const { return MyBase::Transform{ worldTransform_->GetScale(), worldTransform_->GetRotation(), worldTransform_->GetPosition() }; }
+	MyBase::Transform GetTransform() const { return MyBase::Transform{ worldTransform_->GetScale(), worldTransform_->GetRotate(), worldTransform_->GetTranslate() }; }
 	MyBase::Vector3 GetScale() const { return worldTransform_->GetScale(); }
-	MyBase::Vector3 GetRotate() const { return worldTransform_->GetRotation(); }
-	MyBase::Vector3 GetTranslate() const { return worldTransform_->GetPosition(); }
+	MyBase::Vector3 GetRotate() const { return worldTransform_->GetRotate(); }
+	MyBase::Vector3 GetTranslate() const { return worldTransform_->GetTranslate(); }
 	const std::string& GetTextureName() { return textureFileName_; }
 	bool IsUsingEnvironmentMap() const { return useEnvironmentMap_; }
 
 public:	// setter
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
-	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotation(transform.rotate); worldTransform_->SetPosition(transform.translate); }
+	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotate(transform.rotate); worldTransform_->SetTranslate(transform.translate); }
 	void SetScale(const MyBase::Vector3& scale) { worldTransform_->SetScale(scale); }
-	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotation(rotate); }
-	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetPosition(translate); }
+	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotate(rotate); }
+	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetTranslate(translate); }
 	void SetTexture(const std::string& textureName);
 	void SetUseEnvironmentMap(bool use) { useEnvironmentMap_ = use; }
 

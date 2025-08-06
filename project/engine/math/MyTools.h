@@ -3,8 +3,7 @@
 #include <cmath>
 #include "MyBase.h"
 
-class MyTools :
-	public MyBase
+class MyTools
 {
 public:
 
@@ -41,7 +40,7 @@ public:
 	/// </summary>
 	/// <param name="triangle"></param>
 	/// <returns></returns>
-	static Plane TriangleToPlane(const Triangle& triangle);
+	static MyBase::Plane TriangleToPlane(const MyBase::Triangle& triangle);
 
 	/// <summary>
 	/// 球と球の衝突判定を返す関数
@@ -49,7 +48,7 @@ public:
 	/// <param name="sphere1">球A</param>
 	/// <param name="sphere2">球B</param>
 	/// <returns></returns>
-	static bool IsCollision(const Sphere& sphere1, const Sphere& sphere2);
+	static bool IsCollision(const MyBase::Sphere& sphere1, const MyBase::Sphere& sphere2);
 
 	/// <summary>
 	/// 球と平面の衝突判定を返す関数
@@ -57,7 +56,7 @@ public:
 	/// <param name="sphere">球</param>
 	/// <param name="plane">平面</param>
 	/// <returns></returns>
-	static bool IsCollision(const Sphere& sphere, const Plane& plane);
+	static bool IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& plane);
 
 	/// <summary>
 	/// 直線と平面の衝突判定を返す関数
@@ -65,7 +64,7 @@ public:
 	/// <param name="line">直線</param>
 	/// <param name="plane">平面</param>
 	/// <returns></returns>
-	static bool IsCollision(const Line& line, const Plane& plane);
+	static bool IsCollision(const MyBase::Line& line, const MyBase::Plane& plane);
 
 	/// <summary>
 	/// 半直線と平面の衝突判定を返す関数
@@ -73,7 +72,7 @@ public:
 	/// <param name="ray">半直線</param>
 	/// <param name="plane">平面</param>
 	/// <returns></returns>
-	static bool IsCollision(const Ray& ray, const Plane& plane);
+	static bool IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane);
 
 	/// <summary>
 	/// 線分と平面の衝突判定を返す関数
@@ -81,7 +80,7 @@ public:
 	/// <param name="segment">線分</param>
 	/// <param name="plane">平面</param>
 	/// <returns></returns>
-	static bool IsCollision(const Segment& segment, const Plane& plane);
+	static bool IsCollision(const MyBase::Segment& segment, const MyBase::Plane& plane);
 
 	/// <summary>
 	/// 三角形と直線の衝突判定を返す関数
@@ -89,7 +88,7 @@ public:
 	/// <param name="triangle">三角形</param>
 	/// <param name="line">直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const Triangle& triangle, const Line& line);
+	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& line);
 
 	/// <summary>
 	/// 三角形と半直線の衝突判定を返す関数
@@ -97,7 +96,7 @@ public:
 	/// <param name="triangle">三角形</param>
 	/// <param name="ray">半直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const Triangle& triangle, const Ray& ray);
+	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& ray);
 
 	/// <summary>
 	/// 三角形と線分の衝突判定を返す関数
@@ -105,7 +104,7 @@ public:
 	/// <param name="triangle">三角形</param>
 	/// <param name="segment">線分</param>
 	/// <returns></returns>
-	static bool IsCollision(const Triangle& triangle, const Segment& segment);
+	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Segment& segment);
 
 	/// <summary>
 	/// AABB同士の衝突判定を返す関数
@@ -113,7 +112,7 @@ public:
 	/// <param name="aabb1">aabbA</param>
 	/// <param name="aabb2">aabbB</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb1, const AABB& aabb2);
+	static bool IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2);
 
 	/// <summary>
 	/// AABBと球の衝突判定を返す関数
@@ -121,7 +120,7 @@ public:
 	/// <param name="aabb">aabb</param>
 	/// <param name="sphere">球</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb, const Sphere& sphere);
+	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere);
 
 	/// <summary>
 	/// AABBと直線の衝突判定を返す関数
@@ -129,7 +128,7 @@ public:
 	/// <param name="aabb">aabb</param>
 	/// <param name="line">直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb, const Line& line);
+	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line);
 
 	/// <summary>
 	/// AABBと半直線の衝突判定を返す関数
@@ -137,7 +136,7 @@ public:
 	/// <param name="aabb">aabb</param>
 	/// <param name="ray">半直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb, const Ray& ray);
+	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray);
 
 	/// <summary>
 	/// AABBと線分の衝突判定を返す関数
@@ -145,7 +144,7 @@ public:
 	/// <param name="aabb">aabb</param>
 	/// <param name="segment">線分</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb, const Segment& segment);
+	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segment);
 
 	/// <summary>
 	/// AABBと点の衝突判定を返す関数
@@ -153,7 +152,7 @@ public:
 	/// <param name="aabb">aabb</param>
 	/// <param name="point">点</param>
 	/// <returns></returns>
-	static bool IsCollision(const AABB& aabb, const Vector3& point);
+	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Vector3& point);
 
 	/// <summary>
 	/// OBBと球の衝突判定を返す関数
@@ -161,7 +160,7 @@ public:
 	/// <param name="obb">OBB</param>
 	/// <param name="sphere">球</param>
 	/// <returns></returns>
-	static bool IsCollision(const OBB& obb, const Sphere& sphere);
+	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Sphere& sphere);
 
 	/// <summary>
 	/// OBBと直線の衝突判定を返す関数
@@ -169,7 +168,7 @@ public:
 	/// <param name="obb">OBB</param>
 	/// <param name="line">直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const OBB& obb, const Line& line);
+	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Line& line);
 
 	/// <summary>
 	/// OBBと半直線の衝突判定を返す関数
@@ -177,7 +176,7 @@ public:
 	/// <param name="obb">OBB</param>
 	/// <param name="ray">半直線</param>
 	/// <returns></returns>
-	static bool IsCollision(const OBB& obb, const Ray& ray);
+	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray);
 
 	/// <summary>
 	/// OBBと線分の衝突判定を返す関数
@@ -185,7 +184,7 @@ public:
 	/// <param name="obb">OBB</param>
 	/// <param name="segment">線分</param>
 	/// <returns></returns>
-	static bool IsCollision(const OBB& obb, const Segment& segment);
+	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment);
 
 	/// <summary>
 	/// OBBとOBBの衝突判定を返す関数
@@ -193,7 +192,7 @@ public:
 	/// <param name="obb1">OBB1</param>
 	/// <param name="obb2">OBB2</param>
 	/// <returns></returns>
-	static bool IsCollision(const OBB& obb1, const OBB& obb2);
+	static bool IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2);
 
 	/// <summary>
 	/// 分離軸に投影された軸成分から投影線分長を算出
@@ -203,7 +202,7 @@ public:
 	/// <param name="e2"></param>
 	/// <param name="e3"></param>
 	/// <returns></returns>
-	static float LenSegOnSeparateAxis(const Vector3* Seg, const Vector3* e1, const Vector3* e2, const Vector3* e3);
+	static float LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
 
 	/// 
 	/// ツール関数 ここまで
@@ -218,14 +217,14 @@ public:
 	/// </suumary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static float Dot(const Vector2& v1, const Vector2& v2);
+	static float Dot(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
 
 	/// <summary>
 	/// 2次元ベクトルのクロス積(外積)を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static float Cross(const Vector2& v1, const Vector2& v2);
+	static float Cross(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
 
 	/// <summary>
 	/// 2次元ベクトルの長さ(ノルム)を返す関数
@@ -239,14 +238,14 @@ public:
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
-	static Vector2 Normalize(float x, float y);
+	static MyBase::Vector2 Normalize(float x, float y);
 
 	/// <summary>
 	/// 2次元ベクトルの方向を求める関数
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
-	static Vector2 Direction(float x, float y);
+	static MyBase::Vector2 Direction(float x, float y);
 
 	/// 
 	/// 2次元ベクトル ここまで
@@ -261,54 +260,54 @@ public:
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static Vector3 Add(const Vector3& v1, const Vector3& v2);
+	static MyBase::Vector3 Add(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 3次元ベクトルの減算を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static Vector3 Subtract(const Vector3& v1, const Vector3& v2);
+	static MyBase::Vector3 Subtract(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 3次元ベクトルのスカラー倍
 	/// </summary>
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="v">ベクトル</param>
-	static Vector3 Multiply(float scalar, const Vector3& v);
+	static MyBase::Vector3 Multiply(float scalar, const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 3次元ベクトルの内積を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static float Dot(const Vector3& v1, const Vector3& v2);
+	static float Dot(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 3次元ベクトルのクロス積(外積)を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static Vector3 Cross(const Vector3& v1, const Vector3& v2);
+	static MyBase::Vector3 Cross(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 3次元ベクトル長さ(ノルム)を返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
-	static float Length(const Vector3& v);
+	static float Length(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 3次元ベクトルの正規化した値を返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
-	static Vector3 Normalize(const Vector3& v);
+	static MyBase::Vector3 Normalize(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 3次元ベクトルを標準化して返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
 	/// <returns></returns>
-	static Vector3 Standardization(const Vector3& v);
+	static MyBase::Vector3 Standardization(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 線形補間
@@ -317,7 +316,7 @@ public:
 	/// <param name="vector2">ベクトルB</param>
 	/// <param name="t">媒介変数</param>
 	/// <returns></returns>
-	static Vector3 Lerp(const Vector3& vector1, const Vector3& vector2, float t);
+	static MyBase::Vector3 Lerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t);
 
 	/// <summary>
 	/// 球面線形補間
@@ -326,7 +325,7 @@ public:
 	/// <param name="vector2">ベクトルB</param>
 	/// <param name="t">媒介変数</param>
 	/// <returns></returns>
-	static Vector3 Slerp(const Vector3& vector1, const Vector3& vector2, float t);
+	static MyBase::Vector3 Slerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t);
 
 	/// <summary>
 	/// CatmullRom補間
@@ -337,7 +336,7 @@ public:
 	/// <param name="p3">点3の座標</param>
 	/// <param name="t">点1を0.0f、点2を1.0fとした割合指定</param>
 	/// <returns>点1と点2の間で指定された座標</returns>
-	static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t);
+	static MyBase::Vector3 CatmullRomInterpolation(const MyBase::Vector3& p0, const MyBase::Vector3& p1, const MyBase::Vector3& p2, const MyBase::Vector3& p3, float t);
 
 	/// <summary>
 	/// CatmullRomスプライン曲線上の座標を得る
@@ -345,14 +344,14 @@ public:
 	/// <param name="points">制御点の集合</param>
 	/// <param name="t">スプラインの全区間の中での割合指定[0, 1]</param>
 	/// <returns>座標</returns>
-	static Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t);
+	static MyBase::Vector3 CatmullRomPosition(const std::vector<MyBase::Vector3>& points, float t);
 
 	/// <summary>
 	/// 正射影ベクトル(ベクトル射影)を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
-	static Vector3 Project(const Vector3& v1, const Vector3& v2);
+	static MyBase::Vector3 Project(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 最近接点を返す関数
@@ -360,14 +359,14 @@ public:
 	/// <param name="point">始点</param>
 	/// <param name="segment">線分</param>
 	/// <returns></returns>
-	static Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+	static MyBase::Vector3 ClosestPoint(const MyBase::Vector3& point, const MyBase::Segment& segment);
 
 	/// <summary>
 	/// 垂直なベクトルを求める関数
 	/// </summary>
 	/// <param name="vector"></param>
 	/// <returns></returns>
-	static Vector3 Perpendicular(const Vector3& vector);
+	static MyBase::Vector3 Perpendicular(const MyBase::Vector3& vector);
 
 	/// <summary>
 	/// 反射ベクトルを求める関数
@@ -375,7 +374,7 @@ public:
 	/// <param name="input">入射ベクトル</param>
 	/// <param name="normal">法線</param>
 	/// <returns></returns>
-	static Vector3 Reflect(const Vector3& input, const Vector3& normal);
+	static MyBase::Vector3 Reflect(const MyBase::Vector3& input, const MyBase::Vector3& normal);
 
 	/// 
 	/// 3次元ベクトル ここまで

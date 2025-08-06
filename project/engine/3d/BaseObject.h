@@ -4,7 +4,7 @@
 #include "Collider.h"
 #include "MyBase.h"
 
-class BaseObject : public MyBase
+class BaseObject
 {
 public:	// メンバ関数
 	BaseObject() = default;
@@ -42,7 +42,7 @@ public:	// getter
 	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
-	virtual Vector3 GetWorldPosition() { return object_ ? object_->GetTranslate() : Vector3{ 0,0,0 }; }
+	virtual MyBase::Vector3 GetWorldPosition() { return object_ ? object_->GetTranslate() : MyBase::Vector3{ 0,0,0 }; }
 	// ---- Collider連携 ----
 
 	Collider* GetCollider() const { return collider_.get(); }

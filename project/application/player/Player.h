@@ -15,7 +15,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="position">初期座標</param>
-	void Initialize(Vector3 position);
+	void Initialize(MyBase::Vector3 position);
 
 	/// <summary>
 	/// 更新
@@ -53,7 +53,7 @@ public:	// メンバ関数
 public:	// getter
 	// 
 	int GetAttackPower() const { return attackPower_; }
-	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
 	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
@@ -77,7 +77,7 @@ private:	// メンバ変数
 	// 弾の上限
 	const int kMaxBulletCount_ = 10; // 最大弾数
 	// 弾の発射位置
-	Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
+	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
 	// 弾の描画距離
 	const float kBulletDrawDistance_ = 100.0f;
 
