@@ -78,11 +78,11 @@ void Sprite::Update()
 	transform.rotate = { 0.0f, 0.0f, rotation_ };
 	transform.scale = { size_.x, size_.y, 1.0f };
 	// TransformからWorldMatrixを作る
-	Matrix::Matrix4x4 worldMatrix = Matrix::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
+	MyBase::Matrix4x4 worldMatrix = Matrix::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 	// ViewMatrixを作って単位行列を代入
-	Matrix::Matrix4x4 viewMatrix = Matrix::MakeIdentity4x4();
+	MyBase::Matrix4x4 viewMatrix = Matrix::MakeIdentity4x4();
 	// ProjectionMatrixを作って平行投影行列を書き込む
-	Matrix::Matrix4x4 projectionMatrix = Matrix::MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
+	MyBase::Matrix4x4 projectionMatrix = Matrix::MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
 	transformationMatrixData_->WVP = Matrix::Multiply(worldMatrix, Matrix::Multiply(viewMatrix, projectionMatrix));
 	transformationMatrixData_->World = worldMatrix;
 }

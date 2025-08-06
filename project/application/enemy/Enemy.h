@@ -43,7 +43,7 @@ public:	// メンバ関数
 public:	// getter
 	Player* GetPlayer() { return player_; }
 	bool IsDead() { return isDead_; }
-	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
 	void SetPlayer(Player* player) { player_ = player; }

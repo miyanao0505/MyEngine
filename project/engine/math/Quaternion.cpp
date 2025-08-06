@@ -129,9 +129,9 @@ MyBase::Vector3 Quaternion::RotateVector(const MyBase::Vector3& vector, const Qu
 }
 
 // Quaternionから回転行列を求める
-Matrix::Matrix4x4 Quaternion::MakeRotateMatrix(const Quaternion& quaternion)
+MyBase::Matrix4x4 Quaternion::MakeRotateMatrix(const Quaternion& quaternion)
 {
-	Matrix::Matrix4x4 ans{ 0 };
+	MyBase::Matrix4x4 ans{ 0 };
 
 	ans.m[0][0] = powf(quaternion.w, 2) + powf(quaternion.x, 2) - powf(quaternion.y, 2) - powf(quaternion.z, 2);
 	ans.m[0][1] = 2 * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);

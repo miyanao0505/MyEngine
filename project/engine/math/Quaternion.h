@@ -48,7 +48,7 @@ public:	// メンバ関数
 	// ベクトルをQuaternionで回転させた結果のベクトルを求める
 	static MyBase::Vector3 RotateVector(const MyBase::Vector3& vector, const Quaternion& quaternion);
 	// Quaternionから回転行列を求める
-	static Matrix::Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
+	static MyBase::Matrix4x4 MakeRotateMatrix(const Quaternion& quaternion);
 	// 球面線形補間
 	static Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 };

@@ -4,9 +4,7 @@
 void WorldTransform::Initialize()
 {
 	// 初期化
-	position_ = { 0.0f, 0.0f, 0.0f };
-	rotation_ = { 0.0f, 0.0f, 0.0f };
-	scale_ = { 1.0f, 1.0f, 1.0f };
+	transform_ = { .scale{1.0f, 1.0f, 1.0f}, .rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} };
 	worldMatrix_ = Matrix::MakeIdentity4x4();
 	parent_ = nullptr;
 	isDirty_ = true; // 初期状態ではワールド行列を更新する必要がある
@@ -20,7 +18,7 @@ void WorldTransform::UpdateWorldMatrix()
 	}
 
 	// ワールド行列を計算
-	worldMatrix_ = Matrix::MakeAffineMatrix(scale_, rotation_, position_);
+	worldMatrix_ = Matrix::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 
 	// 親が存在する場合は、親のワールド行列を掛け合わせる
 	if (parent_) {
