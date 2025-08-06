@@ -12,7 +12,7 @@ public:	// メンバ関数
 
 public:	// getter
 	// ワールド座標を取得
-	Vector3 GetWorldPosition() override { return owner_ ? owner_->GetWorldPosition() : Vector3{ 0,0,0 }; }
+	MyBase::Vector3 GetWorldPosition() override { return owner_ ? owner_->GetWorldPosition() : MyBase::Vector3{ 0,0,0 }; }
 
 private: // メンバ変数
 	BaseObject* owner_ = nullptr;	// 所有者のBaseObject

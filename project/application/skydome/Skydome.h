@@ -30,7 +30,7 @@ public:	// メンバ関数
 
 public:	// getter
 	// 
-	Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 private:	// メンバ変数
 	
