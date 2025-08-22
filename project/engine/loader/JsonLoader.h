@@ -14,6 +14,7 @@ struct ObjectData {
 	float radius;
 	MyBase::AABB aabb;
 	MyBase::OBB obb;
+	bool isDisabled = false;	// 無効化フラグ
 	std::vector<ObjectData> children;
 };
 struct LevelData {

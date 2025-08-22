@@ -1,18 +1,7 @@
 import bpy
+import sys
 
-# ブレンダーに登場するアドオン情報
-bl_info = {
-    "name": "レベルエディタ",
-    "author": "Naoki Miyazawa",
-    "version": (1, 0),
-    "blender": (3, 3, 1),
-    "location": "",
-    "description": "レベルエディタ",
-    "warning": "",
-    "wiki_url": "",
-    "tracker_url": "",
-    "category": "Object"
-}
+bl_info = sys.modules[__package__].bl_info
 
 # モジュールのインポート
 from .stretch_vertex import MYADDON_OT_stretch_vertex

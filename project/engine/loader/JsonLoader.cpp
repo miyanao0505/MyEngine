@@ -51,6 +51,15 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData,
 {
 	assert(object.contains("type"));
 
+	if (object.contains("disabled")) {
+		// 有効無効フラグ
+		bool disabled = object["disabled"].get<bool>();
+		if (disabled) {
+			// 配置しない
+			return;
+		}
+	}
+
 	// 種別を取得
 	string type = object["type"].get<string>();
 

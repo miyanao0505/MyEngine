@@ -48,18 +48,21 @@ public:	// getter
 	Collider* GetCollider() const { return collider_.get(); }
 	Object3d* GetObject3d() const { return object_.get(); }
 	std::string GetName() const { return name_; }
+	bool IsDisabled() const { return isDisabled_; }
 
 public:	// setter
 	void SetModel(const std::string& modelPath) { if (object_) { object_->SetModel(modelPath); } }
 	void SetObject3d(std::unique_ptr<Object3d> object) { object_ = std::move(object); }
 	void SetCollider(std::unique_ptr<Collider> collider) { collider_ = std::move(collider); }
 	void SetName(const std::string& name) { name_ = name; }
+	void SetDisabled(bool isDisabled) { isDisabled_ = isDisabled; }
 
 protected:	// メンバ変数
 	std::unique_ptr<Object3d> object_ = nullptr;	// モデルデータ	
 	std::unique_ptr<Collider> collider_ = nullptr;	// 衝突判定用コライダー
 
 	std::string name_;								// オブジェクト名
+	bool isDisabled_ = false;						// 無効化フラグ
 
 };
 

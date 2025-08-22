@@ -48,12 +48,12 @@ private:	// メンバ変数
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 	// 敵
-	std::unique_ptr<Enemy> enemy_ = nullptr;
+	//std::unique_ptr<Enemy> enemy_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 	
 	// test
-	//std::vector<std::unique_ptr<BaseObject>> testObjects_;
+	std::vector<std::unique_ptr<BaseObject>> testObjects_;
 
 	// パーティクル
 

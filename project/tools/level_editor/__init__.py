@@ -1,15 +1,30 @@
 import bpy
 
+# ブレンダーに登場するアドオン情報
+bl_info = {
+    "name": "レベルエディタ",
+    "author": "Naoki Miyazawa",
+    "version": (1, 0),
+    "blender": (3, 3, 1),
+    "location": "",
+    "description": "レベルエディタ",
+    "warning": "",
+    "wiki_url": "",
+    "tracker_url": "",
+    "category": "Object"
+}
+
 # モジュールのインポート
 from .stretch_vertex import MYADDON_OT_stretch_vertex
 from .create_ico_sphere import MYADDON_OT_create_ico_sphere
 from .export_scene import MYADDON_OT_export_scene
-from .add_filename import MYADDON_OT_add_filename
-from .add_collider import MYADDON_OT_add_collider
-from .draw_collider import DrawCollider
-from .file_name import OBJECT_PT_file_name
-from .collider import OBJECT_PT_collider
 from .my_menu import TOPBAR_MT_my_menu
+from .add_filename import MYADDON_OT_add_filename
+from .file_name import OBJECT_PT_file_name
+from .add_collider import MYADDON_OT_add_collider
+from .collider import OBJECT_PT_collider
+from .draw_collider import DrawCollider
+from .disabled import MYADDON_OT_add_disabled, OBJECT_PT_disabled
 
 # メニュー項目描画
 def draw_menu_manual(self, context):
@@ -26,9 +41,11 @@ classes = (
     MYADDON_OT_export_scene,
     TOPBAR_MT_my_menu,
     MYADDON_OT_add_filename,
-    MYADDON_OT_add_collider,
     OBJECT_PT_file_name,
+    MYADDON_OT_add_collider,
     OBJECT_PT_collider,
+    MYADDON_OT_add_disabled,
+    OBJECT_PT_disabled,
 )
 
 #アドオン有効化時コールバック

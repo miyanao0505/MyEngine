@@ -33,9 +33,9 @@ void GameScene::Initialize()
 	player_->Initialize({ 0.0f, 0.0f, 0.0f });
 
 	// 敵
-	enemy_ = std::make_unique<Enemy>();
+	/*enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize();
-	enemy_->SetPlayer(player_.get());
+	enemy_->SetPlayer(player_.get());*/
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
@@ -77,9 +77,9 @@ void GameScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	/*for (auto& obj : testObjects_) {
+	for (auto& obj : testObjects_) {
 		obj.reset();
-	}*/
+	}
 	
 	// スプライト
 	gameSprite_.reset();
@@ -139,26 +139,26 @@ void GameScene::Update()
 	DebugDraw();
 #endif // _DEBUG
 
-	if (enemy_->IsDead()) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
-		return;
-	}
+	//if (enemy_->IsDead()) {
+	//	// シーン切り替え依頼
+	//	SceneManager::GetInstance()->ChangeScene("CLEAR");
+	//	return;
+	//}
 
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
 	player_->Update();
 
 	// 敵の更新処理
-	enemy_->Update();
+	//enemy_->Update();
 
 	// 天球の更新
 	skydome_->Update();
 
 	// test
-	/*for (auto& obj : testObjects_) {
+	for (auto& obj : testObjects_) {
 		obj->Update();
-	}*/
+	}
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -197,15 +197,15 @@ void GameScene::Draw()
 	skydome_->Draw();
 
 	// 敵の描画
-	enemy_->Draw();
+	//enemy_->Draw();
 
 	// プレイヤーの描画
 	player_->Draw();
 
 	// test
-	/*for (auto& obj : testObjects_) {
+	for (auto& obj : testObjects_) {
 		obj->Draw();
-	}*/
+	}
 
 #pragma endregion 3Dオブジェクト
 
@@ -264,18 +264,18 @@ void GameScene::DebugDraw()
 	player_->DebugDraw();
 
 	// 敵
-	enemy_->DebugDraw();
+	//enemy_->DebugDraw();
 
-	//int num = 0;
+	int num = 0;
 	// test
-	/*for (auto& obj : testObjects_) {
+	for (auto& obj : testObjects_) {
 		ImGui::PushID(obj.get() + num);
 		if (ImGui::CollapsingHeader("testObj")) {
 			obj->DebugDraw();
 		}
 		ImGui::PopID();
 		num++;
-	}*/
+	}
 
 	// パーティクル
 	ParticleManager::GetInstance()->Imgui();
@@ -384,17 +384,17 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 			player_->GetObject3d()->SetRotate(objectData.rotation);
 			player_->GetObject3d()->SetScale(objectData.scale);
 		}
-		else if (objectData.name == "Enemy") {
-			// 敵の初期化
+		//else if (objectData.name == "Enemy") {
+		//	// 敵の初期化
 
-		}
+		//}
 		else if (objectData.name == "Skydome") {
 			// 天球の初期化
 
 		}
 		else {
 			// その他のObjectはBaseObjectとして構築
-			/*ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
+			ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 			ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
 			TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
 			BaseObject* obj = CreateObjectFromData(objectData);
@@ -403,7 +403,7 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 				BaseObject* childObj = CreateObjectFromData(childData);
 				childObj->GetObject3d()->GetWorldTransform()->SetParent(obj->GetObject3d()->GetWorldTransform());
 				testObjects_.emplace_back(childObj);
-			}*/
+			}
 		}
 	}
 }
