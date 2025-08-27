@@ -407,5 +407,13 @@ public:
 	struct CameraForGPU {
 		Vector3 worldPosition;
 	};
+
+	/// <summary>
+	/// 自キャラの生成データ
+	/// </summary>
+	struct PlayerSpawnData {
+		Vector3 translation;	// 平行移動
+		Vector3 rotation;		// 回転角
+	};
 };
 

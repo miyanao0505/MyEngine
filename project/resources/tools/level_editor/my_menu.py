@@ -7,6 +7,7 @@ bl_info = sys.modules[__package__].bl_info
 from .stretch_vertex import MYADDON_OT_stretch_vertex
 from .create_ico_sphere import MYADDON_OT_create_ico_sphere
 from .export_scene import MYADDON_OT_export_scene
+from .spawn import MYADDON_OT_create_spawn
 
 # トップバーの拡張メニュー
 class TOPBAR_MT_my_menu(bpy.types.Menu):
@@ -26,6 +27,8 @@ class TOPBAR_MT_my_menu(bpy.types.Menu):
             text=MYADDON_OT_create_ico_sphere.bl_label)
         self.layout.operator(MYADDON_OT_export_scene.bl_idname,
             text=MYADDON_OT_export_scene.bl_label)
+        self.layout.operator(MYADDON_OT_create_spawn.bl_idname,
+            text=MYADDON_OT_create_spawn.bl_label)
 
     #既存のメニューにサブメニューを追加
     def submenu(self, context):

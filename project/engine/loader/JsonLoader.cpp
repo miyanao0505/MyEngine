@@ -119,4 +119,15 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData,
 			levelData.objects.push_back(objectData);
 		}
 	}
+	// 自キャラ生成ポイント
+	else if (type.compare("PlayerSpawn") == 0) {
+		MyBase::PlayerSpawnData playerSpawn;
+		// 必要なデータを取得
+		json transform = object["transform"];
+		// 平行移動
+		playerSpawn.translation = { (float)transform["translation"][0], (float)transform["translation"][2], (float)transform["translation"][1] };
+		// 回転
+		playerSpawn.rotation = { -(float)transform["rotation"][0], -(float)transform["rotation"][2], -(float)transform["rotation"][1] };
+		levelData.players.push_back(playerSpawn);
+	}
 }

@@ -406,4 +406,9 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 			}*/
 		}
 	}
+
+	// スポーンポイントの読み込み
+	for (const MyBase::PlayerSpawnData& spawnData : levelData->players) {
+		spawnPoints_.push_back(std::make_unique<MyBase::PlayerSpawnData>(spawnData));
+	}
 }

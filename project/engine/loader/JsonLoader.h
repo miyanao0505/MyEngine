@@ -18,7 +18,8 @@ struct ObjectData {
 	std::vector<ObjectData> children;
 };
 struct LevelData {
-	std::vector<ObjectData> objects;
+	std::vector<ObjectData> objects;				// シーン内のオブジェクトデータ
+	std::vector<MyBase::PlayerSpawnData> players;	// プレイヤー生成データ
 };
 
 /// <summary>

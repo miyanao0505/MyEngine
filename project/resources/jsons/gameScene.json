@@ -62,9 +62,7 @@
                     1.0,
                     1.0
                 ]
-            },
-            "file_name": "player.obj",
-            "disabled": false
+            }
         },
         {
             "type": "MESH",
@@ -136,6 +134,27 @@
             },
             "file_name": "sphere.obj",
             "disabled": true
+        },
+        {
+            "type": "PlayerSpawn",
+            "name": "PlayerSpawn",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
         }
     ]
 }

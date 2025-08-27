@@ -25,6 +25,7 @@ from .add_collider import MYADDON_OT_add_collider
 from .collider import OBJECT_PT_collider
 from .draw_collider import DrawCollider
 from .disabled import MYADDON_OT_add_disabled, OBJECT_PT_disabled
+from .spawn import MYADDON_OT_spawn_import_symbol, MYADDON_OT_create_spawn
 
 # メニュー項目描画
 def draw_menu_manual(self, context):
@@ -46,6 +47,8 @@ classes = (
     OBJECT_PT_collider,
     MYADDON_OT_add_disabled,
     OBJECT_PT_disabled,
+    MYADDON_OT_spawn_import_symbol,
+    MYADDON_OT_create_spawn,
 )
 
 #アドオン有効化時コールバック

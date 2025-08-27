@@ -55,6 +55,9 @@ private:	// メンバ変数
 	// test
 	//std::vector<std::unique_ptr<BaseObject>> testObjects_;
 
+	// スポーンポイント
+	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;
+
 	// パーティクル
 
 	// jsonローダー

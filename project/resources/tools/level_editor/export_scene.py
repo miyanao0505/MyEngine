@@ -50,9 +50,6 @@ class MYADDON_OT_export_scene(bpy.types.Operator, bpy_extras.io_utils.ExportHelp
             temp_str = indent + "CS %f %f %f"
             temp_str %= (object["collider_size"][0],object["collider_size"][1],object["collider_size"][2])
             self.write_and_print(file, temp_str)
-        #カスタムプロパティ'disabled'
-        if "disabled" in object:
-            self.write_and_print(file, indent + "D " + object["disabled"])
         self.write_and_print(file, indent + 'END')
         self.write_and_print(file, '')
 
@@ -64,7 +61,10 @@ class MYADDON_OT_export_scene(bpy.types.Operator, bpy_extras.io_utils.ExportHelp
         #シーンのオブジェクト1個分のjsonオブジェクト生成
         json_object = dict()
         #オブジェクト種類
-        json_object["type"] = object.type
+        if "type" in object:    # カスタムプロパティで指定された場合
+            json_object["type"] = object["type"]
+        else:
+            json_object["type"] = object.type
         #オブジェクト名
         json_object["name"] = object.name
 
