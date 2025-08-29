@@ -8,7 +8,7 @@
 using namespace std;
 
 // 初期化
-void PlayerBullet::Initialize(MyBase::Vector3 position)
+void PlayerBullet::Initialize(MyBase::Vector3 position, MyBase::Vector3 velocity)
 {
 	// モデルの初期化
 	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
@@ -19,6 +19,8 @@ void PlayerBullet::Initialize(MyBase::Vector3 position)
 	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
+
+	velocity_ = velocity;
 
 	// プレイヤー弾のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
@@ -79,7 +81,7 @@ void PlayerBullet::DebugDraw()
 void PlayerBullet::Move()
 {
 	// 弾の移動
-	MyBase::Vector3 move = { 0.0f, 0.0f, kmoveSpeed_ };
+	MyBase::Vector3 move = MyTools::Multiply(kmoveSpeed_, velocity_);
 	object_->SetTranslate(MyTools::Add(object_->GetTranslate(), move));
 	// 画面外に出たら削除
 	if (deathTimer_ <= 0) {

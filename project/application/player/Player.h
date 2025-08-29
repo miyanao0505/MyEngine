@@ -41,6 +41,11 @@ public:	// メンバ関数
 	void Move();
 
 	/// <summary>
+	/// 回転処理
+	/// </summary>
+	void Rotate();
+
+	/// <summary>
 	/// 攻撃
 	/// </summary>
 	void Attaack();

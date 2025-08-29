@@ -57,6 +57,9 @@ void Player::Update()
 	// 移動処理
 	Move();
 
+	// 回転処理
+	Rotate();
+
 	// オブジェクトの更新
 	object_->Update();
 
@@ -143,6 +146,28 @@ void Player::Move()
 	object_->SetTranslate(newPos);
 }
 
+/// 回転処理
+void Player::Rotate()
+{
+	// プレイヤーの回転
+	MyBase::Vector3 angularVelocity = { 0.0f, 0.0f, 0.0f };
+	if (Input::GetInstance()->PushKey(DIK_UP)) {
+		angularVelocity.x -= 0.05f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
+		angularVelocity.x += 0.05f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+		angularVelocity.y -= 0.05f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+		angularVelocity.y += 0.05f;
+	}
+	// 回転更新
+	MyBase::Vector3 newRot = MyTools::Add(object_->GetRotate(), angularVelocity);
+	object_->SetRotate(newRot);
+}
+
 /// 攻撃
 void Player::Attaack()
 {
@@ -150,7 +175,8 @@ void Player::Attaack()
 	{
 		// 弾の生成
 		auto bullet = std::make_unique<PlayerBullet>();
-		bullet->Initialize(MyTools::Add(object_->GetTranslate(), {0.0f, 0.0f, 1.0f}));
+		MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
+		bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
 		bullets_.emplace_back(std::move(bullet));
 		// 攻撃のクールタイムを設定
 		attackCoolTime_ = kAttackCoolTime_;

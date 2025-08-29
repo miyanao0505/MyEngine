@@ -10,7 +10,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="position">初期座標</param>
-	void Initialize(MyBase::Vector3 position);
+	void Initialize(MyBase::Vector3 position, MyBase::Vector3 velocity);
 
 	/// <summary>
 	/// 更新
@@ -54,6 +54,9 @@ private:	// メンバ変数
 
 	// 弾の移動速度
 	const float kmoveSpeed_ = 0.2f;
+
+	// 弾の速度
+	MyBase::Vector3 velocity_;
 
 	// 寿命<frm>
 	static const int32_t kLifeTime = 60 * 5;
