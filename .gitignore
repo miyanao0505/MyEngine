@@ -52,7 +52,8 @@ artifacts/
 StyleCopReport.xml
 
 # Files built by Visual Studio
-
+*.ini
+*.vsix
 
 # Chutzpah Test files
 _Chutzpah*
