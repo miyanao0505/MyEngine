@@ -277,6 +277,8 @@ void GameScene::DebugDraw()
 	ImGui::Begin("Settings");
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
+	// FollowCamera
+	followCamera_->DebugDraw();
 
 	// Skybox
 	//skybox_->DebugDraw();

@@ -20,6 +20,11 @@ public:	// メンバ関数
 	/// </summary>
 	void Draw();
 
+#ifdef _DEBUG
+	// デバック用の描画
+	void DebugDraw();
+#endif // _DEBUG
+
 public:	// getter
 	/// <summary>
 	/// カメラの設定
