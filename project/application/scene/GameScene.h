@@ -4,6 +4,7 @@
 #include <vector>
 #include "Sprite.h"
 #include "Player.h"
+#include "FollowCamera.h"
 #include "Enemy.h"
 #include "Skydome.h"
 #include "ParticleEmitter.h"
@@ -51,6 +52,9 @@ private:	// メンバ変数
 	std::unique_ptr<Enemy> enemy_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
+
+	// カメラ
+	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 	
 	// test
 	//std::vector<std::unique_ptr<BaseObject>> testObjects_;

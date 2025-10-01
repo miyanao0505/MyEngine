@@ -43,6 +43,13 @@ void GameScene::Initialize()
 	
 #pragma endregion 3Dオブジェクト
 
+#pragma region カメラ
+	// フォローカメラ
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Initialize();
+	followCamera_->SetPlayer(player_.get());
+#pragma endregion カメラ
+
 #pragma region パーティクル
 	// パーティクル
 	
@@ -74,15 +81,22 @@ void GameScene::Initialize()
 // 終了
 void GameScene::Finalize()
 {
-	BaseScene::Finalize();
+	jsonLoader_.reset();
+	for(std::unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
+		spawnPoint.reset();
+	}
+	spawnPoints_.clear();
+	followCamera_.reset();
 
 	// 3Dオブジェクト
-	/*for (auto& obj : testObjects_) {
-		obj.reset();
-	}*/
-	
+	skydome_.reset();
+	enemy_.reset();
+	player_.reset();
+
 	// スプライト
 	gameSprite_.reset();
+
+	BaseScene::Finalize();
 }
 
 // 毎フレーム更新
@@ -138,7 +152,11 @@ void GameScene::Update()
 
 	DebugDraw();
 #endif // _DEBUG
-
+	
+	// カメラの更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+	
+	// クリア条件
 	if (enemy_->IsDead()) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene("CLEAR");
@@ -148,6 +166,9 @@ void GameScene::Update()
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
 	player_->Update();
+
+	// フォローカメラの更新
+	followCamera_->Update();
 
 	// 敵の更新処理
 	enemy_->Update();

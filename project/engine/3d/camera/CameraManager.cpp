@@ -49,10 +49,16 @@ void CameraManager::SetCamera(const string& cameraName)
 // カメラの検索
 void CameraManager::FindCamera(const string& cameraName)
 {
+	if(cameraName_ == cameraName){
+		// 同じ名前なら早期return
+		return;
+	}
+
 	// 読み込み済みカメラを検索
 	if (cameras_.contains(cameraName)) {
 		// 読み込みカメラを現在のカメラとしてセット
 		camera_ = cameras_.at(cameraName).get();
+		cameraName_ = cameraName;
 	}
 }
 
@@ -73,12 +79,7 @@ void CameraManager::DebugDraw() {
 			// transformをセット
 			transformCamera = camera_->GetTransform();
 			// 指定されているカメラの名前をセット
-			for (const auto& pair : cameras_) {
-				if (pair.second.get() == camera_) {
-					cameraNowVlue = pair.first;
-				}
-			}
-			
+			cameraNowVlue = cameraName_;
 		}
 		// カメラが1つでもセットされている時
 		else if(cameraNames.size() != 0) {

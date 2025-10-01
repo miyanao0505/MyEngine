@@ -58,6 +58,7 @@ private:	// メンバ変数
 
 	// 現在指定しているカメラデータ
 	Camera* camera_ = nullptr;
+	std::string cameraName_ = "";
 
 };
 
