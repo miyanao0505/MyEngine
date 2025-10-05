@@ -4,6 +4,8 @@
 #include <vector>
 #include "Sprite.h"
 #include "Skybox.h"
+#include "TitleLogo.h"
+#include "BaseObject.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -34,17 +36,15 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string titleTextureFilePath_ = "resources/texture/Title.png";
 	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
 
 	// スプライト
-	std::unique_ptr<Sprite> titleSprite_ = nullptr;	// タイトルスプライト
 
 	// Skybox
 	std::unique_ptr<Skybox> skybox_ = nullptr;
 
 	// 3Dオブジェクト
-	
+	std::unique_ptr<TitleLogo> titleLogo_ = nullptr;
 
 	// jsonローダー
 	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;

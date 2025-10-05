@@ -20,6 +20,7 @@
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\player\PlayerBullet.cpp" />
+    <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
@@ -78,6 +79,7 @@
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h" />
     <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\player\PlayerBullet.h" />
+    <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
@@ -276,7 +278,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -302,7 +304,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

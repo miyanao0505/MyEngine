@@ -142,6 +142,12 @@
     <Filter Include="ヘッダー ファイル\application\camera">
       <UniqueIdentifier>{f907a3eb-018e-4ae0-9680-2255e8eb7ce7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\ui">
+      <UniqueIdentifier>{76887574-bd81-4858-92fa-c3372e6f1535}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\ui">
+      <UniqueIdentifier>{428f8132-5a41-414e-85d5-4b11d5c7ad9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -308,6 +314,9 @@
     </ClCompile>
     <ClCompile Include="application\camera\FollowCamera.cpp">
       <Filter>ソース ファイル\application\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\TitleLogo.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +487,9 @@
     </ClInclude>
     <ClInclude Include="application\camera\FollowCamera.h">
       <Filter>ヘッダー ファイル\application\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\TitleLogo.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
