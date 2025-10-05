@@ -19,14 +19,11 @@ void TitleScene::Initialize()
 
 #pragma region スプライト
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(titleTextureFilePath_);
 	// テスト用テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(skyBoxFilePath_);
 
 	// スプライト
-	titleSprite_ = std::make_unique<Sprite>();
-	titleSprite_->Initialize(titleTextureFilePath_);
-	titleSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
+	
 
 #pragma endregion スプライト
 
@@ -39,9 +36,9 @@ void TitleScene::Initialize()
 #pragma region 3Dオブジェクト
 	// .objファイルからモデルを読み込む
 
-
 	// 3Dオブジェクト
-	
+	titleLogo_ = std::make_unique<TitleLogo>();
+	titleLogo_->Initialize();
 
 #pragma endregion 3Dオブジェクト
 
@@ -72,15 +69,14 @@ void TitleScene::Initialize()
 void TitleScene::Finalize()
 {
 	BaseScene::Finalize();
+	
+	// 3Dオブジェクト
+	titleLogo_.reset();
 
 	// Skybox
 	skybox_.reset();
 
-	// 3Dオブジェクト
-	
-
 	// スプライト
-	titleSprite_.reset();
 }
 
 // 毎フレーム更新
@@ -89,19 +85,7 @@ void TitleScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAME");
-	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
-	}
-
 	DebugDraw();
-
 #endif // _DEBUG
 
 	// ゲームシーンへの遷移
@@ -114,13 +98,12 @@ void TitleScene::Update()
 	skybox_->Update();
 
 	// 3Dオブジェクトの更新処理
-	
+	titleLogo_->Update();
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	titleSprite_->Update();
 }
 
 // 描画
@@ -137,7 +120,7 @@ void TitleScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	
+	titleLogo_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -154,7 +137,6 @@ void TitleScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	titleSprite_->Draw();
 
 #pragma endregion スプライト
 }
@@ -164,20 +146,14 @@ void TitleScene::Draw()
 void TitleScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-
-	ImGui::Begin("Title Scene");
-	ImGui::Text("N key : gameScene");
-	ImGui::Text("B key : eventScene");
-	ImGui::End();
-
 	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Settings"); 
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
+
+	// 3Dオブジェクト
 
 	// Skybox
 	skybox_->DebugDraw();
