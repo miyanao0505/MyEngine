@@ -22,6 +22,11 @@ public:	// メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// オブジェクトの移動
+	/// </summary>
+	void Move();
+
 public:	// getter
 
 public:	// setter
@@ -31,6 +36,10 @@ private:	// メンバ変数
 	std::unique_ptr<BaseObject> titleCharFirst_ = nullptr;
 	std::unique_ptr<BaseObject> titleCharSecond_ = nullptr;
 	std::unique_ptr<BaseObject> titleCharThird_ = nullptr;
+
+	MyBase::Vector3 moveVector_{ 0.0f, 0.0f, 0.0f };
+	float moveDistance_ = 0.0f;
+	const float moveSpeed_ = 0.05f;
 
 };
 
