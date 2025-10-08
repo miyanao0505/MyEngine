@@ -1,5 +1,6 @@
 #include "TitleLogo.h"
 #include "ModelManager.h"
+#include "MyTools.h"
 
 // 初期化
 void TitleLogo::Initialize() {
@@ -27,6 +28,9 @@ void TitleLogo::Initialize() {
 	titleCharThird_->GetObject3d()->SetScale({ 5.0f,5.0f,5.0f });
 	titleCharThird_->GetObject3d()->SetRotate({ 0.0f,0.0f,0.0f });
 	titleCharThird_->GetObject3d()->SetTranslate({ 5.0f,5.0f,0.0f });
+
+	moveVector_ = { 0.0f,-1.0f,0.0f };
+	moveDistance_ = 0.0f;
 }
 
 // 終了
@@ -38,6 +42,8 @@ void TitleLogo::Finalize() {
 
 // 更新
 void TitleLogo::Update() {
+	Move();
+
 	if (titleCharFirst_) {
 		titleCharFirst_->Update();
 	}
@@ -60,4 +66,22 @@ void TitleLogo::Draw() {
 	if (titleCharThird_) {
 		titleCharThird_->Draw();
 	}
+}
+
+// ロゴの移動処理
+void TitleLogo::Move() {
+	if (moveDistance_ <= -moveSpeed_ * 30.0f) {
+		moveVector_ = { 0.0f,1.0f,0.0f };
+	}
+	else if (moveDistance_ >= moveSpeed_ * 30.0f) {
+		moveVector_ = { 0.0f,-1.0f,0.0f };
+	}
+
+	MyBase::Vector3 move = MyTools::Multiply(moveSpeed_, moveVector_);
+	moveDistance_ += move.y;
+	
+	// 移動処理
+	titleCharFirst_->GetObject3d()->SetTranslate(MyTools::Add(titleCharFirst_->GetObject3d()->GetTranslate(), move));
+	titleCharSecond_->GetObject3d()->SetTranslate(MyTools::Add(titleCharSecond_->GetObject3d()->GetTranslate(), move));
+	titleCharThird_->GetObject3d()->SetTranslate(MyTools::Add(titleCharThird_->GetObject3d()->GetTranslate(), move));
 }
