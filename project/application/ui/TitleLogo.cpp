@@ -68,7 +68,7 @@ void TitleLogo::Draw() {
 	}
 }
 
-// オブジェクトの移動
+// ロゴの移動処理
 void TitleLogo::Move() {
 	if (moveDistance_ <= -moveSpeed_ * 30.0f) {
 		moveVector_ = { 0.0f,1.0f,0.0f };

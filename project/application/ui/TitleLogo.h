@@ -23,7 +23,7 @@ public:	// メンバ関数
 	void Draw();
 
 	/// <summary>
-	/// オブジェクトの移動
+	/// ロゴの移動処理
 	/// </summary>
 	void Move();
 

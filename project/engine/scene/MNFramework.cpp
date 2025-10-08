@@ -10,7 +10,7 @@ void MNFramework::Initialize()
 #pragma region ゲームウィンドウ作成
 	// WindowsAPIの初期化
 	winApi_.reset(new WindowsAPI());
-	winApi_->Initialize(L"就職作品");
+	winApi_->Initialize(L"進空戦");
 #pragma endregion ゲームウィンドウ作成
 
 #pragma region DirectX初期化
