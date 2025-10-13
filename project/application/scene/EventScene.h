@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Object3d.h"
+#include "BaseObject.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -43,7 +43,7 @@ private:	// メンバ変数
 	
 
 	// 3Dオブジェクト
-	
+	std::unique_ptr<BaseObject> cubeObject_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
