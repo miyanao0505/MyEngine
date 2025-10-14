@@ -19,18 +19,16 @@ void TitleScene::Initialize()
 
 #pragma region スプライト
 	// テクスチャの読み込み
-	// テスト用テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(skyBoxFilePath_);
 
 	// スプライト
 	
 
 #pragma endregion スプライト
 
-#pragma region Skybox
-	// Skybox
-	skybox_ = std::make_unique<Skybox>();
-	skybox_->Initislize(skyBoxFilePath_, { 50.0f, 50.0f, 50.0f });
+#pragma region Skydome
+	// Skydome
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
 #pragma endregion Skybox
 
 #pragma region 3Dオブジェクト
@@ -39,6 +37,8 @@ void TitleScene::Initialize()
 	// 3Dオブジェクト
 	titleLogo_ = std::make_unique<TitleLogo>();
 	titleLogo_->Initialize();
+	enterCharacters_ = std::make_unique<Characters>();
+	enterCharacters_->Initialize("charactors", "enter.obj");
 
 #pragma endregion 3Dオブジェクト
 
@@ -69,13 +69,14 @@ void TitleScene::Initialize()
 void TitleScene::Finalize()
 {
 	BaseScene::Finalize();
+
+	
 	
 	// 3Dオブジェクト
+	enterCharacters_.reset();
 	titleLogo_.reset();
-
-	// Skybox
-	skybox_.reset();
-
+	skydome_.reset();
+	
 	// スプライト
 }
 
@@ -95,10 +96,11 @@ void TitleScene::Update()
 	}
 
 	// Skyboxの更新
-	skybox_->Update();
+	skydome_->Update();
 
 	// 3Dオブジェクトの更新処理
 	titleLogo_->Update();
+	enterCharacters_->Update();
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();
@@ -109,18 +111,15 @@ void TitleScene::Update()
 // 描画
 void TitleScene::Draw()
 {
-#pragma region Skybox
-	// 天球の描画
-	skybox_->Draw();
-#pragma endregion Skybox
-
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
+	skydome_->Draw();
 	titleLogo_->Draw();
+	enterCharacters_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -154,9 +153,7 @@ void TitleScene::DebugDraw()
 	CameraManager::GetInstance()->DebugDraw();
 
 	// 3Dオブジェクト
-
-	// Skybox
-	skybox_->DebugDraw();
+	skydome_->DebugDraw();
 
 	ImGui::End();
 }

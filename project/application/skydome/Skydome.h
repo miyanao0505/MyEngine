@@ -11,7 +11,10 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(MyBase::Vector3 position);
+	/// <param name="filePath">テクスチャファイルパス</param>
+	/// <param name="position">初期位置</param>
+	/// <param name="scale">初期スケール</param>
+	void Initialize(const std::string& filePath, MyBase::Vector3 position, MyBase::Vector3 scale);
 	/// <summary>
 	/// 更新
 	/// </summary>

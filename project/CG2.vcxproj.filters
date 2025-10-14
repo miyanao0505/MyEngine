@@ -318,6 +318,9 @@
     <ClCompile Include="application\ui\TitleLogo.cpp">
       <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
+    <ClCompile Include="application\ui\Characters.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -489,6 +492,9 @@
       <Filter>ヘッダー ファイル\application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\ui\TitleLogo.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\Characters.h">
       <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>

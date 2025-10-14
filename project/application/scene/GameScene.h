@@ -38,7 +38,7 @@ private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
 	const std::string gameTextureFilePath_ = "resources/texture/Game.png";
-	std::string skyBoxFilePath_ = "resources/texture/rostock_laage_airport_4k.dds";
+	std::string skydomeFilePath_ = "resources/texture/skyback.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト

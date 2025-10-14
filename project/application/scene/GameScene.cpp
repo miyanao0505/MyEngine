@@ -39,7 +39,7 @@ void GameScene::Initialize()
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize({ 0.0f, 0.0f, 0.0f });
+	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
 	
 #pragma endregion 3Dオブジェクト
 

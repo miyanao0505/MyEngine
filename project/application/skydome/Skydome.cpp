@@ -12,16 +12,17 @@ Skydome::~Skydome()
 {
 }
 
-void Skydome::Initialize(MyBase::Vector3 position)
+/// 初期化
+void Skydome::Initialize(const std::string& filePath, MyBase::Vector3 position, MyBase::Vector3 scale)
 {
+	TextureManager::GetInstance()->LoadTexture(filePath);
+
 	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 	object_ = std::make_unique<Object3d>();
 
-	TextureManager::GetInstance()->LoadTexture("resources/texture/skydome.png");
-
 	object_->Initislize("sphere.obj");
-	object_->SetTexture("resources/texture/skydome.png");
-	object_->SetScale({ 100.0f, 100.0f, 100.0f });
+	object_->SetTexture(filePath);
+	object_->SetScale(scale);
 	object_->SetTranslate(position);
 }
 
