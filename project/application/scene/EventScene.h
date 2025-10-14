@@ -43,7 +43,7 @@ private:	// メンバ変数
 	
 
 	// 3Dオブジェクト
-	std::unique_ptr<BaseObject> cubeObject_ = nullptr;
+	
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

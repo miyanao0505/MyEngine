@@ -15,7 +15,6 @@ void EventScene::Initialize()
 #pragma region シーン初期化
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(filePath1_);
-	TextureManager::GetInstance()->LoadTexture("resources/texture/test.dds");
 
 	// スプライト
 	sprite_ = std::make_unique<Sprite>();
@@ -26,13 +25,7 @@ void EventScene::Initialize()
 	ModelManager::GetInstance()->LoadModel("debug/cube", "cube.obj");
 
 	// 3Dオブジェクト
-	cubeObject_ = std::make_unique<BaseObject>();
-	cubeObject_->Initialize("cube.obj");
-	cubeObject_->SetName("Cube");
-	cubeObject_->GetObject3d()->SetScale({ 1.0f, 1.0f, 1.0f });
-	cubeObject_->GetObject3d()->SetTranslate({ 0.0f, 0.0f, 0.0f });	
-	cubeObject_->GetObject3d()->SetEnableLighting(false);	// ライティング無効
-	cubeObject_->GetObject3d()->SetTexture("resources/texture/test.dds");
+	
 
 	// パーティクル
 	//particleEmitter_ = std::make_unique<ParticleEmitter>();
@@ -54,7 +47,7 @@ void EventScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	cubeObject_.reset();
+	
 
 	// スプライト
 	sprite_.reset();
@@ -76,7 +69,7 @@ void EventScene::Update()
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
-	cubeObject_->Update();
+	
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -112,7 +105,7 @@ void EventScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	cubeObject_->Draw();
+	
 
 #pragma endregion 3Dオブジェクト
 
@@ -129,7 +122,7 @@ void EventScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	//sprite_->Draw();
+	sprite_->Draw();
 
 #pragma endregion スプライト
 
