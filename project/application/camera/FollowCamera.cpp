@@ -12,6 +12,8 @@ void FollowCamera::Initialize() {
 	offset_ = { 0.0f, 7.50f, -40.0f };
 	// カメラの方向を設定
 	directional_ = { 0.0f, 1.0f, 0.0f };
+
+	Update();
 }
 
 void FollowCamera::Update() {

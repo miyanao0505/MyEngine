@@ -48,6 +48,7 @@ void GameScene::Initialize()
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetPlayer(player_.get());
+	followCamera_->Update();
 #pragma endregion カメラ
 
 #pragma region パーティクル

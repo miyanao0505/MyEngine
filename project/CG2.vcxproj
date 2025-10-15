@@ -67,6 +67,7 @@
     <ClCompile Include="engine\scene\MNFramework.cpp" />
     <ClCompile Include="engine\scene\SceneManager.cpp" />
     <ClCompile Include="application\camera\FollowCamera.cpp" />
+    <ClCompile Include="engine\scene\SceneTransition.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +129,7 @@
     <ClInclude Include="engine\scene\MNFramework.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
     <ClInclude Include="application\camera\FollowCamera.h" />
+    <ClInclude Include="engine\scene\SceneTransition.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

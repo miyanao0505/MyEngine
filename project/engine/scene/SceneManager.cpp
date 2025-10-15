@@ -45,35 +45,52 @@ void SceneManager::Update()
 	ImGui::End();
 #endif // _DEBUG
 
-
-	// シーン切り替え機構
-	// 次シーンの予約があるなら
-	if (nextScene_) {
-		// 旧シーンの終了
-		if (scene_) {
-			scene_->Finalize();
-			delete scene_;
-		}
-
-		// シーンの切り替え
+	// ▼ 起動直後（scene_がnullptr）の場合は即シーン切り替え
+	if (!scene_ && nextScene_) {
 		scene_ = nextScene_;
 		nextScene_ = nullptr;
-
-		// シーンマネージャをセット
 		scene_->SetSceneManager(this);
-
-		// 次のシーンを初期化する
 		scene_->Initialize();
+		return;
 	}
 
-	// 実行中シーンを更新する
-	scene_->Update();
+	// ▼ フェード演出中の更新
+	if (transition_.IsActive()) {
+		transition_.Update();
+		return; // フェード中はこれで抜ける
+	}
+
+	// ▼ 次のシーンが予約されている場合、フェードアウト開始
+	if (nextScene_) {
+		// シーン切替演出を開始
+		transition_.Start([this]() {
+			// ▼ シーン切替完了後の処理
+			if (scene_) {
+				scene_->Finalize();
+				delete scene_;
+				scene_ = nullptr;
+			}
+			scene_ = nextScene_;
+			nextScene_ = nullptr;
+			scene_->SetSceneManager(this);
+			scene_->Initialize();
+		});
+		return; // ここでフェード演出開始、まだ切り替えは完了していない
+	}
+
+	// ▼ 通常更新
+	if (scene_) {
+		scene_->Update();
+	}
 }
 
 // 描画
 void SceneManager::Draw()
 {
-	scene_->Draw();
+	if (scene_) scene_->Draw();
+
+	// フェード描画（上に重ねる）
+	if (transition_.IsActive()) transition_.Draw();
 }
 
 /// 次のシーン予約

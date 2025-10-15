@@ -32,6 +32,7 @@ void Player::Initialize(MyBase::Vector3 position)
 	// プレイヤーのオブジェクトの設定
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
+	object_->Update();
 
 	// プレイヤーのコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
