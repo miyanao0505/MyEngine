@@ -48,7 +48,6 @@ void GameScene::Initialize()
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetPlayer(player_.get());
-	followCamera_->Update();
 #pragma endregion カメラ
 
 #pragma region パーティクル
@@ -75,6 +74,13 @@ void GameScene::Initialize()
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
 #pragma endregion 変数
+
+	// 最初の更新
+	followCamera_->Update();
+	CameraManager::GetInstance()->GetCamera()->Update();
+	player_->Update();
+	enemy_->Update();
+	skydome_->Update();
 
 #pragma endregion シーン初期化
 }

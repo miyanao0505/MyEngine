@@ -105,6 +105,9 @@ void ParticleManager::Draw()
 
 	// 全てのパーティクルグループについて処理
 	for (auto& [name, group] : particleGroups_) {
+		if (group->kNumInstance == 0) {
+			return;
+		}
 		dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &group->vertexBufferView);	// VBVを設定
 		dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);					// IBAを設定
 		// インスタンシングデータのSRVのDescriptorTableを設定

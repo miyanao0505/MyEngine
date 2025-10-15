@@ -24,7 +24,6 @@ void Skydome::Initialize(const std::string& filePath, MyBase::Vector3 position, 
 	object_->SetTexture(filePath);
 	object_->SetScale(scale);
 	object_->SetTranslate(position);
-	object_->Update();
 }
 
 void Skydome::Update()

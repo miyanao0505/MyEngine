@@ -32,7 +32,6 @@ void Enemy::Initialize()
 	object_->SetTexture("resources/texture/uvChecker.png");
 	object_->SetTranslate({ 0.0f, 0.0f, 15.0f });	// 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
-	object_->Update();
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
