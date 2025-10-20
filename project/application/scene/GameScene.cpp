@@ -17,6 +17,10 @@ void GameScene::Initialize()
 #pragma region シーン初期化
 	BaseScene::Initialize();
 
+#pragma region ライト
+	LightManager::GetInstance()->Initialize();
+#pragma endregion ライト
+
 #pragma region スプライト
 	// テクスチャの読み込み
 

@@ -25,7 +25,7 @@ void TitleScene::Initialize()
 	pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	pointLight.position = { 0.0f, 0.0f, -40.0f };
 	pointLight.intensity = 1.0f;
-	pointLight.radius = 100.0f;
+	pointLight.radius = 500.0f;
 	pointLight.decay = 2.0f;
 	LightManager::GetInstance()->SetPointLight(pointLight);
 #pragma endregion ライト
