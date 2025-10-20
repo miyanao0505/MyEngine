@@ -148,6 +148,12 @@
     <Filter Include="ヘッダー ファイル\application\ui">
       <UniqueIdentifier>{428f8132-5a41-414e-85d5-4b11d5c7ad9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\sequence">
+      <UniqueIdentifier>{68e1f8e2-8fe8-4004-a26b-5cd31f9f534d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\sequence">
+      <UniqueIdentifier>{349a0770-6496-42ba-bbaa-faa876093a7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -316,9 +322,6 @@
       <Filter>ソース ファイル\application\camera</Filter>
     </ClCompile>
     <ClCompile Include="application\ui\TitleLogo.cpp">
-      <Filter>ソース ファイル\application\ui</Filter>
-    </ClCompile>
-    <ClCompile Include="application\ui\Characters.cpp">
       <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
     <ClCompile Include="engine\scene\SceneTransition.cpp">
@@ -495,9 +498,6 @@
       <Filter>ヘッダー ファイル\application\camera</Filter>
     </ClInclude>
     <ClInclude Include="application\ui\TitleLogo.h">
-      <Filter>ヘッダー ファイル\application\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="application\ui\Characters.h">
       <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
     <ClInclude Include="engine\scene\SceneTransition.h">

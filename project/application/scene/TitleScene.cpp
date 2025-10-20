@@ -51,8 +51,6 @@ void TitleScene::Initialize()
 	// 3Dオブジェクト
 	titleLogo_ = std::make_unique<TitleLogo>();
 	titleLogo_->Initialize();
-	enterCharacters_ = std::make_unique<Characters>();
-	enterCharacters_->Initialize("charactors", "enter.obj");
 
 #pragma endregion 3Dオブジェクト
 
@@ -85,7 +83,6 @@ void TitleScene::Finalize()
 	BaseScene::Finalize();
 	
 	// 3Dオブジェクト
-	enterCharacters_.reset();
 	titleLogo_.reset();
 	skydome_.reset();
 	
@@ -113,7 +110,6 @@ void TitleScene::Update()
 
 	// 3Dオブジェクトの更新処理
 	titleLogo_->Update();
-	enterCharacters_->Update();
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();
@@ -133,7 +129,6 @@ void TitleScene::Draw()
 	// 全ての3DObject個々の描画
 	skydome_->Draw();
 	titleLogo_->Draw();
-	enterCharacters_->Draw();
 
 #pragma endregion 3Dオブジェクト
 

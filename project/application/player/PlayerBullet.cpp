@@ -10,11 +10,8 @@ using namespace std;
 // 初期化
 void PlayerBullet::Initialize(MyBase::Vector3 position, MyBase::Vector3 velocity)
 {
-	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
-
 	// ベースオブジェクトの初期化
-	BaseObject::Initialize("sphere.obj");
+	BaseObject::Initialize("debug/sphere", "sphere.obj");
 
 	object_->SetTexture("resources/texture/playerBullet.png");
 	object_->SetTranslate(position);

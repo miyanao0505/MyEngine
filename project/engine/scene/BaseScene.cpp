@@ -31,7 +31,9 @@ void BaseScene::DebugDraw()
 BaseObject* BaseScene::CreateObjectFromData(const ObjectData& data)
 {
 	auto* baseObject = new BaseObject;
-	baseObject->Initialize(data.objectName);
+	size_t dotPos = data.objectName.find('.');
+	const std::string folderPath = (dotPos != std::string::npos) ? data.objectName.substr(0, dotPos) : data.objectName;
+	baseObject->Initialize("debug/" + folderPath, data.objectName);
 	baseObject->SetName(data.name.c_str());
 	baseObject->GetObject3d()->SetModel(data.objectName);
 	baseObject->GetObject3d()->Initislize(data.objectName);

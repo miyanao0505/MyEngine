@@ -1,13 +1,16 @@
 #include "BaseObject.h"
 #include <imgui.h>
+#include "ModelManager.h"
 
 using namespace std;
 
 // 初期化
-void BaseObject::Initialize(const std::string& modelPath)
+void BaseObject::Initialize(const std::string& folderPath, const std::string& filePath)
 {
+	ModelManager::GetInstance()->LoadModel(folderPath, filePath);
+
 	object_ = make_unique<Object3d>();
-	object_->Initislize(modelPath);
+	object_->Initislize(filePath);
 }
 
 // 更新

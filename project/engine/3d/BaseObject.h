@@ -13,7 +13,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const std::string& modelPath);
+	void Initialize(const std::string& folderPath, const std::string& filePath);
 	/// <summary>
 	/// 更新
 	/// </summary>

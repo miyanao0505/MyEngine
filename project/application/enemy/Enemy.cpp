@@ -21,12 +21,11 @@ Enemy::~Enemy()
 // 初期化
 void Enemy::Initialize()
 {
-	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
+	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture("resources/texture/uvChecker.png");
 
 	// ベースオブジェクトの初期化
-	BaseObject::Initialize("sphere.obj");
+	BaseObject::Initialize("debug/sphere", "sphere.obj");
 	
 	// 3Dオブジェクトの初期化
 	object_->SetTexture("resources/texture/uvChecker.png");

@@ -23,11 +23,9 @@ Player::~Player()
 /// 初期化
 void Player::Initialize(MyBase::Vector3 position)
 {
-	// モデルの初期化
-	ModelManager::GetInstance()->LoadModel("player", "player.obj");
-
 	// ベースオブジェクトの初期化
-	BaseObject::Initialize("player.obj");
+	BaseObject::Initialize("player", "player.obj");
+	SetName("Player");
 
 	// プレイヤーのオブジェクトの設定
 	object_->SetTranslate(position);

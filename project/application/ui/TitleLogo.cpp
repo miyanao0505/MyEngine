@@ -4,30 +4,31 @@
 
 // 初期化
 void TitleLogo::Initialize() {
-	// .objファイルからモデルを読み込む
-	ModelManager::GetInstance()->LoadModel("charactors", "title_1.obj");
-	ModelManager::GetInstance()->LoadModel("charactors", "title_2.obj");
-	ModelManager::GetInstance()->LoadModel("charactors", "title_3.obj");
-
 	// 3Dオブジェクト
+	// タイトル1文字目(進)
 	titleCharFirst_ = std::make_unique<BaseObject>();
-	titleCharFirst_->Initialize("title_1.obj");
+	titleCharFirst_->Initialize("characters", "title_1.obj");
 	titleCharFirst_->SetName("TitleObject1");
-	titleCharFirst_->GetObject3d()->SetScale({ 5.0f,5.0f,5.0f });
-	titleCharFirst_->GetObject3d()->SetRotate({ 0.0f,0.0f,0.0f });
-	titleCharFirst_->GetObject3d()->SetTranslate({ -5.0f,5.0f,0.0f });
+	MyBase::Transform transform = { { 5.0f,5.0f,5.0f },{ 0.0f,0.0f,0.0f },{ -5.0f,5.0f,0.0f } };
+	titleCharFirst_->GetObject3d()->SetTransform(transform);
+	// タイトル2文字目(空)
 	titleCharSecond_ = std::make_unique<BaseObject>();
-	titleCharSecond_->Initialize("title_2.obj");
+	titleCharSecond_->Initialize("characters", "title_2.obj");
 	titleCharSecond_->SetName("TitleObject2");
-	titleCharSecond_->GetObject3d()->SetScale({ 5.0f,5.0f,5.0f });
-	titleCharSecond_->GetObject3d()->SetRotate({ 0.0f,0.0f,0.0f });
-	titleCharSecond_->GetObject3d()->SetTranslate({ 0.0f,5.0f,0.0f });
+	transform = { { 5.0f,5.0f,5.0f },{ 0.0f,0.0f,0.0f },{ 0.0f,5.0f,0.0f } };
+	titleCharSecond_->GetObject3d()->SetTransform(transform);
+	// タイトル3文字目(戦)
 	titleCharThird_ = std::make_unique<BaseObject>();
-	titleCharThird_->Initialize("title_3.obj");
+	titleCharThird_->Initialize("characters", "title_3.obj");
 	titleCharThird_->SetName("TitleObject3");
-	titleCharThird_->GetObject3d()->SetScale({ 5.0f,5.0f,5.0f });
-	titleCharThird_->GetObject3d()->SetRotate({ 0.0f,0.0f,0.0f });
-	titleCharThird_->GetObject3d()->SetTranslate({ 5.0f,5.0f,0.0f });
+	transform = { { 5.0f,5.0f,5.0f },{ 0.0f,0.0f,0.0f },{ 5.0f,5.0f,0.0f } };
+	titleCharThird_->GetObject3d()->SetTransform(transform);
+	// スタートボタン文字(Enter)
+	startButton_ = std::make_unique<BaseObject>();
+	startButton_->Initialize("characters", "enter.obj");
+	startButton_->SetName("Enter");
+	transform = { { 5.0f,5.0f,5.0f },{ 0.0f,0.0f,0.0f },{ 0.0f,-2.50f,0.0f } };
+	startButton_->GetObject3d()->SetTransform(transform);
 
 	moveVector_ = { 0.0f,-1.0f,0.0f };
 	moveDistance_ = 0.0f;
@@ -35,6 +36,7 @@ void TitleLogo::Initialize() {
 
 // 終了
 void TitleLogo::Finalize() {
+	startButton_.reset();
 	titleCharThird_.reset();
 	titleCharSecond_.reset();
 	titleCharFirst_.reset();
@@ -53,6 +55,9 @@ void TitleLogo::Update() {
 	if (titleCharThird_) {
 		titleCharThird_->Update();
 	}
+	if (startButton_) {
+		startButton_->Update();
+	}
 }
 
 // 描画
@@ -65,6 +70,9 @@ void TitleLogo::Draw() {
 	}
 	if (titleCharThird_) {
 		titleCharThird_->Draw();
+	}
+	if (startButton_) {
+		startButton_->Draw();
 	}
 }
 

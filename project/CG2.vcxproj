@@ -20,7 +20,6 @@
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\player\PlayerBullet.cpp" />
-    <ClCompile Include="application\ui\Characters.cpp" />
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
@@ -81,7 +80,6 @@
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h" />
     <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\player\PlayerBullet.h" />
-    <ClInclude Include="application\ui\Characters.h" />
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\3d\Skybox.h" />

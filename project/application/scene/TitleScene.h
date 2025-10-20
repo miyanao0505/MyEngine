@@ -4,7 +4,6 @@
 #include "Sprite.h"
 #include "Skydome.h"
 #include "TitleLogo.h"
-#include "Characters.h"
 #include "ParticleEmitter.h"
 
 // タイトルシーン
@@ -49,7 +48,6 @@ private:	// メンバ変数
 
 	// 3Dオブジェクト
 	std::unique_ptr<TitleLogo> titleLogo_ = nullptr;
-	std::unique_ptr<Characters> enterCharacters_ = nullptr;
 
 	// jsonローダー
 	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
