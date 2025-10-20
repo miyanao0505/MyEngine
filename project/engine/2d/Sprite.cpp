@@ -2,6 +2,7 @@
 #include "SpriteBase.h"
 #include "Matrix.h"
 #include "TextureManager.h"
+#include "imgui.h"
 
 // 初期化
 void Sprite::Initialize(std::string textureFilePath)
@@ -9,6 +10,9 @@ void Sprite::Initialize(std::string textureFilePath)
 	// 引数を受け取ってメンバ変数に記録する
 	spriteBase_ = TextureManager::GetInstance()->GetSpriteBase();
 	filePath_ = textureFilePath;
+
+	// 白テクスチャを読み込む
+	TextureManager::GetInstance()->LoadTexture(filePath_);
 
 	// 頂点データの作成
 	CreateVertexData();
@@ -106,6 +110,28 @@ void Sprite::Draw()
 	// 描画！(DrawCall/ドローコール)
 	spriteBase_->GetDxBase()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
+
+#ifdef _DEBUG
+// デバック描画
+void Sprite::DebugDraw() {
+	ImGui::PushID(this);
+	if (ImGui::CollapsingHeader("sprite"))
+	{
+		if (ImGui::TreeNode("Transform"))
+		{
+			// 移動
+			ImGui::DragFloat2("Translate", &position_.x, 0.01f, -100.0f, 100.0f);
+			// 回転
+			ImGui::DragFloat("Rotate", &rotation_, 0.01f, -3.14f, 3.14f);
+			// 拡縮
+			ImGui::DragFloat3("Scale", &size_.x, 0.01f, 0.01f, 10.0f);
+
+			ImGui::TreePop();
+		}
+	}
+	ImGui::PopID();
+}
+#endif // _DEBUG
 
 // テクスチャのセット
 void Sprite::SetTexture(std::string textureFilePath)

@@ -33,6 +33,7 @@ void TitleScene::Initialize()
 #pragma region スプライト
 	// テクスチャの読み込み
 
+
 	// スプライト
 	
 
@@ -82,8 +83,6 @@ void TitleScene::Initialize()
 void TitleScene::Finalize()
 {
 	BaseScene::Finalize();
-
-	
 	
 	// 3Dオブジェクト
 	enterCharacters_.reset();
@@ -91,6 +90,7 @@ void TitleScene::Finalize()
 	skydome_.reset();
 	
 	// スプライト
+	
 }
 
 // 毎フレーム更新
@@ -119,6 +119,7 @@ void TitleScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
+	
 }
 
 // 描画
@@ -149,6 +150,7 @@ void TitleScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
+	
 
 #pragma endregion スプライト
 }
@@ -170,6 +172,9 @@ void TitleScene::DebugDraw()
 
 	// 3Dオブジェクト
 	skydome_->DebugDraw();
+
+	// スプライト
+	
 
 	ImGui::End();
 }

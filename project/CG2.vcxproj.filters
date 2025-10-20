@@ -321,6 +321,9 @@
     <ClCompile Include="application\ui\Characters.cpp">
       <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
+    <ClCompile Include="engine\scene\SceneTransition.cpp">
+      <Filter>ソース ファイル\engine\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -496,6 +499,9 @@
     </ClInclude>
     <ClInclude Include="application\ui\Characters.h">
       <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\SceneTransition.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
