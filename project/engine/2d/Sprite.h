@@ -16,6 +16,12 @@ public:	// メンバ関数
 	void Update();
 	// 描画処理
 	void Draw();
+#ifdef _DEBUG
+	/// <summary>
+	/// デバック描画
+	/// </summary>
+	void DebugDraw();
+#endif // _DEBUG
 
 public:	// getter
 	// 座標の取得

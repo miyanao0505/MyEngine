@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseScene.h"
 #include "AbstractSceneFactory.h"
+#include "SceneTransition.h"
 
 // シーン管理
 class SceneManager
@@ -42,6 +43,9 @@ private:	// メンバ変数
 
 	// 次のシーン
 	BaseScene* nextScene_ = nullptr;
+
+	// シーン切り替え
+	SceneTransition transition_;
 
 	// シーンファクトリー(借りてくる)
 	AbstractSceneFactory* sceneFactory_ = nullptr;
