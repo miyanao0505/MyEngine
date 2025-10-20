@@ -27,6 +27,9 @@ public:	// メンバ関数
 	void Draw() override;
 
 #ifdef _DEBUG
+	// デバッグ更新
+	void DebugUpdate();
+
 	// デバッグ描画
 	void DebugDraw() override;
 #endif // _DEBUG
@@ -37,13 +40,10 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	const std::string gameTextureFilePath_ = "resources/texture/Game.png";
 	std::string skydomeFilePath_ = "resources/texture/skyback.png";
 
 	// スプライト
-	std::unique_ptr<Sprite> gameSprite_ = nullptr;	// タイトルスプライト
 
-	// モデルファイルパス
 	
 	// 3Dオブジェクト
 	// プレイヤー
@@ -56,9 +56,6 @@ private:	// メンバ変数
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 	
-	// test
-	//std::vector<std::unique_ptr<BaseObject>> testObjects_;
-
 	// スポーンポイント
 	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;
 

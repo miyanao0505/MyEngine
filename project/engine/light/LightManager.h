@@ -2,7 +2,6 @@
 #include <d3d12.h>
 #include <wrl.h>
 #include "Object3dBase.h"
-#include "CameraManager.h"
 
 enum class LightType {
 	Directional,
@@ -24,6 +23,11 @@ public:	// メンバ関数
 
 	// 描画処理
 	void Draw(Object3dBase* object3dBase);
+
+#ifdef _DEBUG
+	// デバッグ描画
+	void DebugDraw();
+#endif // _DEBUG
 
 private:	// メンバ関数
 	// 平行光源データ作成

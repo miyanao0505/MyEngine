@@ -1,10 +1,12 @@
 #include "TitleScene.h"
 #include <imgui.h>
 #include "CameraManager.h"
+#include "LightManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include"SceneManager.h"
+#include "MyBase.h"
 #include "MyTools.h"
 
 // 初期化
@@ -14,8 +16,19 @@ void TitleScene::Initialize()
 
 #pragma region カメラ
 	CameraManager::GetInstance()->FindCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 20.0f, -40.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
 #pragma endregion カメラ
+
+#pragma region ライト
+	MyBase::PointLight pointLight;
+	pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pointLight.position = { 0.0f, 0.0f, -40.0f };
+	pointLight.intensity = 1.0f;
+	pointLight.radius = 100.0f;
+	pointLight.decay = 2.0f;
+	LightManager::GetInstance()->SetPointLight(pointLight);
+#pragma endregion ライト
 
 #pragma region スプライト
 	// テクスチャの読み込み
@@ -151,6 +164,9 @@ void TitleScene::DebugDraw()
 	ImGui::Begin("Settings"); 
 	// Camera
 	CameraManager::GetInstance()->DebugDraw();
+
+	// Light
+	LightManager::GetInstance()->DebugDraw();
 
 	// 3Dオブジェクト
 	skydome_->DebugDraw();

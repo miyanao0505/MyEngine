@@ -1,14 +1,11 @@
 #pragma once
 #include "BaseScene.h"
 #include <string>
-#include <vector>
 #include "Sprite.h"
 #include "Skydome.h"
 #include "TitleLogo.h"
 #include "Characters.h"
-#include "BaseObject.h"
 #include "ParticleEmitter.h"
-#include "MyBase.h"
 
 // タイトルシーン
 class TitleScene : public BaseScene

@@ -19,12 +19,9 @@ void GameScene::Initialize()
 
 #pragma region スプライト
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(gameTextureFilePath_);
 
 	// スプライト
-	gameSprite_ = std::make_unique<Sprite>();
-	gameSprite_->Initialize(gameTextureFilePath_);
-	gameSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
+
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
@@ -94,7 +91,6 @@ void GameScene::Finalize()
 	player_.reset();
 
 	// スプライト
-	gameSprite_.reset();
 
 	BaseScene::Finalize();
 }
@@ -105,52 +101,7 @@ void GameScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
-	}
-	// Mキーを押したら
-	if (input_->TriggerKey(DIK_M)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
-	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
-	}
-	
-	// Pキーを押したら
-	if (input_->TriggerKey(DIK_P)) {
-		// パーティクル描画フラグのOn / Off
-		//isParticleActive_ = particleEmitter_->GetIsEmitUpdate();
-		isParticleActive_ = !isParticleActive_;
-		//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
-	}
-	// Oキーを押したら
-	if (input_->TriggerKey(DIK_O)) {
-		// アクセラレーションのOn / Off
-		isAccelerationField_ = !isAccelerationField_;
-	}
-
-	// Kキーを押したら
-	if (input_->TriggerKey(DIK_K)) {
-		// お試しの音を鳴らす
-		AudioManager::GetInstance()->PlayWave("audio/fanfare.wav");
-	}
-	// Uキーを押したら
-	if (input_->TriggerKey(DIK_U)) {
-		// お試しの音を解放する
-		AudioManager::GetInstance()->UnLoadAudio("audio/fanfare.wav");
-	}
-	// Lキーを押したら
-	if (input_->TriggerKey(DIK_L)) {
-		// お試しの音をロードする
-		AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
-	}
-
-	DebugDraw();
+	DebugUpdate();
 #endif // _DEBUG
 	
 	// カメラの更新
@@ -176,11 +127,6 @@ void GameScene::Update()
 	// 天球の更新
 	skydome_->Update();
 
-	// test
-	/*for (auto& obj : testObjects_) {
-		obj->Update();
-	}*/
-
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
@@ -202,7 +148,6 @@ void GameScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	gameSprite_->Update();
 }
 
 // 描画
@@ -223,11 +168,6 @@ void GameScene::Draw()
 	// プレイヤーの描画
 	player_->Draw();
 
-	// test
-	/*for (auto& obj : testObjects_) {
-		obj->Draw();
-	}*/
-
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
@@ -243,12 +183,34 @@ void GameScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	//gameSprite_->Draw();
 
 #pragma endregion スプライト
 }
 
 #ifdef _DEBUG
+// デバッグ更新
+void GameScene::DebugUpdate()
+{
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("CLEAR");
+	}
+	// Mキーを押したら
+	if (input_->TriggerKey(DIK_M)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
+	}
+
+	DebugDraw();
+}
+
+// デバッグ描画
 void GameScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
