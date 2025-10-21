@@ -12,6 +12,7 @@
 // 初期化
 void TitleScene::Initialize()
 {
+#pragma region シーン初期化
 	BaseScene::Initialize();
 
 #pragma region カメラ
@@ -75,6 +76,13 @@ void TitleScene::Initialize()
 #pragma region 変数
 	
 #pragma endregion 変数
+
+	// 最初の更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+	skydome_->Update();
+	titleLogo_->Update();
+
+#pragma endregion シーン初期化
 }
 
 // 終了

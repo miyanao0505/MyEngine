@@ -103,7 +103,6 @@ void Object3d::CreateCameraData()
 	cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
 	cameraData_->worldPosition = { 0.0f, 0.0f, 0.0f };
 	if (CameraManager::GetInstance()->GetCamera()) {
-		/*CameraManager::GetInstance()->FindCamera("default");*/
 		cameraData_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 	}
 }

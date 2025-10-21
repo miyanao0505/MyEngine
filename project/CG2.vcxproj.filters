@@ -327,6 +327,9 @@
     <ClCompile Include="engine\scene\SceneTransition.cpp">
       <Filter>ソース ファイル\engine\scene</Filter>
     </ClCompile>
+    <ClCompile Include="application\sequence\StartSequence.cpp">
+      <Filter>ソース ファイル\application\sequence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -502,6 +505,9 @@
     </ClInclude>
     <ClInclude Include="engine\scene\SceneTransition.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\sequence\StartSequence.h">
+      <Filter>ヘッダー ファイル\application\sequence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

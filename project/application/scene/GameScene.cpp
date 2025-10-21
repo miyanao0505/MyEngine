@@ -51,6 +51,12 @@ void GameScene::Initialize()
 	followCamera_->SetPlayer(player_.get());
 #pragma endregion カメラ
 
+#pragma region シーケンス
+	// シーケンス
+	startSequence_ = std::make_unique<StartSequence>();
+	startSequence_->Initialize();
+#pragma endregion シーケンス
+
 #pragma region パーティクル
 	// パーティクル
 	
@@ -90,6 +96,7 @@ void GameScene::Initialize()
 void GameScene::Finalize()
 {
 	jsonLoader_.reset();
+	startSequence_.reset();
 	for(std::unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
 		spawnPoint.reset();
 	}
@@ -114,9 +121,15 @@ void GameScene::Update()
 #ifdef _DEBUG
 	DebugUpdate();
 #endif // _DEBUG
-	
+
 	// カメラの更新
 	CameraManager::GetInstance()->GetCamera()->Update();
+
+	// スタート演出中
+	if (!startSequence_->IsFinished()) {
+		startSequence_->Update(kDeltaTime_);
+		return;
+	}
 	
 	// クリア条件
 	if (enemy_->IsDead()) {
@@ -170,6 +183,11 @@ void GameScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
+	// シーケンスの描画
+	if(!startSequence_->IsFinished()){
+		startSequence_->Draw();
+	}
+	
 	// 天球の描画
 	skydome_->Draw();
 
@@ -252,6 +270,9 @@ void GameScene::DebugDraw()
 	CameraManager::GetInstance()->DebugDraw();
 	// FollowCamera
 	followCamera_->DebugDraw();
+
+	// Lighting
+	LightManager::GetInstance()->DebugDraw();
 
 	// Skybox
 	//skybox_->DebugDraw();

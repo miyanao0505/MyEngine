@@ -7,6 +7,7 @@
 #include "FollowCamera.h"
 #include "Enemy.h"
 #include "Skydome.h"
+#include "StartSequence.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -58,6 +59,9 @@ private:	// メンバ変数
 	
 	// スポーンポイント
 	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;
+
+	// シーケンス
+	std::unique_ptr<StartSequence> startSequence_ = nullptr;
 
 	// パーティクル
 
