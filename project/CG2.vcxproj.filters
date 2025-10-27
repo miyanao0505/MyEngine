@@ -330,6 +330,9 @@
     <ClCompile Include="application\sequence\StartSequence.cpp">
       <Filter>ソース ファイル\application\sequence</Filter>
     </ClCompile>
+    <ClCompile Include="application\ui\GameOverLogo.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -508,6 +511,9 @@
     </ClInclude>
     <ClInclude Include="application\sequence\StartSequence.h">
       <Filter>ヘッダー ファイル\application\sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\GameOverLogo.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

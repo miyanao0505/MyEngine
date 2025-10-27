@@ -4,6 +4,8 @@
 #include <vector>
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Skydome.h"
+#include "GameOverLogo.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -24,6 +26,9 @@ public:	// メンバ関数
 	void Draw() override;
 
 #ifdef _DEBUG
+	// デバッグ更新
+	void DebugUpdate();
+
 	// デバッグ描画
 	void DebugDraw() override;
 #endif // _DEBUG
@@ -34,16 +39,16 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string gameOverTextureFilePath_ = "resources/texture/Gameover.png";
+	std::string skydomeFilePath_ = "resources/texture/skyback.png";
 
 	// スプライト
-	std::unique_ptr<Sprite> gameOverSprite_ = nullptr;	// ゲームオーバースプライト
 
-	// モデルファイルパス
-	
+	// 天球
+	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// 3Dオブジェクト
-	
+	// ロゴ
+	std::unique_ptr<GameOverLogo> gameOverLogo_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

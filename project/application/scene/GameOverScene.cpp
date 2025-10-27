@@ -10,27 +10,37 @@
 // 初期化
 void GameOverScene::Initialize()
 {
+#pragma region シーン初期化
 	BaseScene::Initialize();
 
-#pragma region シーン初期化
+#pragma region カメラ
+	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
+#pragma endregion カメラ
+
+#pragma region スプライト
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(gameOverTextureFilePath_);
 
 	// スプライト
-	gameOverSprite_ = std::make_unique<Sprite>();
-	gameOverSprite_->Initialize(gameOverTextureFilePath_);
-	gameOverSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
-	// .objファイルからモデルを読み込む
+#pragma endregion スプライト
 	
-
+#pragma region 3Dオブジェクト
 	// 3Dオブジェクト
-	
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
 
+	// ロゴ
+	gameOverLogo_ = std::make_unique<GameOverLogo>();
+	gameOverLogo_->Initialize();
+#pragma endregion 3Dオブジェクト
+
+#pragma region パーティクル
 	// パーティクル
 	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("circle", "resources/circle.png");*/
-#pragma endregion シーン初期化
+#pragma endregion パーティクル
 
 #pragma region 変数
 	isParticleActive_ = true;
@@ -39,6 +49,13 @@ void GameOverScene::Initialize()
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
 #pragma endregion 変数
+
+#pragma endregion シーン初期化
+
+	// 最初の更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+	skydome_->Update();
+	gameOverLogo_->Update();
 }
 
 // 終了
@@ -47,10 +64,11 @@ void GameOverScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	
+	gameOverLogo_.reset();
+	skydome_.reset();
 
 	// スプライト
-	gameOverSprite_.reset();
+	
 }
 
 // 毎フレーム更新
@@ -59,22 +77,18 @@ void GameOverScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
-	}
-
-	DebugDraw();
+	DebugUpdate();
 #endif // _DEBUG
 
+	// カメラの更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+
 	// 3Dオブジェクトの更新処理
-	
+	// 天球の更新
+	skydome_->Update();
+
+	// ロゴ
+	gameOverLogo_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -98,7 +112,6 @@ void GameOverScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	gameOverSprite_->Update();
 }
 
 // 描画
@@ -110,7 +123,11 @@ void GameOverScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	
+	// 天球の描画
+	skydome_->Draw();
+
+	// ロゴ
+	gameOverLogo_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -127,13 +144,29 @@ void GameOverScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	gameOverSprite_->Draw();
 
 #pragma endregion スプライト
 
 }
 
 #ifdef _DEBUG
+// デバッグ更新
+void GameOverScene::DebugUpdate()
+{
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
+	}
+
+	DebugDraw();
+}
+
 // デバッグ描画
 void GameOverScene::DebugDraw()
 {
