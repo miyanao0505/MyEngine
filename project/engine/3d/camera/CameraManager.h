@@ -2,11 +2,28 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <random>
 #include "Camera.h"
+
 
 // カメラマネージャー
 class CameraManager
 {
+private:	// 構造体
+	struct ShakeState {
+		bool active{ false };
+		float duration{ 0.0f };
+		float timer{ 0.0f };
+		float amplitude{ 0.0f };
+		float frequency{ 0.0f };
+		float rotationAmplitude{ 0.0f };
+		MyBase::Vector3 originalTranslate{};
+		// RNG
+		std::mt19937 rng;
+		std::uniform_real_distribution<float> dist{ -1.0f, 1.0f };
+		ShakeState() : rng(std::random_device{}()) {}
+	};
+
 public:	// メンバ関数
 	// シングルトンインスタンスの取得
 	static CameraManager* GetInstance();
@@ -28,11 +45,30 @@ public:	// メンバ関数
 	/// <param name="cameraName">カメラの名前</param>
 	void FindCamera(const std::string& cameraName);
 
+	/// <summary>
+	/// 更新
+	/// </summary>
+	/// <param name="deltaTime"></param>
+	void Update(float deltaTime);
+
+	/// <summary>
+	/// シェイクを開始
+	/// </summary>
+	/// <param name="amplitude">平行移動の最大振幅(ワールド単位)</param>
+	/// <param name="duration">継続時間(秒)</param>
+	/// <param name="frequency">揺れの周波数(Hz) - 実装では時間に掛ける係数</param>
+	/// <param name="rotationAmplitude">回転の最大振幅(ラジアン)</param>
+	void StartShake(float amplitude, float duration, float frequency = 20.0f, float rotationAmplitude = 0.02f);
+
+	/// <summary>
+	/// 即時停止(オリジナルに復帰)
+	/// </summary>
+	void StopShake();
+
 #ifdef _DEBUG
 	// デバック用の描画
 	void DebugDraw();
 #endif // _DEBUG
-
 
 public:	// getter
 	std::vector<std::string> GetAllName();
@@ -60,5 +96,7 @@ private:	// メンバ変数
 	Camera* camera_ = nullptr;
 	std::string cameraName_ = "";
 
+	// シェイク状態
+	ShakeState shakeState_;
 };
 

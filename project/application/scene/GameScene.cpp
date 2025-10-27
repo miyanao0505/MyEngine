@@ -122,8 +122,12 @@ void GameScene::Update()
 	DebugUpdate();
 #endif // _DEBUG
 
+	// カメラマネージャーの更新
+	CameraManager::GetInstance()->Update(kDeltaTime_);
 	// カメラの更新
-	CameraManager::GetInstance()->GetCamera()->Update();
+	if (CameraManager::GetInstance()->GetCamera()) {
+		CameraManager::GetInstance()->GetCamera()->Update();
+	}
 
 	// スタート演出中
 	if (!startSequence_->IsFinished()) {
@@ -143,7 +147,7 @@ void GameScene::Update()
 	player_->Update();
 
 	// フォローカメラの更新
-	followCamera_->Update();
+	//followCamera_->Update();
 
 	// 敵の更新処理
 	enemy_->Update();

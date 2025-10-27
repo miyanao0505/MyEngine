@@ -1,8 +1,5 @@
 #include "CameraManager.h"
-#ifdef _DEBUG
 #include <imgui.h>
-#endif // _DEBUG
-
 
 using namespace std;
 
@@ -115,6 +112,10 @@ void CameraManager::DebugDraw() {
 		CameraManager::GetInstance()->GetCamera()->SetTransform(transformCamera);
 
 		ImGui::Text("\n");
+
+		ImGui::Text((shakeState_.active) ? "shakeState_.active : true" : "shakeState_.active : false");
+		ImGui::Text("\n");
+
 	}
 }
 #endif // _DEBUG
@@ -129,4 +130,79 @@ vector<string> CameraManager::GetAllName()
 	}
 
 	return keys;
+}
+
+// 更新
+void CameraManager::Update(float deltaTime)
+{
+	if (!camera_) return;
+
+	// シェイク中でなければ何もしない
+	if (!shakeState_.active) {
+		return;
+	}
+
+	shakeState_.timer += deltaTime;
+	// 経過割合（0..1）
+	const float t = shakeState_.timer / max(1e-6f, shakeState_.duration);
+	// 減衰（線形）。必要なら ease 関数に変更可
+	const float damp = 1.0f - std::min(1.0f, t);
+
+	// ランダムな方向を作って揺らす
+	float rx = shakeState_.dist(shakeState_.rng);
+	float ry = shakeState_.dist(shakeState_.rng);
+	float rz = shakeState_.dist(shakeState_.rng);
+
+	// 周波数による揺れ要素（正弦で揺らす）
+	float phase = shakeState_.timer * shakeState_.frequency;
+	float wave = std::sin(phase);
+
+	MyBase::Vector3 offset{
+		rx * shakeState_.amplitude * damp * wave,
+		ry * shakeState_.amplitude * damp * wave,
+		rz * shakeState_.amplitude * damp * wave
+	};
+
+	MyBase::Vector3 newTranslate{
+		shakeState_.originalTranslate.x + offset.x,
+		shakeState_.originalTranslate.y + offset.y,
+		shakeState_.originalTranslate.z + offset.z
+	};
+
+	// カメラに適用
+	camera_->SetTranslate(newTranslate);
+
+	// 終了判定
+	if (shakeState_.timer >= shakeState_.duration) {
+		// 復帰
+		StopShake();
+	}
+}
+
+/// シェイクを開始
+void CameraManager::StartShake(float amplitude, float duration, float frequency, float rotationAmplitude)
+{
+	if (!camera_) return;
+	// シェイク状態を初期化
+	shakeState_.active = true;
+	shakeState_.duration = max(0.0f, duration);
+	shakeState_.timer = 0.0f;
+	shakeState_.amplitude = amplitude;
+	shakeState_.frequency = frequency;
+	shakeState_.rotationAmplitude = rotationAmplitude;
+
+	// オリジナルの位置と回転を保存
+	shakeState_.originalTranslate = camera_->GetTranslate();
+}
+
+/// 即時停止(オリジナルに復帰)
+void CameraManager::StopShake()
+{
+	if (!camera_) return;
+	if (shakeState_.active) {
+		camera_->SetTranslate(shakeState_.originalTranslate);
+	}
+	// シェイク状態をリセット
+	shakeState_.active = false;
+	shakeState_.timer = 0.0f;
 }

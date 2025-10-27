@@ -85,6 +85,13 @@ void StartSequence::EngineStartEffect()
 		LightManager::GetInstance()->SetPointLight(pointLight);
 
 		// エンジン起動エフェクト再生処理
+		const float amplitude = 5.0f;
+		const float duration = 1.2f;
+		const float frequency = 25.0f;
+		const float rotationAmplitude = 0.03f;
+
+		CameraManager::GetInstance()->StartShake(amplitude, duration, frequency, rotationAmplitude);
+
 		engineStarted_ = true;
 	}
 }
