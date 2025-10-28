@@ -3,6 +3,7 @@
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "MyBase.h"
+#include "GameOverSequence.h"
 
 using namespace DirectX;
 
