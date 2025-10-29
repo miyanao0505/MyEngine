@@ -6,7 +6,10 @@
 #include "ModelBase.h"
 #include "Model.h"
 
-// モデルマネージャー
+/// <summary>
+/// 3Dモデルの読み込み・管理を行うシングルトンクラス。
+/// ModelManager クラスは、ゲーム内で使用される全ての 3D モデルを一元的に管理します。
+/// </summary>
 class ModelManager
 {
 public:	// メンバ関数

@@ -12,7 +12,10 @@ using namespace std::numbers;
 class DirectXBase;
 class SrvManager;
 
-// パーティクルマネージャー
+/// <summary>
+/// パーティクルマネージャークラス(ParticleManager)
+/// ゲーム内で使用されるすべてのパーティクルグループを管理するシングルトンマネージャーです。
+/// </summary>
 class ParticleManager
 {
 public:	// パーティクルグループ構造体
@@ -55,7 +58,7 @@ public:	// メンバ関数
 	/// ブレンドモード変更
 	/// </summary>
 	/// <param name="blendMode">ブレンドモード</param>
-	void ChangeBlendMode(ParticleBase::BlendMode blendMode);
+	void ChangeBlendMode(BlendMode blendMode);
 
 	/// <summary>
 	/// パーティクルグループの生成

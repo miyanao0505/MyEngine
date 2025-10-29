@@ -135,7 +135,7 @@ void ParticleManager::Imgui()
 				const bool isSelected = (selectID == n);
 				if (ImGui::Selectable(blendModeIndex[n], isSelected)) {
 					selectID = n;
-					ChangeBlendMode(static_cast<ParticleBase::BlendMode>(n));
+					ChangeBlendMode(static_cast<BlendMode>(n));
 				}
 				if (isSelected) {
 					ImGui::SetItemDefaultFocus();
@@ -150,7 +150,7 @@ void ParticleManager::Imgui()
 }
 #endif // _DEBUG
 
-void ParticleManager::ChangeBlendMode(ParticleBase::BlendMode blendMode)
+void ParticleManager::ChangeBlendMode(BlendMode blendMode)
 {
 	if (particleBase_->GetBlendMode() == blendMode) {
 		return;

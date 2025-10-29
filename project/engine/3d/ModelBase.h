@@ -1,7 +1,9 @@
 #pragma once
 #include "DirectXBase.h"
 
-// 3Dモデル共通部
+/// <summary>
+/// 3Dモデル描画に共通するDirectXリソースを管理する基盤クラス。
+/// </summary>
 class ModelBase
 {
 public:	// メンバ関数

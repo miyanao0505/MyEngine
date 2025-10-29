@@ -1,7 +1,9 @@
 #pragma once
 #include "DirectXBase.h"
 
-// 3Dオブジェクト共通部
+/// <summary>
+/// 3Dオブジェクト描画に共通する処理を管理する基底クラス
+/// </summary>
 class Object3dBase
 {
 public:	// 列挙型

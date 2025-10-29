@@ -6,7 +6,10 @@
 
 #pragma comment(lib, "xaudio2.lib")
 
-// オーディオマネージャ
+/// <summary>
+/// XAudio2を使用した音声管理クラス
+/// ゲーム全体で使用する音声(SE・BGMなど)を一元管理します。
+/// </summary>
 class AudioManager
 {
 private:	// オーディオ関係の構造体

@@ -4,6 +4,11 @@
 #include "Collider.h"
 #include "MyBase.h"
 
+/// <summary>
+/// ゲーム内に存在するすべてのオブジェクトの基底クラス。
+/// BaseObject クラスは、描画・更新・衝突判定など、
+/// すべてのゲームオブジェクトが共通して持つ基本的な処理を定義します。
+/// </summary>
 class BaseObject
 {
 public:	// メンバ関数

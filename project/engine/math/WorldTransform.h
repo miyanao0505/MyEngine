@@ -2,6 +2,9 @@
 #include "MyBase.h"
 #include "Matrix.h"
 
+/// <summary>
+/// ワールドトランスフォーム管理クラス
+/// </summary>
 class WorldTransform
 {
 public:	// メンバ関数

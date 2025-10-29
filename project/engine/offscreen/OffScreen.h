@@ -2,12 +2,14 @@
 #include <d3d12.h>
 #include <wrl.h>
 
+// 前方宣言
 class DirectXBase;
 
-// スプライト共通部
+/// <summary>
+/// スプライト描画共通基底クラス(OffScreen)
+/// </summary>
 class OffScreen
 {
-
 public:	// メンバ関数
 	// 初期化
 	void Initialize();
@@ -20,7 +22,6 @@ public:	// メンバ関数
 
 public:	// getter
 	DirectXBase* GetDxBase() const { return dxBase_; }
-
 
 private:	// メンバ変数
 	// ルートシグネチャ

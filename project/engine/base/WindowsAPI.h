@@ -2,7 +2,9 @@
 #include <Windows.h>
 #include <cstdint>
 
-// WindowsAPI
+/// <summary>
+/// アプリケーションウィンドウの生成と管理を行うクラス。
+/// </summary>
 class WindowsAPI
 {
 public:	// 静的メンバ関数

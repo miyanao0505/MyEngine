@@ -1,7 +1,10 @@
 #pragma once
 #include "AbstractSceneFactory.h"
 
-// このゲーム用のシーン工場
+/// <summary>
+/// ゲーム専用シーン工場クラス
+/// AbstractSceneFactory を継承し、ゲーム内で使用する具体的なシーンオブジェクトの生成を担当します。
+/// </summary>
 class SceneFactory : public AbstractSceneFactory
 {
 public:	// メンバ関数

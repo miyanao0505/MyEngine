@@ -4,8 +4,13 @@
 #include <memory>
 #include "MyBase.h"
 
+// 前方宣言
 class ParticleEmitter;
 
+/// <summary>
+/// パーティクルシステムクラス(ParticleSystem)
+/// 複数のパーティクルグループを管理し、個々のパーティクルの発生・更新・描画を統括するクラスです。
+/// </summary>
 class ParticleSystem
 {
 public: // 構造体

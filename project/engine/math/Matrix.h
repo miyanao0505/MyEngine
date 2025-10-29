@@ -4,6 +4,9 @@
 #include <assert.h>
 #include "MyBase.h"
 
+/// <summary>
+/// 行列演算ユーティリティクラス
+/// </summary>
 class Matrix
 {
 public:

@@ -3,13 +3,18 @@
 #include <wrl.h>
 #include "Object3dBase.h"
 
+/// <summary>
+/// 3Dシーン内で使用されるライトの種類を表す列挙型。
+/// </summary>
 enum class LightType {
 	Directional,
 	Point,
 	Spot,
 };
 
-// ライトマネージャー
+/// <summary>
+/// 3Dシーン内のライト(平行光源・点光源・スポットライト)を管理するシングルトンクラス。
+/// </summary>
 class LightManager
 {
 public:	// メンバ関数

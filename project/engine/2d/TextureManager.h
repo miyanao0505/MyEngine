@@ -7,7 +7,11 @@
 #include "DirectXTex.h"
 #include "SpriteBase.h"
 
-// テクスチャマネージャー
+/// <summary>
+/// DirectX 12 を用いたテクスチャ管理を行うクラス。
+/// ゲームエンジン全体で利用されるテクスチャを一元的に管理する
+/// シングルトンマネージャー。
+/// </summary>
 class TextureManager
 {
 private: // テクスチャデータ構造体

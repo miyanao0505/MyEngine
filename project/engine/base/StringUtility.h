@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 
-// 文字コードユーティリティ
+/// <summary>
+/// 文字コードユーティリティ
+/// </summary>
 namespace StringUtility
 {
 	// stringをwstringに変換する
@@ -10,4 +12,3 @@ namespace StringUtility
 	// wstring から string へ変換する関数
 	std::string ConvertString(const std::wstring& str);
 }
-

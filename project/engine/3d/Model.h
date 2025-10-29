@@ -7,7 +7,9 @@
 // 前方宣言
 class ModelBase;
 
-// 3Dモデル
+/// <summary>
+/// 3Dモデルデータを管理および描画するためのクラス。
+/// </summary>
 class Model
 {
 public:	// メンバ関数

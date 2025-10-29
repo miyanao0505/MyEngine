@@ -3,7 +3,9 @@
 #include <DirectXBase.h>
 #include <SrvManager.h>
 
-// ImGuiの管理
+/// <summary>
+/// ImGui の初期化・描画制御を行う管理クラス。
+/// </summary>
 class ImGuiManager
 {
 public:	// メンバ関数

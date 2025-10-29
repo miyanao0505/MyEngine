@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <vector>
 
+/// <summary>
+/// 基本データ型・構造体の集約クラス
+/// </summary>
 class MyBase
 {
 public:

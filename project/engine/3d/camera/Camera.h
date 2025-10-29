@@ -1,7 +1,9 @@
 #pragma once
 #include <MyBase.h>
 
-// カメラ
+/// <summary>
+/// 3Dシーンの視点(カメラ)を管理するクラス。
+/// </summary>
 class Camera
 {
 public:	// メンバ関数

@@ -6,7 +6,10 @@
 #include "Camera.h"
 
 
-// カメラマネージャー
+/// <summary>
+/// 複数のカメラを管理し、現在アクティブなカメラの制御および
+/// カメラシェイク演出を行うマネージャークラス。
+/// </summary>
 class CameraManager
 {
 private:	// 構造体

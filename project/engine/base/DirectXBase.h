@@ -11,9 +11,12 @@
 #include "DirectXTex.h"
 #include "MyBase.h"
 
+// 前方宣言
 class SrvManager;
 
-// DirectX基盤
+/// <summary>
+/// DirectX 12 の初期化・描画制御を統括する基盤クラス。
+/// </summary>
 class DirectXBase
 {
 public:	// メンバ関数

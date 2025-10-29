@@ -2,7 +2,10 @@
 #include "BaseScene.h"
 #include <string>
 
-// シーン工場(概念)
+/// <summary>
+/// シーンファクトリー抽象クラス(AbstractSceneFactory)
+/// ゲーム内のシーンを生成するためのインターフェースを定義する抽象クラスです。
+/// </summary>
 class AbstractSceneFactory
 {
 public:	// メンバ関数

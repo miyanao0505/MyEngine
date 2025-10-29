@@ -7,22 +7,34 @@
 // 前方宣言
 class SceneManager;
 
-// シーン基底クラス
+/// <summary>
+/// シーン基底クラス(BaseScene)
+/// ゲーム内のシーン(ステージ、タイトル画面、ゲームオーバー画面など)
+/// の共通インターフェースと基本機能を提供する抽象クラスです。
+/// </summary>
 class BaseScene
 {
 public:	//メンバ関数
 	virtual ~BaseScene() = default;
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Initialize();
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	virtual void Finalize();
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw();
 
 #ifdef _DEBUG

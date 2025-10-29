@@ -1,7 +1,11 @@
 #pragma once
 #include "DirectXBase.h"
 
-// スプライト共通部
+/// <summary>
+/// スプライト描画の共通処理を管理するクラス。
+/// 各スプライト(Sprite クラス)は本クラスを通して
+/// 描画パイプライン、ルートシグネチャ、ブレンドモード設定を共有する。
+/// </summary>
 class SpriteBase
 {
 public:	// 列挙型

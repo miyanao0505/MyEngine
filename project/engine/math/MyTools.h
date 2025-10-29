@@ -3,6 +3,9 @@
 #include <cmath>
 #include "MyBase.h"
 
+/// <summary>
+/// ゲームエンジン・3Dグラフィックス向けユーティリティクラス
+/// </summary>
 class MyTools
 {
 public:

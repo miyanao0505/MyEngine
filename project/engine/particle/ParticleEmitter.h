@@ -2,7 +2,10 @@
 #include "MyBase.h"
 #include "ParticleSystem.h"
 
-// パーティクルエミッター
+/// <summary>
+/// パーティクルエミッタークラス(ParticleEmitter)
+/// パーティクルシステムにおける「発生源」として機能するクラスです。
+/// </summary>
 class ParticleEmitter
 {
 public:	// メンバ関数

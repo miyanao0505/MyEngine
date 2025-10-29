@@ -16,28 +16,44 @@
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
 
-// ゲーム全体
+/// <summary>
+/// ゲームフレームワーク基底クラス(MNFramework)
+/// ゲーム全体のライフサイクル管理と各種マネージャの統括を行う抽象クラスです。
+/// </summary>
 class MNFramework
 {
 public:	// メンバ関数
 	virtual ~MNFramework() = default;
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Initialize();
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	virtual void Finalize();
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw() = 0;
 
-	// 終了チェック
+	/// <summary>
+	/// 終了チェック
+	/// </summary>
+	/// <returns></returns>
 	virtual bool IsEndRequest() { return endRequest_; }
 
-	// 実行
+	/// <summary>
+	/// 実行
+	/// </summary>
 	void Run();
 
 protected:	// メンバ変数

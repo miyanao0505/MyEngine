@@ -1,22 +1,28 @@
 #pragma once
 #include "DirectXBase.h"
 
-// パーティクル共通部
+/// <summary>
+/// パーティクル・スプライト描画用ブレンドモード列挙型(BlendMode)
+/// </summary>
+enum class BlendMode {
+	kBlendModeNone,			//!< ブレンドなし
+	kBlendModeNormal,		//!< 通常αブレンド。デフォルト。 Src * SrcA + Dest * (1 - SrcA)
+	kBlendModeAdd,			//!< 加算。 Src * SrcA + Dest * 1
+	kBlendModeSubtract,		//!< 減算。 Dest * 1 - Src * SrcA
+	kBlendModeMultiply,		//!< 乗算。 Src * 0 + Dest * Src
+	kBlendModeScreen,		//!< スクリーン。 Src * (1 - Dest) + Dest * 1
+	kBlendModeExclusion,	//!< 除外。(1 - Dest) * Src + (1 - Src) * Dest
+
+	kCountOfBlendMode,	//!< 利用してはいけない
+};
+
+/// <summary>
+/// パーティクル描画共通基底クラス(ParticleBase)
+/// </summary>
 class ParticleBase
 {
 public:	// 列挙型
-	// ブレンドモード
-	enum class BlendMode {
-		kBlendModeNone,			//!< ブレンドなし
-		kBlendModeNormal,		//!< 通常αブレンド。デフォルト。 Src * SrcA + Dest * (1 - SrcA)
-		kBlendModeAdd,			//!< 加算。 Src * SrcA + Dest * 1
-		kBlendModeSubtract,		//!< 減算。 Dest * 1 - Src * SrcA
-		kBlendModeMultiply,		//!< 乗算。 Src * 0 + Dest * Src
-		kBlendModeScreen,		//!< スクリーン。 Src * (1 - Dest) + Dest * 1
-		kBlendModeExclusion,	//!< 除外。(1 - Dest) * Src + (1 - Src) * Dest
-
-		kCountOfBlendMode,	//!< 利用してはいけない
-	};
+	
 public:	// メンバ関数
 	// 初期化
 	void initialize(DirectXBase* dxBase);

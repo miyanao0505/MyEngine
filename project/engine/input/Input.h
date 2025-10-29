@@ -6,7 +6,9 @@
 #include <array>
 #include "WindowsAPI.h"
 
-// 入力
+/// <summary>
+/// キーボード入力を管理するクラス。
+/// </summary>
 class Input
 {
 public:	// メンバ関数

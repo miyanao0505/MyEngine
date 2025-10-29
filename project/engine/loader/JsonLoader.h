@@ -4,6 +4,9 @@
 #include <vector>
 #include "MyBase.h"
 
+/// <summary>
+/// 3Dオブジェクトの情報を保持するデータ構造体。
+/// </summary>
 struct ObjectData {
 	std::string name;
 	std::string meshName;
@@ -17,6 +20,9 @@ struct ObjectData {
 	bool isDisabled = false;	// 無効化フラグ
 	std::vector<ObjectData> children;
 };
+/// <summary>
+/// ゲームシーン(レベル)に配置されるデータをまとめた構造体。
+/// </summary>
 struct LevelData {
 	std::vector<ObjectData> objects;				// シーン内のオブジェクトデータ
 	std::vector<MyBase::PlayerSpawnData> players;	// プレイヤー生成データ

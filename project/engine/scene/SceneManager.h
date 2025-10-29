@@ -3,20 +3,29 @@
 #include "AbstractSceneFactory.h"
 #include "SceneTransition.h"
 
-// シーン管理
+/// <summary>
+/// ゲームシーン管理クラス
+/// シーンの生成・更新・描画・切り替えを管理するシングルトンクラス。
+/// </summary>
 class SceneManager
 {
 public:	// メンバ関数
 	// シングルトンインスタンスの取得
 	static SceneManager* GetInstance();
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 	/// <summary>

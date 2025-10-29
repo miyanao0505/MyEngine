@@ -4,6 +4,10 @@
 #include <memory>
 #include "Sprite.h"
 
+/// <summary>
+/// シーン切替フェード演出クラス
+/// ゲームシーンの切り替え時に、フェードアウト → シーン変更 → フェードイン の演出を行うクラス。
+/// </summary>
 class SceneTransition
 {
 public:	// enum

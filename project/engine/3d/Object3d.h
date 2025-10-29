@@ -10,7 +10,10 @@
 // 前方宣言
 class Object3dBase;
 
-// 3Dオブジェクト
+/// <summary>
+/// ゲームシーン上に配置される 3D オブジェクトを表すクラス。
+/// Object3d クラスは、3D モデル(Model クラス)の描画を行うための個別オブジェクトを管理します。
+/// </summary>
 class Object3d
 {
 public:	// メンバ関数

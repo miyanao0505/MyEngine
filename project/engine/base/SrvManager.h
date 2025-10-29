@@ -1,7 +1,9 @@
 #pragma once
 #include "DirectXBase.h"
 
-// SRV管理
+/// <summary>
+/// SRV(Shader Resource View)を一元管理するクラス
+/// </summary>
 class SrvManager
 {
 public:	// メンバ関数

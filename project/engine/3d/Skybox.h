@@ -3,6 +3,9 @@
 #include "WorldTransform.h"
 #include "MyBase.h"
 
+/// <summary>
+/// シーン全体を包み込む天空背景(スカイボックス)を描画するクラス
+/// </summary>
 class Skybox
 {
 public:	// メンバ関数
