@@ -147,7 +147,7 @@ void GameScene::Update()
 	player_->Update();
 
 	// フォローカメラの更新
-	//followCamera_->Update();
+	followCamera_->Update();
 
 	// 敵の更新処理
 	enemy_->Update();

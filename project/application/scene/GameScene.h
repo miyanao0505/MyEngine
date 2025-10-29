@@ -63,6 +63,8 @@ private:	// メンバ変数
 	// シーケンス
 	std::unique_ptr<StartSequence> startSequence_ = nullptr;
 
+	// 3Dオブジェクト
+
 	// パーティクル
 
 	// jsonローダー

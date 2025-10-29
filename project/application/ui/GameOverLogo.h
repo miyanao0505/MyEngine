@@ -29,5 +29,6 @@ public:	// setter
 private:	// メンバ変数
 	// 3Dオブジェクト
 	std::unique_ptr<BaseObject> gameOverChar_ = nullptr;
+	std::unique_ptr<BaseObject> transitionButton_ = nullptr;
 };
 

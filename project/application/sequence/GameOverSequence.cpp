@@ -11,7 +11,7 @@ void GameOverSequence::Initialize() {
 
 /// 更新
 void GameOverSequence::Update(float deltaTime) {
-
+	deltaTime;
 }
 
 /// 描画
