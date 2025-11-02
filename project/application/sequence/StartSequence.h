@@ -3,7 +3,11 @@
 #include <string>
 #include "BaseObject.h"
 
-// スタート演出
+/// <summary>
+/// ゲーム開始時に再生されるスタート演出を管理するクラスです。
+/// 一連の演出処理(エンジン起動 → MISSION表示 → 回転演出 → START表示 → 演出終了)をステートマシンとして制御し、
+/// 時間経過に応じてテキストの表示や回転アニメーションなどを管理します。
+/// </summary>
 class StartSequence
 {
 private:	// enum

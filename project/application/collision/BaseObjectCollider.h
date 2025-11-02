@@ -2,6 +2,10 @@
 #include "Collider.h"
 #include "BaseObject.h"
 
+/// <summary>
+/// BaseObjectColliderクラス
+/// BaseObjectに関連付けられたコライダーを表すクラス。
+/// </summary>
 class BaseObjectCollider : public Collider
 {
 public:	// メンバ関数

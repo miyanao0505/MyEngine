@@ -11,7 +11,10 @@
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
-// ゲームプレイシーン
+/// <summary>
+/// プレイヤーが実際に操作し、敵との戦闘や進行を行うゲーム本編のメインシーンを管理するクラス。
+/// BaseSceneを継承し、ゲームプレイ中のキャラクター制御、カメラ挙動、敵出現、演出などを統括します。
+/// </summary>
 class GameScene : public BaseScene
 {
 public:	// メンバ関数

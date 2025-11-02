@@ -1,6 +1,10 @@
 #pragma once
 #include "BaseObject.h"
 
+/// <summary>
+/// プレイヤーが発射する弾を表すクラス。 
+/// BaseObjectを継承し、弾の移動・寿命管理・衝突判定・描画を担当します。
+/// </summary>
 class PlayerBullet : public BaseObject
 {
 public:	// メンバ関数

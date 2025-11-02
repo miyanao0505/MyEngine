@@ -1,6 +1,10 @@
 #pragma once
 #include "EnemyBaseState.h"
 
+/// <summary>
+/// EnemyStateRootクラス
+/// 敵キャラクター(Enemy)の初期状態(ルートステート)を表すクラス。
+/// </summary>
 class EnemyStateRoot : public EnemyBaseState
 {
 public:

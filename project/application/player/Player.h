@@ -4,7 +4,10 @@
 #include "TextureManager.h"
 #include "PlayerBullet.h"
 
-// プレイヤー
+/// <summary>
+/// プレイヤーキャラクターを表すクラス。
+/// 自機の移動・回転・攻撃・衝突処理など、ゲーム中の主要な操作と挙動を管理します。
+/// </summary>
 class Player : public BaseObject
 {
 public:	// メンバ関数

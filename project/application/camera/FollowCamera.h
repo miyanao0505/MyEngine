@@ -3,6 +3,10 @@
 #include "Player.h"
 #include "MyBase.h"
 
+/// <summary>
+/// プレイヤー追従カメラクラス
+/// プレイヤーの動きを追従するタイプのカメラを制御するクラス。
+/// </summary>
 class FollowCamera {
 public:	// メンバ関数
 	/// <summary>

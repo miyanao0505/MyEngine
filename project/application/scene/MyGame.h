@@ -1,7 +1,10 @@
 #pragma once
 #include "MNFramework.h"
 
-// ゲーム全体
+/// <summary>
+/// ゲーム全体のエントリーポイントとなるクラスで、
+/// MNFrameworkを継承し、アプリケーション全体の初期化・更新・描画・終了処理を統括します。
+/// </summary>
 class MyGame : public MNFramework
 {
 public:	// メンバ関数

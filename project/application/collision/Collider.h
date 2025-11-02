@@ -3,7 +3,8 @@
 #include "Quaternion.h"
 
 /// <summary>
-/// 衝突判定オブジェクト
+/// Colliderクラス
+/// ゲームオブジェクトに付与される衝突判定用コンポーネントの基底クラス。 
 /// </summary>
 class Collider
 {

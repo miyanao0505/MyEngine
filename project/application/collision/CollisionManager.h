@@ -2,6 +2,10 @@
 #include "Collider.h"
 #include <list>
 
+/// <summary>
+/// CollisionManagerクラス
+/// ゲーム全体の衝突判定を統括管理するシングルトンマネージャー。
+/// </summary>
 class CollisionManager
 {
 public:	// メンバ関数

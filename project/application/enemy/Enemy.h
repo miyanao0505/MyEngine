@@ -5,8 +5,13 @@
 #include "TextureManager.h"
 #include "ParticleEmitter.h"
 
+/// 前方宣言
 class Player;
 
+/// <summary>
+/// Enemyクラス
+/// 自機(Player)と対峙する敵キャラクターを表すクラス。
+/// </summary>
 class Enemy : public BaseObject
 {
 public:	// メンバ関数

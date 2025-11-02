@@ -7,7 +7,9 @@
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
-// タイトルシーン
+/// <summary>
+/// ゲーム中のイベント演出を管理するシーン。
+/// </summary>
 class EventScene : public BaseScene
 {
 public:	// メンバ関数

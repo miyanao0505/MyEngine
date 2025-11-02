@@ -1,6 +1,9 @@
 #pragma once
 
-
+/// <summary>
+/// レールカメラクラス
+/// あらかじめ設定されたレール(軌道)に沿って自動で移動・回転するカメラを制御するクラス。
+/// </summary>
 class RailCamera
 {
 public:	// メンバ関数

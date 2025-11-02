@@ -2,8 +2,13 @@
 #include <string>
 #include <memory>
 
+/// 前方宣言
 class Enemy;
 
+/// <summary>
+/// EnemyBaseStateクラス
+/// 敵キャラクター（Enemy）の**行動状態を定義するための基底クラス**。
+/// </summary>
 class EnemyBaseState
 {
 public:

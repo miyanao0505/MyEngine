@@ -2,6 +2,10 @@
 #include "BaseObject.h"
 #include "MyBase.h"
 
+/// <summary>
+/// タイトルシーンにおけるタイトルロゴおよびスタートボタンの
+/// 表示とアニメーションを管理するクラスです。
+/// </summary>
 class TitleLogo
 {
 public:	// メンバ関数

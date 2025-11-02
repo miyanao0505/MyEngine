@@ -9,7 +9,10 @@
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
-// タイトルシーン
+/// <summary>
+/// プレイヤーが敗北した際に表示されるゲームオーバー演出シーンを管理するクラス。
+/// BaseSceneを継承し、ゲームオーバー時のビジュアル演出やシーン遷移制御を担当します。
+/// </summary>
 class GameOverScene : public BaseScene
 {
 public:	// メンバ関数

@@ -2,6 +2,11 @@
 #include "BaseObject.h"
 #include "TextureManager.h"
 
+/// <summary>
+/// シーン全体を包み込む**天球（スカイドーム）オブジェクト**を管理するクラスです。
+/// 主に背景として使用され、カメラの位置やシーンの状態に関わらず、
+/// 常にプレイヤーの視界を覆うように描画されます。
+/// </summary>
 class Skydome : public BaseObject
 {
 public:	// メンバ関数

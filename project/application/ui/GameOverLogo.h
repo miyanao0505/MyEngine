@@ -2,6 +2,10 @@
 #include "BaseObject.h"
 #include "MyBase.h"
 
+/// <summary>
+/// ゲームオーバーシーンで表示される「GAME OVER」ロゴおよび関連オブジェクトを
+/// 管理・描画するクラスです。
+/// </summary>
 class GameOverLogo
 {
 public:	// メンバ関数

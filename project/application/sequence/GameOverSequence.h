@@ -3,7 +3,11 @@
 #include <string>
 #include "BaseObject.h"
 
-// ゲームオーバー演出
+/// <summary>
+/// プレイヤーの敗北後に再生されるゲームオーバー演出を管理するクラスです。
+/// 一連の演出処理(エンジン起動 → 爆発 → 落下 → 終了)をステートマシンとして制御し、
+/// 時間経過に応じてテキストの表示や回転アニメーションなどを管理します。
+/// </summary>
 class GameOverSequence
 {
 private:	// enum

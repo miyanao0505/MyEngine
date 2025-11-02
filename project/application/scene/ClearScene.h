@@ -7,7 +7,10 @@
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
-// タイトルシーン
+/// <summary>
+/// ゲームクリア時に表示されるシーンを管理するクラス。
+/// BaseSceneを継承し、クリア演出の表示・更新・描画処理を担当します。
+/// </summary>
 class ClearScene : public BaseScene
 {
 public:	// メンバ関数

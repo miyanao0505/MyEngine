@@ -6,7 +6,10 @@
 #include "TitleLogo.h"
 #include "ParticleEmitter.h"
 
-// タイトルシーン
+/// <summary>
+/// ゲーム開始時に表示される**タイトルシーン**を管理するクラスです。
+/// BaseSceneを継承し、シーンの初期化・更新・描画・終了処理を統括します。
+/// </summary>
 class TitleScene : public BaseScene
 {
 public:	// メンバ関数
