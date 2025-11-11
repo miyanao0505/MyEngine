@@ -155,6 +155,9 @@ private:	// メンバ変数
 	// インスタンスの最大数
 	uint32_t kMaxInstance_ = 1000;
 
+	// パーティクル数
+	uint32_t particleCount_ = 0;
+
 	// テクスチャサイズ
 	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };
 	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };

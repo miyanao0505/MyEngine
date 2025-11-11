@@ -43,14 +43,14 @@ void ParticleManager::Initialize(SrvManager* srvManager)
 void ParticleManager::Update()
 {
 	MyBase::Matrix4x4 viewProjectionMatrix;
-	MyBase::Matrix4x4 billoardMatrix;
+	MyBase::Matrix4x4 billboardMatrix;
 
 	if (CameraManager::GetInstance()->GetCamera()) {
 		viewProjectionMatrix = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
-		billoardMatrix = CameraManager::GetInstance()->GetCamera()->GetWorldMatrix();
-		billoardMatrix.m[3][0] = 0.0f;
-		billoardMatrix.m[3][1] = 0.0f;
-		billoardMatrix.m[3][2] = 0.0f;
+		billboardMatrix = CameraManager::GetInstance()->GetCamera()->GetWorldMatrix();
+		billboardMatrix.m[3][0] = 0.0f;
+		billboardMatrix.m[3][1] = 0.0f;
+		billboardMatrix.m[3][2] = 0.0f;
 	}
 	for (std::pair<const std::string, std::unique_ptr<ParticleGroup>>& pair : particleGroups_) {
 		ParticleGroup& group = *pair.second;
@@ -77,16 +77,17 @@ void ParticleManager::Update()
 			if (particle.lifeTime <= particle.currentTime) {
 				it = group.particles.erase(it);
 				group.kNumInstance--;
+				particleCount_--;
 				continue;
 			}
 			if (group.isBillboard) {
 				// ビルボード行列の生成
-				billoardMatrix = Matrix::Matrix::Multiply(billoardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
+				billboardMatrix = Matrix::Matrix::Multiply(billboardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
 			}
 			else {
-				billoardMatrix = Matrix::MakeIdentity4x4();
+				billboardMatrix = Matrix::MakeIdentity4x4();
 			}
-			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), billoardMatrix), Matrix::MakeTranslateMatrix(particle.transform.translate));
+			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), billboardMatrix), Matrix::MakeTranslateMatrix(particle.transform.translate));
 			MyBase::Matrix4x4 worldViewProjectionMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
 			group.instancingData[index].World = worldMatrix;
 			group.instancingData[index].WVP = worldViewProjectionMatrix;
@@ -100,8 +101,9 @@ void ParticleManager::Update()
 
 void ParticleManager::Draw()
 {
-	// ルートシグネチャを設定
-	particleBase_->SetCommonScreen();
+	if (particleCount_ <= 0) {
+		return;
+	}
 
 	// 全てのパーティクルグループについて処理
 	for (auto& [name, group] : particleGroups_) {
@@ -376,10 +378,8 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 	uint32_t nowInstance = group.kNumInstance;
 	std::uniform_real_distribution<float> distCount((float)particleGroupData.count.min, (float)particleGroupData.count.max);
 	int countValue = (int)distCount(randomEngine);
-	group.kNumInstance += countValue;
-	if (group.kNumInstance + countValue >= kMaxInstance_) {
-		group.kNumInstance = kMaxInstance_;
-	}
+	group.kNumInstance = group.kNumInstance + countValue >= kMaxInstance_ ? kMaxInstance_ : group.kNumInstance + countValue;
+	particleCount_ += group.kNumInstance;
 	for (uint32_t i = nowInstance; i < group.kNumInstance; ++i) {
 		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
 	}
@@ -388,8 +388,6 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 
 void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)
 {
-	/*uint32_t preIndexNum = particleIndexSize_;*/
-
 	particleIndexSize_ += kParticleIndexNum[type];
 
 	// インデックスリソースの生成
