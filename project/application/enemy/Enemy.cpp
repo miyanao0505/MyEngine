@@ -146,7 +146,7 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 
 	// プレイヤー弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
-		particleEmitter_->Emit(); // パーティクルを発生させる
+		//particleEmitter_->Emit(); // パーティクルを発生させる
 		hp_ -= player_->GetAttackPower();
 		if (hp_ <= 0) {
 			isDead_ = true;
