@@ -83,7 +83,7 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	followCamera_->Update();
+	followCamera_->Update(kDeltaTime_);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update();
 	enemy_->Update();
@@ -147,7 +147,7 @@ void GameScene::Update()
 	player_->Update();
 
 	// フォローカメラの更新
-	followCamera_->Update();
+	followCamera_->Update(kDeltaTime_);
 
 	// 敵の更新処理
 	enemy_->Update();

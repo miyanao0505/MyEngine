@@ -21,6 +21,7 @@
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
     <ClCompile Include="application\player\PlayerBullet.cpp" />
+    <ClCompile Include="application\sequence\ClearSequence.cpp" />
     <ClCompile Include="application\sequence\GameOverSequence.cpp" />
     <ClCompile Include="application\sequence\StartSequence.cpp" />
     <ClCompile Include="application\ui\GameOverLogo.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h" />
     <ClInclude Include="application\player\Player.h" />
     <ClInclude Include="application\player\PlayerBullet.h" />
+    <ClInclude Include="application\sequence\ClearSequence.h" />
     <ClInclude Include="application\sequence\GameOverSequence.h" />
     <ClInclude Include="application\sequence\StartSequence.h" />
     <ClInclude Include="application\ui\GameOverLogo.h" />

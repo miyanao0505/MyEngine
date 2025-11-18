@@ -23,8 +23,15 @@ void FollowCamera::Update(float deltaTime)
 		return;
 	}
 
-	// 追従処理を更新
-	UpdateFollow(deltaTime);
+	// 注視点の座標を取得
+	MyBase::Vector3 targetPos = player_->GetWorldPosition();
+	// カメラの現在の座標を取得
+	MyBase::Vector3 cameraPos = camera_->GetTranslate();
+	//カメラの位置をプレイヤーの後ろに設定
+	cameraPos = MyTools::Add(targetPos, offset_);
+	camera_->SetTranslate(cameraPos);
+
+	deltaTime;
 
 	// カメラの向きをプレイヤーの方向に設定
 	MyBase::Vector3 direction = MyTools::Subtract(targetPos, cameraPos);
