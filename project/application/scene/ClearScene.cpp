@@ -1,18 +1,36 @@
 #include "ClearScene.h"
 #include <imgui.h>
 #include "CameraManager.h"
+#include "LightManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
 #include "MyTools.h"
 
 // 初期化
 void ClearScene::Initialize()
 {
+#pragma region シーン初期化
 	BaseScene::Initialize();
 
-#pragma region シーン初期化
+#pragma region カメラ
+	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
+	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
+#pragma endregion カメラ
+
+#pragma region ライト
+	MyBase::PointLight pointLight;
+	pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pointLight.position = { 0.0f, 0.0f, -40.0f };
+	pointLight.intensity = 1.0f;
+	pointLight.radius = 500.0f;
+	pointLight.decay = 2.0f;
+	LightManager::GetInstance()->SetPointLight(pointLight);
+#pragma endregion ライト
+
+#pragma region スプライト
 	// テクスチャの読み込み
 	TextureManager::GetInstance()->LoadTexture(clearTextureFilePath_);
 
@@ -21,17 +39,21 @@ void ClearScene::Initialize()
 	clearSprite_->Initialize(clearTextureFilePath_);
 	clearSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
-	// .objファイルからモデルを読み込む
-	
+#pragma endregion スプライト
 
+#pragma region 3Dオブジェクト
 	// 3Dオブジェクト
-	
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
 
+#pragma endregion 3Dオブジェクト
+
+#pragma region パーティクル
 	// パーティクル
-	//particleEmitter_ = std::make_unique<ParticleEmitter>();
-	//particleEmitter_->Initialize("circle", "resources/circle.png");
-#pragma endregion シーン初期化
-
+	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
+	particleEmitter_->Initialize("circle", "resources/circle.png");*/
+#pragma endregion パーティクル
+	
 #pragma region 変数
 	isParticleActive_ = true;
 	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
@@ -39,6 +61,12 @@ void ClearScene::Initialize()
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
 #pragma endregion 変数
+
+#pragma endregion シーン初期化
+
+	// 最初の更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+	skydome_->Update();
 }
 
 // 終了
@@ -47,7 +75,7 @@ void ClearScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
-	
+	skydome_.reset();
 
 	// スプライト
 	clearSprite_.reset();
@@ -59,18 +87,7 @@ void ClearScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
-	}
-
-	DebugDraw();
+	DebugUpdate();
 #endif // _DEBUG
 
 	// ゲームシーンへの遷移
@@ -79,8 +96,12 @@ void ClearScene::Update()
 		return;
 	}
 
+	// カメラの更新
+	CameraManager::GetInstance()->GetCamera()->Update();
+
 	// 3Dオブジェクトの更新処理
-	
+	// 天球の更新
+	skydome_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -116,7 +137,8 @@ void ClearScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	
+	// 天球の描画
+	skydome_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -136,10 +158,26 @@ void ClearScene::Draw()
 	clearSprite_->Draw();
 
 #pragma endregion スプライト
-
 }
 
 #ifdef _DEBUG
+/// デバッグ更新
+void ClearScene::DebugUpdate()
+{
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+	// Bキーを押したら
+	if (input_->TriggerKey(DIK_B)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene("EVENT");
+	}
+
+	DebugDraw();
+}
+
 // デバッグ描画
 void ClearScene::DebugDraw()
 {
