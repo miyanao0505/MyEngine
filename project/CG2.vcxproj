@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\camera\RailCamera.cpp" />
+    <ClCompile Include="application\camera\RailFollowSystem.cpp" />
     <ClCompile Include="application\collision\BaseObjectCollider.cpp" />
     <ClCompile Include="application\collision\Collider.cpp" />
     <ClCompile Include="application\collision\CollisionManager.cpp" />
@@ -74,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\camera\RailCamera.h" />
+    <ClInclude Include="application\camera\RailFollowSystem.h" />
     <ClInclude Include="application\collision\BaseObjectCollider.h" />
     <ClInclude Include="application\collision\Collider.h" />
     <ClInclude Include="application\collision\CollisionConfig.h" />
