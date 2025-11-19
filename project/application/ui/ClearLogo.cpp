@@ -1,5 +1,5 @@
 #include "ClearLogo.h"
-#include "MyBase.h"
+#include "MyTools.h"
 
 /// 初期化
 void ClearLogo::Initialize() {
@@ -16,6 +16,9 @@ void ClearLogo::Initialize() {
 	transitionButton_->SetName("transitionButton");
 	transform = { {2.5f, 2.5f, 2.5f}, {0.0f, 0.0f, 0.0f}, {0.0f,-3.0f,0.0f} };
 	transitionButton_->GetObject3d()->SetTransform(transform);
+
+	moveVector_ = { 0.0f,-1.0f,0.0f };
+	moveDistance_ = 0.0f;
 }
 
 /// 終了
@@ -26,6 +29,8 @@ void ClearLogo::Finalize() {
 
 /// 更新
 void ClearLogo::Update() {
+	Move();
+
 	if (clearChar_) {
 		clearChar_->Update();
 	}
@@ -42,4 +47,23 @@ void ClearLogo::Draw() {
 	if (transitionButton_) {
 		transitionButton_->Draw();
 	}
+}
+
+/// ロゴの移動処理
+void ClearLogo::Move()
+{
+	if (moveDistance_ <= -moveSpeed_ * 20.0f) {
+		//moveVector_ = MyTools::Multiply(-1.0f, moveVector_);
+		moveVector_ = { 0.0f,1.0f,0.0f };
+	}
+	else if (moveDistance_ >= moveSpeed_ * 20.0f) {
+		//moveVector_ = MyTools::Multiply(-1.0f, moveVector_);
+		moveVector_ = { 0.0f,-1.0f,0.0f };
+	}
+
+	MyBase::Vector3 move = MyTools::Multiply(moveSpeed_, moveVector_);
+	moveDistance_ += move.y;
+
+	// 移動処理
+	clearChar_->GetObject3d()->SetTranslate(MyTools::Add(clearChar_->GetObject3d()->GetTranslate(), move));
 }
