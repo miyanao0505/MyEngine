@@ -28,7 +28,7 @@ void StartSequence::Update(float deltaTime) {
 	switch (state_) {
 	case State::EngineStart:
 		EngineStartEffect();
-		if (timer_ > 1.5f) {
+		if (/*timer_ > 1.5f*/ timer_ > 0.5f) {
 			TextSet();
 			state_ = State::MissionText;
 			timer_ = 0.0f;
@@ -86,12 +86,12 @@ void StartSequence::EngineStartEffect()
 		LightManager::GetInstance()->SetPointLight(pointLight);
 
 		// エンジン起動エフェクト再生処理
-		const float amplitude = 5.0f;
+		/*const float amplitude = 5.0f;
 		const float duration = 1.2f;
 		const float frequency = 25.0f;
 		const float rotationAmplitude = 0.03f;
 
-		CameraManager::GetInstance()->StartShake(amplitude, duration, frequency, rotationAmplitude);
+		CameraManager::GetInstance()->StartShake(amplitude, duration, frequency, rotationAmplitude);*/
 
 		engineStarted_ = true;
 	}

@@ -2,10 +2,10 @@
 #include "BaseObject.h"
 
 /// <summary>
-/// ゲームオーバーシーンで表示される「GAME OVER」ロゴおよび関連オブジェクトを
+/// クリアシーンで表示される「CLEAR」ロゴおよび関連オブジェクトを
 /// 管理・描画するクラスです。
 /// </summary>
-class GameOverLogo
+class ClearLogo
 {
 public:	// メンバ関数
 	/// <summary>
@@ -31,7 +31,7 @@ public:	// setter
 
 private:	// メンバ変数
 	// 3Dオブジェクト
-	std::unique_ptr<BaseObject> gameOverChar_ = nullptr;
+	std::unique_ptr<BaseObject> clearChar_ = nullptr;
 	std::unique_ptr<BaseObject> transitionButton_ = nullptr;
 };
 

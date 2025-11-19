@@ -32,12 +32,8 @@ void ClearScene::Initialize()
 
 #pragma region スプライト
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(clearTextureFilePath_);
 
 	// スプライト
-	clearSprite_ = std::make_unique<Sprite>();
-	clearSprite_->Initialize(clearTextureFilePath_);
-	clearSprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 #pragma endregion スプライト
 
@@ -46,6 +42,9 @@ void ClearScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
 
+	// ロゴ
+	clearLogo_ = std::make_unique<ClearLogo>();
+	clearLogo_->Initialize();
 #pragma endregion 3Dオブジェクト
 
 #pragma region パーティクル
@@ -67,6 +66,7 @@ void ClearScene::Initialize()
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->Update();
 	skydome_->Update();
+	clearLogo_->Update();
 }
 
 // 終了
@@ -75,10 +75,10 @@ void ClearScene::Finalize()
 	BaseScene::Finalize();
 
 	// 3Dオブジェクト
+	clearLogo_.reset();
 	skydome_.reset();
 
 	// スプライト
-	clearSprite_.reset();
 }
 
 // 毎フレーム更新
@@ -103,6 +103,9 @@ void ClearScene::Update()
 	// 天球の更新
 	skydome_->Update();
 
+	// ロゴ
+	clearLogo_->Update();
+
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
@@ -125,7 +128,6 @@ void ClearScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	clearSprite_->Update();
 }
 
 // 描画
@@ -139,6 +141,9 @@ void ClearScene::Draw()
 	// 全ての3DObject個々の描画
 	// 天球の描画
 	skydome_->Draw();
+
+	// ロゴ
+	clearLogo_->Draw();
 
 #pragma endregion 3Dオブジェクト
 
@@ -155,7 +160,7 @@ void ClearScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	clearSprite_->Draw();
+	
 
 #pragma endregion スプライト
 }

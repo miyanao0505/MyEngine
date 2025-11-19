@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Object3d.h"
 #include "Skydome.h"
+#include "ClearLogo.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -41,17 +42,16 @@ public:	// メンバ関数
 private:	// メンバ変数
 #pragma region シーン初期化
 	// テクスチャファイルパス
-	std::string clearTextureFilePath_ = "resources/texture/Clear.png";
 	std::string skydomeFilePath_ = "resources/texture/skyback.png";
 
 	// スプライト
-	std::unique_ptr<Sprite> clearSprite_ = nullptr;	// クリアスプライト
 
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// 3Dオブジェクト
-	
+	// ロゴ
+	std::unique_ptr<ClearLogo> clearLogo_ = nullptr;
 
 	// パーティクル
 	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;

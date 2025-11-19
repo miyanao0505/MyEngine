@@ -1,15 +1,15 @@
-#include "GameOverLogo.h"
+#include "ClearLogo.h"
 #include "MyBase.h"
 
 /// 初期化
-void GameOverLogo::Initialize() {
+void ClearLogo::Initialize() {
 	// 3Dオブジェクト
-	// GameOver
-	gameOverChar_ = std::make_unique<BaseObject>();
-	gameOverChar_->Initialize("characters", "gameover.obj");
-	gameOverChar_->SetName("gameOverChar");
+	// Clear
+	clearChar_ = std::make_unique<BaseObject>();
+	clearChar_->Initialize("characters", "clear.obj");
+	clearChar_->SetName("clearChar");
 	MyBase::Transform transform = { { 4.0f,4.0f,4.0f },{ 0.0f,0.0f,0.0f },{ 0.0f,3.50f,0.0f } };
-	gameOverChar_->GetObject3d()->SetTransform(transform);
+	clearChar_->GetObject3d()->SetTransform(transform);
 	// 切り替えボタン
 	transitionButton_ = std::make_unique<BaseObject>();
 	transitionButton_->Initialize("characters", "enter.obj");
@@ -18,24 +18,26 @@ void GameOverLogo::Initialize() {
 	transitionButton_->GetObject3d()->SetTransform(transform);
 }
 
-void GameOverLogo::Finalize() {
+/// 終了
+void ClearLogo::Finalize() {
 	transitionButton_.reset();
-	gameOverChar_.reset();
+	clearChar_.reset();
 }
 
-void GameOverLogo::Update() {
-	if (gameOverChar_) {
-		gameOverChar_->Update();
+/// 更新
+void ClearLogo::Update() {
+	if (clearChar_) {
+		clearChar_->Update();
 	}
 	if (transitionButton_) {
 		transitionButton_->Update();
 	}
 }
 
-
-void GameOverLogo::Draw() {
-	if (gameOverChar_) {
-		gameOverChar_->Draw();
+/// 描画
+void ClearLogo::Draw() {
+	if (clearChar_) {
+		clearChar_->Draw();
 	}
 	if (transitionButton_) {
 		transitionButton_->Draw();

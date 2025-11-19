@@ -342,6 +342,9 @@
     <ClCompile Include="application\sequence\ClearSequence.cpp">
       <Filter>ソース ファイル\application\sequence</Filter>
     </ClCompile>
+    <ClCompile Include="application\ui\ClearLogo.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -532,6 +535,9 @@
     </ClInclude>
     <ClInclude Include="application\sequence\ClearSequence.h">
       <Filter>ヘッダー ファイル\application\sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\ClearLogo.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

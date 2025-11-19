@@ -24,6 +24,7 @@
     <ClCompile Include="application\sequence\ClearSequence.cpp" />
     <ClCompile Include="application\sequence\GameOverSequence.cpp" />
     <ClCompile Include="application\sequence\StartSequence.cpp" />
+    <ClCompile Include="application\ui\ClearLogo.cpp" />
     <ClCompile Include="application\ui\GameOverLogo.cpp" />
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="application\sequence\ClearSequence.h" />
     <ClInclude Include="application\sequence\GameOverSequence.h" />
     <ClInclude Include="application\sequence\StartSequence.h" />
+    <ClInclude Include="application\ui\ClearLogo.h" />
     <ClInclude Include="application\ui\GameOverLogo.h" />
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
