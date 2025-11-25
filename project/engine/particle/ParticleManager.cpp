@@ -105,6 +105,8 @@ void ParticleManager::Draw()
 		return;
 	}
 
+	particleBase_->SetCommonScreen();
+
 	// 全てのパーティクルグループについて処理
 	for (auto& [name, group] : particleGroups_) {
 		if (group->kNumInstance == 0) {
