@@ -18,31 +18,45 @@
 class GameScene : public BaseScene
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize() override;
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 毎フレーム更新
+	/// </summary>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
 #ifdef _DEBUG
-	// デバッグ更新
+	/// <summary>
+	/// デバッグ更新
+	///	</summary>
 	void DebugUpdate();
 
-	// デバッグ描画
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebugDraw() override;
 #endif // _DEBUG
 
-	// jsonファイルの読み込み
+	/// <summary>
+	/// jsonファイルの読み込み
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
 	void LoadJsonFile(const std::string& filePath) override;
 
 private:	// メンバ変数
-#pragma region シーン初期化
 	// テクスチャファイルパス
 	std::string skydomeFilePath_ = "resources/texture/skyback.png";
 
@@ -73,8 +87,6 @@ private:	// メンバ変数
 	// jsonローダー
 	std::unique_ptr<JsonLoader> jsonLoader_ = nullptr;
 	
-#pragma endregion シーン初期化
-
 	bool isParticleActive_;
 	bool isAccelerationField_;
 	MyBase::Vector3 acceleration_{};

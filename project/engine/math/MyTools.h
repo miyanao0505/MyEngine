@@ -16,10 +16,7 @@ public:
 
 	// メンバ関数
 
-	/// 
-	/// ツール関数 ここから
-	/// 
-	
+#pragma region ツール関数	
 	/// <summary>
 	/// 範囲内の値を返す関数
 	/// </summary>
@@ -35,22 +32,22 @@ public:
 	/// <param name="num1">数値1</param>
 	/// <param name="num2">数値2</param>
 	/// <param name="t">媒介変数</param>
-	/// <returns></returns>
+	/// <returns>補間後の値</returns>
 	static float Lerp(const float& num1, const float& num2, const float& t);
 
 	/// <summary>
 	/// 三角形の存在する平面情報を求める関数
 	/// </summary>
-	/// <param name="triangle"></param>
-	/// <returns></returns>
+	/// <param name="triangle">三角形</param>
+	/// <returns>三角形の定義する平面情報</returns>
 	static MyBase::Plane TriangleToPlane(const MyBase::Triangle& triangle);
 
 	/// <summary>
-	/// 球と球の衝突判定を返す関数
+	/// 2つの球の衝突判定を行う関数
 	/// </summary>
 	/// <param name="sphere1">球A</param>
 	/// <param name="sphere2">球B</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::Sphere& sphere1, const MyBase::Sphere& sphere2);
 
 	/// <summary>
@@ -58,7 +55,7 @@ public:
 	/// </summary>
 	/// <param name="sphere">球</param>
 	/// <param name="plane">平面</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& plane);
 
 	/// <summary>
@@ -66,7 +63,7 @@ public:
 	/// </summary>
 	/// <param name="line">直線</param>
 	/// <param name="plane">平面</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Line& line, const MyBase::Plane& plane);
 
 	/// <summary>
@@ -74,7 +71,7 @@ public:
 	/// </summary>
 	/// <param name="ray">半直線</param>
 	/// <param name="plane">平面</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane);
 
 	/// <summary>
@@ -82,7 +79,7 @@ public:
 	/// </summary>
 	/// <param name="segment">線分</param>
 	/// <param name="plane">平面</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Segment& segment, const MyBase::Plane& plane);
 
 	/// <summary>
@@ -90,7 +87,7 @@ public:
 	/// </summary>
 	/// <param name="triangle">三角形</param>
 	/// <param name="line">直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& line);
 
 	/// <summary>
@@ -98,7 +95,7 @@ public:
 	/// </summary>
 	/// <param name="triangle">三角形</param>
 	/// <param name="ray">半直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& ray);
 
 	/// <summary>
@@ -106,7 +103,7 @@ public:
 	/// </summary>
 	/// <param name="triangle">三角形</param>
 	/// <param name="segment">線分</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::Triangle& triangle, const MyBase::Segment& segment);
 
 	/// <summary>
@@ -114,7 +111,7 @@ public:
 	/// </summary>
 	/// <param name="aabb1">aabbA</param>
 	/// <param name="aabb2">aabbB</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2);
 
 	/// <summary>
@@ -122,7 +119,7 @@ public:
 	/// </summary>
 	/// <param name="aabb">aabb</param>
 	/// <param name="sphere">球</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere);
 
 	/// <summary>
@@ -130,7 +127,7 @@ public:
 	/// </summary>
 	/// <param name="aabb">aabb</param>
 	/// <param name="line">直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line);
 
 	/// <summary>
@@ -138,7 +135,7 @@ public:
 	/// </summary>
 	/// <param name="aabb">aabb</param>
 	/// <param name="ray">半直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray);
 
 	/// <summary>
@@ -146,7 +143,7 @@ public:
 	/// </summary>
 	/// <param name="aabb">aabb</param>
 	/// <param name="segment">線分</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segment);
 
 	/// <summary>
@@ -154,7 +151,7 @@ public:
 	/// </summary>
 	/// <param name="aabb">aabb</param>
 	/// <param name="point">点</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::AABB& aabb, const MyBase::Vector3& point);
 
 	/// <summary>
@@ -162,7 +159,7 @@ public:
 	/// </summary>
 	/// <param name="obb">OBB</param>
 	/// <param name="sphere">球</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Sphere& sphere);
 
 	/// <summary>
@@ -170,7 +167,7 @@ public:
 	/// </summary>
 	/// <param name="obb">OBB</param>
 	/// <param name="line">直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Line& line);
 
 	/// <summary>
@@ -178,7 +175,7 @@ public:
 	/// </summary>
 	/// <param name="obb">OBB</param>
 	/// <param name="ray">半直線</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray);
 
 	/// <summary>
@@ -186,7 +183,7 @@ public:
 	/// </summary>
 	/// <param name="obb">OBB</param>
 	/// <param name="segment">線分</param>
-	/// <returns></returns>
+	/// <returns>交差する場合 true</returns>
 	static bool IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment);
 
 	/// <summary>
@@ -194,32 +191,27 @@ public:
 	/// </summary>
 	/// <param name="obb1">OBB1</param>
 	/// <param name="obb2">OBB2</param>
-	/// <returns></returns>
+	/// <returns>衝突している場合 true</returns>
 	static bool IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2);
 
 	/// <summary>
 	/// 分離軸に投影された軸成分から投影線分長を算出
 	/// </summary>
-	/// <param name="Seg"></param>
-	/// <param name="e1"></param>
-	/// <param name="e2"></param>
-	/// <param name="e3"></param>
-	/// <returns></returns>
+	/// <param name="Seg">各軸方向ベクトル</param>
+	/// <param name="e1">軸1</param>
+	/// <param name="e2">軸2</param>
+	/// <param name="e3">軸3</param>
+	/// <returns>投影された線分長</returns>
 	static float LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
+#pragma endregion ツール関数
 
-	/// 
-	/// ツール関数 ここまで
-	///
-
-	/// 
-	/// 2次元ベクトル ここから
-	///
-	
+#pragma region 2次元ベクトル	
 	/// <summary>
 	/// 2次元ベクトルの内積を返す関数
 	/// </suumary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>内積の値</returns>
 	static float Dot(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
 
 	/// <summary>
@@ -227,6 +219,7 @@ public:
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>外積の値</returns>
 	static float Cross(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
 
 	/// <summary>
@@ -234,6 +227,7 @@ public:
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
+	/// <returns>ベクトルの長さ</returns>
 	static float Length(float x, float y);
 
 	/// <summary>
@@ -241,6 +235,7 @@ public:
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
+	/// <returns>正規化したベクトル</returns>
 	static MyBase::Vector2 Normalize(float x, float y);
 
 	/// <summary>
@@ -248,21 +243,17 @@ public:
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
+	///	<returns>方向ベクトル</returns>
 	static MyBase::Vector2 Direction(float x, float y);
+#pragma endregion 2次元ベクトル
 
-	/// 
-	/// 2次元ベクトル ここまで
-	///
-
-	/// 
-	/// 3次元ベクトル ここから
-	/// 
-	
+#pragma region 3次元ベクトル	
 	/// <summary>
 	/// 3次元ベクトルの加算を返す関数
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>加算結果のベクトル</returns>
 	static MyBase::Vector3 Add(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
@@ -270,6 +261,7 @@ public:
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>減算結果のベクトル</returns>
 	static MyBase::Vector3 Subtract(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
@@ -277,6 +269,7 @@ public:
 	/// </summary>
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="v">ベクトル</param>
+	/// <returns>スカラー倍されたベクトル</returns>
 	static MyBase::Vector3 Multiply(float scalar, const MyBase::Vector3& v);
 
 	/// <summary>
@@ -284,6 +277,7 @@ public:
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>内積の値</returns>
 	static float Dot(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
@@ -291,43 +285,46 @@ public:
 	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
+	/// <returns>外積のベクトル</returns>
 	static MyBase::Vector3 Cross(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
 	/// 3次元ベクトル長さ(ノルム)を返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
+	/// <returns>ベクトルの長さ</returns>
 	static float Length(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 3次元ベクトルの正規化した値を返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
+	/// <returns>正規化したベクトル</returns>
 	static MyBase::Vector3 Normalize(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 3次元ベクトルを標準化して返す関数
 	/// </summary>
 	/// <param name="v">ベクトル</param>
-	/// <returns></returns>
+	/// <returns>標準化したベクトル</returns>
 	static MyBase::Vector3 Standardization(const MyBase::Vector3& v);
 
 	/// <summary>
 	/// 線形補間
 	/// </summary>
-	/// <param name="vector1">ベクトルA</param>
-	/// <param name="vector2">ベクトルB</param>
+	/// <param name="vector1">開始ベクトル</param>
+	/// <param name="vector2">終了ベクトル</param>
 	/// <param name="t">媒介変数</param>
-	/// <returns></returns>
+	/// <returns>線形補間された3次元ベクトル</returns>
 	static MyBase::Vector3 Lerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t);
 
 	/// <summary>
 	/// 球面線形補間
 	/// </summary>
-	/// <param name="vector1">ベクトルA</param>
-	/// <param name="vector2">ベクトルB</param>
+	/// <param name="vector1">開始ベクトル</param>
+	/// <param name="vector2">終了ベクトル</param>
 	/// <param name="t">媒介変数</param>
-	/// <returns></returns>
+	/// <returns>球面線形補間された3次元ベクトル</returns>
 	static MyBase::Vector3 Slerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t);
 
 	/// <summary>
@@ -352,8 +349,9 @@ public:
 	/// <summary>
 	/// 正射影ベクトル(ベクトル射影)を返す関数
 	/// </summary>
-	/// <param name="v1">ベクトルA</param>
-	/// <param name="v2">ベクトルB</param>
+	/// <param name="v1">射影されるベクトル</param>
+	/// <param name="v2">射影先のベクトル</param>
+	/// <returns>正射影ベクトル</returns>
 	static MyBase::Vector3 Project(const MyBase::Vector3& v1, const MyBase::Vector3& v2);
 
 	/// <summary>
@@ -361,32 +359,26 @@ public:
 	/// </summary>
 	/// <param name="point">始点</param>
 	/// <param name="segment">線分</param>
-	/// <returns></returns>
+	/// <returns>最近接点</returns>
 	static MyBase::Vector3 ClosestPoint(const MyBase::Vector3& point, const MyBase::Segment& segment);
 
 	/// <summary>
 	/// 垂直なベクトルを求める関数
 	/// </summary>
-	/// <param name="vector"></param>
-	/// <returns></returns>
+	/// <param name="vector">基準ベクトル</param>
+	/// <returns>垂直なベクトル</returns>
 	static MyBase::Vector3 Perpendicular(const MyBase::Vector3& vector);
 
 	/// <summary>
 	/// 反射ベクトルを求める関数
 	/// </summary>
 	/// <param name="input">入射ベクトル</param>
-	/// <param name="normal">法線</param>
-	/// <returns></returns>
+	/// <param name="normal">法線ベクトル(正規化済み)</param>
+	/// <returns>反射ベクトル</returns>
 	static MyBase::Vector3 Reflect(const MyBase::Vector3& input, const MyBase::Vector3& normal);
+#pragma endregion 3次元ベクトル
 
-	/// 
-	/// 3次元ベクトル ここまで
-	/// 
-
-	/// 
-	/// 描画 ここから
-	/// 
-	
+#pragma region 描画	
 	/// <summary>
 	/// 2次元ベクトルの表示
 	/// </summary>
@@ -404,8 +396,5 @@ public:
 	/// <param name="vector">表示したいベクトルの変数</param>
 	/// <param name="label">表示したいベクトルの名前</param>
 	//static void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
-
-	/// 
-	/// 描画 ここまで
-	/// 
+#pragma endregion 描画
 };

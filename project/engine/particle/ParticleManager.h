@@ -34,25 +34,38 @@ public:	// パーティクルグループ構造体
 	};
 
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスを取得
+	/// </summary>
+	/// <returns>ParticleManager のインスタンス</returns>
 	static ParticleManager* GetInstance();
-	// 終了
+	
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize(SrvManager* srvManager);
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 #ifdef _DEBUG
-	// Imgui
+	/// <summary>
+	/// Imgui
+	/// </summary>
 	void Imgui();
 #endif // _DEBUG
-
 
 	/// <summary>
 	/// ブレンドモード変更
@@ -68,14 +81,14 @@ public:	// メンバ関数
 	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
 
 	/// <summary>
-	/// パーティクルグループ(Ring)の生成
+	/// リング型パーティクルグループを生成
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <param name="textureFilePath">テクスチャファイルパス</param>
 	void CreateParticleGroupRing(const std::string name, const std::string textureFilePath);
 
 	/// <summary>
-	/// パーティクルグループ(Cylinder)の生成
+	/// 円柱型パーティクルグループを生成
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <param name="textureFilePath">テクスチャファイルパス</param>
@@ -89,14 +102,38 @@ public:	// メンバ関数
 	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
 	void Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
 
+	/// <summary>
+	/// パーティクル描画で使用するインデックスバッファリソースを生成します。
+	/// </summary>
+	/// <param name="type">パーティクルタイプ(デフォルト: Ellipse)</param>
 	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 public:	// getter
+	/// <summary>
+	/// すべてのパーティクルグループのマップを取得
+	/// </summary>
+	/// <returns>パーティクルグループのマップ</returns>
 	std::map<std::string, std::unique_ptr<ParticleGroup>>& GetParticleGroups() { return particleGroups_; }
+
+	/// <summary>
+	/// 指定した名前のパーティクルグループを取得
+	/// </summary>
+	/// <param name="name">パーティクルグループ名</param>
+	/// <returns>パーティクルグループ。存在しない場合は nullptr</returns>
 	ParticleGroup* GetParticleGroup(const std::string& name);
+	
+	/// <summary>
+	/// 指定したパーティクルグループがビルボードかどうかを返す
+	/// </summary>
+	/// <param name="name">パーティクルグループ名</param>
 	bool GetIsBillboard(const std::string& name);
 
 public:	// setter
+	/// <summary>
+	/// 指定したパーティクルグループにビルボード設定
+	/// </summary>
+	/// <param name="name">パーティクルグループ名</param>
+	/// <param name="isBillboard">ビルボードを使用する場合 true</param>
 	void SetIsBillboard(const std::string& name, bool isBillboard);
 
 private: // ローカル関数
@@ -107,7 +144,7 @@ private: // ローカル関数
 	/// <param name="translate">位置</param>
 	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
 	/// <param name="type">パーティクルのタイプ</param>
-	/// <returns></returns>
+	/// <returns>生成されたパーティクルデータ</returns>
 	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
 
 private:	// シングルトン

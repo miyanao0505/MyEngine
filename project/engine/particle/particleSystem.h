@@ -47,6 +47,10 @@ public:	// メンバ関数
 	void Draw();
 
 #ifdef _DEBUG
+	/// <summary>
+	/// ImGuiを使用したデバッグ表示
+	/// </summary>
+	/// <param name="name">対象パーティクルグループ名</param>
 	void Imgui(std::string name);
 #endif // _DEBUG
 
@@ -74,7 +78,7 @@ public: // setter
 	/// <summary>
 	/// パーティクルグループ名の設定
 	/// </summary>
-	/// <param name="groupName"></param>
+	/// <param name="groupName">設定するパーティクルグループ名</param>
 	void SetParticleGroupName(const std::string& groupName);
 
 	/// <summary>

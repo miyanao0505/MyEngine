@@ -32,7 +32,9 @@ public:	// メンバ関数
 	void UpdateFollow(float deltaTime);
 
 #ifdef _DEBUG
-	// デバック用の描画
+	/// <summary>
+	/// デバック用の描画
+	/// </summary>
 	void DebugDraw();
 #endif // _DEBUG
 
@@ -40,17 +42,19 @@ public:	// getter
 	/// <summary>
 	/// プレイヤーとカメラのオフセットの取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>プレイヤーとカメラのオフセット</returns>
 	MyBase::Vector3 GetOffset() { return offset_; }
+
 	/// <summary>
 	/// プレイヤーを追っただけの理想位置の取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>プレイヤーを追っただけの理想位置</returns>
 	MyBase::Vector3 GetRawFollowPosition() const { return rawFollowPosition_; }
+	
 	/// <summary>
 	/// 注視点の位置の取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>注視点の位置</returns>
 	MyBase::Vector3 GetRawLookAtPosition() const { return target_; }
 
 public:	// setter
@@ -59,11 +63,13 @@ public:	// setter
 	/// </summary>
 	/// <param name="camera">担当のカメラ</param>
 	void SetCamera(Camera* camera) { camera_ = camera; }
+	
 	/// <summary>
 	/// プレイヤーの設定
 	/// </summary>
 	/// <param name="player">担当のプレイヤー</param>
 	void SetPlayer(Player* player) { player_ = player; }
+	
 	/// <summary>
 	/// プレイヤーとカメラのオフセットの設定
 	/// </summary>

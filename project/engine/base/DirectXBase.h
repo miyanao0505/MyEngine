@@ -20,47 +20,91 @@ class SrvManager;
 class DirectXBase
 {
 public:	// メンバ関数
+	/// <summary>
+	/// シングルトンインスタンスを取得
+	/// </summary>
+	/// <returns>DirectXBase のインスタンス</returns>
 	static DirectXBase* GetInstance();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="winApi">WindowsAPI クラスのインスタンス</param>
 	void Initialize(WindowsAPI* winApi);
-	// 終了
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
-	// 描画前処理(RenderTexture)
+	
+	/// <summary>
+	/// 描画前処理(RenderTexture)
+	/// </summary>
 	void PreRenderTexture();
-	// 描画前処理
+
+	/// <summary>
+	/// 描画前処理
+	///	</summary>
 	void PreDraw();
-	// 描画後処理
+
+	/// <summary>
+	/// 描画後処理
+	/// </summary>
 	void PostDraw();
 
-	// オフスクリーンのSRV作成
+	/// <summary>
+	/// オフスクリーンのSRV作成
+	/// </summary>
+	/// <param name="srvManager">SrvManagerクラスのインスタンス</param>
 	void CreateOffScreenSRV(SrvManager* srvManager);
 
 	/// <summary>
-	/// ShaderをCompileをする関数
+	/// 指定したShaderをCompileをする関数
 	/// </summary>
 	/// <param name="filePath">CompilerするShaderファイルへのパス</param>
 	/// <param name="profile">Compilerに使用するProfile</param>
-	/// <returns></returns>
+	/// <returns>生成された Shader バイナリ</returns>
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
 	/// <summary>
-	/// バッファーリソースの生成
+	/// 指定サイズのバッファーリソースの生成
 	/// </summary>
-	/// <param name="sizeInBytes"></param>
-	/// <returns></returns>
+	/// <param name="sizeInBytes">バッファサイズ(バイト)</param>
+	/// <returns>生成されたバッファリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
-	// TextureResource作成の関数
+	/// <summary>
+	/// TextureResource作成の関数
+	/// </summary>
+	/// <param name="metadata">テクスチャのメタデータ</param>
+	/// <returns>生成されたテクスチャリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
-	// RenderTextureの生成
+	/// <summary>
+	/// RenderTextureの生成
+	/// </summary>
+	/// <param name="width">テクスチャの幅</param>
+	/// <param name="height">テクスチャの高さ</param>
+	/// <param name="format">テクスチャのフォーマット</param>
+	/// <param name="clearColor">クリアカラー</param>
+	/// <returns>生成されたRenderTextureリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const MyBase::Vector4& clearColor);
 
-	// データを転送する関数
+	/// <summary>
+	/// テクスチャへ画像データを転送
+	/// </summary>
+	/// <param name="texture">転送先のテクスチャリソース</param>
+	/// <param name="mipImages">転送元画像イメージデータ</param>
+	/// <returns>アップロード用バッファリソース</returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
-	// デスクリプタヒープの生成
+	/// <summary>
+	/// デスクリプタヒープの生成
+	/// </summary>
+	/// <param name="heapType">デスクリプタヒープのタイプ</param>
+	/// <param name="numDescriptors">デスクリプタ数</param>
+	/// <param name="shaderVisible">シェーダーから見えるかどうか</param>
+	/// <returns>生成されたデスクリプタヒープ</returns>
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
 	/// <summary>
@@ -71,65 +115,159 @@ public:	// メンバ関数
 	static DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
 	/// <summary>
-	/// バリアを貼る
+	/// リソースに対してバリアを設定し、状態を遷移
 	/// </summary>
-	/// <param name="pResource"></param>
-	/// <param name="Before"></param>
-	/// <param name="After"></param>
+	/// <param name="pResource">対象リソース</param>
+	/// <param name="Before">遷移前の状態</param>
+	/// <param name="After">遷移後の状態</param>
 	void BarrierTransition(ID3D12Resource* pResource, D3D12_RESOURCE_STATES Before, D3D12_RESOURCE_STATES After);
 
 public:	// getter
-
-	// RTVの指定番号のCPUデスクリプタハンドルを取得する
+	/// <summary>
+	/// RTVの指定番号のCPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>CPUデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVCPUDescriptorHandle(uint32_t index);
-	// RTVの指定番号のGPUデスクリプタハンドルを取得
+
+	/// <summary>
+	/// RTVの指定番号のGPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetRTVGPUDescriptorHandle(uint32_t index);
-	// DSVの指定番号のCPUデスクリプタハンドルを取得
+
+	/// <summary>
+	/// DSVの指定番号のCPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>CPUデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVCPUDescriptorHandle(uint32_t index);
-	// DSVの指定番号のGPUデスクリプタハンドルを取得
+
+	/// <summary>
+	/// DSVの指定番号のGPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDSVGPUDescriptorHandle(uint32_t index);
-	// RenderTextureのCPUデスクリプタハンドルを取得
+
+	/// <summary>
+	/// RenderTextureのCPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <returns>CPUデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetOffScreenSRVCPUDescriptorHandle() { return offScreenSrvHandleCPU_; };
-	// RenderTextureのGPUデスクリプタハンドルを取得
+	
+	/// <summary>
+	/// RenderTextureのGPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetOffScreenSRVGPUDescriptorHandle() { return offScreenSrvHandleGPU_; };
 
+	/// <summary>
+	/// DirectX12デバイスの取得
+	/// </summary>
+	/// <returns>DirectX12デバイス</returns>
 	ID3D12Device* GetDevice() const { return device_.Get(); }
+	
+	/// <summary>
+	/// コマンドキューの取得
+	/// </summary>
+	/// <returns>コマンドキュー</returns>
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
-	// バックバッファの数を取得
+	
+	/// <summary>
+	/// バックバッファの数を取得
+	/// </summary>
+	/// <returns>バックバッファの数</returns>
 	size_t GetBackBufferCount() const { return backBuffer_.size(); }
 
 private:	// メンバ関数
-	// デバイスの生成
+	/// <summary>
+	/// デバイスの生成
+	/// </summary>
 	void CreateDevice();
-	// コマンド関連の生成
+
+	/// <summary>
+	/// コマンド関連の生成
+	/// </summary>
 	void CreateCommand();
-	// スワップチェーンの生成
+
+	/// <summary>
+	/// スワップチェーンの生成
+	/// </summary>
 	void CreateSwapChain();
-	// 深度バッファの生成
+
+	/// <summary>
+	/// 深度バッファの生成
+	/// </summary>
 	void CreateDepthStencil();
-	// 各種デスクリプタヒープの生成
+
+	/// <summary>
+	/// 各種デスクリプタヒープの生成
+	/// </summary>
 	void CreateDescriptorHeapAllKinds();
-	// レンダーターゲットビューの初期化
+	
+	/// <summary>
+	/// レンダーターゲットビューの初期化
+	/// </summary>
 	void InitializeRenderTargetView();
-	// CPUデスクリプタハンドルを取得する
+
+	/// <summary>
+	/// CPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="descriptorHeap">デスクリプタヒープ</param>
+	/// <param name="descriptorSize">デスクリプタサイズ</param>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>CPUデスクリプタハンドル</returns>
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
-	// GPUデスクリプタハンドルを取得する
+	
+	/// <summary>
+	/// GPUデスクリプタハンドルを取得
+	/// </summary>
+	/// <param name="descriptorHeap">デスクリプタヒープ</param>
+	/// <param name="descriptorSize">デスクリプタサイズ</param>
+	/// <param name="index">デスクリプタ番号</param>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	static D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index);
-	// 深度ステンシルビューの初期化
+	
+	/// <summary>
+	/// 深度ステンシルビューの初期化
+	/// </summary>
 	void InitializeDepthStencilView();
-	// フェンスの生成
+	
+	/// <summary>
+	/// フェンスの生成
+	/// </summary>
 	void CreateFence();
-	// ビューポート矩形の生成
+	
+	/// <summary>
+	/// ビューポート矩形の生成
+	/// </summary>
 	void CreateViewPort();
-	// シザリング矩形の生成
+	
+	/// <summary>
+	/// シザリング矩形の生成
+	/// </summary>
 	void CreateScissorRect();
-	// DXCコンパイラの生成
+	
+	/// <summary>
+	/// DXCコンパイラの生成
+	/// </summary>
 	void CreateDxcCompiler();
-	// ImGuiの初期化
+	
+	/// <summary>
+	/// ImGuiの初期化
+	/// </summary>
 	void InitializeImGui();
-	// FPS固定初期化
+	
+	/// <summary>
+	/// FPS固定初期化
+	/// </summary>
 	void InitializeFixFPS();
-	// FPS固定更新
+	
+	/// <summary>
+	/// FPS固定更新
+	/// </summary>
 	void UpdateFixFPS();
 
 private:	// シングルトンインスタンス

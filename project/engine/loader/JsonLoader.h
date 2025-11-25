@@ -36,13 +36,20 @@ class JsonLoader
 public:	// メンバ関数
 
 	/// <summary>
-	/// JSONファイルを読み込みLevelDataを返す
+	/// JSONファイルを読み込みレベルデータ(LevelData)を返す
 	/// </summary>
 	/// <param name="filePath">読み込むJSONファイルのパス</param>
-	/// <returns></returns>
+	/// <returns>読み込んだデータを格納したLevelData構造体のポインタ</returns>
 	LevelData* LoadFile(const std::string& filePath);
 
 private:	// メンバ関数
+	/// <summary>
+	/// JSONオブジェクトからObjectDataを解析し、LevelDataへ登録
+	/// 子オブジェクトが存在する場合は再帰的に解析
+	/// </summary>
+	/// <param name="object">解析対象のJSONオブジェクト</param>
+	/// <param name="levelData">解析結果を格納するLevelData</param>
+	/// <param name="parent">親のObjectData (ルートの場合はnullptr)</param>
 	void ParseObject(const nlohmann::json& object, LevelData& levelData, ObjectData* parent = nullptr);
 };
 

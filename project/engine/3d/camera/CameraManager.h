@@ -27,53 +27,74 @@ private:	// 構造体
 	};
 
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// CameraManager のシングルトンインスタンスを取得
+	/// </summary>
+	/// <returns>CameraManager の唯一のインスタンス</returns>
 	static CameraManager* GetInstance();
-	// 終了
+
+	/// <summary>
+	/// CameraManager を終了(解放)
+	/// </summary>
 	void Finalize();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
-
-	/// <summary>
-	/// カメラのセット
-	/// </summary>
-	/// <param name="cameraName">カメラの名前</param>
-	void SetCamera(const std::string& cameraName);
-
-	/// <summary>
-	/// カメラの検索
-	/// </summary>
-	/// <param name="cameraName">カメラの名前</param>
-	void FindCamera(const std::string& cameraName);
-
+	
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="deltaTime"></param>
+	/// <param name="deltaTime">前フレームからの経過時間(秒)</param>
 	void Update(float deltaTime);
 
 	/// <summary>
-	/// シェイクを開始
+	/// 名前でカメラを検索
+	/// </summary>
+	/// <param name="cameraName">検索するカメラの名前</param>
+	void FindCamera(const std::string& cameraName);
+
+	/// <summary>
+	/// カメラシェイクを開始
 	/// </summary>
 	/// <param name="amplitude">平行移動の最大振幅(ワールド単位)</param>
 	/// <param name="duration">継続時間(秒)</param>
-	/// <param name="frequency">揺れの周波数(Hz) - 実装では時間に掛ける係数</param>
+	/// <param name="frequency">揺れの周波数(Hz、実装では時間に掛ける係数)</param>
 	/// <param name="rotationAmplitude">回転の最大振幅(ラジアン)</param>
 	void StartShake(float amplitude, float duration, float frequency = 20.0f, float rotationAmplitude = 0.02f);
 
 	/// <summary>
-	/// 即時停止(オリジナルに復帰)
+	/// カメラシェイクを即時停止し、オリジナルの状態に復帰
 	/// </summary>
 	void StopShake();
 
 #ifdef _DEBUG
-	// デバック用の描画
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebugDraw();
 #endif // _DEBUG
 
 public:	// getter
+	/// <summary>
+	/// 登録されているすべてのカメラ名を取得
+	/// </summary>
+	/// <returns>カメラ名のリスト</returns>
 	std::vector<std::string> GetAllName();
+
+	/// <summary>
+	/// カメラデータの取得
+	/// </summary>
+	/// <returns>カメラ</returns>
+	Camera* GetCamera() { return camera_; }
+
+public:	// setter
+	/// <summary>
+	/// 現在操作するカメラを設定
+	/// </summary>
+	/// <param name="cameraName">設定するカメラの名前</param>
+	void SetCamera(const std::string& cameraName);
 
 private:	// シングルトン
 	static CameraManager* instance;
@@ -82,13 +103,6 @@ private:	// シングルトン
 	~CameraManager() = default;
 	CameraManager(CameraManager&) = default;
 	CameraManager& operator=(CameraManager&) = delete;
-
-public:	// メンバ関数
-	/// <summary>
-	/// カメラデータの取得
-	/// </summary>
-	/// <returns>カメラ</returns>
-	Camera* GetCamera() { return camera_; }
 
 private:	// メンバ変数
 	// カメラデータ

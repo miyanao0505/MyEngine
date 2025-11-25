@@ -13,33 +13,100 @@ class ModelBase;
 class Model
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="modelBase">基底となる ModelBase インスタンスへのポインタ</param>
+	/// <param name="directorypath">モデルファイルが格納されているディレクトリパス</param>
+	/// <param name="filename">読み込むモデルファイル名</param>
 	void Initialize(ModelBase* modelBase, const std::string& directorypath, const std::string& filename);
-	// 描画処理
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
-	// .mtlファイルの読み取り
+	
+	/// <summary>
+	/// .mtl(マテリアル)ファイルを読み込み、MaterialData を生成
+	/// </summary>
+	/// <param name="directoryPath">mtl ファイルが存在するディレクトリパス</param>
+	/// <param name="filename">読み込む mtl ファイル名</param>
+	/// <returns>MaterialData 構造体</returns>
 	static MyBase::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-	// .objファイルの読み取り
+	
+	/// <summary>
+	/// .obj ファイルを読み込み、モデルデータを構築
+	/// </summary>
+	/// <param name="directoryPath">obj ファイルが存在するディレクトリパス</param>
+	/// <param name="filename">読み込む obj ファイル名</param>
 	void LoadObjFile(const std::string& directoryPath, const std::string& filename);
 
 public:	// getter
+	/// <summary>
+	/// モデルデータを取得
+	/// </summary>
+	/// <returns>ModelData への参照</returns>
 	const MyBase::ModelData& GetModelData() const { return modelData_; }
+	
+	/// <summary>
+	/// モデルのテクスチャファイル名を取得
+	/// </summary>
+	/// <returns>テクスチャファイル名への参照</returns>
 	const std::string& GetTexture() const { return modelData_.material.textureFilePath; }
+	
+	/// <summary>
+	/// モデルのマテリアル情報を取得
+	/// </summary>
+	/// <returns>ModelMaterial へのポインタ。マテリアル未設定の場合は nullptr</returns>
 	MyBase::ModelMaterial* GetModelMaterial() const { return (materialData_ == nullptr) ? nullptr : materialData_; }
+	
+	/// <summary>
+	/// ライティングの有効状態を取得
+	/// </summary>
+	/// <returns>有効なら 1、無効なら 0</returns>
 	const int& GetEnableLighting() const { return materialData_->enableLighting; }
 
 public:	// setter
+	/// <summary>
+	/// ライティングの有効/無効を設定
+	/// </summary>
+	/// <param name="enableLighting">true でライティング有効、false で無効</param>
 	void SetEnableLighting(const bool& enableLighting) { materialData_->enableLighting = enableLighting; }
+	
+	/// <summary>
+	/// モデルに使用するテクスチャを設定
+	/// </summary>
+	/// <param name="filename">設定するテクスチャファイル名</param>
 	void SetTexture(const std::string& filename);
+	
+	/// <summary>
+	/// モデルのマテリアル情報を設定
+	/// </summary>
+	/// <param name="materialData">設定する ModelMaterial へのポインタ</param>
 	void SetModelMaterial(MyBase::ModelMaterial* materialData) { materialData_ = materialData; }
+	
+	/// <summary>
+	/// 環境マップ用のテクスチャ名を設定
+	/// </summary>
+	/// <param name="textureName">設定する環境テクスチャ名</param>
 	void SetEnvironmentTexture(const std::string& textureName) { environmentTexture_ = textureName; }
 
 private:	// メンバ関数
-	// 頂点データ作成
+	/// <summary>
+	/// 頂点データを作成
+	/// </summary>
 	void CreateVertexData();
-	// マテリアルデータ作成
+	
+	/// <summary>
+	/// マテリアルデータを作成
+	/// </summary>
 	void CreateMaterialData();
-	// Node情報を読み込む
+	
+	/// <summary>
+	/// Assimp のノード情報を読み込み、Node 構造体に変換
+	/// </summary>
+	/// <param name="node">読み込む aiNode ポインタ</param>
+	/// <returns>変換された Node 情報</returns>
 	MyBase::Node ReadNode(aiNode* node);
 
 private:	// メンバ変数

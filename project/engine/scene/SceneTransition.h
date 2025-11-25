@@ -19,10 +19,32 @@ public:	// enum
 	};
 
 public:	// メンバ関数
+	/// <summary>
+	/// フェード演出の開始処理
+	/// </summary>
+	/// <param name="onChange">フェードアウト完了後に実行されるシーン切替コールバック関数</param>
 	void Start(std::function<void()> onChange);
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();    // αを使って黒フェードを描画
+	
+	/// <summary>
+	/// 演出中かどうかを取得
+	/// </summary>
+	/// <returns>演出中なら true、停止中なら false</returns>
 	bool IsActive() const { return isActive_; }
+	
+	/// <summary>
+	/// 演出が終了したかどうかを取得
+	/// </summary>
+	/// <returns>完了していれば true、未完了なら false</returns>
 	bool IsFinished() const { return !isActive_; }
 
 private:	// メンバ変数

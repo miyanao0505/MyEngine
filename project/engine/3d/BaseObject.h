@@ -18,11 +18,15 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
+	/// <param name="folderPath">モデルや関連リソースが格納されているフォルダパス</param>
+	/// <param name="filePath">初期化するモデルファイルのパス</param>
 	void Initialize(const std::string& folderPath, const std::string& filePath);
+	
 	/// <summary>
 	/// 更新
 	/// </summary>
 	virtual void Update();
+	
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -38,28 +42,69 @@ public:	// メンバ関数
 	/// <summary>
 	/// 衝突判定処理
 	/// </summary>
-	/// <param name="other"></param>
+	/// <param name="other">衝突相手の Collider</param>
 	virtual void OnCollision([[maybe_unused]] Collider* other);
 
 public:	// getter
-
-	// ---- Collider連携 ----
 	/// <summary>
-	/// ワールド座標を取得
+	/// オブジェクトのワールド座標を取得
 	/// </summary>
+	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
 	virtual MyBase::Vector3 GetWorldPosition() { return object_ ? object_->GetTranslate() : MyBase::Vector3{ 0,0,0 }; }
-	// ---- Collider連携 ----
 
+	/// <summary>
+	/// オブジェクトに関連付けられた Collider を取得
+	/// </summary>
+	/// <returns>Collider へのポインタ</returns>
 	Collider* GetCollider() const { return collider_.get(); }
+	
+	/// <summary>
+	/// オブジェクトに関連付けられた 3D モデルを取得
+	/// </summary>
+	/// <returns>Object3d へのポインタ</returns>
 	Object3d* GetObject3d() const { return object_.get(); }
+	
+	/// <summary>
+	/// オブジェクト名を取得
+	/// </summary>
+	/// <returns>オブジェクト名(文字列)</returns>
 	std::string GetName() const { return name_; }
+	
+	/// <summary>
+	/// オブジェクトが無効化されているかを取得
+	/// </summary>
+	/// <returns>true の場合はオブジェクトが無効、false の場合は有効</returns>
 	bool IsDisabled() const { return isDisabled_; }
 
 public:	// setter
+	/// <summary>
+	/// オブジェクトにモデルを設定
+	/// </summary>
+	/// <param name="modelPath">設定するモデルファイルのパス</param>
 	void SetModel(const std::string& modelPath) { if (object_) { object_->SetModel(modelPath); } }
+	
+	/// <summary>
+	/// Object3d インスタンスを設定
+	/// </summary>
+	/// <param name="object">所有権を移譲する Object3d のユニークポインタ</param>
 	void SetObject3d(std::unique_ptr<Object3d> object) { object_ = std::move(object); }
+	
+	/// <summary>
+	/// Collider インスタンスを設定
+	/// </summary>
+	/// <param name="collider">所有権を移譲する Collider のユニークポインタ</param>
 	void SetCollider(std::unique_ptr<Collider> collider) { collider_ = std::move(collider); }
+	
+	/// <summary>
+	/// オブジェクト名を設定
+	/// </summary>
+	/// <param name="name">設定する名前</param>
 	void SetName(const std::string& name) { name_ = name; }
+	
+	/// <summary>
+	/// オブジェクトの有効/無効状態を設定
+	/// </summary>
+	/// <param name="isDisabled">true にするとオブジェクトを無効化、false にすると有効化</param>
 	void SetDisabled(bool isDisabled) { isDisabled_ = isDisabled; }
 
 protected:	// メンバ変数
@@ -70,4 +115,3 @@ protected:	// メンバ変数
 	bool isDisabled_ = false;						// 無効化フラグ
 
 };
-

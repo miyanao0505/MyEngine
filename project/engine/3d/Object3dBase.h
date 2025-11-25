@@ -22,22 +22,41 @@ public:	// 列挙型
 		kCountOfBlendMode,	//!< 利用してはいけない
 	};
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initislize();
-	// ルートシグネチャの作成
-	void CreateRootSignature();
-	// グラフィックスパイプラインの生成
-	void CreateGraphicsPipeline();
-	// 共通画面設定
+	
+	/// <summary>
+	/// 共通の画面設定(描画ターゲット、ビューポートなど)を適用
+	/// </summary>
 	void SetCommonScreen();
 
 public:	// getter
+	/// <summary>
+	/// 使用中の DirectXBase を取得
+	/// </summary>
+	/// <returns>DirectXBase へのポインタ</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
 
 public:	// setter
+	/// <summary>
+	/// 現在のブレンドモードを設定
+	/// </summary>
+	/// <param name="blendMode">適用するブレンドモード。BlendMode 列挙型を使用します</param>
 	void SetBlendMode(BlendMode blendMode);
 
 private:	// メンバ関数
+	/// <summary>
+	/// 3Dオブジェクト描画用のルートシグネチャを作成
+	/// </summary>
+	void CreateRootSignature();
+
+	/// <summary>
+	/// 3Dオブジェクト描画用のグラフィックスパイプラインステートを生成
+	/// </summary>
+	void CreateGraphicsPipeline();
+
 	// ブレンドモード設計
 	D3D12_BLEND_DESC SetBlendModeNone();
 	D3D12_BLEND_DESC SetBlendModeNormal();

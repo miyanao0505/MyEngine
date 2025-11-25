@@ -8,7 +8,10 @@
 class PlayerBullet : public BaseObject
 {
 public:	// メンバ関数
-	virtual ~PlayerBullet() = default;	// 仮想デストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	virtual ~PlayerBullet() = default;
 
 	/// <summary>
 	/// 初期化
@@ -25,7 +28,6 @@ public:	// メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw() override;
-
 
 #ifdef _DEBUG
 	/// <summary>
@@ -45,8 +47,16 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
+	/// <summary>
+	/// オブジェクトのワールド座標を取得
+	/// </summary>
+	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
 	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
+	/// <summary>
+	/// 弾が消滅したかどうかを取得
+	/// </summary>
+	/// <returns>true:消滅している、false:消滅していない</returns>
 	bool IsDead() const { return isDead_; }	// 弾が消滅したかどうか
 
 public:	// setter

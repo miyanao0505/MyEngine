@@ -9,50 +9,169 @@
 class Skybox
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="filePath">使用するテクスチャのファイルパス</param>
+	/// <param name="scale">Skybox の表示スケールベクトル (X, Y, Z)</param>
 	void Initislize(const std::string& filePath, MyBase::Vector3 scale);
-	// 更新処理
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	// 描画処理
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
-	// デバック描画
+	
+#ifdef _DEBUG
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebugDraw();
+#endif // _DEBUG
 
 public:	// getter
+	/// <summary>
+	/// 使用中の DirectXBase を取得
+	/// </summary>
+	/// <returns>DirectXBase へのポインタ</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
+	
+	/// <summary>
+	/// ワールド変換クラスの取得
+	/// </summary>
+	/// <returns>WorldTransform クラス</returns>
 	WorldTransform* GetWorldTransform() const { return worldTransform_.get(); }
+	
+	/// <summary>
+	/// Skyboxの Transform を取得
+	/// </summary>
+	/// <returns>Transform</returns>
 	MyBase::Transform GetTransform() const { return MyBase::Transform{ worldTransform_->GetScale(), worldTransform_->GetRotate(), worldTransform_->GetTranslate() }; }
+	
+	/// <summary>
+	/// Skyboxのスケール値を取得
+	/// </summary>
+	/// <returns>スケールベクトル (X, Y, Z) への参照</returns>
 	MyBase::Vector3 GetScale() const { return worldTransform_->GetScale(); }
+	
+	/// <summary>
+	/// Skyboxの回転値を取得
+	/// </summary>
+	/// <returns>回転ベクトル (X, Y, Z) への参照</returns>
 	MyBase::Vector3 GetRotate() const { return worldTransform_->GetRotate(); }
+	
+	/// <summary>
+	/// Skyboxの位置(平行移動)を取得
+	/// </summary>
+	/// <returns>位置ベクトル (X, Y, Z) への参照</returns>
 	MyBase::Vector3 GetTranslate() const { return worldTransform_->GetTranslate(); }
+	
+	/// <summary>
+	/// Skyboxで使用しているテクスチャファイル名を取得
+	/// </summary>
+	/// <returns>テクスチャファイル名への参照</returns>
 	const std::string& GetTextureName() { return textureFileName_; }
+	
+	/// <summary>
+	/// 環境マップを使用しているかどうか取得
+	/// </summary>
+	/// <returns> 環境マップへの参照</returns>
 	bool IsUsingEnvironmentMap() const { return useEnvironmentMap_; }
 
 public:	// setter
+	/// <summary>
+	/// ワールド変換クラスの設定
+	/// </summary>
+	/// <param name="worldTransform">設定するワールドトランスフォーム</param>
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
+	
+	/// <summary>
+	/// Skyboxの Transform を設定
+	/// </summary>
+	/// <param name="transform">新しい Transform</param>
 	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotate(transform.rotate); worldTransform_->SetTranslate(transform.translate); }
+	
+	/// <summary>
+	/// スケール値を設定
+	/// </summary>
+	/// <param name="scale">スケールベクトル (X, Y, Z)</param>
 	void SetScale(const MyBase::Vector3& scale) { worldTransform_->SetScale(scale); }
+	
+	/// <summary>
+	/// 回転値を設定
+	/// </summary>
+	/// <param name="rotate">回転ベクトル (X, Y, Z)</param>
 	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotate(rotate); }
+	
+	/// <summary>
+	/// 座標値を設定
+	/// </summary>
+	/// <param name="translate">位置ベクトル (X, Y, Z)</param>
 	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetTranslate(translate); }
+	
+	/// <summary>
+	/// 描画に使用するテクスチャを変更
+	/// </summary>
+	/// <param name="textureName">テクスチャファイル名</param>
 	void SetTexture(const std::string& textureName);
+	
+	/// <summary>
+	/// 環境マップの使用設定
+	/// </summary>
+	/// <param name="use">環境マップの使用フラグ</param>
 	void SetUseEnvironmentMap(bool use) { useEnvironmentMap_ = use; }
 
 private:	// メンバ関数
-	// ルートシグネチャの作成
+	/// <summary>
+	/// ルートシグネチャを作成します。
+	/// GPU がアクセスするリソースの配置定義を行います。
+	/// </summary>
 	void CreateRootSignature();
-	// グラフィックスパイプラインの生成
+	
+	/// <summary>
+	/// Skybox 用のグラフィックスパイプラインを生成します。
+	/// シェーダ・入力レイアウト・ブレンド設定などの構築を行います。
+	/// </summary>
 	void CreateGraphicsPipeline();
-	// 共通画面設定
+	
+	/// <summary>
+	/// 共通の画面設定（レンダーターゲット・ビューポート等）を適用します。
+	/// Skybox 描画前に呼び出されます。
+	/// </summary>
 	void SetCommonScreen();
-	// 座標変換行列データ作成
+	
+	/// <summary>
+	/// 座標変換行列の GPU バッファを作成します。
+	/// ワールド・ビュー・プロジェクション行列の転送準備を行います。
+	/// </summary>
 	void CreateTransformationMatrixData();
-	// カメラデータ作成
+	
+	/// <summary>
+	/// カメラ情報の GPU バッファを作成します。
+	/// カメラ位置やビュー行列を Skybox 用に転送できるよう準備します。
+	/// </summary>
 	void CreateCameraData();
-	// 頂点データ作成
+	
+	/// <summary>
+	/// Skybox の頂点バッファを生成します。
+	/// 立方体の全頂点の座標・UV などを GPU に転送します。
+	/// </summary>
 	void CreateVertexData();
-	// インデックスデータ作成
+	
+	/// <summary>
+	/// Skybox のインデックスバッファを生成します。
+	/// 立方体の三角形構築に必要なインデックス情報を GPU に転送します。
+	/// </summary>
 	void CreateIndexData();
-	// マテリアルデータ作成
+	
+	/// <summary>
+	/// Skybox のマテリアルデータを作成します。
+	/// テクスチャ情報やライティング設定などを GPU に送る準備を行います。
+	/// </summary>
 	void CreateMaterialData();
 
 private:	// メンバ変数

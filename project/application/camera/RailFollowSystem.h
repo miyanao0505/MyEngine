@@ -17,6 +17,7 @@ public:	// メンバ関数
 	/// <param name="follow">フォローカメラ</param>
 	/// <param name="outCamera">カメラ</param>
 	void Initialize(RailCamera* rail, FollowCamera* follow, Camera* outCamera);
+	
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -31,6 +32,7 @@ public:	// setter
 	/// </summary>
 	/// <param name="maxOffsetX">X方向の最大オフセット</param>
 	void SetMaxOffsetX(float maxOffsetX) { maxOffsetX_ = maxOffsetX; }
+
 	/// <summary>
 	/// Y方向の最大オフセットの設定
 	/// </summary>

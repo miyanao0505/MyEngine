@@ -11,7 +11,14 @@
 class Player : public BaseObject
 {
 public:	// メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Player();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player();
 
 	/// <summary>
@@ -37,7 +44,6 @@ public:	// メンバ関数
 	void DebugDraw() override;
 #endif // _DEBUG
 
-
 	/// <summary>
 	/// 移動処理
 	/// </summary>
@@ -59,11 +65,23 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
-	// 
+	/// <summary>
+	/// 攻撃力を取得
+	/// </summary>
+	/// <returns>攻撃力を取得</returns>
 	int GetAttackPower() const { return attackPower_; }
+
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	/// <returns>ワールド座標</returns>
 	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
+	/// <summary>
+	/// 攻撃力を設定
+	/// </summary>
+	/// <param name="attackPower">攻撃力</param>
 	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
 
 private:	// メンバ変数	

@@ -15,22 +15,35 @@ class Player;
 class Enemy : public BaseObject
 {
 public:	// メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Enemy();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Enemy();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update() override;
+
 	/// <summary>
 	/// 描画
 	/// </summary>
 	void Draw() override;
 
-	// Updateのステートチェンジ
+	/// <summary>
+	/// Updateのステートチェンジ
+	/// </summary>
+	/// <param name="state">新しいステート</param>
 	void ChangeState(std::unique_ptr<EnemyBaseState> state);
 
 #ifdef _DEBUG
@@ -46,11 +59,29 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
+	/// <summary>
+	/// プレイヤーのポインタを取得
+	/// </summary>
+	/// <returns>プレイヤーのポインタ</returns>
 	Player* GetPlayer() { return player_; }
+
+	/// <summary>
+	/// 敵が死亡しているかを取得
+	/// </summary>
+	/// <returns>死亡しているか</returns>
 	bool IsDead() { return isDead_; }
+
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	/// <returns>ワールド座標</returns>
 	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
+	/// <summary>
+	/// プレイヤーのポインタを設定
+	/// </summary>
+	/// <param name="player">プレイヤーのポインタ</param>
 	void SetPlayer(Player* player) { player_ = player; }
 
 private:	/// メンバ変数

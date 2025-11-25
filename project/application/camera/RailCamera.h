@@ -39,12 +39,13 @@ public:	// getter
 	/// <summary>
 	/// レール上の現在位置を取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>レール上の現在位置</returns>
 	MyBase::Vector3 GetRailPosition() const { return railPosition_; }
+
 	/// <summary>
 	/// レールの向きを取得
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>レールの向き</returns>
 	MyBase::Vector3 GetRailDirection() const { return railDirection_; }
 
 public:	// setter

@@ -9,24 +9,42 @@
 class CollisionManager
 {
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static CollisionManager* GetInstance();
-	// 終了
+	
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// Colliderの登録
+	/// <summary>
+	/// Colliderの登録
+	/// </summary>
+	/// <param name="collider">コライダー</param>
 	void Register(Collider* collider) { colliders_.push_back(collider); }
 
-	// Colliderの解除
+	/// <summary>
+	/// Colliderの解除
+	/// </summary>
+	/// <param name="collider">コライダー</param>
 	void Unregister(Collider* collider) { colliders_.remove(collider); }
 
-	// コライダーリストをクリア
+	/// <summary>
+	/// コライダーリストをクリア
+	/// </summary>
 	void Clear();
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 衝突判定と応答
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
 	void CheckAllCollisions();
 
 	/// <summary>

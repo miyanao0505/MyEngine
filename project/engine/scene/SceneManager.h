@@ -10,7 +10,10 @@
 class SceneManager
 {
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>シングルトンインスタンスのポインタ</returns>
 	static SceneManager* GetInstance();
 
 	/// <summary>
@@ -35,7 +38,10 @@ public:	// メンバ関数
 	void ChangeScene(const std::string& sceneName);
 
 public:	// setter
-	// シーンファクトリーのセット
+	/// <summary>
+	/// シーンファクトリーのセット
+	/// </summary>
+	/// <param name="sceneFactory">シーンファクトリーのポインタ</param>
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 private:	// シングルトンインスタンス
