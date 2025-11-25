@@ -386,6 +386,8 @@ void ParticleManager::Emit(const std::string name, const MyBase::Vector3& positi
 		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
 	}
 	group.isBillboard = particleGroupData.isBillboard;
+
+	particleBase_->CreateGraphicsPipeline();
 }
 
 void ParticleManager::CreateIndexResource(ParticleEmitter::ParticleType type)

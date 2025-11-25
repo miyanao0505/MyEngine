@@ -83,6 +83,7 @@ void Skybox::Draw()
 
 }
 
+#ifdef _DEBUG
 // デバック描画
 void Skybox::DebugDraw()
 {
@@ -100,6 +101,7 @@ void Skybox::DebugDraw()
 	}
 	ImGui::PopID();
 }
+#endif // _DEBUG
 
 void Skybox::SetTexture(const std::string& textureName)
 {
