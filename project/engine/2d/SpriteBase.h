@@ -34,6 +34,11 @@ public:	// メンバ関数
 	/// </summary>
 	void SetCommonScreen();
 
+	/// <summary>
+	/// スプライト描画用のグラフィックスパイプラインステートを生成
+	/// </summary>
+	void CreateGraphicsPipeline();
+
 public:	// getter
 	/// <summary>
 	/// DirectXBase のポインタを取得
@@ -53,11 +58,6 @@ private:	// メンバ関数
 	/// スプライト描画用のルートシグネチャを作成
 	/// </summary>
 	void CreateRootSignature();
-
-	/// <summary>
-	/// スプライト描画用のグラフィックスパイプラインステートを生成
-	/// </summary>
-	void CreateGraphicsPipeline();
 
 	// ブレンドモード設計
 	D3D12_BLEND_DESC SetBlendModeNone();
