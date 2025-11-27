@@ -60,8 +60,6 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 	CreateScissorRect();
 	// DCXコンパイラの生成
 	CreateDxcCompiler();
-	// ImGuiの初期化
-	//InitializeImGui();
 }
 
 void DirectXBase::Finalize()
@@ -111,6 +109,7 @@ void DirectXBase::PostDraw()
 {
 	HRESULT hr;
 	
+	// TransitionBarrierを張る
 	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	// これから書き込むバックバッファのインデックスを取得
@@ -160,6 +159,8 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	offScreenSrvIndex_ = srvManager->Allocate();
 
 	DirectX::TexMetadata metadata;
+	
+	// TexMetadata を手動で構築
 	metadata.width = 1024;
 	metadata.height = 1024;
 	metadata.arraySize = 1;
@@ -170,6 +171,8 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	metadata.mipLevels = 1;
 
 	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
+	
+	// CPU/GPU 双方のデスクリプタハンドルを保持
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);
 	offScreenSrvHandleGPU_ = srvManager->GetGPUDescriptorHandle(offScreenSrvIndex_);
 }
@@ -748,19 +751,6 @@ void DirectXBase::CreateDxcCompiler()
 	// 現時点でincludeはしないが、includeに対応するための設定を行っておく
 	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
-}
-
-// ImGuiの初期化
-void DirectXBase::InitializeImGui()
-{
-#ifdef _DEBUG
-	// ImGuiの初期化
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGui::StyleColorsDark();
-	//ImGui_ImplWin32_Init(winApi_->GetHwnd());
-	//ImGui_ImplDX12_Init(device_.Get(), swapChainDesc_.BufferCount, rtvDesc_.Format, srvDescriptorHeap_.Get(), srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(), srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart());
-#endif // _DEBUG
 }
 
 // FPS固定初期化

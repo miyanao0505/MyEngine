@@ -35,6 +35,7 @@ void AudioManager::Finalize()
 	soundDatas_.clear();
 	playSoundDatas_.clear();
 
+	// シングルトンインスタンス削除
 	delete instance;
 	instance = nullptr;
 }
@@ -129,7 +130,7 @@ void AudioManager::PlayWave(const std::string& filename, const float& volume, co
 	// ループの設定
 	buf.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 
-	// 波形データの再生
+	// 波形データ送信と再生開始
 	hr = pSourceVoice->SubmitSourceBuffer(&buf);
 	hr = pSourceVoice->Start();
 	hr = pSourceVoice->SetVolume(volume);
@@ -137,6 +138,7 @@ void AudioManager::PlayWave(const std::string& filename, const float& volume, co
 	// ループするなら再生中リストにデータを格納
 	if (loop)
 	{
+		// すでに再生中なら重複登録しない
 		if (playSoundDatas_.contains(filename)) {
 			return;
 		}
@@ -169,6 +171,7 @@ void AudioManager::UnLoadAudio(const std::string& filename)
 	// バッファのメモリを解放
 	delete[] soundData.pBuffer;
 
+	// データを初期化して無効化
 	soundData.pBuffer = 0;
 	soundData.bufferSize = 0;
 	soundData.wfex = {};

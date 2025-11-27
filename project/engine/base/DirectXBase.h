@@ -256,11 +256,6 @@ private:	// メンバ関数
 	void CreateDxcCompiler();
 	
 	/// <summary>
-	/// ImGuiの初期化
-	/// </summary>
-	void InitializeImGui();
-	
-	/// <summary>
 	/// FPS固定初期化
 	/// </summary>
 	void InitializeFixFPS();

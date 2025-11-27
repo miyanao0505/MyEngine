@@ -23,11 +23,11 @@ void ModelManager::Finalize()
 // 初期化
 void ModelManager::Initialize()
 {
-	// モデル共通部の初期化
+	// ModelBaseの生成と初期化
 	modelBase_ = make_unique<ModelBase>();
 	modelBase_->Initislize();
 
-	// 3dオブジェクト共通部の初期化
+	// Object3dBaseの生成と初期化
 	object3dBase_ = make_unique<Object3dBase>();
 	object3dBase_->Initislize();
 }
@@ -65,9 +65,12 @@ Model* ModelManager::FindModel(const string& filePath)
 	return nullptr;
 }
 
-
+// モデル描画のブレンドモードを設定
 void ModelManager::SetBlendMode(Object3dBase::BlendMode blendMode)
 {
+	// Object3dBase にブレンドモードを設定
 	object3dBase_->SetBlendMode(blendMode);
+
+	// グラフィックスパイプラインの再作成
 	object3dBase_->CreateGraphicsPipeline();
 }

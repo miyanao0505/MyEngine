@@ -7,8 +7,10 @@ using namespace std;
 // 初期化
 void BaseObject::Initialize(const std::string& folderPath, const std::string& filePath)
 {
+	// モデル読み込み
 	ModelManager::GetInstance()->LoadModel(folderPath, filePath);
 
+	// Object3d の生成と初期化
 	object_ = make_unique<Object3d>();
 	object_->Initislize(filePath);
 }
@@ -30,10 +32,12 @@ void BaseObject::Draw()
 void BaseObject::DebugDraw()
 {
 	ImGui::PushID(this);
+
 	if (ImGui::CollapsingHeader("object"))
 	{
 		if (ImGui::TreeNode("Transform"))
 		{
+			// 現在の変換情報を取得
 			MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 			// 移動
@@ -42,6 +46,8 @@ void BaseObject::DebugDraw()
 			ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
 			// 拡縮
 			ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+			
+			// 変換情報をオブジェクトに設定
 			object_->SetTransform(transform);
 			
 			ImGui::TreePop();
@@ -49,6 +55,7 @@ void BaseObject::DebugDraw()
 		//ImGui::Text("\n");
 		if (ImGui::TreeNode("Material"))
 		{
+			// 現在のマテリアル情報を取得
 			MyBase::ModelMaterial* materialData = object_->GetModel()->GetModelMaterial();
 
 			// 色
@@ -61,6 +68,8 @@ void BaseObject::DebugDraw()
 			bool isEnable = materialData->enableLighting;
 			ImGui::Checkbox("enableLighting", &isEnable);
 			materialData->enableLighting = isEnable;
+
+			// 変更したマテリアル情報をオブジェクトに設定
 			object_->GetModel()->SetModelMaterial(materialData);
 
 			ImGui::TreePop();

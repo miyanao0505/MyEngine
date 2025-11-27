@@ -161,6 +161,7 @@ void SpriteBase::SetCommonScreen()
 	dxBase_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+// ブレンドモードの設定
 void SpriteBase::SetBlendMode(BlendMode blendMode)
 {
 	blendMode_ = blendMode;

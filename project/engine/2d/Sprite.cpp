@@ -11,7 +11,7 @@ void Sprite::Initialize(std::string textureFilePath)
 	spriteBase_ = TextureManager::GetInstance()->GetSpriteBase();
 	filePath_ = textureFilePath;
 
-	// 白テクスチャを読み込む
+	// 使用するテクスチャを読み込む
 	TextureManager::GetInstance()->LoadTexture(filePath_);
 
 	// 頂点データの作成
@@ -105,7 +105,6 @@ void Sprite::Draw()
 	spriteBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_.Get()->GetGPUVirtualAddress());
 
 	// SRVのDescriptorTableの先頭を設定
-	
 	spriteBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(filePath_));
 	// 描画！(DrawCall/ドローコール)
 	spriteBase_->GetDxBase()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);

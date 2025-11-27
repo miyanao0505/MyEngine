@@ -127,6 +127,7 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 
 void Model::SetTexture(const std::string& filename)
 {
+	// テクスチャファイル名を記録
 	modelData_.material.textureFilePath = filename;
 
 	// .objの参照しているテクスチャファイル読み込み

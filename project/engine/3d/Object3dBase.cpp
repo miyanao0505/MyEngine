@@ -6,6 +6,7 @@ using namespace std;
 // 初期化
 void Object3dBase::Initislize()
 {
+	// DirectXBaseの取得
 	dxBase_ = DirectXBase::GetInstance();
 
 	// グラフィックスパイプラインの生成
@@ -19,13 +20,15 @@ void Object3dBase::CreateRootSignature()
 
 	// RootParameter作成。複数設定
 	vector<D3D12_ROOT_PARAMETER> rootParameters;
-	// DescriptorRangeを作成(リソースが生きている必要があるためここで定義)
+
+	// SRV: Texture(DescriptorRange)
 	D3D12_DESCRIPTOR_RANGE textureRange{};
 	textureRange.BaseShaderRegister = 0;														// 0から始まる
 	textureRange.NumDescriptors = 1;															// 数は1つ
 	textureRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;								// SRVを使う
 	textureRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;	// Offsetを自動計算
 
+	// SRV: EnvironmentMap(DescriptorRange)
 	D3D12_DESCRIPTOR_RANGE environmentRange{};
 	environmentRange.BaseShaderRegister = 1;
 	environmentRange.NumDescriptors = 1;
@@ -95,6 +98,7 @@ void Object3dBase::CreateRootSignature()
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 	if (FAILED(hr)) {
+		// 失敗時にはエラーログを出して強制停止
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
@@ -139,13 +143,12 @@ void Object3dBase::CreateGraphicsPipeline()
 
 	// RasiterzerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	// 裏面(時計回り)を表示しない
-	//rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	// カリングしない(裏面も表示する)
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	// 三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
+	// PipelineState描画設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();												// RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;													// InputLayout
@@ -191,9 +194,13 @@ void Object3dBase::SetCommonScreen()
 	dxBase_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+// モデル描画のブレンドモードを設定
 void Object3dBase::SetBlendMode(BlendMode blendMode)
 {
+	// ブレンドモードを設定
 	blendMode_ = blendMode;
+
+	// グラフィックスパイプラインの生成
 	CreateGraphicsPipeline();
 }
 

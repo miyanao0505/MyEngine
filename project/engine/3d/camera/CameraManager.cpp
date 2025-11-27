@@ -30,13 +30,12 @@ void CameraManager::Initialize()
 // カメラのセット
 void CameraManager::SetCamera(const string& cameraName)
 {
-	// 読み込み済みカメラを検索
+	// 同名カメラが既に登録済みなら重複生成を避け早期return
 	if (cameras_.contains(cameraName)) {
-		// 読み込み済みなら早期return
 		return;
 	}
 
-	// カメラの生成と初期化
+	// 新しいカメラの生成
 	unique_ptr<Camera> camera = make_unique<Camera>();
 	
 	// カメラをmapコンテナに格納する
@@ -46,14 +45,14 @@ void CameraManager::SetCamera(const string& cameraName)
 // カメラの検索
 void CameraManager::FindCamera(const string& cameraName)
 {
+	// 既にそのカメラを選択している場合は早期return
 	if(cameraName_ == cameraName){
-		// 同じ名前なら早期return
 		return;
 	}
 
-	// 読み込み済みカメラを検索
+	// 登録済みのカメラのみ選択可能
 	if (cameras_.contains(cameraName)) {
-		// 読み込みカメラを現在のカメラとしてセット
+		// 指定したカメラを現在のカメラとしてセット
 		camera_ = cameras_.at(cameraName).get();
 		cameraName_ = cameraName;
 	}
@@ -62,15 +61,15 @@ void CameraManager::FindCamera(const string& cameraName)
 #ifdef _DEBUG
 // デバック用の描画
 void CameraManager::DebugDraw() {
-	// カメラ
 	if (ImGui::CollapsingHeader("Camera"))
 	{
-		// セットされている全カメラの名前取得
+		// 登録されているカメラ名一覧を取得
 		vector<string> cameraNames = GetAllName();
 		string cameraNowVlue;
 
-		// 変更するための変数
+		// 編集用の Transform 一時変数
 		MyBase::Transform transformCamera{ {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f} };
+		
 		// 現在指定しているカメラデータがある時
 		if (camera_) {
 			// transformをセット
@@ -78,7 +77,7 @@ void CameraManager::DebugDraw() {
 			// 指定されているカメラの名前をセット
 			cameraNowVlue = cameraName_;
 		}
-		// カメラが1つでもセットされている時
+		// 指定のカメラデータがない時
 		else if(cameraNames.size() != 0) {
 			// 最初のカメラのtransformをセット
 			transformCamera = cameras_.at(cameraNames[0])->GetTransform();
@@ -96,7 +95,11 @@ void CameraManager::DebugDraw() {
 				const bool isSelected = (cameraIndex == i);
 				if (ImGui::Selectable(cameraNames[i].c_str(), isSelected)) {
 					cameraIndex = i;
+
+					// 選択変更したら CameraManager からカメラを探索
 					CameraManager::GetInstance()->FindCamera(cameraNames[i]);
+
+					// 編集用の Transform を取得
 					transformCamera = CameraManager::GetInstance()->GetCamera()->GetTransform();
 				}
 
@@ -107,12 +110,15 @@ void CameraManager::DebugDraw() {
 			ImGui::EndCombo();
 		}
 
+		// 移動・回転の編集
 		ImGui::DragFloat3("translate", &transformCamera.translate.x, 0.05f);
 		ImGui::DragFloat3("rotate", &transformCamera.rotate.x, 0.05f);
+		// 編集された Transform を即反映
 		CameraManager::GetInstance()->GetCamera()->SetTransform(transformCamera);
 
 		ImGui::Text("\n");
 
+		// シェイクの有効状態をデバック表示
 		ImGui::Text((shakeState_.active) ? "shakeState_.active : true" : "shakeState_.active : false");
 		ImGui::Text("\n");
 
@@ -120,6 +126,7 @@ void CameraManager::DebugDraw() {
 }
 #endif // _DEBUG
 
+// 登録されているすべてのカメラ名を取得
 vector<string> CameraManager::GetAllName()
 {
 	vector<string> keys;
@@ -142,27 +149,30 @@ void CameraManager::Update(float deltaTime)
 		return;
 	}
 
+	// 経過時間を蓄積し、シェイク進行度を算出
 	shakeState_.timer += deltaTime;
-	// 経過割合（0..1）
 	const float t = shakeState_.timer / max(1e-6f, shakeState_.duration);
-	// 減衰（線形）。必要なら ease 関数に変更可
+
+	// シェイクを徐々に収束のため減衰(線形)
 	const float damp = 1.0f - std::min(1.0f, t);
 
-	// ランダムな方向を作って揺らす
+	// ランダムな方向へ揺らすための乱数
 	float rx = shakeState_.dist(shakeState_.rng);
 	float ry = shakeState_.dist(shakeState_.rng);
 	float rz = shakeState_.dist(shakeState_.rng);
 
-	// 周波数による揺れ要素（正弦で揺らす）
+	// 周波数による揺れ要素(正弦で揺らす)
 	float phase = shakeState_.timer * shakeState_.frequency;
 	float wave = std::sin(phase);
 
+	// 実際の揺れ量を計算
 	MyBase::Vector3 offset{
 		rx * shakeState_.amplitude * damp * wave,
 		ry * shakeState_.amplitude * damp * wave,
 		rz * shakeState_.amplitude * damp * wave
 	};
 
+	// 元の位置にオフセットを加えた新しい位置を計算
 	MyBase::Vector3 newTranslate{
 		shakeState_.originalTranslate.x + offset.x,
 		shakeState_.originalTranslate.y + offset.y,
@@ -172,7 +182,7 @@ void CameraManager::Update(float deltaTime)
 	// カメラに適用
 	camera_->SetTranslate(newTranslate);
 
-	// 終了判定
+	// シェイク終了判定
 	if (shakeState_.timer >= shakeState_.duration) {
 		// 復帰
 		StopShake();
@@ -183,6 +193,7 @@ void CameraManager::Update(float deltaTime)
 void CameraManager::StartShake(float amplitude, float duration, float frequency, float rotationAmplitude)
 {
 	if (!camera_) return;
+
 	// シェイク状態を初期化
 	shakeState_.active = true;
 	shakeState_.duration = max(0.0f, duration);
@@ -199,9 +210,12 @@ void CameraManager::StartShake(float amplitude, float duration, float frequency,
 void CameraManager::StopShake()
 {
 	if (!camera_) return;
+
+	// アクティブの時のみ復帰処理
 	if (shakeState_.active) {
 		camera_->SetTranslate(shakeState_.originalTranslate);
 	}
+
 	// シェイク状態をリセット
 	shakeState_.active = false;
 	shakeState_.timer = 0.0f;

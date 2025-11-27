@@ -7,6 +7,7 @@
 // 初期化
 void Skybox::Initislize(const std::string& filePath, MyBase::Vector3 scale)
 {
+	// DirectXBaseの取得
 	dxBase_ = DirectXBase::GetInstance();
 	// 引数で受け取ってメンバ変数に記録する
 	textureFileName_ = filePath;
@@ -41,34 +42,42 @@ void Skybox::Initislize(const std::string& filePath, MyBase::Vector3 scale)
 // 更新
 void Skybox::Update()
 {
-	// WorldMatrixの作成
+	// ワールド行列を更新
 	worldTransform_->UpdateWorldMatrix();
+
 	MyBase::Matrix4x4 worldViewProjectionMatrix;
+
+	// カメラ情報の更新
+	// 指定したカメラが存在する場合は WVP を作成
 	if (CameraManager::GetInstance()->GetCamera()) {
+		// WVP 行列の計算
 		const MyBase::Matrix4x4& viewProjectionMatrix = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
 		worldViewProjectionMatrix = Matrix::Multiply(worldTransform_->GetWorldMatrix(), viewProjectionMatrix);
+		
+		// カメラのワールド座標をセット
 		cameraData_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 	}
+	// 指定したカメラが存在しない場合はワールド行列のみ
 	else {
 		worldViewProjectionMatrix = worldTransform_->GetWorldMatrix();
 	}
+	
+	// 座標変換行列データの更新
 	transformationMatrixData_->WVP = worldViewProjectionMatrix;
 	transformationMatrixData_->World = worldTransform_->GetWorldMatrix();
 	transformationMatrixData_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldTransform_->GetWorldMatrix()));
-
 }
 
 // 描画
 void Skybox::Draw()
 {
+	// 共通画面設定
 	SetCommonScreen();
 
-	// WVP用のCBufferの場所を設定
+	// ルートパラメータ 1：座標変換行列(WVP)用のCBufferの場所を設定
 	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_.Get()->GetGPUVirtualAddress());
-	// カメラ用のCBufferの場所を設定
+	// ルートパラメータ 4：カメラ情報用のCBufferの場所を設定
 	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_.Get()->GetGPUVirtualAddress());
-	// ライトの設定
-	//LightManager::GetInstance()->Draw(object3dBase_);
 
 	// VBVの設定
 	dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -80,7 +89,6 @@ void Skybox::Draw()
 	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_));
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。
 	dxBase_->GetCommandList()->DrawIndexedInstanced(UINT(kIndexCount), 1, 0, 0, 0);
-
 }
 
 #ifdef _DEBUG
@@ -90,11 +98,17 @@ void Skybox::DebugDraw()
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Skybox"))
 	{
-		// 変更するための変数
+		// Transformを一時変数として取得
 		MyBase::Transform transform = GetTransform();
+
+		// 移動
 		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		// 回転
 		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		// スケール
 		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.00f, 100.0f);
+		
+		// 変更したTransformを適用
 		SetTransform(transform);
 
 		ImGui::Text("\n");
@@ -103,10 +117,13 @@ void Skybox::DebugDraw()
 }
 #endif // _DEBUG
 
+// 描画に使用するテクスチャを変更
 void Skybox::SetTexture(const std::string& textureName)
 {
+	// 使用するテクスチャ名を設定
 	textureFileName_ = textureName;
 
+	// 指定テクスチャをロード
 	TextureManager::GetInstance()->LoadTexture(textureFileName_);
 }
 
@@ -128,16 +145,20 @@ void Skybox::CreateRootSignature()
 
 	// RootParameter作成。複数設定できるので配列。
 	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+	// PixelShader 用 CBV(レジスタ b0)
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;					// CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;									// レジスタ番号0とバインド
+	// VertexShader 用 CBV(レジスタ b0)
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;					// CBVを使う
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;				// VertexShaderで使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;									// レジスタ番号0とバインド
+	// PixelShader 用 SRV(テクスチャ)
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		// DescriptorTableを使う
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
 	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;				// Tableの中身の配列を指定
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);	// Tableで利用する数
+	// PixelShader 用の追加 CBV
 	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;					// CBVを使う
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
 	rootParameters[3].Descriptor.ShaderRegister = 1;									// レジスタ番号1とバインド
@@ -171,6 +192,7 @@ void Skybox::CreateRootSignature()
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	hr = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 	if (FAILED(hr)) {
+		// エラー内容をログへ出力して強制停止
 		Logger::Log(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
 		assert(false);
 	}
@@ -211,17 +233,17 @@ void Skybox::CreateGraphicsPipeline()
 
 	// RasiterzerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	// 裏面(時計回り)を表示しない
-	//rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	// カリングしない(裏面も表示する)
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	// 三角形の中を塗りつぶす
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
 
+	// Blend設定
 	D3D12_BLEND_DESC blendDesc{};
-	//すべての色要素を書き込む
+	// すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
+	// PipelineStateDesc設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
 	graphicsPipelineStateDesc.pRootSignature = rootSignature_.Get();												// RootSignature
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;													// InputLayout
@@ -389,6 +411,4 @@ void Skybox::CreateMaterialData()
 	materialData_->reflectivity = 0.0f;
 	// Lightingを有効にする
 	materialData_->enableLighting = true;
-	
-	
 }
