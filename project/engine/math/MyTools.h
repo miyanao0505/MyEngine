@@ -377,24 +377,4 @@ public:
 	/// <returns>反射ベクトル</returns>
 	static MyBase::Vector3 Reflect(const MyBase::Vector3& input, const MyBase::Vector3& normal);
 #pragma endregion 3次元ベクトル
-
-#pragma region 描画	
-	/// <summary>
-	/// 2次元ベクトルの表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="vector">表示したいベクトルの変数</param>
-	/// <param name="label">表示したいベクトルの名前</param>
-	//static void VectorScreenPrintf(int x, int y, const Vector2& vector, const char* label);
-
-	/// <summary>
-	/// 3次元ベクトルの表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="vector">表示したいベクトルの変数</param>
-	/// <param name="label">表示したいベクトルの名前</param>
-	//static void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
-#pragma endregion 描画
 };

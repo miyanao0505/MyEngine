@@ -143,7 +143,6 @@ void TitleScene::Draw()
 #pragma region パーティクル
 
 	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	//ParticleManager::GetInstance()->Draw();
 
 #pragma endregion パーティクル
 

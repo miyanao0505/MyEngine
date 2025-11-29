@@ -53,11 +53,9 @@ void ClearLogo::Draw() {
 void ClearLogo::Move()
 {
 	if (moveDistance_ <= -moveSpeed_ * 20.0f) {
-		//moveVector_ = MyTools::Multiply(-1.0f, moveVector_);
 		moveVector_ = { 0.0f,1.0f,0.0f };
 	}
 	else if (moveDistance_ >= moveSpeed_ * 20.0f) {
-		//moveVector_ = MyTools::Multiply(-1.0f, moveVector_);
 		moveVector_ = { 0.0f,-1.0f,0.0f };
 	}
 

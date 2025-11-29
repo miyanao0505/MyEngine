@@ -890,24 +890,3 @@ MyBase::Vector3 MyTools::Reflect(const MyBase::Vector3& input, const MyBase::Vec
 /// 
 /// 3次元ベクトル ここまで
 /// 
-
-///
-/// 描画関数 ここから
-/// 
-
-/// 2次元ベクトルの表示
-//void MyTools::VectorScreenPrintf(int x, int y, const Vector2& vector, const char* label)
-//{
-//	
-//}
-
-/// 3次元ベクトルの表示
-//void MyTools::VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label)
-//{
-//	
-//}
-
-/// 
-/// 描画関数 ここまで
-/// 
-

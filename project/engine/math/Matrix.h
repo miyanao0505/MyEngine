@@ -351,36 +351,5 @@ public:
 	static MyBase::Matrix4x4 Transpose(const MyBase::Matrix4x4& matrix);
 
 #pragma endregion 4x4の行列
-
-#pragma region 描画
-	
-	/// <summary>
-	/// 2x2行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix2x2& matrix, const char* label);
-
-	/// <summary>
-	/// 3x3行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix3x3& matrix, const char* label);
-
-	/// <summary>
-	/// 4x4行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label);
-
-#pragma endregion 描画
 };
 

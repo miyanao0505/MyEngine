@@ -131,11 +131,8 @@ void ParticleEmitter::SetParticleGroupName(const std::string& name)
 // パーティクルグループ毎のデータを設定
 void ParticleEmitter::SetParticleGroupData(const std::string& name, ParticleSystem::ParticleGroupData& particleGroupData)
 {
-	//auto groupDatas = particleSystem_->GetParticleGroupDatas();
-	//if (groupDatas.empty() || groupDatas.count(name) == 0) {
-	//	// 新しいパーティクルグループデータを追加
-		particleSystem_->SetParticleGroupData(name, particleGroupData);
-	//}
+	// 新しいパーティクルグループデータを追加
+	particleSystem_->SetParticleGroupData(name, particleGroupData);
 }
 
 void ParticleEmitter::SetBillboard(std::string name, bool isBillboard)

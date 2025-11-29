@@ -49,13 +49,10 @@ void GameOverScene::Initialize()
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
 #pragma endregion パーティクル
 
 #pragma region 変数
 	isParticleActive_ = true;
-	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -125,7 +122,6 @@ void GameOverScene::Update()
 	}
 
 	// パーティクルの更新処理
-	//particleEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
@@ -151,7 +147,6 @@ void GameOverScene::Draw()
 #pragma region パーティクル
 
 	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	//ParticleManager::GetInstance()->Draw();
 
 #pragma endregion パーティクル
 
@@ -195,9 +190,6 @@ void GameOverScene::DebugDraw()
 	ImGui::Text("N key : titleScene");
 	ImGui::Text("B key : eventScene");
 	ImGui::End();
-
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
 }
 #endif // _DEBUG
 
