@@ -44,6 +44,4 @@ public:	// メンバ関数
 protected:
 	std::string name_;
 	Enemy* enemy_ = nullptr;
-
 };
-

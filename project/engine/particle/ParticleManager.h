@@ -22,14 +22,14 @@ public:	// パーティクルグループ構造体
 	struct ParticleGroup {
 		MyBase::MaterialData materialData;
 		std::list<MyBase::Particle> particles;
-		uint32_t kNumInstance;
+		uint32_t numInstance;
 		uint32_t srvIndexForInstancing;
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource;			// バッファリソース
 		Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource;		// バッファリソース
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;						// バッファリソースの使い道を補足するバッファビュー
 		MyBase::ParticleVertexData* vertexData = nullptr;				// バッファリソース内のデータを指すポインタ
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
-		ParticleEmitter::ParticleType type;
+		ParticleType type;
 		bool isBillboard;	// ビルボードかどうか
 	};
 
@@ -62,9 +62,9 @@ public:	// メンバ関数
 
 #ifdef _DEBUG
 	/// <summary>
-	/// Imgui
+	/// ImGui
 	/// </summary>
-	void Imgui();
+	void ImGui();
 #endif // _DEBUG
 
 	/// <summary>
@@ -78,21 +78,21 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <param name="textureFilePath">テクスチャファイルパス</param>
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath);
 
 	/// <summary>
 	/// リング型パーティクルグループを生成
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <param name="textureFilePath">テクスチャファイルパス</param>
-	void CreateParticleGroupRing(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroupRing(const std::string& name, const std::string& textureFilePath);
 
 	/// <summary>
 	/// 円柱型パーティクルグループを生成
 	/// </summary>
 	/// <param name="name">名前</param>
 	/// <param name="textureFilePath">テクスチャファイルパス</param>
-	void CreateParticleGroupCylinder(const std::string name, const std::string textureFilePath);
+	void CreateParticleGroupCylinder(const std::string& name, const std::string& textureFilePath);
 
 	/// <summary>
 	/// パーティクルの発生
@@ -100,13 +100,13 @@ public:	// メンバ関数
 	/// <param name="name">名前</param>
 	/// <param name="position">位置</param>
 	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
-	void Emit(const std::string name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
+	void Emit(const std::string& name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData);
 
 	/// <summary>
 	/// パーティクル描画で使用するインデックスバッファリソースを生成します。
 	/// </summary>
 	/// <param name="type">パーティクルタイプ(デフォルト: Ellipse)</param>
-	void CreateIndexResource(ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
+	void CreateIndexResource(ParticleType type = ParticleType::kEllipse);
 
 public:	// getter
 	/// <summary>
@@ -145,10 +145,10 @@ private: // ローカル関数
 	/// <param name="particleGroupData">パーティクルグループ毎のデータ</param>
 	/// <param name="type">パーティクルのタイプ</param>
 	/// <returns>生成されたパーティクルデータ</returns>
-	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleEmitter::ParticleType type = ParticleEmitter::Ellipse);
+	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleType type = ParticleType::kEllipse);
 
 private:	// シングルトン
-	static ParticleManager* instance;
+	static ParticleManager* sInstance;
 
 	ParticleManager() = default;
 	~ParticleManager() = default;
@@ -160,6 +160,26 @@ private:	// メンバ変数
 	DirectXBase* dxBase_ = nullptr;
 	SrvManager* srvManager_ = nullptr;
 	std::unique_ptr<ParticleBase> particleBase_;
+
+	// バッファリソースの使い道を遅くするバッファビュー
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	// バッファリソース
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
+	// バッファリソース内のデータを指すポインタ
+	uint32_t* indexData_ = nullptr;
+
+	uint32_t particleIndexSize_ = 0;	// インデックスリソースのサイズ	
+
+	// パーティクル数
+	uint32_t particleCount_ = 0;
+
+	// テクスチャサイズ
+	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };
+	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };
+
+	// パーティクルデータ
+	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups_;
 
 	// 定数
 	// Box用
@@ -177,32 +197,8 @@ private:	// メンバ変数
 	const float kRadianPerDivideCylinder = 2.0f * pi_v<float> / float(kCylinderDivide);	// 1つ分の角度(ラジアン)
 	// 描画用
 	const uint32_t kParticleIndexNum[3] = { 6, 6 * kRingDivide, 6 * kCylinderDivide };
-
-	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
-
-	// バッファリソース内のデータを指すポインタ
-	uint32_t* indexData_ = nullptr;
-
-	// バッファリソースの使い道を遅くするバッファビュー
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
-
-	uint32_t particleIndexSize_ = 0;	// インデックスリソースのサイズ
-
 	// インスタンスの最大数
-	uint32_t kMaxInstance_ = 1000;
-
-	// パーティクル数
-	uint32_t particleCount_ = 0;
-
-	// テクスチャサイズ
-	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };
-	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };
-
+	const uint32_t kMaxInstance_ = 1000;
 	// デルタイム
-	const float kDelTime_ = 1.0f / 60.0f;
-
-	// パーティクルデータ
-	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups_;
-
+	const float kDelTime = 1.0f / 60.0f;
 };

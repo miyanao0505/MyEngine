@@ -54,17 +54,17 @@ public:	// setter
 private:	// メンバ変数
 	std::vector<MyBase::Vector3> controlPoints_;	// レールの制御点リスト
 
-	uint32_t currentPointIndex_ = 0;	// 現在の制御点インデックス
-	uint32_t nextPointIndex_ = 1;		// 次の制御点インデックス
+	size_t currentPointIndex_ = 0;		// 現在の制御点インデックス
+	size_t nextPointIndex_ = 1;			// 次の制御点インデックス
 
-	float t_ = 0.0f;					// 区間内の補間値 0～1
-	float speed_ = 0.05f;				// レールの進行速度
+	float lerpT_ = 0.0f;				// 区間内の補間値 0～1
+	float railSpeed_ = 0.05f;			// レールの進行速度
 
 	MyBase::Vector3 railPosition_;		// レール上の現在位置
 	MyBase::Vector3 railDirection_;		// レールの向き
 
 	// 定数
-	const size_t kNumRailPoints_ = 5; // レールの制御点の最大数
+	const size_t kNumRailPoints = 5; // レールの制御点の最大数
 
 #ifdef _DEBUG
 	bool isDebugMode_ = false;	// デバッグモードフラグ

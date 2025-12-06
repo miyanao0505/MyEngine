@@ -1,5 +1,6 @@
 #include "Object3d.h"
 #include <fstream>
+#include <filesystem>
 #include "Object3dBase.h"
 #include "ModelManager.h"
 #include "Matrix.h"
@@ -7,8 +8,10 @@
 #include "CameraManager.h"
 #include "LightManager.h"
 
+namespace fs = std::filesystem;
+
 // 初期化
-void Object3d::Initislize(const std::string& filePath)
+void Object3d::Initialize(const std::string& filePath)
 {
 	// Object3dBase（描画パイプライン共通部）を取得して保持
 	object3dBase_ = ModelManager::GetInstance()->GetObject3dBase();
@@ -67,7 +70,7 @@ void Object3d::Draw()
 	// ルートパラメータ 4：カメラ情報用のCBufferの場所を設定
 	object3dBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_.Get()->GetGPUVirtualAddress());
 	// LightManager 内部で必要な CBuffer をセット
-	LightManager::GetInstance()->Draw(object3dBase_);
+	LightManager::GetInstance()->Draw(object3dBase_->GetDxBase()->GetCommandList());
 
 	// モデルが割り当てられている場合のみ描画
 	if (model_) {
@@ -85,9 +88,10 @@ void Object3d::SetModel(const std::string& filePath)
 
 	// 未ロードなら読み込む
 	if (!model_) {
+		fs::path path(filePath);
+
 		// ファイルパスからフォルダパスを抽出
-		size_t dotPos = filePath.find('.');
-		const std::string folderPath = (dotPos != std::string::npos) ? filePath.substr(0, dotPos) : filePath;
+		const std::string folderPath = path.parent_path().string();
 		
 		// モデル読み込み・設定
 		ModelManager::GetInstance()->LoadModel(folderPath, filePath);

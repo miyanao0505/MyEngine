@@ -1,14 +1,14 @@
 #include "CollisionManager.h"
 #include "MyTools.h"
 
-CollisionManager* CollisionManager::instance = nullptr;
+CollisionManager* CollisionManager::sInstance = nullptr;
 
 CollisionManager* CollisionManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new CollisionManager;
+	if (sInstance == nullptr) {
+		sInstance = new CollisionManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
@@ -17,8 +17,8 @@ void CollisionManager::Finalize()
 	// コライダーリストをクリア
 	Clear();
 	// シングルトンインスタンスを削除
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 更新

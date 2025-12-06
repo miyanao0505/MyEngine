@@ -4,7 +4,7 @@
 using namespace std;
 
 // 初期化
-void Object3dBase::Initislize()
+void Object3dBase::Initialize()
 {
 	// DirectXBaseの取得
 	dxBase_ = DirectXBase::GetInstance();

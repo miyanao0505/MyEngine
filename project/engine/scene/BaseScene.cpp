@@ -1,8 +1,12 @@
 #include "BaseScene.h"
 #include <string>
+#include <filesystem>
 #include "ModelManager.h"
 
-using namespace std;
+using std::string;
+using std::unique_ptr;
+using std::make_unique;
+namespace fs = std::filesystem;
 
 void BaseScene::Initialize()
 {
@@ -28,17 +32,19 @@ void BaseScene::DebugDraw()
 #endif // _DEBUG
 
 // オブジェクト構築
-BaseObject* BaseScene::CreateObjectFromData(const ObjectData& data)
+unique_ptr<BaseObject> BaseScene::CreateObjectFromData(const JsonObjectData& data)
 {
-	auto* baseObject = new BaseObject;
-	size_t dotPos = data.objectName.find('.');
-	const std::string folderPath = (dotPos != std::string::npos) ? data.objectName.substr(0, dotPos) : data.objectName;
-	baseObject->Initialize("debug/" + folderPath, data.objectName);
-	baseObject->SetName(data.name.c_str());
-	baseObject->GetObject3d()->SetModel(data.objectName);
-	baseObject->GetObject3d()->Initislize(data.objectName);
-	Object3d* object = baseObject->GetObject3d();
-	object->Initislize(data.objectName);
+	auto baseObject = make_unique<BaseObject>();
+
+	fs::path path(data.modelFileName);
+	// ファイルパスからフォルダパスを抽出
+	const string folderPath = path.parent_path().string();
+
+	baseObject->Initialize("debug/" + folderPath, data.modelFileName);
+	baseObject->SetName(data.name);
+	baseObject->GetObject3D()->SetModel(data.modelFileName);
+	baseObject->GetObject3D()->Initialize(data.modelFileName);
+	Object3d* object = baseObject->GetObject3D();
 	object->SetTranslate(data.translation);
 	object->SetRotate(data.rotation);
 	object->SetScale(data.scale);

@@ -2,10 +2,10 @@
 #include "SpriteBase.h"
 #include "Matrix.h"
 #include "TextureManager.h"
-#include "imgui.h"
+#include <imgui.h>
 
 // 初期化
-void Sprite::Initialize(std::string textureFilePath)
+void Sprite::Initialize(const std::string& textureFilePath)
 {
 	// 引数を受け取ってメンバ変数に記録する
 	spriteBase_ = TextureManager::GetInstance()->GetSpriteBase();
@@ -31,10 +31,10 @@ void Sprite::Initialize(std::string textureFilePath)
 void Sprite::Update()
 {
 	// アンカーポイントの反映処理
-	float left = 0.0f - anchroPoint_.x;
-	float right = 1.0f - anchroPoint_.x;
-	float top = 0.0f - anchroPoint_.y;
-	float bottom = 1.0f - anchroPoint_.y;
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
 
 	// フリップの反映処理
 	// 左右反転
@@ -83,11 +83,10 @@ void Sprite::Update()
 	transform.scale = { size_.x, size_.y, 1.0f };
 	// TransformからWorldMatrixを作る
 	MyBase::Matrix4x4 worldMatrix = Matrix::MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
-	// ViewMatrixを作って単位行列を代入
-	MyBase::Matrix4x4 viewMatrix = Matrix::MakeIdentity4x4();
-	// ProjectionMatrixを作って平行投影行列を書き込む
-	MyBase::Matrix4x4 projectionMatrix = Matrix::MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
-	transformationMatrixData_->WVP = Matrix::Multiply(worldMatrix, Matrix::Multiply(viewMatrix, projectionMatrix));
+	// SpriteBase で共有管理されている View／Projection 行列を使用して VP 行列を作成
+	MyBase::Matrix4x4 vp = Matrix::Multiply(SpriteBase::sViewMatrix, SpriteBase::sProjectionMatrix);
+	// 最終的な WVP をCBufferへ書き込む
+	transformationMatrixData_->WVP = Matrix::Multiply(worldMatrix, vp);
 	transformationMatrixData_->World = worldMatrix;
 }
 
@@ -114,7 +113,7 @@ void Sprite::Draw()
 // デバック描画
 void Sprite::DebugDraw() {
 	ImGui::PushID(this);
-	if (ImGui::CollapsingHeader("sprite"))
+	if (ImGui::CollapsingHeader(filePath_.c_str()))
 	{
 		if (ImGui::TreeNode("Transform"))
 		{
@@ -133,7 +132,7 @@ void Sprite::DebugDraw() {
 #endif // _DEBUG
 
 // テクスチャのセット
-void Sprite::SetTexture(std::string textureFilePath)
+void Sprite::SetTexture(const std::string& textureFilePath)
 {
 	// ファイルパスのセット
 	filePath_ = textureFilePath;
@@ -166,6 +165,8 @@ void Sprite::CreateVertexData()
 	// インデックスはuint32_tとする
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
+	// Vertex/Index バッファを永続マップする
+	// DirectX12 では頻繁に更新するリソースは、最初に Map しておき Unmap しない
 	// VertexResourceにデータを書き込むためのアドレスを取得してvertexDataに割り当てる
 	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 	// IndexResourceにデータを書き込むためのアドレスを取得してindexDataに割り当てる
@@ -178,6 +179,8 @@ void Sprite::CreateMaterialData()
 	// マテリアルリソースを作る
 	materialResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::SpriteMaterial));
 
+	// マテリアル バッファを永続マップする
+	// DirectX12 では頻繁に更新するリソースは、最初に Map しておき Unmap しない
 	// マテリアルリソースにデータを書き込むためのアドレスを取得してmaterialDataに割り当てる
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
@@ -192,6 +195,8 @@ void Sprite::CreateTransformationMatrixData()
 	// 座標変換行列リソースを作る
 	transformationMatrixResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::TransformationMatrix));
 
+	// 座標変換行列 バッファを永続マップする
+	// DirectX12 では頻繁に更新するリソースは、最初に Map しておき Unmap しない
 	// 座標変換行列リソースにデータを書き込むためのアドレスを取得してtransformationMatrixDataに割り当てる
 	transformationMatrixResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
 

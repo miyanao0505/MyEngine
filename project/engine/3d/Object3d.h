@@ -20,7 +20,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="filePath">読み込むモデルファイルのパス</param>
-	void Initislize(const std::string& filePath);
+	void Initialize(const std::string& filePath);
 	
 	/// <summary>
 	/// 更新
@@ -67,7 +67,7 @@ public:	// getter
 	/// ライティングの有効状態を取得
 	/// </summary>
 	/// <returns>有効なら 1、無効なら 0</returns>
-	const int& GetEnableLighting() const { return model_->GetEnableLighting(); }
+	const int GetEnableLighting() const { return model_->GetEnableLighting(); }
 
 public:	// setter
 	/// <summary>
@@ -122,7 +122,7 @@ public:	// setter
 	/// ライティングの有効/無効を設定
 	/// </summary>
 	/// <param name="enableLighting">true でライティング有効、false で無効</param>
-	void SetEnableLighting(const bool& enableLighting) { model_->SetEnableLighting(enableLighting); }
+	void SetEnableLighting(bool enableLighting) { model_->SetEnableLighting(enableLighting); }
 
 private:	// メンバ関数
 	/// <summary>

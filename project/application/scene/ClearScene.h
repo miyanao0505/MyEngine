@@ -52,7 +52,7 @@ public:	// メンバ関数
 	/// jsonファイルの読み込み
 	/// </summary>
 	/// <param name="filePath">ファイルパス</param>
-	void LoadJsonFile(const std::string& filePath) override;
+	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
 	// テクスチャファイルパス
@@ -68,7 +68,6 @@ private:	// メンバ変数
 	std::unique_ptr<ClearLogo> clearLogo_ = nullptr;
 
 	// パーティクル
-	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 	bool isParticleActive_;
 	bool isAccelerationField_;
@@ -76,6 +75,5 @@ private:	// メンバ変数
 	MyBase::AABB area_{};
 
 	// デルタイム
-	const float kDeltaTime_ = 1.0f / 60.0f;
+	const float kDeltaTime = 1.0f / 60.0f;
 };
-

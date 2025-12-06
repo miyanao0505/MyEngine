@@ -1,6 +1,8 @@
 #include "ModelManager.h"
 
-using namespace std;
+using std::string;
+using std::unique_ptr;
+using std::make_unique;
 
 ModelManager* ModelManager::instance = nullptr;
 
@@ -25,11 +27,11 @@ void ModelManager::Initialize()
 {
 	// ModelBaseの生成と初期化
 	modelBase_ = make_unique<ModelBase>();
-	modelBase_->Initislize();
+	modelBase_->Initialize();
 
 	// Object3dBaseの生成と初期化
 	object3dBase_ = make_unique<Object3dBase>();
-	object3dBase_->Initislize();
+	object3dBase_->Initialize();
 }
 
 /// モデルファイルの読み込み

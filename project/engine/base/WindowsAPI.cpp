@@ -34,16 +34,16 @@ void WindowsAPI::Initialize(const wchar_t* title){
 	hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	// ウィンドウプロシージャ
-	wc.lpfnWndProc = WindowProc;
+	windowClass_.lpfnWndProc = WindowProc;
 	// ウィンドウクラス名(なんでも良い)
-	wc.lpszClassName = L"GE3WindowClass";
+	windowClass_.lpszClassName = L"GE3WindowClass";
 	// インスタンスハンドル
-	wc.hInstance = GetModuleHandle(nullptr);
+	windowClass_.hInstance = GetModuleHandle(nullptr);
 	// カーソル
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	windowClass_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
 	// ウィンドウクラスを登録する
-	RegisterClass(&wc);
+	RegisterClass(&windowClass_);
 
 	// ウィンドウサイズを表す構造体にクライアント領域を入れる
 	RECT wrc = { 0, 0, kClientWidth, kClientHeight };
@@ -53,7 +53,7 @@ void WindowsAPI::Initialize(const wchar_t* title){
 
 	// ウィンドウの生成
 	hwnd = CreateWindow(
-		wc.lpszClassName,			// 利用するクラス名
+		windowClass_.lpszClassName,			// 利用するクラス名
 		title,						// タイトルバーの文字(何でも良い)
 		WS_OVERLAPPEDWINDOW,		// よく見るウィンドウスタイル
 		CW_USEDEFAULT,				// 表示X座標(Windowsに任せる)
@@ -62,7 +62,7 @@ void WindowsAPI::Initialize(const wchar_t* title){
 		wrc.bottom - wrc.top,		// ウィンドウ縦幅
 		nullptr,					// 親ウィンドウハンドル
 		nullptr,					// メニューハンドル
-		wc.hInstance,				// インスタンスハンドル
+		windowClass_.hInstance,				// インスタンスハンドル
 		nullptr						// オプション
 	);
 

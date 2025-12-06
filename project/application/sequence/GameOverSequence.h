@@ -32,7 +32,7 @@ public:	// メンバ関数
 	/// 更新
 	/// </summary>
 	/// <param name="deltaTime">前の更新からの経過時間(秒)</param>
-	void Update(float deltaTime);
+	void Update([[maybe_unused]] float deltaTime);
 
 	/// <summary>
 	/// 描画

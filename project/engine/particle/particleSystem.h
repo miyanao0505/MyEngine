@@ -51,7 +51,7 @@ public:	// メンバ関数
 	/// ImGuiを使用したデバッグ表示
 	/// </summary>
 	/// <param name="name">対象パーティクルグループ名</param>
-	void Imgui(std::string name);
+	void ImGui(const std::string& name);
 #endif // _DEBUG
 
 public: // getter
@@ -86,10 +86,8 @@ public: // setter
 	/// </summary>
 	/// <param name="groupName">パーティクルグループ名</param>
 	/// <param name="data">パーティクルグループデータ</param>
-	void SetParticleGroupData(const std::string& groupName, ParticleGroupData& data);
+	void SetParticleGroupData(const std::string& groupName, const ParticleGroupData& data);
 
 private: // メンバ変数
 	std::map<std::string, std::unique_ptr<ParticleGroupData>> particleGroupDatas_;		// パーティクルグループ名とパーティクルデータのリスト
-	
 };
-

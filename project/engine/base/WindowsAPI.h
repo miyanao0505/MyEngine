@@ -52,7 +52,7 @@ public:	// getter
 	/// HINSTANCEの取得
 	/// </summary>
 	/// <returns>HINSTANCE</returns>
-	HINSTANCE GetHInstance() const { return wc.hInstance; }
+	HINSTANCE GetHInstance() const { return windowClass_.hInstance; }
 
 public:	// 定数
 	// クライアント領域のサイズ
@@ -63,5 +63,5 @@ private:
 	// ウィンドウハンドル
 	HWND hwnd = nullptr;
 	// ウィンドウクラスの設定
-	WNDCLASS wc{};
+	WNDCLASS windowClass_{};
 };

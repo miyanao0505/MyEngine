@@ -78,4 +78,3 @@ private:	// メンバ変数
 	std::unique_ptr<BaseObject> missionText_ = nullptr; // ミッションテキスト
 	std::unique_ptr<BaseObject> startText_ = nullptr;   // スタートテキスト
 };
-

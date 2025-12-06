@@ -10,7 +10,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initislize();
+	void Initialize();
 
 public:	// getter
 	/// <summary>
@@ -22,6 +22,4 @@ public:	// getter
 private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
-
 };
-

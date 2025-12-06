@@ -7,10 +7,10 @@
 /// <summary>
 /// 3Dオブジェクトの情報を保持するデータ構造体。
 /// </summary>
-struct ObjectData {
-	std::string name;
-	std::string meshName;
-	std::string objectName;
+struct JsonObjectData {
+	std::string name;			// オブジェクトの名前
+	std::string colliderType;	// モデルメッシュ名
+	std::string modelFileName;	// モデルファイル名
 	MyBase::Vector3 translation;
 	MyBase::Vector3 rotation;
 	MyBase::Vector3 scale;
@@ -18,13 +18,13 @@ struct ObjectData {
 	MyBase::AABB aabb;
 	MyBase::OBB obb;
 	bool isDisabled = false;	// 無効化フラグ
-	std::vector<ObjectData> children;
+	std::vector<JsonObjectData> children;
 };
 /// <summary>
 /// ゲームシーン(レベル)に配置されるデータをまとめた構造体。
 /// </summary>
-struct LevelData {
-	std::vector<ObjectData> objects;				// シーン内のオブジェクトデータ
+struct JsonLevelData {
+	std::vector<JsonObjectData> objects;				// シーン内のオブジェクトデータ
 	std::vector<MyBase::PlayerSpawnData> players;	// プレイヤー生成データ
 };
 
@@ -40,7 +40,7 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="filePath">読み込むJSONファイルのパス</param>
 	/// <returns>読み込んだデータを格納したLevelData構造体のポインタ</returns>
-	LevelData* LoadFile(const std::string& filePath);
+	std::unique_ptr<JsonLevelData> LoadFile(const std::string& filePath);
 
 private:	// メンバ関数
 	/// <summary>
@@ -49,7 +49,7 @@ private:	// メンバ関数
 	/// </summary>
 	/// <param name="object">解析対象のJSONオブジェクト</param>
 	/// <param name="levelData">解析結果を格納するLevelData</param>
-	/// <param name="parent">親のObjectData (ルートの場合はnullptr)</param>
-	void ParseObject(const nlohmann::json& object, LevelData& levelData, ObjectData* parent = nullptr);
+	/// <param name="outObject">親のObjectData (ルートの場合はnullptr)</param>
+	void ParseObject(const nlohmann::json& object, JsonLevelData& levelData, JsonObjectData* outObject = nullptr);
 };
 

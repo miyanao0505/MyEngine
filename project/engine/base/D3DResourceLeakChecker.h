@@ -12,4 +12,3 @@ public:
 	/// </summary>
 	~D3DResourceLeakChecker();
 };
-

@@ -24,4 +24,3 @@ public:	// メンバ関数
 	/// </summary>
 	void Update() override;
 };
-

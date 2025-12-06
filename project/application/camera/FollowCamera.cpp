@@ -6,18 +6,18 @@
 /// 初期化
 void FollowCamera::Initialize()
 {
+	CameraManager::GetInstance()->AddCamera("FollowCamera");
 	CameraManager::GetInstance()->SetCamera("FollowCamera");
-	CameraManager::GetInstance()->FindCamera("FollowCamera");
 	camera_ = CameraManager::GetInstance()->GetCamera();
 
 	// 注視点からのオフセットを設定
 	offset_ = { 0.0f, 7.50f, -40.0f };
 	// カメラの方向を設定
-	directional_ = { 0.0f, 1.0f, 0.0f };
+	upDirection_ = { 0.0f, 1.0f, 0.0f };
 }
 
 /// 更新
-void FollowCamera::Update(float deltaTime)
+void FollowCamera::Update([[maybe_unused]] float deltaTime)
 {
 	if (camera_ == nullptr || player_ == nullptr) {
 		return;
@@ -30,8 +30,6 @@ void FollowCamera::Update(float deltaTime)
 	//カメラの位置をプレイヤーの後ろに設定
 	cameraPos = MyTools::Add(targetPos, offset_);
 	camera_->SetTranslate(cameraPos);
-
-	deltaTime;
 
 	// カメラの向きをプレイヤーの方向に設定
 	MyBase::Vector3 direction = MyTools::Subtract(targetPos, cameraPos);
@@ -64,7 +62,7 @@ void FollowCamera::UpdateFollow(float deltaTime)
 	cameraPos = MyTools::Lerp(cameraPos, basePos, deltaTime * followSmooth_);
 
 	// 理想位置の保存
-	rawFollowPosition_ = cameraPos;
+	currentFollowPosition_ = cameraPos;
 }
 
 #ifdef _DEBUG

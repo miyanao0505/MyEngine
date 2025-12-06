@@ -20,9 +20,8 @@ Camera::Camera()
 {}
 
 // 更新
-void Camera::Update()
-{
-	// アフィン返還行列を計算
+void Camera::Update() {
+	// アフィン変換行列を計算
 	worldMatrix_ = Matrix::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 	// worldMatrixの逆行列
 	viewMatrix_ = Matrix::Inverse(worldMatrix_);

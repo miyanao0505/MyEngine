@@ -89,15 +89,19 @@ public:	// setter
 	void SetBlendMode(SpriteBase::BlendMode blendMode);
 
 private: // シングルトン
-	static TextureManager* instance;
+	static TextureManager* sInstance;
 
 	TextureManager() = default;
 	~TextureManager() = default;
-	TextureManager(TextureManager&) = default;
+	TextureManager(TextureManager&) = delete;
 	TextureManager& operator=(TextureManager&) = delete;
 
 private: // メンバ変数
 	// テクスチャデータ
+	// ★永続Map：読み込んだテクスチャをアプリ終了まで保持し、
+	// ・読み込んだテクスチャをアプリケーション終了まで保持するキャッシュ
+	// ・同じパスの読み込み時は再ロードせず高速化
+	// ・テクスチャ削除は行わない(メモリ管理はアプリ全体の設計に依存)
 	std::unordered_map<std::string, TextureData> textureDatas_;
 
 	// DirectXBase

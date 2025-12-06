@@ -18,7 +18,7 @@ public:	// メンバ関数
 	/// 更新
 	/// </summary>
 	/// <param name="deltaTime">前フレームからの経過時間</param>
-	void Update(float deltaTime);
+	void Update([[maybe_unused]] float deltaTime);
 
 	/// <summary>
 	///  描画
@@ -28,8 +28,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 追従処理を更新する
 	/// </summary>
-	/// <param name="deltaTime">前フレームからの経過時間</param>Vtuber
-	void UpdateFollow(float deltaTime);
+	/// <param name="deltaTime">前フレームからの経過時間</param>
+	void UpdateFollow( float deltaTime);
 
 #ifdef _DEBUG
 	/// <summary>
@@ -43,13 +43,13 @@ public:	// getter
 	/// プレイヤーとカメラのオフセットの取得
 	/// </summary>
 	/// <returns>プレイヤーとカメラのオフセット</returns>
-	MyBase::Vector3 GetOffset() { return offset_; }
+	MyBase::Vector3 GetOffset() const { return offset_; }
 
 	/// <summary>
 	/// プレイヤーを追っただけの理想位置の取得
 	/// </summary>
 	/// <returns>プレイヤーを追っただけの理想位置</returns>
-	MyBase::Vector3 GetRawFollowPosition() const { return rawFollowPosition_; }
+	MyBase::Vector3 GetRawFollowPosition() const { return currentFollowPosition_; }
 	
 	/// <summary>
 	/// 注視点の位置の取得
@@ -84,15 +84,13 @@ private:	// メンバ変数
 	// 注視点からのオフセット
 	MyBase::Vector3 offset_ = { 0.0f, 7.50f, -40.0f };
 	// カメラの方向
-	MyBase::Vector3 directional_ = { 0.0f, 1.0f, 0.0f };
+	MyBase::Vector3 upDirection_ = { 0.0f, 1.0f, 0.0f };
 	// カメラの追従のスムージング係数
 	float followSmooth_ = 8.0f;
 
 	// プレイヤーを追っただけの理想位置
-	MyBase::Vector3 rawFollowPosition_;
+	MyBase::Vector3 currentFollowPosition_;
 	// 注視点の位置
 	MyBase::Vector3 target_;
-	// FollowCameraが動作するかしないかを切り替えるフラグ
-	bool enable_ = true;
 };
 

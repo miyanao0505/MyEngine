@@ -39,22 +39,22 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="keyNumber">キー番号(DIK_0 等)</param>
 	/// <returns>指定キーがトリガー状態か</returns>
-	bool TriggerKey(BYTE keyNumber);
+	bool IsKeyTriggered(BYTE keyNumber);
 
 	/// <summary>
 	/// キーの押下をチェック
 	/// </summary>
 	/// <param name="keyNumber">キー番号(DIK_0 等)</param>
 	/// <returns>指定キーが押されているか</returns>
-	bool PushKey(BYTE keyNumber);
+	bool IsKeyPressed(BYTE keyNumber);
 
 private:	// シングルトンインスタンス
-	static Input* instance;
+	static Input* sInstance;
 
 	Input() = default;
 	~Input() = default;
-	Input(Input&) = default;
-	Input& operator=(Input&) = delete;
+	Input(const Input&) = delete;
+	Input& operator=(const Input&) = delete;
 
 private: // メンバ変数
 	// キーボードのデバイス
@@ -70,4 +70,3 @@ private: // メンバ変数
 	// 全キーの状態
 	std::array<BYTE, 256> key_;
 };
-

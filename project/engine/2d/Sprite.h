@@ -18,7 +18,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="textureFilePath">使用するテクスチャファイルのパス</param>
-	void Initialize(std::string textureFilePath);
+	void Initialize(const std::string& textureFilePath);
 
 	/// <summary>
 	/// 更新
@@ -66,7 +66,7 @@ public:	// getter
 	/// スプライトのアンカーポイント(基準座標)を取得
 	/// </summary>
 	/// <returns>アンカーポイントを表す MyBase::Vector2 への参照。(0,0) が左上、(1,1) が右下を示します</returns>
-	const MyBase::Vector2& GetAnchorPoint() const { return anchroPoint_; }
+	const MyBase::Vector2& GetAnchorPoint() const { return anchorPoint_; }
 
 	/// <summary>
 	/// スプライトが左右反転されているかを取得
@@ -127,25 +127,25 @@ public:	// setter
 	/// スプライトに使用するテクスチャを変更
 	/// </summary>
 	/// <param name="textureFilePath">新しく適用するテクスチャファイルのパス</param>
-	void SetTexture(std::string textureFilePath);
+	void SetTexture(const std::string& textureFilePath);
 
 	/// <summary>
 	/// スプライトのアンカーポイント(基準位置)を設定
 	/// </summary>
 	/// <param name="anchorPoint">新しく適用するアンカーポイント。(0,0) が左上、(1,1) が右下を示します</param>
-	void SetAnchorPoint(const MyBase::Vector2& anchorPoint) { anchroPoint_ = anchorPoint; }
+	void SetAnchorPoint(const MyBase::Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
 	
 	/// <summary>
 	/// スプライトの左右反転状態を設定
 	/// </summary>
 	/// <param name="isFlipX">左右反転を行う場合は true、通常表示の場合は false を指定します</param>
-	void SetIsFlipX(const bool& isFlipX) { isFlipX_ = isFlipX; }
+	void SetIsFlipX(bool isFlipX) { isFlipX_ = isFlipX; }
 
 	/// <summary>
 	/// スプライトの上下反転状態を設定
 	/// </summary>
 	/// <param name="isFlipY">上下反転を行う場合は true、通常表示の場合は false を指定します</param>
-	void SetIsFlipY(const bool& isFlipY) { isFlipY_ = isFlipY; }
+	void SetIsFlipY(bool isFlipY) { isFlipY_ = isFlipY; }
 
 	/// <summary>
 	/// スプライトで使用するテクスチャの描画範囲における左上座標を設定
@@ -181,20 +181,22 @@ private:	// メンバ関数
 	void AdjustTextureSize();
 
 private:	// メンバ変数
+	// 非所有。外部で管理される
 	SpriteBase* spriteBase_ = nullptr;
+	
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;				// index
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
-	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_ = nullptr;	// 座標変換行列
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex buffer
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;				// index buffer
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル buffer
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_ = nullptr;	// 座標変換行列 buffer
 	// バッファリソース内のデータを指すポインタ
-	MyBase::SpriteVertexData* vertexData_ = nullptr;										// vertex
-	uint32_t* indexData_ = nullptr;													// index
-	MyBase::SpriteMaterial* materialData_ = nullptr;										// マテリアル
-	MyBase::TransformationMatrix* transformationMatrixData_ = nullptr;				// 座標変換行列
+	MyBase::SpriteVertexData* vertexData_ = nullptr;								// vertex buffer
+	uint32_t* indexData_ = nullptr;													// index buffer
+	MyBase::SpriteMaterial* materialData_ = nullptr;								// マテリアル buffer
+	MyBase::TransformationMatrix* transformationMatrixData_ = nullptr;				// 座標変換行列 buffer
 	// バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};									// vertex
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};										// index
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};									// vertex buffer
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};										// index buffer
 
 	// ファイルパス
 	std::string filePath_;
@@ -209,12 +211,11 @@ private:	// メンバ変数
 	MyBase::Vector2 size_ = { 640.f, 360.f };
 
 	// アンカーポイント
-	MyBase::Vector2 anchroPoint_ = { 0.0f, 0.0f };
+	MyBase::Vector2 anchorPoint_ = { 0.0f, 0.0f };
 	// フリップ
 	bool isFlipX_ = false;		// 左右
 	bool isFlipY_ = false;		// 上下
 	// テクスチャ範囲指定
 	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };	// 左上座標
 	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };	// 切り出しサイズ
-
 };

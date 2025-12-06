@@ -18,7 +18,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Enemy();
+	Enemy() = default;
 
 	/// <summary>
 	/// デストラクタ
@@ -48,7 +48,7 @@ public:	// メンバ関数
 
 #ifdef _DEBUG
 	/// <summary>
-	/// デバック描画
+	/// デバッグ描画
 	/// </summary>
 	void DebugDraw() override;
 #endif // _DEBUG
@@ -63,19 +63,19 @@ public:	// getter
 	/// プレイヤーのポインタを取得
 	/// </summary>
 	/// <returns>プレイヤーのポインタ</returns>
-	Player* GetPlayer() { return player_; }
+	Player* GetPlayer() const { return player_; }
 
 	/// <summary>
 	/// 敵が死亡しているかを取得
 	/// </summary>
 	/// <returns>死亡しているか</returns>
-	bool IsDead() { return isDead_; }
+	bool IsDead() const { return isDead_; }
 
 	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
 	/// <returns>ワールド座標</returns>
-	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
 	/// <summary>
@@ -96,4 +96,3 @@ private:	/// メンバ変数
 	// プレイヤー
 	Player* player_;
 };
-

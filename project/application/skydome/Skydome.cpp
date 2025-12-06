@@ -20,7 +20,7 @@ void Skydome::Initialize(const std::string& filePath, MyBase::Vector3 position, 
 	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
 	object_ = std::make_unique<Object3d>();
 
-	object_->Initislize("sphere.obj");
+	object_->Initialize("sphere.obj");
 	object_->SetTexture(filePath);
 	object_->SetScale(scale);
 	object_->SetTranslate(position);

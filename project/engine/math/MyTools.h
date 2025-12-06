@@ -197,18 +197,18 @@ public:
 	/// <summary>
 	/// 分離軸に投影された軸成分から投影線分長を算出
 	/// </summary>
-	/// <param name="Seg">各軸方向ベクトル</param>
+	/// <param name="seg">各軸方向ベクトル</param>
 	/// <param name="e1">軸1</param>
 	/// <param name="e2">軸2</param>
 	/// <param name="e3">軸3</param>
 	/// <returns>投影された線分長</returns>
-	static float LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
+	static float LenSegOnSeparateAxis(const MyBase::Vector3* seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
 #pragma endregion ツール関数
 
 #pragma region 2次元ベクトル	
 	/// <summary>
 	/// 2次元ベクトルの内積を返す関数
-	/// </suumary>
+	/// </summary>
 	/// <param name="v1">ベクトルA</param>
 	/// <param name="v2">ベクトルB</param>
 	/// <returns>内積の値</returns>

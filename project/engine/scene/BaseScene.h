@@ -48,13 +48,13 @@ public:	//メンバ関数
 	/// </summary>
 	/// <param name="data">オブジェクトデータ</param>
 	/// <returns>生成されたオブジェクトのポインタ</returns>
-	BaseObject* CreateObjectFromData(const ObjectData& data);
+	std::unique_ptr<BaseObject> CreateObjectFromData(const JsonObjectData& data);
 
 	/// <summary>
 	/// jsonファイルの読み込み
 	/// </summary>
 	///	<param name="filePath">ファイルパス</param>
-	virtual void LoadJsonFile(const std::string& filePath) = 0;
+	virtual void LoadJsonFile([[maybe_unused]] const std::string& filePath) = 0;
 
 public:	// setter
 	/// <summary>
@@ -68,6 +68,4 @@ protected:	// 継承
 	SceneManager* sceneManager_ = nullptr;
 	// 入力
 	Input* input_ = nullptr;
-
 };
-

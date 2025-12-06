@@ -3,18 +3,21 @@
 #include "ParticleSystem.h"
 
 /// <summary>
+/// パーティクルタイプ
+/// </summary>
+enum class ParticleType {
+	kEllipse,	// 楕円
+	kRing,		// リング
+	kCylinder,	// 円柱
+};
+
+/// <summary>
 /// パーティクルエミッタークラス(ParticleEmitter)
 /// パーティクルシステムにおける「発生源」として機能するクラスです。
 /// </summary>
 class ParticleEmitter
 {
 public:	// メンバ関数
-	enum ParticleType {
-		Ellipse,	// 楕円
-		Ring,		// リング
-		Cylinder,	// 円柱
-	};
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -26,7 +29,7 @@ public:	// メンバ関数
 	/// <param name="name">パーティクルグループ名</param>
 	/// <param name="textureFilePath">使用するテクスチャファイルのパス</param>
 	/// <param name="type">パーティクルの形状タイプ</param>
-	void Initialize(const std::string name, const std::string textureFilePath, const ParticleType type = Ellipse);
+	void Initialize(const std::string& name, const std::string& textureFilePath, const ParticleType type = ParticleType::kEllipse);
 
 	/// <summary>
 	/// 更新
@@ -44,14 +47,14 @@ public:	// メンバ関数
 	/// <param name="name">パーティクルグループ名</param>
 	/// <param name="textureFilePath">使用するテクスチャファイル</param>
 	/// <param name="type">パーティクルの形状タイプ</param>
-	void CreateParticleGroup(const std::string name, const std::string textureFilePath, const ParticleType type = Ellipse);
+	void CreateParticleGroup(const std::string& name, const std::string& textureFilePath, const ParticleType type = ParticleType::kEllipse);
 
 #ifdef _DEBUG
 	/// <summary>
 	/// ImGuiを使用したデバッグ表示
 	/// </summary>
 	/// <param name="name">対象パーティクルグループ名</param>
-	void Imgui(std::string name);
+	void ImGui(const std::string& name);
 #endif // _DEBUG
 
 public:	// getter
@@ -78,14 +81,14 @@ public:	// getter
 	/// </summary>
 	/// <param name="name">パーティクルグループ名</param>
 	/// <returns>パーティクルグループデータ</returns>
-	const ParticleSystem::ParticleGroupData& GetParticleGroupData(std::string name);
+	const ParticleSystem::ParticleGroupData& GetParticleGroupData(const std::string& name);
 	
 	/// <summary>
 	/// 指定したパーティクルグループがビルボードかどうかを取得
 	/// </summary>
 	/// <param name="name">パーティクルグループ名</param>
 	/// <returns>ビルボード設定か</returns>
-	bool GetIsBillboard(std::string name);
+	bool GetIsBillboard(const std::string& name);
 
 public:	// setter
 	/// <summary>
@@ -124,7 +127,7 @@ public:	// setter
 	/// </summary>
 	/// <param name="name">パーティクルグループ名</param>
 	/// <param name="isBillboard">ビルボードにするか</param>
-	void SetBillboard(std::string name, bool isBillboard);
+	void SetBillboard(const std::string& name, bool isBillboard);
 
 private:	// メンバ変数
 	// 発生中心

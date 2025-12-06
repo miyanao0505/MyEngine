@@ -12,16 +12,11 @@ using namespace std;
 /// 範囲内の値を返す関数
 float MyTools::Clamp(const float& num, const float& min, const float& max)
 {
-	if (num < min)
-	{
+	if (num < min) {
 		return min;
-	}
-	else if (num > max)
-	{
+	} else if (num > max) {
 		return max;
-	}
-	else
-	{
+	} else {
 		return num;
 	}
 }
@@ -69,8 +64,7 @@ bool MyTools::IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& pla
 	// 絶対値
 	if (k < 0) { k *= -1.f; };
 
-	if (k <= sphere.radius)
-	{
+	if (k <= sphere.radius)	{
 		return true;
 	}
 
@@ -84,13 +78,9 @@ bool MyTools::IsCollision(const MyBase::Line& line, const MyBase::Plane& plane)
 	float dot = Dot(plane.normal, line.diff);
 
 	// 垂直=並行であるので、衝突しているはずがない
-	if (dot == 0)
-	{
+	if (dot == 0) {
 		return false;
 	}
-
-	// tを求める
-	//float t = (plane.distance - Dot(line.origin, plane.normal)) / dot;
 
 	// tの値と線の種類によって衝突しているかを判断する
 	return true;
@@ -103,8 +93,7 @@ bool MyTools::IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane)
 	float dot = Dot(plane.normal, ray.diff);
 
 	// 垂直=並行であるので、衝突しているはずがない
-	if (dot == 0)
-	{
+	if (dot == 0) {
 		return false;
 	}
 
@@ -112,8 +101,7 @@ bool MyTools::IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane)
 	float t = (plane.distance - Dot(ray.origin, plane.normal)) / dot;
 
 	// tの値と線の種類によって衝突しているかを判断する
-	if (t > 0.f)
-	{
+	if (t > 0.f) {
 		return true;
 	}
 	return false;
@@ -126,8 +114,7 @@ bool MyTools::IsCollision(const MyBase::Segment& segment, const MyBase::Plane& p
 	float dot = Dot(plane.normal, segment.diff);
 
 	// 垂直=並行であるので、衝突しているはずがない
-	if (dot == 0)
-	{
+	if (dot == 0) {
 		return false;
 	}
 
@@ -135,8 +122,7 @@ bool MyTools::IsCollision(const MyBase::Segment& segment, const MyBase::Plane& p
 	float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
 
 	// tの値と線の種類によって衝突しているかを判断する
-	if (t >= 0.f && t <= 1.f)
-	{
+	if (t >= 0.f && t <= 1.f) {
 		return true;
 	}
 	return false;
@@ -164,8 +150,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& 
 		// すべての小三角形のクロス積と法線が同じ方向を向いていたら衝突
 		if (Dot(cross01, plane.normal) >= 0.0f &&
 			Dot(cross12, plane.normal) >= 0.0f &&
-			Dot(cross20, plane.normal) >= 0.0f)
-		{
+			Dot(cross20, plane.normal) >= 0.0f)	{
 			return true;
 		}
 		return false;
@@ -180,8 +165,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& r
 	MyBase::Plane plane = TriangleToPlane(triangle);
 
 	// 線と平面との衝突判定を行う
-	if (IsCollision(ray, plane))
-	{
+	if (IsCollision(ray, plane)) {
 		// 衝突点を求める
 		float dot = Dot(plane.normal, ray.diff);
 		float t = (plane.distance - Dot(ray.origin, plane.normal)) / dot;
@@ -195,8 +179,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& r
 		// すべての小三角形のクロス積と法線が同じ方向を向いていたら衝突
 		if (Dot(cross01, plane.normal) >= 0.0f &&
 			Dot(cross12, plane.normal) >= 0.0f &&
-			Dot(cross20, plane.normal) >= 0.0f)
-		{
+			Dot(cross20, plane.normal) >= 0.0f)	{
 			return true;
 		}
 		return false;
@@ -211,8 +194,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Segmen
 	MyBase::Plane plane = TriangleToPlane(triangle);
 
 	// 線と平面との衝突判定を行う
-	if (IsCollision(segment, plane))
-	{
+	if (IsCollision(segment, plane)) {
 		// 衝突点を求める
 		float dot = Dot(plane.normal, segment.diff);
 		float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
@@ -226,8 +208,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Segmen
 		// すべての小三角形のクロス積と法線が同じ方向を向いていたら衝突
 		if (Dot(cross01, plane.normal) >= 0.0f &&
 			Dot(cross12, plane.normal) >= 0.0f &&
-			Dot(cross20, plane.normal) >= 0.0f)
-		{
+			Dot(cross20, plane.normal) >= 0.0f)	{
 			return true;
 		}
 		return false;
@@ -240,8 +221,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2)
 {
 	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && 
 		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && 
-		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z))
-	{
+		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z))	{
 		return true;
 	}
 	return false;
@@ -259,9 +239,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere
 	float distance = Length(Subtract(closestPoint, sphere.center));
 
 	// 距離が半径より小さければ衝突
-	if (distance <= sphere.radius)
-	{
-		// 衝突
+	if (distance <= sphere.radius) {
 		return true;
 	}
 	return false;
@@ -285,9 +263,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line)
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = min(min(tFarX, tFarY), tFarZ);
 
-	if (tmin <= tmax)
-	{
-		// 衝突
+	if (tmin <= tmax) {
 		return true;
 	}
 	return false;
@@ -311,11 +287,8 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray)
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = min(min(tFarX, tFarY), tFarZ);
 
-	if (tmin <= tmax)
-	{
-		if (tmax >= 0.0f && tmax <= 1.0f)
-		{
-			// 衝突
+	if (tmin <= tmax) {
+		if (tmax >= 0.0f && tmax <= 1.0f) {
 			return true;
 		}
 	}
@@ -348,11 +321,8 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segme
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = min(min(tFarX, tFarY), tFarZ);
 
-	if (tmin <= tmax)
-	{
-		if ((tmin >= 0.0f && tmin <= 1.0f) || (tmax >= 0.0f && tmax <= 1.0f) || (tmin <= 0 && tmax >= 1))
-		{
-			// 衝突
+	if (tmin <= tmax) {
+		if ((tmin >= 0.0f && tmin <= 1.0f) || (tmax >= 0.0f && tmax <= 1.0f) || (tmin <= 0 && tmax >= 1)) {
 			return true;
 		}
 	}
@@ -401,7 +371,6 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Line& line)
 	// ワールド逆行列
 	MyBase::Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
 
-
 	MyBase::Vector3 centerInOBBLocalLine = Matrix::Transform(line.origin, obbWorldMatrixInverse);
 	MyBase::AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
 	MyBase::Line lineOBBLocal = { centerInOBBLocalLine, line.diff };
@@ -423,7 +392,6 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray)
 	// ワールド逆行列
 	MyBase::Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
 
-
 	MyBase::Vector3 centerInOBBLocalRay = Matrix::Transform(ray.origin, obbWorldMatrixInverse);
 	MyBase::AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
 	MyBase::Ray rayOBBLocal = { centerInOBBLocalRay, ray.diff };
@@ -444,7 +412,6 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment
 	};
 	// ワールド逆行列
 	MyBase::Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
-
 
 	MyBase::Vector3 centerInOBBLocalSegment = Matrix::Transform(segment.origin, obbWorldMatrixInverse);
 	MyBase::AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
@@ -533,8 +500,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
 	};
 	// 正規化
 	MyBase::Vector3 NAxisOfSeparation[15];
-	for (uint32_t i = 0; i < 15; i++)
-	{
+	for (uint32_t i = 0; i < 15; i++) {
 		NAxisOfSeparation[i] = Normalize(axisOfSeparation[i]);
 	}
 
@@ -546,11 +512,9 @@ bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
 	float sumSpan = 0.0f, longSpan = 0.0f;			// 比較用
 
 	// 分離軸の分ループ
-	for (uint32_t i = 0; i < 15; i++)
-	{
+	for (uint32_t i = 0; i < 15; i++) {
 		// 各頂点を分離軸で射影
-		for (uint32_t l = 0; l < 8; l++)
-		{
+		for (uint32_t l = 0; l < 8; l++) {
 			obb1Projection[l] = Dot(NAxisOfSeparation[i], obb1WorldVertex[l]);
 			obb2Projection[l] = Dot(NAxisOfSeparation[i], obb2WorldVertex[l]);
 		}
@@ -558,8 +522,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
 		min1 = obb1Projection[0]; max1 = obb1Projection[0];
 		min2 = obb2Projection[0]; max2 = obb2Projection[0];
 		// 各頂点分比較
-		for (uint32_t l = 1; l < 8; l++)
-		{
+		for (uint32_t l = 1; l < 8; l++) {
 			min1 = (std::min)(min1, obb1Projection[l]);
 			max1 = (std::max)(max1, obb1Projection[l]);
 			min2 = (std::min)(min2, obb2Projection[l]);
@@ -575,8 +538,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
 		longSpan = (std::max)(max1, max2) - (std::min)(min1, min2);
 		// 分離軸が引けるかどうか
 		// 引ける時、未衝突
-		if (sumSpan < longSpan)
-		{
+		if (sumSpan < longSpan) {
 			return false;
 		}
 	}
@@ -686,8 +648,7 @@ MyBase::Vector3 MyTools::Normalize(const MyBase::Vector3& v)
 {
 	float length = Length(v);
 	float x = v.x, y = v.y, z = v.z;
-	if (length != 0)
-	{
+	if (length != 0) {
 		x /= length;
 		y /= length;
 		z /= length;
@@ -701,7 +662,6 @@ MyBase::Vector3 MyTools::Standardization(const MyBase::Vector3& v)
 {
 	float mean = 0.f;					// 平均
 	float standardDeviation = 1.0f;		// 標準偏差
-
 	float meanValue = (v.x + v.y + v.z) / 3.0f;	// 平均値
 
 	// 答え
@@ -735,10 +695,8 @@ MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vec
 
 	// s－九コサインでθの角度を求める
 	float theta = std::acosf(dot);
-
 	// θの角度からsinθを求める
 	float sinTheta = std::sin(theta);
-
 	// サイン(θ(1-t))を求める
 	float sinThetaFrom = std::sin((1 - t) * theta);
 	// サインθtを求める
@@ -746,12 +704,9 @@ MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vec
 
 	MyBase::Vector3 normalizeVector;
 	// ゼロ除算を防ぐ
-	if (sinTheta < 1.0e-5)
-	{
+	if (sinTheta < 1.0e-5) {
 		normalizeVector = start;
-	}
-	else
-	{
+	} else {
 		// 球面線形補間したベクトル(単位ベクトル)
 		normalizeVector = Add(Multiply(sinThetaFrom / sinTheta, start), Multiply(sinThetaTo / sinTheta, end));
 	}
@@ -770,26 +725,21 @@ MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vec
 MyBase::Vector3 MyTools::CatmullRomInterpolation(const MyBase::Vector3& p0, const MyBase::Vector3& p1, const MyBase::Vector3& p2, const MyBase::Vector3& p3, float t)
 {
 	const float s = 0.5f;	// 数式に出てくる 1/2 のこと。
-
 	float t2 = t * t;	// t の2乗
 	float t3 = t2 * t;	// t の3乗
-
 
 	MyBase::Vector3 e3 = Multiply(-1.f, p0);
 	e3 = Add(e3, Multiply(3.0f, p1));
 	e3 = Subtract(e3, Multiply(3.0f, p2));
 	e3 = Add(e3, p3);
-	/*Subtract(Add(Multiply(-1.f, p0), Multiply(3.f, p1)), Add(Multiply(3.f, p2), p3));*/
 
 	MyBase::Vector3 e2 = Multiply(2.0f, p0);
 	e2 = Subtract(e2, Multiply(5.0f, p1));
 	e2 = Add(e2, Multiply(4.0f, p2));
 	e2 = Subtract(e2, p3);
-	/*Add(Subtract(Multiply(2.f, p0), Multiply(5.f, p1)), Subtract(Multiply(4.f, p2), p3));*/
 
 	MyBase::Vector3 e1 = Multiply(-1.0f, p0);
 	e1 = Add(e1, p2);
-	/*Add(Multiply(-1.f, p0), p2);*/
 
 	MyBase::Vector3 e0 = Multiply(2.0f, p1);
 
@@ -798,7 +748,7 @@ MyBase::Vector3 MyTools::CatmullRomInterpolation(const MyBase::Vector3& p0, cons
 	ans = Add(ans, Multiply(t, e1));
 	ans = Add(ans, e0);
 
-	return /*Multiply(s, Add(Add(Add(Multiply(t3, e3), Multiply(t2, e2)), Multiply(t, e1)), e0))*/ Multiply(s, ans);
+	return Multiply(s, ans);
 }
 
 /// CatmullRomスプライン曲線上の座標を得る
@@ -866,8 +816,7 @@ MyBase::Vector3 MyTools::ClosestPoint(const MyBase::Vector3& point, const MyBase
 /// 垂直なベクトルを求める関数
 MyBase::Vector3 MyTools::Perpendicular(const MyBase::Vector3& vector)
 {
-	if (vector.x != 0.0f || vector.y != 0.0f)
-	{
+	if (vector.x != 0.0f || vector.y != 0.0f) {
 		return { -vector.y, vector.x, 0.0f };
 	}
 

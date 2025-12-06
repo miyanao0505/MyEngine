@@ -83,7 +83,7 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	followCamera_->Update(kDeltaTime_);
+	followCamera_->Update(kDeltaTime);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update();
 	enemy_->Update();
@@ -123,7 +123,7 @@ void GameScene::Update()
 #endif // _DEBUG
 
 	// カメラマネージャーの更新
-	CameraManager::GetInstance()->Update(kDeltaTime_);
+	CameraManager::GetInstance()->Update(kDeltaTime);
 	// カメラの更新
 	if (CameraManager::GetInstance()->GetCamera()) {
 		CameraManager::GetInstance()->GetCamera()->Update();
@@ -131,14 +131,14 @@ void GameScene::Update()
 
 	// スタート演出中
 	if (!startSequence_->IsFinished()) {
-		startSequence_->Update(kDeltaTime_);
+		startSequence_->Update(kDeltaTime);
 		return;
 	}
 	
 	// クリア条件
 	if (enemy_->IsDead()) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 		return;
 	}
 
@@ -147,7 +147,7 @@ void GameScene::Update()
 	player_->Update();
 
 	// フォローカメラの更新
-	followCamera_->Update(kDeltaTime_);
+	followCamera_->Update(kDeltaTime);
 
 	// 敵の更新処理
 	enemy_->Update();
@@ -163,7 +163,7 @@ void GameScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -225,19 +225,19 @@ void GameScene::Draw()
 void GameScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 	}
 	// Mキーを押したら
-	if (input_->TriggerKey(DIK_M)) {
+	if (input_->IsKeyTriggered(DIK_M)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
 	}
 	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
+	if (input_->IsKeyTriggered(DIK_B)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
 
 	DebugDraw();
@@ -285,28 +285,28 @@ void GameScene::DebugDraw()
 	enemy_->DebugDraw();
 
 	// パーティクル
-	ParticleManager::GetInstance()->Imgui();
+	ParticleManager::GetInstance()->ImGui();
 
 	ImGui::End();
 }
 #endif // _DEBUG
 
 // JSONファイルの読み込み
-void GameScene::LoadJsonFile(const std::string& filePath)
+void GameScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
 	// レベルデータの読み込み
-	LevelData* levelData = jsonLoader_->LoadFile(filePath);
+	std::unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 	
 	// 3Dオブジェクトの読み込み
-	for (const ObjectData& objectData : levelData->objects) {
+	for (const JsonObjectData& objectData : levelData->objects) {
 		// オブジェクトの種類ごとに処理
 		if (objectData.name == "Player") {
 			// プレイヤーの初期化
-			player_->GetObject3d()->SetModel(objectData.objectName);
+			player_->GetObject3D()->SetModel(objectData.modelFileName);
 			player_->SetName(objectData.name.c_str());
-			player_->GetObject3d()->SetTranslate(objectData.translation);
-			player_->GetObject3d()->SetRotate(objectData.rotation);
-			player_->GetObject3d()->SetScale(objectData.scale);
+			player_->GetObject3D()->SetTranslate(objectData.translation);
+			player_->GetObject3D()->SetRotate(objectData.rotation);
+			player_->GetObject3D()->SetScale(objectData.scale);
 		}
 		else if (objectData.name == "Enemy") {
 			// 敵の初期化

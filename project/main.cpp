@@ -4,8 +4,8 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// リークチェック
 	D3DResourceLeakChecker leakCheck;
-	// 宣言
-	std::unique_ptr<MNFramework> game(new MyGame);
+	// ゲームクラスの生成
+	auto game = std::make_unique<MyGame>();
 
 	// ゲームループ
 	game->Run();

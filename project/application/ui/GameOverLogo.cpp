@@ -9,13 +9,13 @@ void GameOverLogo::Initialize() {
 	gameOverChar_->Initialize("characters", "gameover.obj");
 	gameOverChar_->SetName("gameOverChar");
 	MyBase::Transform transform = { { 4.0f,4.0f,4.0f },{ 0.0f,0.0f,0.0f },{ 0.0f,3.50f,0.0f } };
-	gameOverChar_->GetObject3d()->SetTransform(transform);
+	gameOverChar_->GetObject3D()->SetTransform(transform);
 	// 切り替えボタン
 	transitionButton_ = std::make_unique<BaseObject>();
 	transitionButton_->Initialize("characters", "enter.obj");
 	transitionButton_->SetName("transitionButton");
 	transform = { {2.5f, 2.5f, 2.5f}, {0.0f, 0.0f, 0.0f}, {0.0f,-3.0f,0.0f} };
-	transitionButton_->GetObject3d()->SetTransform(transform);
+	transitionButton_->GetObject3D()->SetTransform(transform);
 }
 
 void GameOverLogo::Finalize() {

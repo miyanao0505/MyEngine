@@ -170,7 +170,7 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	metadata.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	metadata.mipLevels = 1;
 
-	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
+	srvManager->CreateSRVForTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
 	
 	// CPU/GPU 双方のデスクリプタハンドルを保持
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);

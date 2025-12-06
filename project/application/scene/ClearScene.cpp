@@ -15,7 +15,7 @@ void ClearScene::Initialize()
 	BaseScene::Initialize();
 
 #pragma region カメラ
-	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
 #pragma endregion カメラ
@@ -89,9 +89,9 @@ void ClearScene::Update()
 	DebugUpdate();
 #endif // _DEBUG
 
-	// ゲームシーンへの遷移
-	if (input_->TriggerKey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+	// タイトルシーンへの遷移
+	if (input_->IsKeyTriggered(DIK_RETURN)) {
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 		return;
 	}
 
@@ -113,7 +113,7 @@ void ClearScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -167,14 +167,14 @@ void ClearScene::Draw()
 void ClearScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
+	if (input_->IsKeyTriggered(DIK_B)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
 
 	DebugDraw();
@@ -195,7 +195,7 @@ void ClearScene::DebugDraw()
 #endif // _DEBUG
 
 // jsonファイルの読み込み
-void ClearScene::LoadJsonFile(const std::string& filePath)
+void ClearScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
-	filePath;
+	
 }

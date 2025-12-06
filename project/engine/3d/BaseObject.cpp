@@ -12,7 +12,7 @@ void BaseObject::Initialize(const std::string& folderPath, const std::string& fi
 
 	// Object3d の生成と初期化
 	object_ = make_unique<Object3d>();
-	object_->Initislize(filePath);
+	object_->Initialize(filePath);
 }
 
 // 更新
@@ -65,9 +65,9 @@ void BaseObject::DebugDraw()
 			// 反射強度
 			ImGui::SliderFloat("reflectivity", &materialData->reflectivity, 0.0f, 1.0f);
 			// 有効かどうか
-			bool isEnable = materialData->enableLighting;
-			ImGui::Checkbox("enableLighting", &isEnable);
-			materialData->enableLighting = isEnable;
+			bool isEnabled = materialData->enableLighting;
+			ImGui::Checkbox("enableLighting", &isEnabled);
+			materialData->enableLighting = isEnabled;
 
 			// 変更したマテリアル情報をオブジェクトに設定
 			object_->GetModel()->SetModelMaterial(materialData);

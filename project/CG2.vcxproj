@@ -139,6 +139,7 @@
     <ClInclude Include="engine\scene\MNFramework.h" />
     <ClInclude Include="engine\scene\SceneManager.h" />
     <ClInclude Include="application\camera\FollowCamera.h" />
+    <ClInclude Include="engine\scene\SceneName.h" />
     <ClInclude Include="engine\scene\SceneTransition.h" />
   </ItemGroup>
   <ItemGroup>

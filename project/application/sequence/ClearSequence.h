@@ -29,7 +29,7 @@ public:	// メンバ関数
 	/// 更新
 	/// </summary>
 	/// <param name="deltaTime">前の更新からの経過時間(秒)</param>
-	void Update(float deltaTime);
+	void Update([[maybe_unused]] float deltaTime);
 
 	/// <summary>
 	/// 描画
@@ -51,7 +51,7 @@ private:	// メンバ関数
 	/// 自機の移動状態を経過時間に応じて更新
 	/// </summary>
 	/// <param name="deltaTime">前フレームからの経過時間(秒)。移動の更新量を計算するために使用</param>
-	void UpdateShipMovement(float deltaTime);
+	void UpdateShipMovement([[maybe_unused]] float deltaTime);
 
 	/// <summary>
 	/// テキストを非表示

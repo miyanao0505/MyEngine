@@ -14,11 +14,11 @@ void EventScene::Initialize()
 
 #pragma region シーン初期化
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(filePath1_);
+	TextureManager::GetInstance()->LoadTexture(spriteTexturePath_);
 
 	// スプライト
 	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(filePath1_);
+	sprite_->Initialize(spriteTexturePath_);
 	sprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 	// .objファイルからモデルを読み込む
@@ -57,9 +57,9 @@ void EventScene::Update()
 
 #ifdef _DEBUG
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 
 	DebugDraw();
@@ -76,7 +76,7 @@ void EventScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -138,7 +138,7 @@ void EventScene::DebugDraw()
 #endif // _DEBUG
 
 // jsonファイルの読み込み
-void EventScene::LoadJsonFile(const std::string& filePath)
+void EventScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
-	filePath;
+	
 }

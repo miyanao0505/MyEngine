@@ -44,7 +44,7 @@ public:	// メンバ関数
 	// jsonファイルの読み込み
 	/// </summary>
 	///	<param name="filePath">ファイルパス</param>
-	void LoadJsonFile(const std::string& filePath) override;
+	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
 	// テクスチャファイルパス
@@ -71,4 +71,3 @@ private:	// メンバ変数
 	
 	
 };
-

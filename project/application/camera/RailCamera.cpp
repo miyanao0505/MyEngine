@@ -14,8 +14,6 @@ void RailCamera::Update(float deltaTime)
 {
 	// レールに沿って移動
 	MoveAlongRail(deltaTime);
-
-
 }
 
 #ifdef _DEBUG
@@ -23,7 +21,7 @@ void RailCamera::Update(float deltaTime)
 void RailCamera::DebugUpdate()
 {
 	ImGui::PushID(this);
-	if (ImGui::CollapsingHeader("RialCamera"))
+	if (ImGui::CollapsingHeader("RailCamera"))
 	{
 		// レールポイント&ラインの表示
 		ImGui::Checkbox("Debug Mode", &isDebugMode_);
@@ -39,15 +37,15 @@ void RailCamera::MoveAlongRail(float deltaTime)
 {
 	if (nextPointIndex_ >= controlPoints_.size()) return;
 
-	t_ += deltaTime * speed_;
+	lerpT_ += deltaTime * railSpeed_;
 
-	if (t_ >= 1.0f) {
+	if (lerpT_ >= 1.0f) {
 		// 次の区間へ
-		t_ = 0.0f;
+		lerpT_ = 0.0f;
 		currentPointIndex_++;
 		nextPointIndex_++;
 		if (nextPointIndex_ >= controlPoints_.size()) return;
 	}
 
-	railPosition_ = MyTools::Lerp(controlPoints_[currentPointIndex_], controlPoints_[nextPointIndex_], t_);
+	railPosition_ = MyTools::Lerp(controlPoints_[currentPointIndex_], controlPoints_[nextPointIndex_], lerpT_);
 }

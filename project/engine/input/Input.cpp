@@ -3,15 +3,15 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-Input* Input::instance = nullptr;
+Input* Input::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 Input* Input::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new Input();
+	if (sInstance == nullptr) {
+		sInstance = new Input();
 	}
-	return instance;
+	return sInstance;
 }
 
 /// 初期化
@@ -42,8 +42,8 @@ void Input::Initialize(WindowsAPI* winApi)
 // 終了
 void Input::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 /// 更新
@@ -61,7 +61,7 @@ void Input::Update()
 }
 
 /// キーのトリガーをチェック
-bool Input::TriggerKey(BYTE keyNumber){
+bool Input::IsKeyTriggered(BYTE keyNumber){
 	// 指定キーを押した時にtrueを返す
 	if (!keyPre_[keyNumber] && key_[keyNumber]) {
 		return true;
@@ -71,7 +71,7 @@ bool Input::TriggerKey(BYTE keyNumber){
 }
 
 /// キーの押下をチェック
-bool Input::PushKey(BYTE keyNumber) {
+bool Input::IsKeyPressed(BYTE keyNumber) {
 	// 指定キーを押していればtrueを返す
 	if (key_[keyNumber]) {
 		return true;

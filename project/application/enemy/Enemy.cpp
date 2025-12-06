@@ -8,11 +8,6 @@
 
 using namespace std;
 
-Enemy::Enemy()
-{
-	Initialize();
-}
-
 Enemy::~Enemy()
 {
 
@@ -42,7 +37,7 @@ void Enemy::Initialize()
 	
 	// パーティクルエミッターの初期化
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleEmitter::Ellipse);
+	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleType::kEllipse);
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffect = {
@@ -57,7 +52,7 @@ void Enemy::Initialize()
 		.isEmitUpdate = true
 	};
 	particleEmitter_->SetParticleGroupData("hitEffectEnemy", hitEffect);
-	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "resources/texture/gradationLine.png", ParticleEmitter::Ring);
+	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "resources/texture/gradationLine.png", ParticleType::kRing);
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffectRing = {
@@ -131,7 +126,7 @@ void Enemy::DebugDraw()
 
 		// パーティクルエミッターのデバッグUI
 		if (particleEmitter_) {
-			particleEmitter_->Imgui("Enemy");
+			particleEmitter_->ImGui("Enemy");
 		}
 	}
 	ImGui::PopID();

@@ -28,7 +28,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="dxBase">DirectXBaseクラスのインスタンス</param>
-	void initialize(DirectXBase* dxBase);
+	void Initialize(DirectXBase* dxBase);
 
 	/// <summary>
 	/// ルートシグネチャの作成
@@ -116,6 +116,4 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_;
-
 };
-
