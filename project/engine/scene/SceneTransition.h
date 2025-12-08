@@ -10,20 +10,15 @@
 /// </summary>
 class SceneTransition
 {
-public:	// enum
-	enum class State {
-		None,       // 非アクティブ
-		FadeOut,    // フェードアウト中
-		ChangeScene,// シーン切替
-		FadeIn      // フェードイン中
-	};
+public:
+	using FinishCallback = std::function<void()>; // フェード完了コールバック関数の型定義
 
 public:	// メンバ関数
 	/// <summary>
 	/// フェード演出の開始処理
 	/// </summary>
-	/// <param name="onChange">フェードアウト完了後に実行されるシーン切替コールバック関数</param>
-	void Start(std::function<void()> onChange);
+	/// <param name="onSwitch">シーン切替コールバック関数</param>
+	void Start(FinishCallback onSwitch);
 
 	/// <summary>
 	/// 更新
@@ -39,20 +34,22 @@ public:	// メンバ関数
 	/// 演出中かどうかを取得
 	/// </summary>
 	/// <returns>演出中なら true、停止中なら false</returns>
-	bool IsActive() const { return isActive_; }
-	
-	/// <summary>
-	/// 演出が終了したかどうかを取得
-	/// </summary>
-	/// <returns>完了していれば true、未完了なら false</returns>
-	bool IsFinished() const { return !isActive_; }
+	bool IsActive() const { return phase_ != Phase::kNone; }
+
+private:
+	enum class Phase {
+		kNone,
+		kFadeIn,		// 暗転
+		kFadeOut,	// 明転
+	};
 
 private:	// メンバ変数
-	State state_ = State::None;
-	float alpha_ = 0.0f;        // フェード量 (0〜1)
-	float speed_ = 0.02f;       // フェード速度
-	bool isActive_ = false;     // 演出中フラグ
-	std::function<void()> onChange_; // シーン切替タイミングのコールバック
+	Phase phase_ = Phase::kNone;
+	float timer_ = 0.0f;        // タイマー
+
+	static constexpr float kFadeTime = 1.0f;
+
+	FinishCallback onSwitch_ = nullptr; // シーン切替タイミングのコールバック
 
 	// テクスチャファイルパス
 	const std::string blackbackFilePath_ = "resources/texture/blackback.png";

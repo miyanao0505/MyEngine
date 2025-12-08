@@ -11,19 +11,19 @@ void MyGame::Initialize()
 	MNFramework::Initialize();
 
 	// シーンマネージャに最初のシーンをセット
-	SceneManager::GetInstance()->ChangeScene("TITLE");
+	SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 
 #pragma region カメラ
+	CameraManager::GetInstance()->AddCamera("default");
 	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->FindCamera("default");
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.4f, 0.0f, 0.0f });
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
+	CameraManager::GetInstance()->AddCamera("sub");
 	CameraManager::GetInstance()->SetCamera("sub");
-	CameraManager::GetInstance()->FindCamera("sub");
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 1.57f, 0.0f });
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ -15.0f, 7.0f, 0.0f });
 
-	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->SetCamera("default");
 #pragma endregion
 }
 

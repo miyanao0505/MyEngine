@@ -10,8 +10,7 @@ using namespace std;
 
 Player::Player()
 {
-	// プレイヤーの初期化
-	Initialize(MyBase::Vector3{ 0.0f, 0.0f, 0.0f });
+	
 }
 
 /// デストラクタ
@@ -21,7 +20,7 @@ Player::~Player()
 }
 
 /// 初期化
-void Player::Initialize(MyBase::Vector3 position)
+void Player::Initialize(const MyBase::Vector3& position)
 {
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("player", "player.obj");
@@ -53,23 +52,23 @@ void Player::Initialize(MyBase::Vector3 position)
 void Player::Update()
 {
 	// 移動処理
-	Move();
+	HandleMovementInput();
 
 	// 回転処理
-	Rotate();
+	HandleRotationInput();
 
 	// オブジェクトの更新
 	object_->Update();
 
 	// 攻撃
-	Attaack();
+	Attack();
 
 	// 弾更新
 	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
 		const bool isDead = (*it)->IsDead();
 		const float distance = MyTools::Length(MyTools::Subtract((*it)->GetWorldPosition(), GetWorldPosition()));
 
-		if (isDead || distance >= kBulletDrawDistance_) {
+		if (isDead || distance >= kBulletDrawDistance) {
 			it = bullets_.erase(it); // listから完全に削除
 		}
 		else {
@@ -122,21 +121,21 @@ void Player::DebugDraw()
 
 
 /// 移動処理
-void Player::Move()
+void Player::HandleMovementInput()
 {
 	// プレイヤーの移動
 	MyBase::Vector3 velocity = { 0.0f, 0.0f, 0.0f };
-	if (Input::GetInstance()->PushKey(DIK_W)) {
-		velocity.y += kmoveSpeed_;
+	if (Input::GetInstance()->IsKeyPressed(DIK_W)) {
+		velocity.y += kMoveSpeed;
 	}
-	if (Input::GetInstance()->PushKey(DIK_S)) {
-		velocity.y -= kmoveSpeed_;
+	if (Input::GetInstance()->IsKeyPressed(DIK_S)) {
+		velocity.y -= kMoveSpeed;
 	}
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		velocity.x -= kmoveSpeed_;
+	if (Input::GetInstance()->IsKeyPressed(DIK_A)) {
+		velocity.x -= kMoveSpeed;
 	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		velocity.x += kmoveSpeed_;
+	if (Input::GetInstance()->IsKeyPressed(DIK_D)) {
+		velocity.x += kMoveSpeed;
 	}
 	
 	// 座標更新
@@ -145,20 +144,20 @@ void Player::Move()
 }
 
 /// 回転処理
-void Player::Rotate()
+void Player::HandleRotationInput()
 {
 	// プレイヤーの回転
 	MyBase::Vector3 angularVelocity = { 0.0f, 0.0f, 0.0f };
-	if (Input::GetInstance()->PushKey(DIK_UP)) {
+	if (Input::GetInstance()->IsKeyPressed(DIK_UP)) {
 		angularVelocity.x -= 0.05f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
+	if (Input::GetInstance()->IsKeyPressed(DIK_DOWN)) {
 		angularVelocity.x += 0.05f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+	if (Input::GetInstance()->IsKeyPressed(DIK_LEFT)) {
 		angularVelocity.y -= 0.05f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+	if (Input::GetInstance()->IsKeyPressed(DIK_RIGHT)) {
 		angularVelocity.y += 0.05f;
 	}
 	// 回転更新
@@ -167,9 +166,9 @@ void Player::Rotate()
 }
 
 /// 攻撃
-void Player::Attaack()
+void Player::Attack()
 {
-	if (Input::GetInstance()->PushKey(DIK_SPACE) && bullets_.size() < kMaxBulletCount_ && attackCoolTime_ <= 0)
+	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE) && bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0)
 	{
 		// 弾の生成
 		auto bullet = std::make_unique<PlayerBullet>();
@@ -177,7 +176,7 @@ void Player::Attaack()
 		bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
 		bullets_.emplace_back(std::move(bullet));
 		// 攻撃のクールタイムを設定
-		attackCoolTime_ = kAttackCoolTime_;
+		attackCoolTime_ = kAttackCoolTime;
 	}
 }
 

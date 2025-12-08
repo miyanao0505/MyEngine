@@ -25,7 +25,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initislize();
+	void Initialize();
 	
 	/// <summary>
 	/// 共通の画面設定(描画ターゲット、ビューポートなど)を適用
@@ -77,6 +77,5 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
-
 };
 

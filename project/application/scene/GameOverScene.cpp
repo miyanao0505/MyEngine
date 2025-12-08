@@ -15,7 +15,7 @@ void GameOverScene::Initialize()
 	BaseScene::Initialize();
 
 #pragma region カメラ
-	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
 #pragma endregion カメラ
@@ -49,13 +49,10 @@ void GameOverScene::Initialize()
 
 #pragma region パーティクル
 	// パーティクル
-	/*particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("circle", "resources/circle.png");*/
 #pragma endregion パーティクル
 
 #pragma region 変数
 	isParticleActive_ = true;
-	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -92,8 +89,8 @@ void GameOverScene::Update()
 #endif // _DEBUG
 
 	// タイトルシーンへの遷移
-	if (input_->TriggerKey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+	if (input_->IsKeyTriggered(DIK_RETURN)) {
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 		return;
 	}
 
@@ -115,7 +112,7 @@ void GameOverScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -125,7 +122,6 @@ void GameOverScene::Update()
 	}
 
 	// パーティクルの更新処理
-	//particleEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
@@ -151,7 +147,6 @@ void GameOverScene::Draw()
 #pragma region パーティクル
 
 	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	//ParticleManager::GetInstance()->Draw();
 
 #pragma endregion パーティクル
 
@@ -171,14 +166,14 @@ void GameOverScene::Draw()
 void GameOverScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
+	if (input_->IsKeyTriggered(DIK_B)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
 
 	DebugDraw();
@@ -195,14 +190,11 @@ void GameOverScene::DebugDraw()
 	ImGui::Text("N key : titleScene");
 	ImGui::Text("B key : eventScene");
 	ImGui::End();
-
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
 }
 #endif // _DEBUG
 
 // jsonファイルの読み込み
-void GameOverScene::LoadJsonFile(const std::string& filePath)
+void GameOverScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
-	filePath;
+	
 }

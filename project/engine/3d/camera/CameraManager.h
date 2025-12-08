@@ -50,10 +50,11 @@ public:	// メンバ関数
 	void Update(float deltaTime);
 
 	/// <summary>
-	/// 名前でカメラを検索
+	/// 新しいカメラを追加し、cameras_ に登録する
+	/// 既に同名のカメラが存在する場合は何もしない
 	/// </summary>
-	/// <param name="cameraName">検索するカメラの名前</param>
-	void FindCamera(const std::string& cameraName);
+	/// <param name="cameraName">登録するカメラ名</param>
+	void AddCamera(const std::string& cameraName);
 
 	/// <summary>
 	/// カメラシェイクを開始
@@ -81,27 +82,27 @@ public:	// getter
 	/// 登録されているすべてのカメラ名を取得
 	/// </summary>
 	/// <returns>カメラ名のリスト</returns>
-	std::vector<std::string> GetAllName();
+	std::vector<std::string> GetAllNames();
 
 	/// <summary>
 	/// カメラデータの取得
 	/// </summary>
 	/// <returns>カメラ</returns>
-	Camera* GetCamera() { return camera_; }
+	Camera* GetCamera() { return activeCamera_; }
 
 public:	// setter
 	/// <summary>
-	/// 現在操作するカメラを設定
+	/// 既存のカメラの中からアクティブカメラを選択する
 	/// </summary>
-	/// <param name="cameraName">設定するカメラの名前</param>
+	/// <param name="cameraName">切り替え先のカメラ名</param>
 	void SetCamera(const std::string& cameraName);
 
 private:	// シングルトン
-	static CameraManager* instance;
+	static CameraManager* sInstance;
 
 	CameraManager() = default;
 	~CameraManager() = default;
-	CameraManager(CameraManager&) = default;
+	CameraManager(CameraManager&) = delete;
 	CameraManager& operator=(CameraManager&) = delete;
 
 private:	// メンバ変数
@@ -109,8 +110,8 @@ private:	// メンバ変数
 	std::map<std::string, std::unique_ptr<Camera>> cameras_;
 
 	// 現在指定しているカメラデータ
-	Camera* camera_ = nullptr;
-	std::string cameraName_ = "";
+	Camera* activeCamera_ = nullptr;
+	std::string activeCameraName_ = "";
 
 	// シェイク状態
 	ShakeState shakeState_;

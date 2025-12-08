@@ -67,8 +67,8 @@ private:	// シングルトン
 
 	ModelManager() = default;
 	~ModelManager() = default;
-	ModelManager(ModelManager&) = default;
-	ModelManager& operator=(ModelManager&) = delete;
+	ModelManager(const ModelManager&) = delete;
+	ModelManager& operator=(const ModelManager&) = delete;
 
 private:	// メンバ変数
 	// モデルデータ

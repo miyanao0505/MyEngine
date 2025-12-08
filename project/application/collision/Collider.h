@@ -25,7 +25,7 @@ public:	// メンバ関数
 	/// <param name="other">衝突相手のコライダー</param>
 	virtual void OnCollision([[maybe_unused]] Collider* other) {};
 
-public:	// gettere
+public:	// getter
 	/// <summary>
 	/// 半径を取得
 	/// </summary>
@@ -48,13 +48,13 @@ public:	// gettere
 	/// ワールド座標を取得
 	/// </summary>
 	/// <returns>ワールド座標</returns>
-	virtual MyBase::Vector3 GetWorldPosition() = 0;
+	virtual MyBase::Vector3 GetWorldPosition() const = 0;
 
 	/// <summary>
 	/// 衝突属性(自分)を取得
 	/// </summary>
 	/// <returns>衝突属性</returns>
-	uint32_t GetTypeId() const { return typeID_; }
+	uint32_t GetTypeId() const { return typeId_; }
 
 	/// <summary>
 	/// 衝突判定の有効/無効を取得
@@ -85,7 +85,7 @@ public:	// setter
 	/// 衝突属性(自分)を設定
 	/// </summary>
 	/// <param name="typeId">衝突属性</param>
-	void SetTypeId(uint32_t typeId) { typeID_ = typeId; }
+	void SetTypeId(uint32_t typeId) { typeId_ = typeId; }
 
 	/// <summary>
 	/// 衝突判定の有効/無効を設定
@@ -97,12 +97,12 @@ private:	// メンバ変数
 	// 半径
 	float radius_ = 1.0f;
 	// AABB
-	MyBase::AABB aabb_ = { MyBase::Vector3{0, 0, 0}, MyBase::Vector3{1, 1, 1} }; // AABBの初期値は適当な値を設定
+	MyBase::AABB aabb_ = { MyBase::Vector3{0.0f, 0.0f, 0.0f}, MyBase::Vector3{1.0f, 1.0f, 1.0f} }; // AABBの初期値は適当な値を設定
 	// OBB
-	MyBase::OBB obb_ = { MyBase::Vector3{0, 0, 0}, {MyBase::Vector3{0, 0, 0}, MyBase::Vector3{0, 0, 0},MyBase::Vector3{0, 0, 0} }, MyBase::Vector3{1, 1, 1} }; // OBBの初期値は適当な値を設定
+	MyBase::OBB obb_ = { MyBase::Vector3{0.0f, 0.0f, 0.0f}, {MyBase::Vector3{0.0f, 0.0f, 0.0f}, MyBase::Vector3{0.0f, 0.0f, 0.0f}, MyBase::Vector3{0.0f, 0.0f, 0.0f} }, MyBase::Vector3{1.0f, 1.0f, 1.0f} }; // OBBの初期値は適当な値を設定
 
 	// 衝突属性
-	uint32_t typeID_ = 0u;
+	uint32_t typeId_ = 0u;
 
 	bool isCollisionEnabled_ = true; // 衝突判定を有効にするかどうか
 };

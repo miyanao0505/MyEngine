@@ -99,6 +99,4 @@ private:	// メンバ変数
 	WorldTransform* parent_ = nullptr;	// 親ワールドトランスフォーム
 
 	bool isDirty_ = true;	// ワールド行列を更新する必要があるかどうかのフラグ
-
 };
-

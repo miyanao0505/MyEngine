@@ -129,13 +129,13 @@ public:	// setter
 
 protected:	// メンバ変数
 	// ビュー関連データ
-	MyBase::Transform transform_;
-	MyBase::Matrix4x4 worldMatrix_;
-	MyBase::Matrix4x4 viewMatrix_;
+	MyBase::Transform transform_;	// カメラの位置・回転情報
+	MyBase::Matrix4x4 worldMatrix_;	// ワールド行列
+	MyBase::Matrix4x4 viewMatrix_;	// ビュー行列
 
 	// プロジェクション行列関連データ
-	MyBase::Matrix4x4 projectionMatrix_;
-	float fovY_;							// 水平方向視野角
+	MyBase::Matrix4x4 projectionMatrix_;	// プロジェクション行列
+	float fovY_;							// 垂直方向視野角
 	float aspectRatio_;						// アスペクト比
 	float nearClip_;						// ニアクリップ距離
 	float farClip_;							// ファークリップ距離

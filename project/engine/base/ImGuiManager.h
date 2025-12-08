@@ -37,8 +37,6 @@ public:	// メンバ関数
 private:	// メンバ変数
 	// DxBase
 	DirectXBase* dxBase_ = nullptr;
-	// SRV用でスクリプタヒープ
+	// ImGui用のデスクリプタヒープを管理するSRVマネージャ
 	SrvManager* srvManager_ = nullptr;
-
 };
-

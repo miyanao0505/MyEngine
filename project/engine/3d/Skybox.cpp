@@ -5,7 +5,7 @@
 #include "imgui.h"
 
 // 初期化
-void Skybox::Initislize(const std::string& filePath, MyBase::Vector3 scale)
+void Skybox::Initialize(const std::string& filePath, MyBase::Vector3 scale)
 {
 	// DirectXBaseの取得
 	dxBase_ = DirectXBase::GetInstance();
@@ -55,7 +55,7 @@ void Skybox::Update()
 		worldViewProjectionMatrix = Matrix::Multiply(worldTransform_->GetWorldMatrix(), viewProjectionMatrix);
 		
 		// カメラのワールド座標をセット
-		cameraData_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
+		cameraMapped_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 	}
 	// 指定したカメラが存在しない場合はワールド行列のみ
 	else {
@@ -63,9 +63,9 @@ void Skybox::Update()
 	}
 	
 	// 座標変換行列データの更新
-	transformationMatrixData_->WVP = worldViewProjectionMatrix;
-	transformationMatrixData_->World = worldTransform_->GetWorldMatrix();
-	transformationMatrixData_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldTransform_->GetWorldMatrix()));
+	transformationMatrixMapped_->WVP = worldViewProjectionMatrix;
+	transformationMatrixMapped_->World = worldTransform_->GetWorldMatrix();
+	transformationMatrixMapped_->WorldInverseTranspose = Matrix::Transpose(Matrix::Inverse(worldTransform_->GetWorldMatrix()));
 }
 
 // 描画
@@ -75,16 +75,16 @@ void Skybox::Draw()
 	SetCommonScreen();
 
 	// ルートパラメータ 1：座標変換行列(WVP)用のCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixBuffer_.Get()->GetGPUVirtualAddress());
 	// ルートパラメータ 4：カメラ情報用のCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraBuffer_.Get()->GetGPUVirtualAddress());
 
 	// VBVの設定
 	dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// IndexBufferViewを設定
 	dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 	// マテリアルCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialBuffer_.Get()->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
 	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_));
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。
@@ -293,26 +293,26 @@ void Skybox::SetCommonScreen()
 void Skybox::CreateTransformationMatrixData()
 {
 	// TransformationMatrix用のリソースを作る
-	transformationMatrixResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::TransformationMatrix));
+	transformationMatrixBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::TransformationMatrix));
 	// 書き込むためのアドレスを取得
-	transformationMatrixResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixData_));
+	transformationMatrixBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&transformationMatrixMapped_));
 	// 単位行列を書き込んでおく
-	transformationMatrixData_->WVP = Matrix::MakeIdentity4x4();
-	transformationMatrixData_->World = Matrix::MakeIdentity4x4();
-	transformationMatrixData_->WorldInverseTranspose = Matrix::MakeIdentity4x4();
+	transformationMatrixMapped_->WVP = Matrix::MakeIdentity4x4();
+	transformationMatrixMapped_->World = Matrix::MakeIdentity4x4();
+	transformationMatrixMapped_->WorldInverseTranspose = Matrix::MakeIdentity4x4();
 }
 
 // カメラデータ作成
 void Skybox::CreateCameraData()
 {
 	// カメラ用のリソースを作る
-	cameraResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::CameraForGPU));
+	cameraBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::CameraForGPU));
 	// 書き込むためのアドレス取得
-	cameraResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&cameraData_));
-	cameraData_->worldPosition = { 0.0f, 0.0f, 0.0f };
+	cameraBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&cameraMapped_));
+	cameraMapped_->worldPosition = { 0.0f, 0.0f, 0.0f };
 	if (CameraManager::GetInstance()->GetCamera()) {
-		CameraManager::GetInstance()->FindCamera("default");
-		cameraData_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
+		CameraManager::GetInstance()->SetCamera("default");
+		cameraMapped_->worldPosition = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 	}
 }
 
@@ -320,95 +320,95 @@ void Skybox::CreateCameraData()
 void Skybox::CreateVertexData()
 {
 	// 頂点リソースを作る
-	vertexResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelSkyboxVertexData) * kVertexCount);
+	vertexBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelSkyboxVertexData) * kVertexCount);
 	// 頂点バッファビューを作成する
-	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
+	vertexBufferView_.BufferLocation = vertexBuffer_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
 	vertexBufferView_.SizeInBytes = UINT(sizeof(MyBase::ModelSkyboxVertexData) * kVertexCount);		// 使用するリソースのサイズは頂点のサイズ
 	vertexBufferView_.StrideInBytes = sizeof(MyBase::ModelSkyboxVertexData);						// 頂点あたりのサイズ
 
 	// 頂点リソースにデータを書き込む
-	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));			// 書き込むためのアドレスを取得
+	vertexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexMapped_));			// 書き込むためのアドレスを取得
 
 	// 頂点データをセットする
 	// 右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
-	vertexData_[0].position =  {  1.0f,  1.0f,  1.0f,  1.0f };
-	vertexData_[1].position =  {  1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[2].position =  {  1.0f, -1.0f,  1.0f,  1.0f };
-	vertexData_[3].position =  {  1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[0].position =  {  1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[1].position =  {  1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[2].position =  {  1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[3].position =  {  1.0f, -1.0f, -1.0f,  1.0f };
 	// 左面。描画インデックスは[4,5,6][6,5,7]
-	vertexData_[4].position =  { -1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[5].position =  { -1.0f,  1.0f,  1.0f,  1.0f };
-	vertexData_[6].position =  { -1.0f, -1.0f, -1.0f,  1.0f };
-	vertexData_[7].position =  { -1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[4].position =  { -1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[5].position =  { -1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[6].position =  { -1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[7].position =  { -1.0f, -1.0f,  1.0f,  1.0f };
 	// 前面。描画インデックスは[8,9,10][10,9,11]
-	vertexData_[8].position =  { -1.0f,  1.0f,  1.0f,  1.0f };
-	vertexData_[9].position =  {  1.0f,  1.0f,  1.0f,  1.0f };
-	vertexData_[10].position = { -1.0f, -1.0f,  1.0f,  1.0f };
-	vertexData_[11].position = {  1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[8].position =  { -1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[9].position =  {  1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[10].position = { -1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[11].position = {  1.0f, -1.0f,  1.0f,  1.0f };
 	// 後面。描画インデックスは[12,13,14][14,13,15]
-	vertexData_[12].position = {  1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[13].position = { -1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[14].position = {  1.0f, -1.0f, -1.0f,  1.0f };
-	vertexData_[15].position = { -1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[12].position = {  1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[13].position = { -1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[14].position = {  1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[15].position = { -1.0f, -1.0f, -1.0f,  1.0f };
 	// 上面。描画インデックスは[16,17,18][18,17,19]
-	vertexData_[16].position = { -1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[17].position = {  1.0f,  1.0f, -1.0f,  1.0f };
-	vertexData_[18].position = { -1.0f,  1.0f,  1.0f,  1.0f };
-	vertexData_[19].position = {  1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[16].position = { -1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[17].position = {  1.0f,  1.0f, -1.0f,  1.0f };
+	vertexMapped_[18].position = { -1.0f,  1.0f,  1.0f,  1.0f };
+	vertexMapped_[19].position = {  1.0f,  1.0f,  1.0f,  1.0f };
 	// 底面。描画インデックスは[20,21,22][22,21,23]
-	vertexData_[20].position = { -1.0f, -1.0f,  1.0f,  1.0f };
-	vertexData_[21].position = {  1.0f, -1.0f,  1.0f,  1.0f };
-	vertexData_[22].position = { -1.0f, -1.0f, -1.0f,  1.0f };
-	vertexData_[23].position = {  1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[20].position = { -1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[21].position = {  1.0f, -1.0f,  1.0f,  1.0f };
+	vertexMapped_[22].position = { -1.0f, -1.0f, -1.0f,  1.0f };
+	vertexMapped_[23].position = {  1.0f, -1.0f, -1.0f,  1.0f };
 }
 
 // インデックスデータ作成
 void Skybox::CreateIndexData()
 {
 	// インデックスリソースを作る
-	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kIndexCount);
+	indexBuffer_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kIndexCount);
 	// インデックスバッファビューを作成する
-	indexBufferView_.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
+	indexBufferView_.BufferLocation = indexBuffer_.Get()->GetGPUVirtualAddress();		// リソースの先頭のアドレスから使う
 	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * kIndexCount);				// 使用するリソースのサイズはインデックスのサイズ
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;										// インデックスはuint32_tとする
 	// インデックスリソースにデータを書き込む
-	indexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));			// 書き込むためのアドレスを取得
+	indexBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&indexMapped_));			// 書き込むためのアドレスを取得
 	// インデックスデータをセットする
 	// 右面。描画インデックスは[0,1,2][2,1,3]で内側を向く
-	indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
-	indexData_[3] = 2; indexData_[4] = 1; indexData_[5] = 3;
+	indexMapped_[0] = 0; indexMapped_[1] = 1; indexMapped_[2] = 2;
+	indexMapped_[3] = 2; indexMapped_[4] = 1; indexMapped_[5] = 3;
 	// 左面。描画インデックスは[4,5,6][6,5,7]
-	indexData_[6] = 4; indexData_[7] = 5; indexData_[8] = 6;
-	indexData_[9] = 6; indexData_[10] = 5; indexData_[11] = 7;
+	indexMapped_[6] = 4; indexMapped_[7] = 5; indexMapped_[8] = 6;
+	indexMapped_[9] = 6; indexMapped_[10] = 5; indexMapped_[11] = 7;
 	// 前面。描画インデックスは[8,9,10][10,9,11]
-	indexData_[12] = 8; indexData_[13] = 9; indexData_[14] = 10;
-	indexData_[15] = 10; indexData_[16] = 9; indexData_[17] = 11;
+	indexMapped_[12] = 8; indexMapped_[13] = 9; indexMapped_[14] = 10;
+	indexMapped_[15] = 10; indexMapped_[16] = 9; indexMapped_[17] = 11;
 	// 後面。描画インデックスは[12,13,14][14,13,15]
-	indexData_[18] = 12; indexData_[19] = 13; indexData_[20] = 14;
-	indexData_[21] = 14; indexData_[22] = 13; indexData_[23] = 15;
+	indexMapped_[18] = 12; indexMapped_[19] = 13; indexMapped_[20] = 14;
+	indexMapped_[21] = 14; indexMapped_[22] = 13; indexMapped_[23] = 15;
 	// 上面。描画インデックスは[16,17,18][18,17,19]
-	indexData_[24] = 16; indexData_[25] = 17; indexData_[26] = 18;
-	indexData_[27] = 18; indexData_[28] = 17; indexData_[29] = 19;
+	indexMapped_[24] = 16; indexMapped_[25] = 17; indexMapped_[26] = 18;
+	indexMapped_[27] = 18; indexMapped_[28] = 17; indexMapped_[29] = 19;
 	// 底面。描画インデックスは[20,21,22][22,21,23]
-	indexData_[30] = 20; indexData_[31] = 21; indexData_[32] = 22;
-	indexData_[33] = 22; indexData_[34] = 21; indexData_[35] = 23;
+	indexMapped_[30] = 20; indexMapped_[31] = 21; indexMapped_[32] = 22;
+	indexMapped_[33] = 22; indexMapped_[34] = 21; indexMapped_[35] = 23;
 }
 
 // マテリアルデータ作成
 void Skybox::CreateMaterialData()
 {
 	// マテリアル用のリソースを作る
-	materialResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelMaterial));
+	materialBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::ModelMaterial));
 	// 書き込むためのアドレスを取得
-	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialMapped_));
 	// 白で読み込む
-	materialData_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialMapped_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	// 単位行列で初期化
-	materialData_->uvTransform = Matrix::MakeIdentity4x4();
+	materialMapped_->uvTransform = Matrix::MakeIdentity4x4();
 	// 光沢度
-	materialData_->shininess = 40.80f;
+	materialMapped_->shininess = 40.80f;
 	// 反射強度
-	materialData_->reflectivity = 0.0f;
+	materialMapped_->reflectivity = 0.0f;
 	// Lightingを有効にする
-	materialData_->enableLighting = true;
+	materialMapped_->enableLighting = true;
 }

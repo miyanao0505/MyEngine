@@ -1,35 +1,26 @@
 #include "SceneFactory.h"
 #include "TitleScene.h"
 #include "GameScene.h"
-#include "GameOverScene.h"
 #include "ClearScene.h"
+#include "GameOverScene.h"
 #include "EventScene.h"
 
-/// シーン生成
-BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
+SceneFactory::SceneFactory()
 {
-    // 次のシーンを生成
-    BaseScene* newScene = nullptr;
+    createTable_.emplace(SceneName::Title, [] { return std::make_unique<TitleScene>(); });
+    createTable_.emplace(SceneName::Game, [] { return std::make_unique<GameScene>(); });
+    createTable_.emplace(SceneName::Clear, [] { return std::make_unique<ClearScene>(); });
+    createTable_.emplace(SceneName::GameOver, [] { return std::make_unique<GameOverScene>(); });
+    createTable_.emplace(SceneName::Event, [] { return std::make_unique<EventScene>(); });
+}
 
-    if (sceneName == "TITLE") {
-        newScene = new TitleScene();
-    }
-    else if (sceneName == "GAME") {
-        newScene = new GameScene();
-    }
-    else if (sceneName == "CLEAR") {
-        newScene = new ClearScene();
-    }
-	else if (sceneName == "GAMEOVER") {
-		newScene = new GameOverScene();
-	}
-	else if (sceneName == "EVENT") {
-		newScene = new EventScene();
-	}
-	else {
-		// シーン名が不正な場合はnullptrを返す
+/// SceneNameに対応するシーンインスタンスを生成する
+std::unique_ptr<BaseScene> SceneFactory::CreateScene(SceneName sceneName)
+{
+	auto it = createTable_.find(sceneName);
+	if (it == createTable_.end()) {
 		return nullptr;
 	}
 
-    return newScene;
+	return it->second();
 }

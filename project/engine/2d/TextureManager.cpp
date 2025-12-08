@@ -4,22 +4,22 @@ using namespace DirectX;
 using namespace StringUtility;
 using namespace std;
 
-TextureManager* TextureManager::instance = nullptr;
+TextureManager* TextureManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 TextureManager* TextureManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new TextureManager;
+	if (sInstance == nullptr) {
+		sInstance = new TextureManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
 void TextureManager::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 初期化
@@ -47,7 +47,7 @@ void TextureManager::LoadTexture(const string& filePath)
 	}
 
 	// テクスチャ枚数上限チェック
-	assert(srvManager_->isSecure());
+	assert(srvManager_->IsSecure());
 
 	// Textureを読んで転送する
 	ScratchImage mipImages = dxBase_->LoadTexture(filePath);
@@ -67,10 +67,10 @@ void TextureManager::LoadTexture(const string& filePath)
 
 	// キューブマップか2Dか判定して適切なSRV作成
 	if ((textureData.metadata.miscFlags & TEX_MISC_TEXTURECUBE) != 0) {
-		srvManager_->CreateSRVforTextureCube(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
+		srvManager_->CreateSRVForTextureCube(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
 	}
 	else {
-		srvManager_->CreateSRVforTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
+		srvManager_->CreateSRVForTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
 	}
 }
 
@@ -91,7 +91,7 @@ uint32_t TextureManager::GetSrvIndex(const string& filePath)
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePath)
 {
 	// 範囲外指定違反チェック
-	assert(srvManager_->isSecure());
+	assert(srvManager_->IsSecure());
 
 	TextureData& textureData = textureDatas_[filePath];
 	return textureData.srvHandleGPU;
@@ -101,7 +101,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePa
 const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath)
 {
 	// 範囲外指定違反チェック
-	assert(srvManager_->isSecure());
+	assert(srvManager_->IsSecure());
 
 	TextureData& textureData = textureDatas_[filePath];
 	return textureData.metadata;

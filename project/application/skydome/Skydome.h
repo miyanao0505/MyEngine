@@ -50,7 +50,7 @@ public:	// getter
 	/// オブジェクトのワールド座標を取得
 	/// </summary>
 	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
-	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
 private:	// メンバ変数
 	

@@ -11,7 +11,7 @@ MyBase::Matrix2x2 Matrix::MakeRotateMatrix2x2(const float& theta)
 
 	ans.m[0][0] = std::cos(theta);
 	ans.m[0][1] = std::sin(theta);
-	ans.m[1][0] = std::sin(theta) * -1.f;
+	ans.m[1][0] = -std::sin(theta);
 	ans.m[1][1] = std::cos(theta);
 
 	return ans;
@@ -22,10 +22,8 @@ MyBase::Matrix2x2 Matrix::Add(const MyBase::Matrix2x2& matrix1, const MyBase::Ma
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	for (int i = 0; i < 2; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
+	for (int i = 0; i < 2; i++) {
+		for (int k = 0; k < 2; k++)	{
 			ans.m[i][k] = matrix1.m[i][k] + matrix2.m[i][k];
 		}
 	}
@@ -38,10 +36,8 @@ MyBase::Matrix2x2 Matrix::Subtract(const MyBase::Matrix2x2& matrix1, const MyBas
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	for (int i = 0; i < 2; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
+	for (int i = 0; i < 2; i++)	{
+		for (int k = 0; k < 2; k++)	{
 			ans.m[i][k] = matrix1.m[i][k] - matrix2.m[i][k];
 		}
 	}
@@ -54,10 +50,13 @@ MyBase::Matrix2x2 Matrix::Multiply(const MyBase::Matrix2x2& matrix1, const MyBas
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	ans.m[0][0] = matrix1.m[0][0] * matrix2.m[0][0] + matrix1.m[0][1] * matrix2.m[1][0];
-	ans.m[0][1] = matrix1.m[0][0] * matrix2.m[0][1] + matrix1.m[0][1] * matrix2.m[1][1];
-	ans.m[1][0] = matrix1.m[1][0] * matrix2.m[0][0] + matrix1.m[1][1] * matrix2.m[1][0];
-	ans.m[1][1] = matrix1.m[1][0] * matrix2.m[0][1] + matrix1.m[1][1] * matrix2.m[1][1];
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 2; j++) {
+			for (int k = 0; k < 2; k++) {
+				ans.m[i][j] += matrix1.m[i][k] * matrix2.m[k][j];
+			}
+		}
+	}
 
 	return ans;
 }
@@ -67,10 +66,8 @@ MyBase::Matrix2x2 Matrix::Multiply(const float& scalar, const MyBase::Matrix2x2&
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	for (int i = 0; i < 2; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
+	for (int i = 0; i < 2; i++)	{
+		for (int k = 0; k < 2; k++)	{
 			ans.m[i][k] = scalar * matrix.m[i][k];
 		}
 	}
@@ -94,12 +91,9 @@ MyBase::Matrix2x2 Matrix::Inverse(const MyBase::Matrix2x2& matrix)
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	if (matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0] == 0)
-	{
+	if (matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0] == 0) {
 		ans = matrix;
-	}
-	else
-	{
+	} else {
 		float scalar = 1 / (matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0]);
 
 		ans.m[0][0] = matrix.m[1][1];
@@ -118,10 +112,8 @@ MyBase::Matrix2x2 Matrix::Transpose(const MyBase::Matrix2x2& matrix)
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
-	for (int i = 0; i < 2; i++)
-	{
-		for (int k = 0; k < 2; k++)
-		{
+	for (int i = 0; i < 2; i++) {
+		for (int k = 0; k < 2; k++)	{
 			ans.m[k][i] = matrix.m[i][k];
 		}
 	}
@@ -211,7 +203,7 @@ MyBase::Matrix3x3 Matrix::MakeOrthographicMatrix(const float& left, const float&
 	ans.m[1][1] = 2.f / (top - bottom);
 	ans.m[2][0] = (left + right) / (left - right);
 	ans.m[2][1] = (top + bottom) / (bottom - top);
-	ans.m[2][2] = 1;
+	ans.m[2][2] = 1.f;
 
 	return ans;
 }
@@ -221,24 +213,22 @@ MyBase::Matrix3x3 Matrix::MakeViewportMatrix(const float& left, const float& top
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
-	ans.m[0][0] = width / 2;
-	ans.m[1][1] = height / 2 * -1.f;
-	ans.m[2][0] = left + width / 2;
-	ans.m[2][1] = top + height / 2;
-	ans.m[2][2] = 1;
+	ans.m[0][0] = width / 2.f;
+	ans.m[1][1] = height / 2.f * -1.f;
+	ans.m[2][0] = left + width / 2.f;
+	ans.m[2][1] = top + height / 2.f;
+	ans.m[2][2] = 1.f;
 
 	return ans;
 }
 
 /// 3x3行列の加算を返す関数
-MyBase::Matrix3x3 Matrix::Add(const MyBase::Matrix3x3& matrix1, MyBase::Matrix3x3& matrix2)
+MyBase::Matrix3x3 Matrix::Add(const MyBase::Matrix3x3& matrix1, const MyBase::Matrix3x3& matrix2)
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
+	for (int i = 0; i < 3; i++)	{
+		for (int k = 0; k < 3; k++)	{
 			ans.m[i][k] = matrix1.m[i][k] + matrix2.m[i][k];
 		}
 	}
@@ -247,14 +237,12 @@ MyBase::Matrix3x3 Matrix::Add(const MyBase::Matrix3x3& matrix1, MyBase::Matrix3x
 }
 
 /// 3x3行列の減算を返す関数
-MyBase::Matrix3x3 Matrix::Subtract(const MyBase::Matrix3x3& matrix1, MyBase::Matrix3x3& matrix2)
+MyBase::Matrix3x3 Matrix::Subtract(const MyBase::Matrix3x3& matrix1, const MyBase::Matrix3x3& matrix2)
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
+	for (int i = 0; i < 3; i++)	{
+		for (int k = 0; k < 3; k++)	{
 			ans.m[i][k] = matrix1.m[i][k] - matrix2.m[i][k];
 		}
 	}
@@ -267,12 +255,9 @@ MyBase::Matrix3x3 Matrix::Multiply(const MyBase::Matrix3x3& matrix1, const MyBas
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			for (int k = 0; k < 3; k++)
-			{
+	for (int i = 0; i < 3; i++)	{
+		for (int j = 0; j < 3; j++)	{
+			for (int k = 0; k < 3; k++)	{
 				ans.m[i][j] += matrix1.m[i][k] * matrix2.m[k][j];
 			}
 		}
@@ -282,14 +267,12 @@ MyBase::Matrix3x3 Matrix::Multiply(const MyBase::Matrix3x3& matrix1, const MyBas
 }
 
 /// スカラーと3x3行列の積を返す関数
-MyBase::Matrix3x3 Matrix::Multipty(const float& scalar, const MyBase::Matrix3x3& matrix)
+MyBase::Matrix3x3 Matrix::Multiply(const float& scalar, const MyBase::Matrix3x3& matrix)
 {
 	MyBase::Matrix3x3 ans;
 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
+	for (int i = 0; i < 3; i++)	{
+		for (int k = 0; k < 3; k++)	{
 			ans.m[i][k] = scalar * matrix.m[i][k];
 		}
 	}
@@ -319,12 +302,9 @@ MyBase::Matrix3x3 Matrix::Inverse(const MyBase::Matrix3x3& matrix)
 {
 	MyBase::Matrix3x3 ans;
 
-	if (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] + matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] + matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] - matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] - matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] - matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1] == 0)
-	{
+	if (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] + matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] + matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] - matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] - matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] - matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1] == 0) {
 		ans = matrix;
-	}
-	else
-	{
+	} else {
 		float scalar = 1 / (matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] + matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] + matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] - matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] - matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] - matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1]);
 
 		ans.m[0][0] = matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1];
@@ -339,7 +319,7 @@ MyBase::Matrix3x3 Matrix::Inverse(const MyBase::Matrix3x3& matrix)
 		ans.m[2][1] = -(matrix.m[0][0] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][0]);
 		ans.m[2][2] = matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0];
 
-		ans = Multipty(scalar, ans);
+		ans = Multiply(scalar, ans);
 	}
 
 	return ans;
@@ -350,17 +330,14 @@ MyBase::Matrix3x3 Matrix::Transpose(const MyBase::Matrix3x3& matrix)
 {
 	MyBase::Matrix3x3 ans;
 
-	for (int i = 0; i < 3; i++)
-	{
-		for (int k = 0; k < 3; k++)
-		{
+	for (int i = 0; i < 3; i++)	{
+		for (int k = 0; k < 3; k++)	{
 			ans.m[k][i] = matrix.m[i][k];
 		}
 	}
 
 	return ans;
 }
-
 
 ///
 /// 3x3行列関数 ここまで
@@ -536,10 +513,8 @@ MyBase::Matrix4x4 Matrix::Add(const MyBase::Matrix4x4& matrix1, const MyBase::Ma
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++)	{
 			ans.m[i][j] = matrix1.m[i][j] + matrix2.m[i][j];
 		}
 	}
@@ -552,10 +527,8 @@ MyBase::Matrix4x4 Matrix::Subtract(const MyBase::Matrix4x4& matrix1, const MyBas
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
+	for (int i = 0; i < 4; i++)	{
+		for (int j = 0; j < 4; j++)	{
 			ans.m[i][j] = matrix1.m[i][j] - matrix2.m[i][j];
 		}
 	}
@@ -568,33 +541,13 @@ MyBase::Matrix4x4 Matrix::Multiply(const MyBase::Matrix4x4& matrix1, const MyBas
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
-	/*for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			ans.m[i][j] = matrix1.m[i][0] * matrix2.m[0][j] + matrix1.m[i][1] * matrix2.m[1][j] + matrix1.m[i][2] * matrix2.m[2][j] + matrix1.m[i][3] * matrix2.m[3][j];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			for (int k = 0; k < 4; k++) {
+				ans.m[i][j] += matrix1.m[i][k] * matrix2.m[k][j];
+			}
 		}
-	}*/
-
-	ans.m[0][0] = matrix1.m[0][0] * matrix2.m[0][0] + matrix1.m[0][1] * matrix2.m[1][0] + matrix1.m[0][2] * matrix2.m[2][0] + matrix1.m[0][3] * matrix2.m[3][0];
-	ans.m[0][1] = matrix1.m[0][0] * matrix2.m[0][1] + matrix1.m[0][1] * matrix2.m[1][1] + matrix1.m[0][2] * matrix2.m[2][1] + matrix1.m[0][3] * matrix2.m[3][1];
-	ans.m[0][2] = matrix1.m[0][0] * matrix2.m[0][2] + matrix1.m[0][1] * matrix2.m[1][2] + matrix1.m[0][2] * matrix2.m[2][2] + matrix1.m[0][3] * matrix2.m[3][2];
-	ans.m[0][3] = matrix1.m[0][0] * matrix2.m[0][3] + matrix1.m[0][1] * matrix2.m[1][3] + matrix1.m[0][2] * matrix2.m[2][3] + matrix1.m[0][3] * matrix2.m[3][3];
-
-	ans.m[1][0] = matrix1.m[1][0] * matrix2.m[0][0] + matrix1.m[1][1] * matrix2.m[1][0] + matrix1.m[1][2] * matrix2.m[2][0] + matrix1.m[1][3] * matrix2.m[3][0];
-	ans.m[1][1] = matrix1.m[1][0] * matrix2.m[0][1] + matrix1.m[1][1] * matrix2.m[1][1] + matrix1.m[1][2] * matrix2.m[2][1] + matrix1.m[1][3] * matrix2.m[3][1];
-	ans.m[1][2] = matrix1.m[1][0] * matrix2.m[0][2] + matrix1.m[1][1] * matrix2.m[1][2] + matrix1.m[1][2] * matrix2.m[2][2] + matrix1.m[1][3] * matrix2.m[3][2];
-	ans.m[1][3] = matrix1.m[1][0] * matrix2.m[0][3] + matrix1.m[1][1] * matrix2.m[1][3] + matrix1.m[1][2] * matrix2.m[2][3] + matrix1.m[1][3] * matrix2.m[3][3];
-
-	ans.m[2][0] = matrix1.m[2][0] * matrix2.m[0][0] + matrix1.m[2][1] * matrix2.m[1][0] + matrix1.m[2][2] * matrix2.m[2][0] + matrix1.m[2][3] * matrix2.m[3][0];
-	ans.m[2][1] = matrix1.m[2][0] * matrix2.m[0][1] + matrix1.m[2][1] * matrix2.m[1][1] + matrix1.m[2][2] * matrix2.m[2][1] + matrix1.m[2][3] * matrix2.m[3][1];
-	ans.m[2][2] = matrix1.m[2][0] * matrix2.m[0][2] + matrix1.m[2][1] * matrix2.m[1][2] + matrix1.m[2][2] * matrix2.m[2][2] + matrix1.m[2][3] * matrix2.m[3][2];
-	ans.m[2][3] = matrix1.m[2][0] * matrix2.m[0][3] + matrix1.m[2][1] * matrix2.m[1][3] + matrix1.m[2][2] * matrix2.m[2][3] + matrix1.m[2][3] * matrix2.m[3][3];
-
-	ans.m[3][0] = matrix1.m[3][0] * matrix2.m[0][0] + matrix1.m[3][1] * matrix2.m[1][0] + matrix1.m[3][2] * matrix2.m[2][0] + matrix1.m[3][3] * matrix2.m[3][0];
-	ans.m[3][1] = matrix1.m[3][0] * matrix2.m[0][1] + matrix1.m[3][1] * matrix2.m[1][1] + matrix1.m[3][2] * matrix2.m[2][1] + matrix1.m[3][3] * matrix2.m[3][1];
-	ans.m[3][2] = matrix1.m[3][0] * matrix2.m[0][2] + matrix1.m[3][1] * matrix2.m[1][2] + matrix1.m[3][2] * matrix2.m[2][2] + matrix1.m[3][3] * matrix2.m[3][2];
-	ans.m[3][3] = matrix1.m[3][0] * matrix2.m[0][3] + matrix1.m[3][1] * matrix2.m[1][3] + matrix1.m[3][2] * matrix2.m[2][3] + matrix1.m[3][3] * matrix2.m[3][3];
+	}
 
 	return ans;
 }
@@ -604,10 +557,8 @@ MyBase::Matrix4x4 Matrix::Multiply(const float& scalar, const MyBase::Matrix4x4&
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
-	for (int i = 0; i < 4; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
+	for (int i = 0; i < 4; i++)	{
+		for (int j = 0; j < 4; j++) {
 			ans.m[i][j] = scalar * matrix.m[i][j];
 		}
 	}
@@ -616,7 +567,7 @@ MyBase::Matrix4x4 Matrix::Multiply(const float& scalar, const MyBase::Matrix4x4&
 }
 
 /// 3次元ベクトルを同時座標として変換する
-MyBase::Vector3 Matrix::Transform(const MyBase::Vector3& vector, const MyBase::Matrix4x4 matrix)
+MyBase::Vector3 Matrix::Transform(const MyBase::Vector3& vector, const MyBase::Matrix4x4& matrix)
 {
 	MyBase::Vector3 result;
 
@@ -652,54 +603,41 @@ MyBase::Matrix4x4 Matrix::Inverse(const MyBase::Matrix4x4& matrix)
 	MyBase::Matrix4x4 ans = { 0 };
 	float determinant = Determinant(matrix);
 
-	if (determinant == 0)
-	{
-		ans = matrix;
-	}
-	else
-	{
-		float scalar = 1 / determinant;
+	if (determinant == 0) {
+		return matrix;
+	} 
 
-		ans.m[0][0] = matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][3] + matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][1] + matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][2]
-					- matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][1] - matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][3] - matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][2];
-		ans.m[0][1] = -matrix.m[0][1] * matrix.m[2][2] * matrix.m[3][3] - matrix.m[0][2] * matrix.m[2][3] * matrix.m[3][1] - matrix.m[0][3] * matrix.m[2][1] * matrix.m[3][2]
-					+ matrix.m[0][3] * matrix.m[2][2] * matrix.m[3][1] + matrix.m[0][2] * matrix.m[2][1] * matrix.m[3][3] + matrix.m[0][1] * matrix.m[2][3] * matrix.m[3][2];
-		ans.m[0][2] = matrix.m[0][1] * matrix.m[1][2] * matrix.m[3][3] + matrix.m[0][2] * matrix.m[1][3] * matrix.m[3][1] + matrix.m[0][3] * matrix.m[1][1] * matrix.m[3][2]
-					- matrix.m[0][3] * matrix.m[1][2] * matrix.m[3][1] - matrix.m[0][2] * matrix.m[1][1] * matrix.m[3][3] - matrix.m[0][1] * matrix.m[1][3] * matrix.m[3][2];
-		ans.m[0][3] = -matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][3] - matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][1] - matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][2]
-					+ matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][1] + matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][3] + matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][2];
+	float scalar = 1 / determinant;
 
-		ans.m[1][0] = -matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][3] - matrix.m[1][2] * matrix.m[2][3] * matrix.m[3][0] - matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][2]
-					+ matrix.m[1][3] * matrix.m[2][2] * matrix.m[3][0] + matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][3] + matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][2];
-		ans.m[1][1] = matrix.m[0][0] * matrix.m[2][2] * matrix.m[3][3] + matrix.m[0][2] * matrix.m[2][3] * matrix.m[3][0] + matrix.m[0][3] * matrix.m[2][0] * matrix.m[3][2]
-					- matrix.m[0][3] * matrix.m[2][2] * matrix.m[3][0] - matrix.m[0][2] * matrix.m[2][0] * matrix.m[3][3] - matrix.m[0][0] * matrix.m[2][3] * matrix.m[3][2];
-		ans.m[1][2] = -matrix.m[0][0] * matrix.m[1][2] * matrix.m[3][3] - matrix.m[0][2] * matrix.m[1][3] * matrix.m[3][0] - matrix.m[0][3] * matrix.m[1][0] * matrix.m[3][2]
-					+ matrix.m[0][3] * matrix.m[1][2] * matrix.m[3][0] + matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][3] + matrix.m[0][0] * matrix.m[1][3] * matrix.m[3][2];
-		ans.m[1][3] = matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][3] + matrix.m[0][2] * matrix.m[1][3] * matrix.m[2][0] + matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][2]
-					- matrix.m[0][3] * matrix.m[1][2] * matrix.m[2][0] - matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][3] - matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][2];
-
-		ans.m[2][0] = matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][3] + matrix.m[1][1] * matrix.m[2][3] * matrix.m[3][0] + matrix.m[1][3] * matrix.m[2][0] * matrix.m[3][1]
-					- matrix.m[1][3] * matrix.m[2][1] * matrix.m[3][0] - matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][3] - matrix.m[1][0] * matrix.m[2][3] * matrix.m[3][1];
-		ans.m[2][1] = -matrix.m[0][0] * matrix.m[2][1] * matrix.m[3][3] - matrix.m[0][1] * matrix.m[2][3] * matrix.m[3][0] - matrix.m[0][3] * matrix.m[2][0] * matrix.m[3][1]
-					+ matrix.m[0][3] * matrix.m[2][1] * matrix.m[3][0] + matrix.m[0][1] * matrix.m[2][0] * matrix.m[3][3] + matrix.m[0][0] * matrix.m[2][3] * matrix.m[3][1];
-		ans.m[2][2] = matrix.m[0][0] * matrix.m[1][1] * matrix.m[3][3] + matrix.m[0][1] * matrix.m[1][3] * matrix.m[3][0] + matrix.m[0][3] * matrix.m[1][0] * matrix.m[3][1]
-					- matrix.m[0][3] * matrix.m[1][1] * matrix.m[3][0] - matrix.m[0][1] * matrix.m[1][0] * matrix.m[3][3] - matrix.m[0][0] * matrix.m[1][3] * matrix.m[3][1];
-		ans.m[2][3] = -matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][3] - matrix.m[0][1] * matrix.m[1][3] * matrix.m[2][0] - matrix.m[0][3] * matrix.m[1][0] * matrix.m[2][1]
-					+ matrix.m[0][3] * matrix.m[1][1] * matrix.m[2][0] + matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][3] + matrix.m[0][0] * matrix.m[1][3] * matrix.m[2][1];
-
-		ans.m[3][0] = -matrix.m[1][0] * matrix.m[2][1] * matrix.m[3][2] - matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][0] - matrix.m[1][2] * matrix.m[2][0] * matrix.m[3][1]
-					+ matrix.m[1][2] * matrix.m[2][1] * matrix.m[3][0] + matrix.m[1][1] * matrix.m[2][0] * matrix.m[3][2] + matrix.m[1][0] * matrix.m[2][2] * matrix.m[3][1];
-		ans.m[3][1] = matrix.m[0][0] * matrix.m[2][1] * matrix.m[3][2] + matrix.m[0][1] * matrix.m[2][2] * matrix.m[3][0] + matrix.m[0][2] * matrix.m[2][0] * matrix.m[3][1]
-					- matrix.m[0][2] * matrix.m[2][1] * matrix.m[3][0] - matrix.m[0][1] * matrix.m[2][0] * matrix.m[3][2] - matrix.m[0][0] * matrix.m[2][2] * matrix.m[3][1];
-		ans.m[3][2] = -matrix.m[0][0] * matrix.m[1][1] * matrix.m[3][2] - matrix.m[0][1] * matrix.m[1][2] * matrix.m[3][0] - matrix.m[0][2] * matrix.m[1][0] * matrix.m[3][1]
-					+ matrix.m[0][2] * matrix.m[1][1] * matrix.m[3][0] + matrix.m[0][1] * matrix.m[1][0] * matrix.m[3][2] + matrix.m[0][0] * matrix.m[1][2] * matrix.m[3][1];
-		ans.m[3][3] = matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] + matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] + matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1]
-					- matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] - matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] - matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1];
-
-		ans = Multiply(scalar, ans);
+	// 余因子を計算するラムダ関数
+	auto Cofactor = [](const MyBase::Matrix4x4& mat, int row, int col) -> float {
+		float minor[3][3];
+		int m_row = 0, m_col = 0;
+		for (int i = 0; i < 4; i++) {
+			if (i == row) continue;
+			m_col = 0;
+			for (int j = 0; j < 4; j++) {
+				if (j == col) continue;
+				minor[m_row][m_col] = mat.m[i][j];
+				m_col++;
+			}
+			m_row++;
+		}
+		// 3x3行列式
+		return minor[0][0] * (minor[1][1] * minor[2][2] - minor[1][2] * minor[2][1])
+			- minor[0][1] * (minor[1][0] * minor[2][2] - minor[1][2] * minor[2][0])
+			+ minor[0][2] * (minor[1][0] * minor[2][1] - minor[1][1] * minor[2][0]);
+		};
+	
+	// 余因子行列の転置を計算
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			float sign = ((i + j) % 2 == 0) ? 1.0f : -1.0f;
+			ans.m[j][i] = sign * Cofactor(matrix, i, j);	// 転置しながら代入
+		}
 	}
 
-	return ans;
+	return ans = Multiply(scalar, ans);
 }
 
 /// 4x4行列式の作成
@@ -737,54 +675,4 @@ MyBase::Matrix4x4 Matrix::Transpose(const MyBase::Matrix4x4& matrix)
 
 /// 
 /// 4x4行列関数 ここまで
-/// 
-
-///
-/// 描画関数 ここから
-/// 
-
-/// 2x2行列の表示
-//void Matrix::MatrixScreenPrintf(int x, int y, const Matrix2x2& matrix, const char* label)
-//{
-//	
-//
-//	for (int row = 0; row < 2; ++row)
-//	{
-//		for (int column = 0; column < 2; ++column)
-//		{
-//			
-//		}
-//	}
-//}
-
-/// 3x3行列の表示
-//void Matrix::MatrixScreenPrintf(int x, int y, const Matrix3x3& matrix, const char* label)
-//{
-//	
-//
-//	for (int row = 0; row < 3; ++row)
-//	{
-//		for (int column = 0; column < 3; ++column)
-//		{
-//			
-//		}
-//	}
-//}
-
-/// 4x4行列の表示
-//void Matrix::MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label)
-//{
-//	
-//
-//	for (int row = 0; row < 4; ++row)
-//	{
-//		for (int column = 0; column < 4; ++column)
-//		{
-//			
-//		}
-//	}
-//}
-
-///
-/// 描画関数 ここまで
 /// 

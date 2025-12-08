@@ -45,6 +45,5 @@ private:	// メンバ変数
 
 	MyBase::Vector3 moveVector_{ 0.0f, 0.0f, 0.0f };
 	float moveDistance_ = 0.0f;
-	const float moveSpeed_ = 0.05f;
+	const float kMoveSpeed = 0.05f;
 };
-

@@ -50,7 +50,7 @@ public:	// getter
 	/// オブジェクトのワールド座標を取得
 	/// </summary>
 	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
-	virtual MyBase::Vector3 GetWorldPosition() { return object_ ? object_->GetTranslate() : MyBase::Vector3{ 0,0,0 }; }
+	virtual MyBase::Vector3 GetWorldPosition() const { return object_ ? object_->GetTranslate() : MyBase::Vector3{ 0,0,0 }; }
 
 	/// <summary>
 	/// オブジェクトに関連付けられた Collider を取得
@@ -62,7 +62,7 @@ public:	// getter
 	/// オブジェクトに関連付けられた 3D モデルを取得
 	/// </summary>
 	/// <returns>Object3d へのポインタ</returns>
-	Object3d* GetObject3d() const { return object_.get(); }
+	Object3d* GetObject3D() const { return object_.get(); }
 	
 	/// <summary>
 	/// オブジェクト名を取得
@@ -87,7 +87,7 @@ public:	// setter
 	/// Object3d インスタンスを設定
 	/// </summary>
 	/// <param name="object">所有権を移譲する Object3d のユニークポインタ</param>
-	void SetObject3d(std::unique_ptr<Object3d> object) { object_ = std::move(object); }
+	void SetObject3D(std::unique_ptr<Object3d> object) { object_ = std::move(object); }
 	
 	/// <summary>
 	/// Collider インスタンスを設定

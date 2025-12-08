@@ -138,7 +138,7 @@ public:
 	/// <param name="matrix1">行列A</param>
 	/// <param name="matrix2">行列B</param>
 	/// <returns>加算結果の行列</returns>
-	static MyBase::Matrix3x3 Add(const MyBase::Matrix3x3& matrix1, MyBase::Matrix3x3& matrix2);
+	static MyBase::Matrix3x3 Add(const MyBase::Matrix3x3& matrix1, const MyBase::Matrix3x3& matrix2);
 
 	/// <summary>
 	/// 3x3行列の減算を返す関数
@@ -146,7 +146,7 @@ public:
 	/// <param name="matrix1">行列A</param>
 	/// <param name="matrix2">行列B</param>
 	/// <returns>減算結果の行列</returns>
-	static MyBase::Matrix3x3 Subtract(const MyBase::Matrix3x3& matrix1, MyBase::Matrix3x3& matrix2);
+	static MyBase::Matrix3x3 Subtract(const MyBase::Matrix3x3& matrix1, const MyBase::Matrix3x3& matrix2);
 
 	/// <summary>
 	/// 3x3行列の積を返す関数
@@ -162,7 +162,7 @@ public:
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="matrix">行列</param>
 	/// <returns>積の行列</returns>
-	static MyBase::Matrix3x3 Multipty(const float& scalar, const MyBase::Matrix3x3& matrix);
+	static MyBase::Matrix3x3 Multiply(const float& scalar, const MyBase::Matrix3x3& matrix);
 
 	/// <summary>
 	/// 2次元ベクトルを同次座標として変換する関数
@@ -261,6 +261,8 @@ public:
 	/// <param name="right">右辺 X値</param>
 	/// <param name="bottom">下辺 Y値</param>
 	/// <param name="nearClip">近平面への距離</param>
+	/// <param name="farClip">遠平面への距離</param>
+	/// <returns>正射影行列</returns>
 	static MyBase::Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
 
 	/// <summary>
@@ -319,7 +321,7 @@ public:
 	/// <param name="vector">ベクトル</param>
 	/// <param name="matrix">行列</param>
 	/// <returns>変換後のベクトル</returns>
-	static MyBase::Vector3 Transform(const MyBase::Vector3& vector, const MyBase::Matrix4x4 matrix);
+	static MyBase::Vector3 Transform(const MyBase::Vector3& vector, const MyBase::Matrix4x4& matrix);
 
 	/// <summary>
 	/// 4x4行列をスケールと回転の3次元ベクトルに変換して取得
@@ -351,36 +353,4 @@ public:
 	static MyBase::Matrix4x4 Transpose(const MyBase::Matrix4x4& matrix);
 
 #pragma endregion 4x4の行列
-
-#pragma region 描画
-	
-	/// <summary>
-	/// 2x2行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix2x2& matrix, const char* label);
-
-	/// <summary>
-	/// 3x3行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix3x3& matrix, const char* label);
-
-	/// <summary>
-	/// 4x4行列の表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="matrix">表示したい行列の変数</param>
-	/// <param name="label">表示したい行列の名前</param>
-	//static void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label);
-
-#pragma endregion 描画
 };
-

@@ -12,8 +12,7 @@ void SrvManager::Initialize()
 	// メンバ変数に記録
 	dxBase_ = DirectXBase::GetInstance();
 
-
-	// SRV用のでスクリプタヒープの生成
+	// SRV用のデスクリプタヒープを生成
 	descriptorHeap_ = dxBase_->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	// SRV用のDescriptorSizeを取得して記録
 	descriptorSize_ = dxBase_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -50,7 +49,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE SrvManager::GetGPUDescriptorHandle(uint32_t index)
 }
 
 // SRV生成(テクスチャ用)
-void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource)
+void SrvManager::CreateSRVForTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource)
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	// SRVの設定
@@ -64,7 +63,7 @@ void SrvManager::CreateSRVforTexture2D(uint32_t srvIndex, DirectX::TexMetadata m
 }
 
 // SRV生成(Structured Buffer用)
-void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride)
+void SrvManager::CreateSRVForStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride)
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC instancingSrvDesc{};
 	// SRVの設定
@@ -80,7 +79,7 @@ void SrvManager::CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 }
 
 // SRV生成(キューブマップ用)
-void SrvManager::CreateSRVforTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource)
+void SrvManager::CreateSRVForTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource)
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -109,7 +108,7 @@ void SrvManager::SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_
 }
 
 // テクスチャ枚数上限チェック
-bool SrvManager::isSecure()
+bool SrvManager::IsSecure()
 {
 	if (useIndex_ < SrvManager::kMaxSRVCount)
 	{

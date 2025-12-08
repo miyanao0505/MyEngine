@@ -170,7 +170,7 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	metadata.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	metadata.mipLevels = 1;
 
-	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
+	srvManager->CreateSRVForTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
 	
 	// CPU/GPU 双方のデスクリプタハンドルを保持
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);
@@ -298,7 +298,7 @@ ComPtr<ID3D12Resource> DirectXBase::CreateBufferResource(size_t sizeInBytes)
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> bufferResource = nullptr;
 
-	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&bufferResource));
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&bufferResource));
 
 	assert(SUCCEEDED(hr));
 
@@ -323,7 +323,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateTextureResource(const 
 
 	// 3. Resourceを生成する
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(
 		&heapProperties,					// Heapの設定
 		D3D12_HEAP_FLAG_NONE,				// Heapの特殊な設定。特になし
 		&resourceDesc,						// Resourceの設定
@@ -364,7 +364,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateRenderTextureResource(
 
 	// Resourceの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(
 		&heapProperties,						// Heapの設定
 		D3D12_HEAP_FLAG_NONE,					// Heapの特殊な設定。特になし
 		&resourceDesc,							// Resourceの設定
@@ -615,7 +615,7 @@ ComPtr<ID3D12DescriptorHeap> DirectXBase::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 	descriptorHeapDesc.NumDescriptors = numDescriptors;
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-	HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	[[maybe_unused]] HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 
 	assert(SUCCEEDED(hr));
 

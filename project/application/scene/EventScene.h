@@ -1,10 +1,7 @@
 #pragma once
 #include "BaseScene.h"
 #include <string>
-#include <vector>
 #include "Sprite.h"
-#include "BaseObject.h"
-#include "ParticleEmitter.h"
 #include "MyBase.h"
 
 /// <summary>
@@ -44,11 +41,11 @@ public:	// メンバ関数
 	/// jsonファイルの読み込み
 	/// </summary>
 	/// <param name="filePath">ファイルパス</param>
-	void LoadJsonFile(const std::string& filePath) override;
+	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
 	// テクスチャファイルパス
-	std::string filePath1_ = "resources/texture/uvChecker.png";
+	std::string spriteTexturePath_ = "resources/texture/uvChecker.png";
 
 	// スプライト
 	std::unique_ptr<Sprite> sprite_;
@@ -60,7 +57,6 @@ private:	// メンバ変数
 	
 
 	// パーティクル
-	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 	bool isParticleActive_;
 	bool isAccelerationField_;
@@ -68,6 +64,5 @@ private:	// メンバ変数
 	MyBase::AABB area_{};
 
 	// デルタイム
-	const float kDeltaTime_ = 1.0f / 60.0f;
+	const float kDeltaTime = 1.0f / 60.0f;
 };
-

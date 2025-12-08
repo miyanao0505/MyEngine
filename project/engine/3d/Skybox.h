@@ -14,7 +14,7 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="filePath">使用するテクスチャのファイルパス</param>
 	/// <param name="scale">Skybox の表示スケールベクトル (X, Y, Z)</param>
-	void Initislize(const std::string& filePath, MyBase::Vector3 scale);
+	void Initialize(const std::string& filePath, MyBase::Vector3 scale);
 	
 	/// <summary>
 	/// 更新
@@ -74,7 +74,7 @@ public:	// getter
 	/// Skyboxで使用しているテクスチャファイル名を取得
 	/// </summary>
 	/// <returns>テクスチャファイル名への参照</returns>
-	const std::string& GetTextureName() { return textureFileName_; }
+	const std::string& GetTextureFileName() { return textureFileName_; }
 	
 	/// <summary>
 	/// 環境マップを使用しているかどうか取得
@@ -183,17 +183,17 @@ private:	// メンバ変数
 	// グラフィックスパイプラインステート
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_ = nullptr;	// 座標変換行列
-	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_ = nullptr;				// カメラ
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;				// index
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixBuffer_ = nullptr;	// 座標変換行列
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraBuffer_ = nullptr;				// カメラ
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_ = nullptr;				// vertex
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuffer_ = nullptr;				// index
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialBuffer_ = nullptr;				// マテリアル
 	// バッファリソース内のデータを指すポインタ
-	MyBase::TransformationMatrix* transformationMatrixData_ = nullptr;				// 座標変換行列
-	MyBase::CameraForGPU* cameraData_ = nullptr;									// カメラ
-	MyBase::ModelSkyboxVertexData* vertexData_ = nullptr;							// vertex
-	uint32_t* indexData_ = nullptr;													// index
-	MyBase::ModelMaterial* materialData_ = nullptr;									// マテリアル
+	MyBase::TransformationMatrix* transformationMatrixMapped_ = nullptr;				// 座標変換行列
+	MyBase::CameraForGPU* cameraMapped_ = nullptr;									// カメラ
+	MyBase::ModelSkyboxVertexData* vertexMapped_ = nullptr;							// vertex
+	uint32_t* indexMapped_ = nullptr;													// index
+	MyBase::ModelMaterial* materialMapped_ = nullptr;									// マテリアル
 
 	// 頂点数
 	static const size_t kVertexCount = 24;	// Skyboxの頂点数
@@ -212,6 +212,4 @@ private:	// メンバ変数
 
 	// 使用フラグ
 	bool useEnvironmentMap_ = false;	// デフォルトOFF
-
 };
-

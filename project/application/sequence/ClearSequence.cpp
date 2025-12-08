@@ -11,9 +11,9 @@ void ClearSequence::Initialize()
 }
 
 /// 更新
-void ClearSequence::Update(float deltaTime) 
+void ClearSequence::Update([[maybe_unused]] float deltaTime)
 {
-	deltaTime;
+	
 }
 
 /// 描画
@@ -35,9 +35,9 @@ void ClearSequence::TextSet()
 }
 
 /// 自機の移動状態を経過時間に応じて更新
-void ClearSequence::UpdateShipMovement(float deltaTime) 
+void ClearSequence::UpdateShipMovement([[maybe_unused]] float deltaTime)
 {
-	deltaTime;
+	
 }
 
 /// テキストを非表示

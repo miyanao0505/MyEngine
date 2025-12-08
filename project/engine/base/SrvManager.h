@@ -24,7 +24,7 @@ public:	// メンバ関数
 	/// <param name="srvIndex">SRVインデックス</param>
 	/// <param name="metaData">テクスチャメタデータ</param>
 	/// <param name="pResource">テクスチャリソース</param>
-	void CreateSRVforTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
+	void CreateSRVForTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
 	
 	/// <summary>
 	/// SRV生成(Structured Buffer用)
@@ -33,7 +33,7 @@ public:	// メンバ関数
 	/// <param name="pResource">バッファリソース</param>
 	/// <param name="numElements">要素数</param>
 	/// <param name="structureByteStride">構造体のバイトサイズ</param>
-	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
+	void CreateSRVForStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
 	
 	/// <summary>
 	/// SRV生成(キューブマップ用)
@@ -41,7 +41,7 @@ public:	// メンバ関数
 	/// <param name="srvIndex">SRVインデックス</param>
 	/// <param name="metaData">テクスチャメタデータ</param>
 	/// <param name="pResource">テクスチャリソース</param>
-	void CreateSRVforTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
+	void CreateSRVForTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
 
 	/// <summary>
 	/// 描画前処理
@@ -59,7 +59,7 @@ public:	// メンバ関数
 	/// テクスチャ枚数上限チェック
 	/// </summary>
 	/// <returns>安全ならtrueを返す</returns>
-	bool isSecure();
+	bool IsSecure();
 
 public:	// getter
 	/// <summary>
@@ -96,7 +96,4 @@ private:	// メンバ変数
 public: // メンバ定数
 	// 最大SRV数(最大テクスチャ枚数)
 	static const uint32_t kMaxSRVCount;
-
-
 };
-

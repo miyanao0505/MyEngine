@@ -15,9 +15,7 @@ SceneManager* SceneManager::GetInstance()
 // 終了
 void SceneManager::Finalize()
 {
-	// 最後のシーンの終了と解放
-	scene_->Finalize();
-	delete scene_;
+	scene_.reset();
 
 	delete instance;
 	instance = nullptr;
@@ -30,25 +28,24 @@ void SceneManager::Update()
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 	ImGui::Begin("scene");
-	if (ImGui::Button("TitleScene")) {
-		nextScene_ = sceneFactory_->CreateScene("TITLE");
+	if (ImGui::Button("Title")) {
+		nextScene_ = sceneFactory_->CreateScene(SceneName::Title);
 	}
-	if (ImGui::Button("GameScene")) {
-		nextScene_ = sceneFactory_->CreateScene("GAME");
+	if (ImGui::Button("Game")) {
+		nextScene_ = sceneFactory_->CreateScene(SceneName::Game);
 	}
-	if (ImGui::Button("ClearScene")) {
-		nextScene_ = sceneFactory_->CreateScene("CLEAR");
+	if (ImGui::Button("Clear")) {
+		nextScene_ = sceneFactory_->CreateScene(SceneName::Clear);
 	}
-	if (ImGui::Button("GameOverScene")) {
-		nextScene_ = sceneFactory_->CreateScene("GAMEOVER");
+	if (ImGui::Button("GameOver")) {
+		nextScene_ = sceneFactory_->CreateScene(SceneName::GameOver);
 	}
 	ImGui::End();
 #endif // _DEBUG
 
 	// ▼ 起動直後（scene_がnullptr）の場合は即シーン切り替え
 	if (!scene_ && nextScene_) {
-		scene_ = nextScene_;
-		nextScene_ = nullptr;
+		scene_ = std::move(nextScene_);
 		scene_->SetSceneManager(this);
 		scene_->Initialize();
 		return;
@@ -65,13 +62,8 @@ void SceneManager::Update()
 		// シーン切替演出を開始
 		transition_.Start([this]() {
 			// ▼ シーン切替完了後の処理
-			if (scene_) {
-				scene_->Finalize();
-				delete scene_;
-				scene_ = nullptr;
-			}
-			scene_ = nextScene_;
-			nextScene_ = nullptr;
+			scene_.reset(); // 古いシーンを終了・解放
+			scene_ = std::move(nextScene_);
 			scene_->SetSceneManager(this);
 			scene_->Initialize();
 		});
@@ -94,10 +86,10 @@ void SceneManager::Draw()
 }
 
 /// 次のシーン予約
-void SceneManager::ChangeScene(const std::string& sceneName)
+void SceneManager::ChangeScene(SceneName sceneName)
 {
 	assert(sceneFactory_);
-	assert(nextScene_ == nullptr);
+	assert(!nextScene_);
 
 	// 次のシーンを生成
 	nextScene_ = sceneFactory_->CreateScene(sceneName);

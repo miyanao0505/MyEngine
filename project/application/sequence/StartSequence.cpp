@@ -86,12 +86,7 @@ void StartSequence::EngineStartEffect()
 		LightManager::GetInstance()->SetPointLight(pointLight);
 
 		// エンジン起動エフェクト再生処理
-		/*const float amplitude = 5.0f;
-		const float duration = 1.2f;
-		const float frequency = 25.0f;
-		const float rotationAmplitude = 0.03f;
-
-		CameraManager::GetInstance()->StartShake(amplitude, duration, frequency, rotationAmplitude);*/
+		
 
 		engineStarted_ = true;
 	}
@@ -106,8 +101,8 @@ void StartSequence::TextSet()
 	startText_->Initialize("characters", "start.obj");
 
 	MyBase::Transform transform = { {2.0f, 2.0f, 2.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 5.0f, -25.0f} };
-	missionText_->GetObject3d()->SetTransform(transform);
-	startText_->GetObject3d()->SetTransform(transform);
+	missionText_->GetObject3D()->SetTransform(transform);
+	startText_->GetObject3D()->SetTransform(transform);
 
 	// 初期更新
 	missionText_->Update();
@@ -127,11 +122,11 @@ void StartSequence::TextRotate(float deltaTime)
 	}
 	else if(missionText_)
 	{
-		missionText_->GetObject3d()->SetRotate({ 0.0f, rotationY_, 0.0f });
+		missionText_->GetObject3D()->SetRotate({ 0.0f, rotationY_, 0.0f });
 		missionText_->Update();
 		return;
 	}
-	startText_->GetObject3d()->SetRotate({ 0.0f, rotationY_ + XMConvertToRadians(180.f), 0.0f });
+	startText_->GetObject3D()->SetRotate({ 0.0f, rotationY_ + XMConvertToRadians(180.f), 0.0f });
 	startText_->Update();
 
 	if (rotationY_ >= XMConvertToRadians(180.0f)) {

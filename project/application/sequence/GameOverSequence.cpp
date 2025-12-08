@@ -10,8 +10,8 @@ void GameOverSequence::Initialize() {
 }
 
 /// 更新
-void GameOverSequence::Update(float deltaTime) {
-	deltaTime;
+void GameOverSequence::Update([[maybe_unused]] float deltaTime) {
+	
 }
 
 /// 描画

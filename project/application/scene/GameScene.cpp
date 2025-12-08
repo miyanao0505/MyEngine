@@ -83,7 +83,7 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	followCamera_->Update(kDeltaTime_);
+	followCamera_->Update(kDeltaTime);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update();
 	enemy_->Update();
@@ -123,7 +123,7 @@ void GameScene::Update()
 #endif // _DEBUG
 
 	// カメラマネージャーの更新
-	CameraManager::GetInstance()->Update(kDeltaTime_);
+	CameraManager::GetInstance()->Update(kDeltaTime);
 	// カメラの更新
 	if (CameraManager::GetInstance()->GetCamera()) {
 		CameraManager::GetInstance()->GetCamera()->Update();
@@ -131,14 +131,14 @@ void GameScene::Update()
 
 	// スタート演出中
 	if (!startSequence_->IsFinished()) {
-		startSequence_->Update(kDeltaTime_);
+		startSequence_->Update(kDeltaTime);
 		return;
 	}
 	
 	// クリア条件
 	if (enemy_->IsDead()) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 		return;
 	}
 
@@ -147,7 +147,7 @@ void GameScene::Update()
 	player_->Update();
 
 	// フォローカメラの更新
-	followCamera_->Update(kDeltaTime_);
+	followCamera_->Update(kDeltaTime);
 
 	// 敵の更新処理
 	enemy_->Update();
@@ -163,7 +163,7 @@ void GameScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -225,19 +225,19 @@ void GameScene::Draw()
 void GameScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("CLEAR");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 	}
 	// Mキーを押したら
-	if (input_->TriggerKey(DIK_M)) {
+	if (input_->IsKeyTriggered(DIK_M)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+		SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
 	}
 	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
+	if (input_->IsKeyTriggered(DIK_B)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("EVENT");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
 
 	DebugDraw();
@@ -263,8 +263,6 @@ void GameScene::DebugDraw()
 	ImGui::Text("L key : sampleAudio Load");
 	ImGui::End();
 
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
@@ -279,7 +277,6 @@ void GameScene::DebugDraw()
 	LightManager::GetInstance()->DebugDraw();
 
 	// Skybox
-	//skybox_->DebugDraw();
 
 	// プレイヤー
 	player_->DebugDraw();
@@ -287,123 +284,29 @@ void GameScene::DebugDraw()
 	// 敵
 	enemy_->DebugDraw();
 
-	//int num = 0;
-	// test
-	/*for (auto& obj : testObjects_) {
-		ImGui::PushID(obj.get() + num);
-		if (ImGui::CollapsingHeader("testObj")) {
-			obj->DebugDraw();
-		}
-		ImGui::PopID();
-		num++;
-	}*/
-
 	// パーティクル
-	ParticleManager::GetInstance()->Imgui();
+	ParticleManager::GetInstance()->ImGui();
 
 	ImGui::End();
-
-	//ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	//ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-
-	//ImGui::Begin("LIghting");
-
-	//uint32_t objectCount = 0;
-	//std::string objectName = "Object";
-	//for (std::unique_ptr<Object3d>& object : objects_)
-	//{
-	//	objectName = objectName + std::to_string(objectCount);
-	//	ImGui::PushID(objectName.c_str());
-	//	if (ImGui::CollapsingHeader("Material"))
-	//	{
-	//		// 平行光源フラグ
-	//		bool isEnableLighting = true;
-	//		isEnableLighting = object->GetEnableLighting();
-
-	//		if (isEnableLighting)
-	//		{
-	//			ImGui::PushID("DirectionalLight");
-	//			if (ImGui::CollapsingHeader("DirectionalLight"))
-	//			{
-	//				// 平行光源
-	//				MyBase::DirectionalLight directionalLight{};
-	//				directionalLight = LightManager::GetInstance()->GetDirectionalLight();
-	//				// 色
-	//				ImGui::ColorEdit4("Color", &directionalLight.color.x);
-	//				// 方向
-	//				ImGui::SliderFloat3("Direction", &directionalLight.direction.x, -1, 1);
-	//				// 輝度
-	//				ImGui::DragFloat("Intensity", &directionalLight.intensity, 0.01f);
-	//				LightManager::GetInstance()->SetDirectionalLight(directionalLight);
-	//			}
-	//			ImGui::PopID();
-	//			ImGui::PushID("PointLight");
-	//			if (ImGui::CollapsingHeader("PointLight"))
-	//			{
-	//				// 点光源
-	//				MyBase::PointLight pointLight{};
-	//				pointLight = LightManager::GetInstance()->GetPointLight();
-	//				// 色
-	//				ImGui::ColorEdit4("Color", &pointLight.color.x);
-	//				// 位置
-	//				ImGui::DragFloat3("Position", &pointLight.position.x, 0.01f);
-	//				// 輝度
-	//				ImGui::DragFloat("Intensity", &pointLight.intensity, 0.01f);
-	//				// ライトの届く最大距離
-	//				ImGui::DragFloat("Radius", &pointLight.radius, 0.01f, 0.0f);
-	//				// 減衰率
-	//				ImGui::DragFloat("Decay", &pointLight.decay, 0.01f, 0.0f);
-	//				LightManager::GetInstance()->SetPointLight(pointLight);
-	//			}
-	//			ImGui::PopID();
-	//			ImGui::PushID("SpotLight");
-	//			if (ImGui::CollapsingHeader("SpotLight"))
-	//			{
-	//				// スポットライト
-	//				MyBase::SpotLight spotLight{};
-	//				spotLight = LightManager::GetInstance()->GetSpotLight();
-	//				// 色
-	//				ImGui::ColorEdit4("Color", &spotLight.color.x);
-	//				// 位置
-	//				ImGui::DragFloat3("Position", &spotLight.position.x, 0.01f);
-	//				// 輝度
-	//				ImGui::DragFloat("Intensity", &spotLight.intensity, 0.01f);
-	//				// 方向
-	//				ImGui::DragFloat3("Direction", &spotLight.direction.x, 0.01f);
-	//				// ライトの届く最大距離
-	//				ImGui::DragFloat("Distance", &spotLight.distance, 0.01f, 0.0f);
-	//				// 減衰率
-	//				ImGui::DragFloat("Decay", &spotLight.decay, 0.01f, 0.0f);
-	//				// 余弦
-	//				ImGui::SliderAngle("CosAngle", &spotLight.cosAngle);
-	//				LightManager::GetInstance()->SetSpotLight(spotLight);
-	//			}
-	//			ImGui::PopID();
-	//		}
-	//	}
-	//	objectCount++;
-	//	ImGui::PopID();
-	//}
-	//ImGui::End();
 }
 #endif // _DEBUG
 
 // JSONファイルの読み込み
-void GameScene::LoadJsonFile(const std::string& filePath)
+void GameScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
 	// レベルデータの読み込み
-	LevelData* levelData = jsonLoader_->LoadFile(filePath);
+	std::unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 	
 	// 3Dオブジェクトの読み込み
-	for (const ObjectData& objectData : levelData->objects) {
+	for (const JsonObjectData& objectData : levelData->objects) {
 		// オブジェクトの種類ごとに処理
 		if (objectData.name == "Player") {
 			// プレイヤーの初期化
-			player_->GetObject3d()->SetModel(objectData.objectName);
+			player_->GetObject3D()->SetModel(objectData.modelFileName);
 			player_->SetName(objectData.name.c_str());
-			player_->GetObject3d()->SetTranslate(objectData.translation);
-			player_->GetObject3d()->SetRotate(objectData.rotation);
-			player_->GetObject3d()->SetScale(objectData.scale);
+			player_->GetObject3D()->SetTranslate(objectData.translation);
+			player_->GetObject3D()->SetRotate(objectData.rotation);
+			player_->GetObject3D()->SetScale(objectData.scale);
 		}
 		else if (objectData.name == "Enemy") {
 			// 敵の初期化
@@ -415,16 +318,6 @@ void GameScene::LoadJsonFile(const std::string& filePath)
 		}
 		else {
 			// その他のObjectはBaseObjectとして構築
-			/*ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
-			ModelManager::GetInstance()->LoadModel("debug/hummer", "hummer.obj");
-			TextureManager::GetInstance()->LoadTexture("resources/texture/hummer.png");
-			BaseObject* obj = CreateObjectFromData(objectData);
-			testObjects_.emplace_back(obj);
-			for (const auto& childData : objectData.children) {
-				BaseObject* childObj = CreateObjectFromData(childData);
-				childObj->GetObject3d()->GetWorldTransform()->SetParent(obj->GetObject3d()->GetWorldTransform());
-				testObjects_.emplace_back(childObj);
-			}*/
 		}
 	}
 

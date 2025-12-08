@@ -23,17 +23,17 @@ public:	// メンバ関数
 	/// <summary>
 	/// Colliderの登録
 	/// </summary>
-	/// <param name="collider">コライダー</param>
+	/// <param name="collider">Collider</param>
 	void Register(Collider* collider) { colliders_.push_back(collider); }
 
 	/// <summary>
 	/// Colliderの解除
 	/// </summary>
-	/// <param name="collider">コライダー</param>
+	/// <param name="collider">Collider/param>
 	void Unregister(Collider* collider) { colliders_.remove(collider); }
 
 	/// <summary>
-	/// コライダーリストをクリア
+	/// Colliderリストをクリア
 	/// </summary>
 	void Clear();
 
@@ -48,14 +48,14 @@ public:	// メンバ関数
 	void CheckAllCollisions();
 
 	/// <summary>
-	/// コライダー2つの衝突判定と応答
+	/// Collider2つの衝突判定と応答
 	/// </summary>
-	/// <param name="colliderA">コライダーA</param>
-	/// <param name="colliderB">コライダーB</param>
+	/// <param name="colliderA">ColliderA</param>
+	/// <param name="colliderB">ColliderB</param>
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 private:	// シングルトン
-	static CollisionManager* instance;
+	static CollisionManager* sInstance;
 
 	CollisionManager() = default;
 	~CollisionManager() = default;
@@ -65,6 +65,4 @@ private:	// シングルトン
 private:	// メンバ変数
 	// コライダーリスト
 	std::list<Collider*> colliders_;
-
 };
-
