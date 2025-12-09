@@ -54,4 +54,3 @@ private:	// メンバ変数
 	// フェード用スプライト
 	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
 };
-
