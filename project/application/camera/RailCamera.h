@@ -26,6 +26,10 @@ public:	// メンバ関数
 	/// デバッグ更新
 	/// </summary>
 	void DebugUpdate();
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
+	void DebugDraw();
 #endif // _DEBUG
 
 private:	// メンバ関数
@@ -69,6 +73,4 @@ private:	// メンバ変数
 #ifdef _DEBUG
 	bool isDebugMode_ = false;	// デバッグモードフラグ
 #endif // _DEBUG
-
 };
-
