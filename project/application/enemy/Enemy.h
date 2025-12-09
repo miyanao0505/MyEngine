@@ -46,6 +46,27 @@ public:	// メンバ関数
 	/// <param name="state">新しいステート</param>
 	void ChangeState(std::unique_ptr<EnemyBaseState> state);
 
+	/// <summary>
+	/// ダメージ処理
+	/// </summary>
+	/// <param name="damage">ダメージ値</param>
+	void Damege(int damage);
+
+	/// <summary>
+	/// ダメージリアクションの開始
+	/// </summary>
+	void DamageReactionStart();
+
+	/// <summary>
+	/// ダメージリアクションの更新
+	/// </summary>
+	void DamageReactionUpdate();
+
+	/// <summary>
+	/// 死亡リアクション
+	/// </summary>
+	void DeadReaction();
+
 #ifdef _DEBUG
 	/// <summary>
 	/// デバッグ描画
@@ -92,6 +113,12 @@ private:	/// メンバ変数
 	int hp_;
 	bool isDead_ = false;
 	std::unique_ptr<EnemyBaseState> state_;
+
+	// 演出系
+	float damageReactionTimer_ = 0.0f;
+	float deadReactionTimer_ = 0.0f;
+	const float kDamageReactionDuration = 0.1f;	// ダメージリアクション時間
+	const float kDeadReactionDuration = 1.0f;		// 死亡リアクション時間
 
 	// プレイヤー
 	Player* player_;

@@ -79,8 +79,14 @@ void Enemy::Update()
 		return; // 死んでいる場合は更新しない
 	}
 
-	// ここに敵の動きやAIのロジックを追加する
-	// モデルの更
+	// ダメージリアクションの更新
+	if(damageReactionTimer_ > 0.0f){
+		// ダメージリアクションタイマーの更新
+		damageReactionTimer_ -= 1.0f / 60.0f;
+		DamageReactionUpdate();
+	}
+
+	// モデルの更新
 	object_->Update();
 }
 
@@ -101,6 +107,55 @@ void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
 {
 	state_ = std::move(state);
 	state_->Initialize();
+}
+
+// ダメージ処理
+void Enemy::Damege(int damage)
+{
+	if(damageReactionTimer_ > 0.0f){
+		return; // ダメージリアクション中はダメージを受け付けない
+	}
+
+	// HPを減少
+	hp_ -= damage;
+	
+	if (hp_ > 0.0f) {
+		// ダメージリアクション開始
+		DamageReactionStart();
+	}
+}
+
+// ダメージリアクション開始
+void Enemy::DamageReactionStart()
+{
+	// ダメージリアクションタイマーをリセット
+	damageReactionTimer_ = kDamageReactionDuration;
+
+	// パーティクルを発生させる
+	//particleEmitter_->Emit();
+
+	// 赤を強調
+	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+}
+
+// ダメージリアクション
+void Enemy::DamageReactionUpdate()
+{
+	// ダメージリアクション終了確認
+	if (damageReactionTimer_ <= 0.0f) {
+		// タイマーリセットと色リセット
+		damageReactionTimer_ = 0.0f;
+		object_->GetModel()->GetModelMaterial()->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		return;
+	}
+
+	return;
+}
+
+// 死亡リアクション
+void Enemy::DeadReaction()
+{
+
 }
 
 #ifdef _DEBUG
@@ -138,8 +193,8 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 
 	// プレイヤー弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
-		//particleEmitter_->Emit(); // パーティクルを発生させる
-		hp_ -= player_->GetAttackPower();
+		// プレイヤーの攻撃力分ダメージを受ける
+		Damege(player_->GetAttackPower());
 		if (hp_ <= 0) {
 			isDead_ = true;
 		}
