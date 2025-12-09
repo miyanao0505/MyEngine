@@ -10,7 +10,10 @@
 class SceneManager
 {
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>シングルトンインスタンスのポインタ</returns>
 	static SceneManager* GetInstance();
 
 	/// <summary>
@@ -32,10 +35,13 @@ public:	// メンバ関数
 	/// 次のシーン予約
 	/// </summary>
 	/// <param name="sceneName">シーン名</param>
-	void ChangeScene(const std::string& sceneName);
+	void ChangeScene(SceneName sceneName);
 
 public:	// setter
-	// シーンファクトリーのセット
+	/// <summary>
+	/// シーンファクトリーのセット
+	/// </summary>
+	/// <param name="sceneFactory">シーンファクトリーのポインタ</param>
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 private:	// シングルトンインスタンス
@@ -48,10 +54,10 @@ private:	// シングルトンインスタンス
 
 private:	// メンバ変数
 	// 今のシーン(実行中シーン)
-	BaseScene* scene_ = nullptr;
+	std::unique_ptr<BaseScene> scene_ = nullptr;
 
 	// 次のシーン
-	BaseScene* nextScene_ = nullptr;
+	std::unique_ptr<BaseScene> nextScene_ = nullptr;
 
 	// シーン切り替え
 	SceneTransition transition_;
@@ -59,4 +65,3 @@ private:	// メンバ変数
 	// シーンファクトリー(借りてくる)
 	AbstractSceneFactory* sceneFactory_ = nullptr;
 };
-

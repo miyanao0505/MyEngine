@@ -7,12 +7,20 @@
 /// </summary>
 class EnemyStateRoot : public EnemyBaseState
 {
-public:
-	// コンストラクタ
+public:	// メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="enemy">敵キャラクターのポインタ</param>
 	EnemyStateRoot(Enemy* enemy) : EnemyBaseState("Root", enemy) {};
-	// 初期化
+	
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
-	// 更新
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
 };
-

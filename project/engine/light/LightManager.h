@@ -18,91 +18,288 @@ enum class LightType {
 class LightManager
 {
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>LightManager のインスタンス</returns>
 	static LightManager* GetInstance();
-	// 終了
+
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	// 描画処理
-	void Draw(Object3dBase* object3dBase);
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="cmd">コマンドリスト</param>
+	void Draw(ID3D12GraphicsCommandList* cmd);
 
 #ifdef _DEBUG
-	// デバッグ描画
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebugDraw();
 #endif // _DEBUG
 
 private:	// メンバ関数
-	// 平行光源データ作成
+	/// <summary>
+	/// 平行光源データ作成
+	/// </summary>
 	void CreateDirectionalLightData();
-	// 点光源データ作成
+
+	/// <summary>
+	/// 点光源データ作成
+	/// </summary>
 	void CreatePointLightData();
-	// スポットライトデータ作成
+
+	/// <summary>
+	/// スポットライトデータ作成
+	/// </summary>
 	void CreateSpotLightData();
 
 public:	// getter
-	const MyBase::DirectionalLight& GetDirectionalLight() const { return *directionalLightData_; }
-	const MyBase::PointLight& GetPointLight() const { return *pointLightData_; }
-	const MyBase::SpotLight& GetSpotLight() const { return *spotLightData_; }
-	const MyBase::Vector4& GetDirectionalLightColor() const { return directionalLightData_->color; }
-	const MyBase::Vector3& GetDirectionalLightDirection() const { return directionalLightData_->direction; }
-	const float& GetDirectionalLightIntensity() const { return directionalLightData_->intensity; }
-	const MyBase::Vector4& GetPointLightColor() const { return pointLightData_->color; }
-	const MyBase::Vector3& GetPointLightPosition() const { return pointLightData_->position; }
-	const float& GetPointLightIntensity() const { return pointLightData_->intensity; }
-	const float& GetPointLightRadius() const { return pointLightData_->radius; }
-	const float& GetPointLightDecay() const { return pointLightData_->decay; }
-	const MyBase::Vector4& GetSpotLightColor() const { return spotLightData_->color; }
-	const MyBase::Vector3& GetSpotLightPosition() const { return spotLightData_->position; }
-	const float& GetSpotLightIntensity() const { return spotLightData_->intensity; }
-	const MyBase::Vector3& GetSpotLightDirection() const { return spotLightData_->direction; }
-	const float& GetSpotLightDistance() const { return spotLightData_->distance; }
-	const float& GetSpotLightDecay() const { return spotLightData_->decay; }
-	const float& GetSpotLightCosAngle() const { return spotLightData_->cosAngle; }
+	/// <summary>
+	/// 平行光源データの取得
+	/// </summary>
+	/// <returns>平行光源データ</returns>
+	const MyBase::DirectionalLight& GetDirectionalLight() const { return *directionalLightMapped_; }
+	
+	/// <summary>
+	/// 点光源データの取得
+	/// </summary>
+	/// <returns>点光源データ</returns>
+	const MyBase::PointLight& GetPointLight() const { return *pointLightMapped_; }
+	
+	/// <summary>
+	/// スポットライトデータの取得
+	/// </summary>
+	/// <returns>スポットライトデータ</returns>
+	const MyBase::SpotLight& GetSpotLight() const { return *spotLightMapped_; }
+	
+	/// <summary>
+	/// 平行光源の色の取得
+	/// </summary>
+	/// <returns>平行光源の色</returns>
+	const MyBase::Vector4& GetDirectionalLightColor() const { return directionalLightMapped_->color; }
+	
+	/// <summary>
+	/// 平行光源の方向の取得
+	/// </summary>
+	/// <returns>平行光源の方向</returns>
+	const MyBase::Vector3& GetDirectionalLightDirection() const { return directionalLightMapped_->direction; }
+	
+	/// <summary>
+	/// 平行光源の強度の取得
+	/// </summary>
+	/// <returns>平行光源の強度</returns>
+	const float& GetDirectionalLightIntensity() const { return directionalLightMapped_->intensity; }
+	
+	/// <summary>
+	/// 点光源の色の取得
+	/// </summary>
+	/// <returns>点光源の色</returns>
+	const MyBase::Vector4& GetPointLightColor() const { return pointLightMapped_->color; }
+	
+	/// <summary>
+	/// 点光源の位置の取得
+	/// </summary>
+	/// <returns>点光源の位置</returns>
+	const MyBase::Vector3& GetPointLightPosition() const { return pointLightMapped_->position; }
+	
+	/// <summary>
+	/// 点光源の強度の取得
+	/// </summary>
+	/// <returns>点光源の強度</returns>
+	const float& GetPointLightIntensity() const { return pointLightMapped_->intensity; }
+	
+	/// <summary>
+	/// 点光源の届く最大距離の取得
+	/// </summary>
+	/// <returns>点光源の届く最大距離</returns>
+	const float& GetPointLightRadius() const { return pointLightMapped_->radius; }
+	
+	/// <summary>
+	/// 点光源の減衰率の取得
+	/// </summary>
+	/// <returns>点光源の減衰率</returns>
+	const float& GetPointLightDecay() const { return pointLightMapped_->decay; }
+	
+	/// <summary>
+	/// スポットライトの色の取得
+	/// </summary>
+	/// <returns>スポットライトの色</returns>
+	const MyBase::Vector4& GetSpotLightColor() const { return spotLightMapped_->color; }
+	
+	/// <summary>
+	/// スポットライトの位置の取得
+	/// </summary>
+	/// <returns>スポットライトの位置</returns>
+	const MyBase::Vector3& GetSpotLightPosition() const { return spotLightMapped_->position; }
+	
+	/// <summary>
+	/// スポットライトの強度の取得
+	/// </summary>
+	/// <returns>スポットライトの強度</returns>
+	const float& GetSpotLightIntensity() const { return spotLightMapped_->intensity; }
+	
+	/// <summary>
+	/// スポットライトの方向の取得
+	/// </summary>
+	/// <returns>スポットライトの方向</returns>
+	const MyBase::Vector3& GetSpotLightDirection() const { return spotLightMapped_->direction; }
+	
+	/// <summary>
+	/// スポットライトの届く最大距離の取得
+	/// </summary>
+	/// <returns>スポットライトの届く最大距離</returns>
+	const float& GetSpotLightDistance() const { return spotLightMapped_->distance; }
+	
+	/// <summary>
+	/// スポットライトの減衰率の取得
+	/// </summary>
+	/// <returns>スポットライトの減衰率</returns>
+	const float& GetSpotLightDecay() const { return spotLightMapped_->decay; }
+	
+	/// <summary>
+	/// スポットライトの余弦の取得
+	/// </summary>
+	/// <returns>スポットライトの余弦</returns>
+	const float& GetSpotLightCosAngle() const { return spotLightMapped_->cosAngle; }
 
 public:	// setter
-	void SetDirectionalLight(const MyBase::DirectionalLight& directionalLight) { *directionalLightData_ = directionalLight; }
-	void SetPointLight(const MyBase::PointLight& pointLight) { *pointLightData_ = pointLight; }
-	void SetSpotLight(const MyBase::SpotLight& spotLight) { *spotLightData_ = spotLight; }
-	void SetDirectionalLightColor(const MyBase::Vector4& lightColor) { directionalLightData_->color = lightColor; }
-	void SetDirectionalLightDirection(const MyBase::Vector3& lightDirection) { directionalLightData_->direction = lightDirection; }
-	void SetDirectionalLightIntensity(const float& lightIntensity) { directionalLightData_->intensity = lightIntensity; }
-	void SetPointLightColor(const MyBase::Vector4& lightColor) { pointLightData_->color = lightColor; }
-	void SetPointLightPosition(const MyBase::Vector3& lightPosition) { pointLightData_->position = lightPosition; }
-	void SetPointLightIntensity(const float& lightIntensity) { pointLightData_->intensity = lightIntensity; }
-	void SetPointLightRadius(const float& lightRadius) { pointLightData_->radius = lightRadius; }
-	void SetPointLightDecay(const float& lightDecay) { pointLightData_->decay = lightDecay; }
-	void SetSpotLightColor(const MyBase::Vector4& lightColor) { spotLightData_->color = lightColor; }
-	void SetSpotLightPosition(const MyBase::Vector3& lightPosition) { spotLightData_->position = lightPosition; }
-	void SetSpotLightIntensity(const float& lightIntensity) { spotLightData_->intensity = lightIntensity; }
-	void SetSpotLightDirection(const MyBase::Vector3& lightDirection) { spotLightData_->direction = lightDirection; }
-	void SetSpotLightDistance(const float& lightDistance) { spotLightData_->distance = lightDistance; }
-	void SetSpotLightDecay(const float& lightDecay) { spotLightData_->decay = lightDecay; }
-	void SetSpotLightCosAngle(const float& lightCosAngle) { spotLightData_->cosAngle = lightCosAngle; }
+	/// <summary>
+	/// 平行光源データの設定
+	/// </summary>
+	/// <param name="directionalLight">平行光源データ</param>
+	void SetDirectionalLight(const MyBase::DirectionalLight& directionalLight) { *directionalLightMapped_ = directionalLight; }
+	
+	/// <summary>
+	/// 点光源データの設定
+	/// </summary>
+	/// <param name="pointLight">点光源データ</param>
+	void SetPointLight(const MyBase::PointLight& pointLight) { *pointLightMapped_ = pointLight; }
+	
+	/// <summary>
+	/// スポットライトデータの設定
+	/// </summary>
+	/// <param name="spotLight">スポットライトデータ</param>
+	void SetSpotLight(const MyBase::SpotLight& spotLight) { *spotLightMapped_ = spotLight; }
+	
+	/// <summary>
+	/// 平行光源の色の設定
+	/// </summary>
+	/// <param name="lightColor">平行光源の色</param>
+	void SetDirectionalLightColor(const MyBase::Vector4& lightColor) { directionalLightMapped_->color = lightColor; }
+	
+	/// <summary>
+	/// 平行光源の方向の設定
+	/// </summary>
+	/// <param name="lightDirection">平行光源の方向</param>
+	void SetDirectionalLightDirection(const MyBase::Vector3& lightDirection) { directionalLightMapped_->direction = lightDirection; }
+	
+	/// <summary>
+	/// 平行光源の強度の設定
+	/// </summary>
+	/// <param name="lightIntensity">平行光源の強度</param>
+	void SetDirectionalLightIntensity(float lightIntensity) { directionalLightMapped_->intensity = lightIntensity; }
+	
+	/// <summary>
+	/// 点光源の色の設定
+	/// </summary>
+	/// <param name="lightColor">点光源の色</param>
+	void SetPointLightColor(const MyBase::Vector4& lightColor) { pointLightMapped_->color = lightColor; }
+	
+	/// <summary>
+	/// 点光源の位置の設定
+	/// </summary>
+	/// <param name="lightPosition">点光源の位置</param>
+	void SetPointLightPosition(const MyBase::Vector3& lightPosition) { pointLightMapped_->position = lightPosition; }
+	
+	/// <summary>
+	/// 点光源の強度の設定
+	/// </summary>
+	/// <param name="lightIntensity">点光源の強度</param>
+	void SetPointLightIntensity(float lightIntensity) { pointLightMapped_->intensity = lightIntensity; }
+	
+	/// <summary>
+	/// 点光源の届く最大距離の設定
+	/// </summary>
+	/// <param name="lightRadius">点光源の届く最大距離</param>
+	void SetPointLightRadius(float lightRadius) { pointLightMapped_->radius = lightRadius; }
+	
+	/// <summary>
+	/// 点光源の減衰率の設定
+	/// </summary>
+	/// <param name="lightDecay">点光源の減衰率</param>
+	void SetPointLightDecay(float lightDecay) { pointLightMapped_->decay = lightDecay; }
+	
+	/// <summary>
+	/// スポットライトの色の設定
+	/// </summary>
+	/// <param name="lightColor">スポットライトの色</param>
+	void SetSpotLightColor(const MyBase::Vector4& lightColor) { spotLightMapped_->color = lightColor; }
+	
+	/// <summary>
+	/// スポットライトの位置の設定
+	/// </summary>
+	/// <param name="lightPosition">スポットライトの位置</param>
+	void SetSpotLightPosition(const MyBase::Vector3& lightPosition) { spotLightMapped_->position = lightPosition; }
+	
+	/// <summary>
+	/// スポットライトの強度の設定
+	/// </summary>
+	/// <param name="lightIntensity">スポットライトの強度</param>
+	void SetSpotLightIntensity(float lightIntensity) { spotLightMapped_->intensity = lightIntensity; }
+	
+	/// <summary>
+	/// スポットライトの方向の設定
+	/// </summary>
+	/// <param name="lightDirection">スポットライトの方向</param>
+	void SetSpotLightDirection(const MyBase::Vector3& lightDirection) { spotLightMapped_->direction = lightDirection; }
+	
+	/// <summary>
+	/// スポットライトの届く最大距離の設定
+	/// </summary>
+	/// <param name="lightDistance">スポットライトの届く最大距離</param>
+	void SetSpotLightDistance(float lightDistance) { spotLightMapped_->distance = lightDistance; }
+	
+	/// <summary>
+	/// スポットライトの減衰率の設定
+	/// </summary>
+	/// <param name="lightDecay">スポットライトの減衰率</param>
+	void SetSpotLightDecay(float lightDecay) { spotLightMapped_->decay = lightDecay; }
+	
+	/// <summary>
+	/// スポットライトの余弦の設定
+	/// </summary>
+	/// <param name="lightCosAngle">スポットライトの余弦</param>
+	void SetSpotLightCosAngle(float lightCosAngle) { spotLightMapped_->cosAngle = lightCosAngle; }
 
 private:	// シングルトンインスタンス
-	static LightManager* instance;
+	static LightManager* sInstance;
 
 	LightManager() = default;
 	~LightManager() = default;
-	LightManager(LightManager&) = default;
-	LightManager& operator=(LightManager&) = delete;
+	LightManager(const LightManager&) = delete;
+	LightManager& operator=(const LightManager&) = delete;
 
 private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
 
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;		// 平行光源
-	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_ = nullptr;			// 点光源
-	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightResource_ = nullptr;			// スポットライト
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightBuffer_ = nullptr;		// 平行光源
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightBuffer_ = nullptr;			// 点光源
+	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightBuffer_ = nullptr;			// スポットライト
 
 	// バッファリソース内のデータを指すポインタ
-	MyBase::DirectionalLight* directionalLightData_ = nullptr;
-	MyBase::PointLight* pointLightData_ = nullptr;									// 点光源
-	MyBase::SpotLight* spotLightData_ = nullptr;
-
+	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;
+	MyBase::PointLight* pointLightMapped_ = nullptr;									// 点光源
+	MyBase::SpotLight* spotLightMapped_ = nullptr;
 };
-

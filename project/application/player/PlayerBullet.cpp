@@ -8,12 +8,12 @@
 using namespace std;
 
 // 初期化
-void PlayerBullet::Initialize(MyBase::Vector3 position, MyBase::Vector3 velocity)
+void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vector3& velocity)
 {
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("debug/sphere", "sphere.obj");
 
-	object_->SetTexture("resources/texture/playerBullet.png");
+	object_->SetTexture("playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 
@@ -78,7 +78,7 @@ void PlayerBullet::DebugDraw()
 void PlayerBullet::Move()
 {
 	// 弾の移動
-	MyBase::Vector3 move = MyTools::Multiply(kmoveSpeed_, velocity_);
+	MyBase::Vector3 move = MyTools::Multiply(kMoveSpeed, velocity_);
 	object_->SetTranslate(MyTools::Add(object_->GetTranslate(), move));
 	// 画面外に出たら削除
 	if (deathTimer_ <= 0) {

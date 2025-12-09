@@ -15,15 +15,15 @@ using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
 
-DirectXBase* DirectXBase::instance = nullptr;
+DirectXBase* DirectXBase::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 DirectXBase* DirectXBase::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new DirectXBase();
+	if (sInstance == nullptr) {
+		sInstance = new DirectXBase();
 	}
-	return instance;
+	return sInstance;
 }
 
 // 初期化
@@ -60,14 +60,12 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 	CreateScissorRect();
 	// DCXコンパイラの生成
 	CreateDxcCompiler();
-	// ImGuiの初期化
-	//InitializeImGui();
 }
 
 void DirectXBase::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 描画前処理(RenderTexture)
@@ -111,6 +109,7 @@ void DirectXBase::PostDraw()
 {
 	HRESULT hr;
 	
+	// TransitionBarrierを張る
 	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	// これから書き込むバックバッファのインデックスを取得
@@ -160,6 +159,8 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	offScreenSrvIndex_ = srvManager->Allocate();
 
 	DirectX::TexMetadata metadata;
+	
+	// TexMetadata を手動で構築
 	metadata.width = 1024;
 	metadata.height = 1024;
 	metadata.arraySize = 1;
@@ -169,7 +170,9 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	metadata.format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	metadata.mipLevels = 1;
 
-	srvManager->CreateSRVforTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
+	srvManager->CreateSRVForTexture2D(offScreenSrvIndex_, metadata, renderTextureResource_.Get());
+	
+	// CPU/GPU 双方のデスクリプタハンドルを保持
 	offScreenSrvHandleCPU_ = srvManager->GetCPUDescriptorHandle(offScreenSrvIndex_);
 	offScreenSrvHandleGPU_ = srvManager->GetGPUDescriptorHandle(offScreenSrvIndex_);
 }
@@ -295,7 +298,7 @@ ComPtr<ID3D12Resource> DirectXBase::CreateBufferResource(size_t sizeInBytes)
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> bufferResource = nullptr;
 
-	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&bufferResource));
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &bufferResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&bufferResource));
 
 	assert(SUCCEEDED(hr));
 
@@ -320,7 +323,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateTextureResource(const 
 
 	// 3. Resourceを生成する
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(
 		&heapProperties,					// Heapの設定
 		D3D12_HEAP_FLAG_NONE,				// Heapの特殊な設定。特になし
 		&resourceDesc,						// Resourceの設定
@@ -361,7 +364,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateRenderTextureResource(
 
 	// Resourceの作成
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	HRESULT hr = device_->CreateCommittedResource(
+	[[maybe_unused]] HRESULT hr = device_->CreateCommittedResource(
 		&heapProperties,						// Heapの設定
 		D3D12_HEAP_FLAG_NONE,					// Heapの特殊な設定。特になし
 		&resourceDesc,							// Resourceの設定
@@ -410,18 +413,28 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 	}
 	assert(SUCCEEDED(hr));
 
-	//ミニマップの作成
-	ScratchImage mipImages{};
-	// 圧縮フォーマットかどうかを調べる
-	if (IsCompressed(image.GetMetadata().format)) {
-		mipImages = std::move(image);	// 圧縮フォーマットならそのまま使うのでmoveする
-	} else {
-		hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), TEX_FILTER_SRGB, 4, mipImages);
-	}
-	assert(SUCCEEDED(hr));
+	const TexMetadata& metadata = image.GetMetadata();
 
-	// ミニマップ付きのデータを返す
-	return mipImages;
+	// デフォルトは元画像
+	ScratchImage resultImage = std::move(image);
+
+	//ミニマップの作成
+	// 非圧縮 & ミップ生成可能なサイズのみ
+	if (!IsCompressed(metadata.format) &&
+		metadata.width > 1 &&
+		metadata.height > 1) {
+		ScratchImage mipImages{};
+		hr = GenerateMipMaps(resultImage.GetImages(), resultImage.GetImageCount(), resultImage.GetMetadata(), TEX_FILTER_SRGB, 0, mipImages);
+
+		if (SUCCEEDED(hr) && mipImages.GetImageCount() > 0) {
+			resultImage = std::move(mipImages);
+		}
+	}
+
+	assert(resultImage.GetImageCount() > 0);
+
+	// データを返す
+	return resultImage;
 }
 
 ///
@@ -612,7 +625,7 @@ ComPtr<ID3D12DescriptorHeap> DirectXBase::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 	descriptorHeapDesc.NumDescriptors = numDescriptors;
 	descriptorHeapDesc.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-	HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	[[maybe_unused]] HRESULT hr = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 
 	assert(SUCCEEDED(hr));
 
@@ -652,8 +665,7 @@ void DirectXBase::InitializeRenderTargetView()
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// 2dテクスチャとして書き込む
 	
 	// 要素の2つ分
-	for (uint32_t i = 0; i < 2; ++i)
-	{
+	for (uint32_t i = 0; i < 2; ++i) {
 		// RTVハンドルを取得
 		rtvHandles_[i].ptr = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart().ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * i;
 		// レンダーターゲットビューの生成
@@ -748,19 +760,6 @@ void DirectXBase::CreateDxcCompiler()
 	// 現時点でincludeはしないが、includeに対応するための設定を行っておく
 	hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr));
-}
-
-// ImGuiの初期化
-void DirectXBase::InitializeImGui()
-{
-#ifdef _DEBUG
-	// ImGuiの初期化
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGui::StyleColorsDark();
-	//ImGui_ImplWin32_Init(winApi_->GetHwnd());
-	//ImGui_ImplDX12_Init(device_.Get(), swapChainDesc_.BufferCount, rtvDesc_.Format, srvDescriptorHeap_.Get(), srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(), srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart());
-#endif // _DEBUG
 }
 
 // FPS固定初期化

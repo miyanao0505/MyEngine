@@ -34,18 +34,25 @@ private:	// オーディオ関係の構造体
 	// 音声データ
 	struct SoundData {
 		WAVEFORMATEX wfex;			// 波形フォーマット
-		BYTE* pBuffer;				// バッファの先頭アドレス
+		BYTE* buffer;				// バッファの先頭アドレス
 		unsigned int bufferSize;	// バッファのサイズ
 	};
 
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// 音声管理システムのシングルトンインスタンスを取得します。
+	/// </summary>
+	/// <returns>AudioManager のインスタンス</returns>
 	static AudioManager* GetInstance();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
 	/// 音声データの読み込み
@@ -74,8 +81,11 @@ public:	// メンバ関数
 	void StopWave(const std::string& filename);
 
 
-	/// 音声データの削除
-	void UnLoadAudio(const std::string& filename);
+	/// <summary>
+	/// 読み込んだ音声データを解放
+	/// </summary>
+	/// <param name="filename">削除する音声ファイル名</param>
+	void UnloadAudio(const std::string& filename);
 
 public:	// getter
 
@@ -84,19 +94,19 @@ public:	// setter
 
 
 public:	// シングルトンインスタンス
-	static AudioManager* instance;
+	static AudioManager* sInstance;
 
 	AudioManager() = default;
 	~AudioManager() = default;
-	AudioManager(AudioManager&) = default;
-	AudioManager& operator=(AudioManager&) = delete;
+	AudioManager(const AudioManager&) = delete;
+	AudioManager& operator=(const AudioManager&) = delete;
 
 private:	// メンバ変数
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2_ = nullptr;
 	IXAudio2MasteringVoice* masterVoice_ = nullptr;
 
 	// 音声データ
-	std::unordered_map<std::string, SoundData> soundDatas_;
-	std::unordered_map<std::string, IXAudio2SourceVoice*> playSoundDatas_;
+	std::unordered_map<std::string, SoundData> soundDataMap_;
+	std::unordered_map<std::string, IXAudio2SourceVoice*> playingVoices_;
 };
 

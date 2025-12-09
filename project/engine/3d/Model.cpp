@@ -8,13 +8,13 @@
 #include "TextureManager.h"
 
 // 初期化
-void Model::Initialize(ModelBase* modelBase, const std::string& directorypath, const std::string& filename)
+void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, const std::string& fileName)
 {
 	// 引数で受け取ってメンバ変数に記録する
 	modelBase_ = modelBase;
 
 	// モデル読み込み
-	LoadObjFile(directorypath, filename);
+	LoadObjFile(directoryPath, fileName);
 
 	// 頂点データの作成
 	CreateVertexData();
@@ -26,7 +26,6 @@ void Model::Initialize(ModelBase* modelBase, const std::string& directorypath, c
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 	// 読み込んだテクスチャの番号を取得
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(modelData_.material.textureFilePath);
-
 }
 
 // 描画処理
@@ -39,22 +38,22 @@ void Model::Draw()
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
 	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 	// 環境マップのテクスチャがある場合のみ設定。
-	if (!environmentTexture_.empty()) {
-		modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexture_));
+	if (!environmentTexturePath_.empty()) {
+		modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexturePath_));
 	}
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
 	modelBase_->GetDxBase()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
 // .mtlファイルの読み取り
-MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
+MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName)
 {
 	/// 1. 中で必要となる変数の宣言
 	MyBase::MaterialData materialData;	// 構築するMateriallData
 	std::string line;					// ファイルが読んだ1行を格納するもの
 
 	/// 2. ファイルを開く
-	std::ifstream file(directoryPath + "/" + filename);		// ファイルを開く
+	std::ifstream file(directoryPath + "/" + fileName);		// ファイルを開く
 	assert(file.is_open());									// 取り敢えず開けなかったら止める
 
 	/// 3. 実際にファイルを読み、MaterialDataを構築していく
@@ -77,11 +76,11 @@ MyBase::MaterialData Model::LoadMaterialTemplateFile(const std::string& director
 }
 
 // .objファイルの読み取り
-void Model::LoadObjFile(const std::string& directoryPath, const std::string& filename)
+void Model::LoadObjFile(const std::string& directoryPath, const std::string& fileName)
 {
 	// 2. ファイルを開く
 	Assimp::Importer importer;
-	std::string filePath(directoryPath + "/" + filename);		// ファイルを開く
+	std::string filePath(directoryPath + "/" + fileName);		// ファイルを開く
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene->HasMeshes());									// メッシュがないのは対応しない
 
@@ -118,16 +117,17 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modelData_.material.textureFilePath = std::string("resources/texture/") + textureFilePath.C_Str();
+			modelData_.material.textureFilePath = textureFilePath.C_Str();
 		}
 	}
 	// Scene全体の階層構造を作る
 	modelData_.rootNode = ReadNode(scene->mRootNode);
 }
 
-void Model::SetTexture(const std::string& filename)
+void Model::SetTexture(const std::string& fileName)
 {
-	modelData_.material.textureFilePath = filename;
+	// テクスチャファイル名を記録
+	modelData_.material.textureFilePath = fileName;
 
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
@@ -146,8 +146,8 @@ void Model::CreateVertexData()
 	vertexBufferView_.StrideInBytes = sizeof(MyBase::ModelVertexData);										// 頂点あたりのサイズ
 
 	// 頂点リソースにデータを書き込む
-	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));									// 書き込むためのアドレスを取得
-	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(MyBase::ModelVertexData) * modelData_.vertices.size());	// 頂点データをリソースにコピー
+	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataPtr_));									// 書き込むためのアドレスを取得
+	std::memcpy(vertexDataPtr_, modelData_.vertices.data(), sizeof(MyBase::ModelVertexData) * modelData_.vertices.size());	// 頂点データをリソースにコピー
 }
 
 // マテリアルデータ作成
@@ -156,17 +156,17 @@ void Model::CreateMaterialData()
 	// マテリアル用のリソースを作る
 	materialResource_ = modelBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::ModelMaterial));
 	// 書き込むためのアドレスを取得
-	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialDataPtr_));
 	// 白で読み込む
-	materialData_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialDataPtr_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	// 単位行列で初期化
-	materialData_->uvTransform = Matrix::MakeIdentity4x4();
+	materialDataPtr_->uvTransform = Matrix::MakeIdentity4x4();
 	// 光沢度
-	materialData_->shininess = 40.80f;
+	materialDataPtr_->shininess = 40.80f;
 	// 反射強度
-	materialData_->reflectivity = 0.0f;
+	materialDataPtr_->reflectivity = 0.0f;
 	// Lightingを有効にする
-	materialData_->enableLighting = true;
+	materialDataPtr_->enableLighting = true;
 }
 
 // Node情報を読み込む

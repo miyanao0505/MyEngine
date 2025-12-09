@@ -14,12 +14,8 @@ void EventScene::Initialize()
 
 #pragma region シーン初期化
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(filePath1_);
 
 	// スプライト
-	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(filePath1_);
-	sprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("debug/cube", "cube.obj");
@@ -28,13 +24,10 @@ void EventScene::Initialize()
 	
 
 	// パーティクル
-	//particleEmitter_ = std::make_unique<ParticleEmitter>();
-	//particleEmitter_->Initialize("circle", "resources/circle.png");
 #pragma endregion シーン初期化
 
 #pragma region 変数
 	isParticleActive_ = true;
-	//particleEmitter_->SetIsEmitUpdate(isParticleActive_);
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
@@ -50,7 +43,7 @@ void EventScene::Finalize()
 	
 
 	// スプライト
-	sprite_.reset();
+
 }
 
 // 毎フレーム更新
@@ -60,9 +53,9 @@ void EventScene::Update()
 
 #ifdef _DEBUG
 	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
+	if (input_->IsKeyTriggered(DIK_N)) {
 		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 
 	DebugDraw();
@@ -79,7 +72,7 @@ void EventScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime_, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
 				}
 
 				++it;
@@ -89,11 +82,10 @@ void EventScene::Update()
 	}
 
 	// パーティクルの更新処理
-	//particleEmitter_->Update();
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	sprite_->Update();
+
 }
 
 // 描画
@@ -112,7 +104,6 @@ void EventScene::Draw()
 #pragma region パーティクル
 
 	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	//ParticleManager::GetInstance()->Draw();
 
 #pragma endregion パーティクル
 
@@ -122,7 +113,7 @@ void EventScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	sprite_->Draw();
+	
 
 #pragma endregion スプライト
 
@@ -139,14 +130,11 @@ void EventScene::DebugDraw()
 	ImGui::Begin("Event");
 	ImGui::Text("N key : titleScene");
 	ImGui::End();
-
-	// デモウィンドウの表示オン
-	//ImGui::ShowDemoWindow();
 }
 #endif // _DEBUG
 
 // jsonファイルの読み込み
-void EventScene::LoadJsonFile(const std::string& filePath)
+void EventScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
-	filePath;
+	
 }

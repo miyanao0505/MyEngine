@@ -7,34 +7,79 @@
 class SrvManager
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
-	// Allocationの確保
+	/// <summary>
+	/// Allocationの確保
+	/// </summary>
+	/// <returns>確保したSRVインデックス</returns>
 	uint32_t Allocate();
 
-	// SRV生成(テクスチャ用)
-	void CreateSRVforTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
-	// SRV生成(Structured Buffer用)
-	void CreateSRVforStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
-	// SRV生成(キューブマップ用)
-	void CreateSRVforTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
+	/// <summary>
+	/// SRV生成(テクスチャ用)
+	/// </summary>
+	/// <param name="srvIndex">SRVインデックス</param>
+	/// <param name="metaData">テクスチャメタデータ</param>
+	/// <param name="pResource">テクスチャリソース</param>
+	void CreateSRVForTexture2D(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
+	
+	/// <summary>
+	/// SRV生成(Structured Buffer用)
+	/// </summary>
+	/// <param name="srvIndex">SRVインデックス</param>
+	/// <param name="pResource">バッファリソース</param>
+	/// <param name="numElements">要素数</param>
+	/// <param name="structureByteStride">構造体のバイトサイズ</param>
+	void CreateSRVForStructuredBuffer(uint32_t srvIndex, ID3D12Resource* pResource, UINT numElements, UINT structureByteStride);
+	
+	/// <summary>
+	/// SRV生成(キューブマップ用)
+	/// </summary>
+	/// <param name="srvIndex">SRVインデックス</param>
+	/// <param name="metaData">テクスチャメタデータ</param>
+	/// <param name="pResource">テクスチャリソース</param>
+	void CreateSRVForTextureCube(uint32_t srvIndex, DirectX::TexMetadata metaData, ID3D12Resource* pResource);
 
-	// 描画前処理
+	/// <summary>
+	/// 描画前処理
+	/// </summary>
 	void PreDraw();
 
-	// SRVセットコマンド
+	/// <summary>
+	/// SRVセットコマンド
+	/// </summary>
+	/// <param name="RootParameterIndex">ルートパラメータインデックス</param>
+	/// <param name="srvIndex">SRVインデックス</param>
 	void SetGraphicsRootDescriptorTable(UINT RootParameterIndex, uint32_t srvIndex);
 
-	// テクスチャ枚数上限チェック
-	bool isSecure();
+	/// <summary>
+	/// テクスチャ枚数上限チェック
+	/// </summary>
+	/// <returns>安全ならtrueを返す</returns>
+	bool IsSecure();
 
 public:	// getter
-	// SRVの指定番号のCPUデスクリプタハンドルを取得する
+	/// <summary>
+	/// SRVの指定番号のCPUデスクリプタハンドルを取得する
+	/// </summary>
+	/// <param name="index">SRVインデックス</param>
+	/// <returns>CPUデスクリプタハンドル</returns>
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(uint32_t index);
-	// SRVの指定番号のGPUデスクリプタハンドルを取得する
+	
+	/// <summary>
+	/// SRVの指定番号のGPUデスクリプタハンドルを取得する
+	/// </summary>
+	/// <param name="index">SRVインデックス</param>
+	/// <returns>GPUデスクリプタハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);
-	//ImGui用
+	
+	/// <summary>
+	/// ImGui用のデスクリプタヒープを取得
+	/// </summary>
+	/// <returns>デスクリプタヒープ</returns>
 	ID3D12DescriptorHeap* GetDescriptorHeapForImGui() { return descriptorHeap_.Get(); }
 
 private:	// メンバ変数
@@ -51,7 +96,4 @@ private:	// メンバ変数
 public: // メンバ定数
 	// 最大SRV数(最大テクスチャ枚数)
 	static const uint32_t kMaxSRVCount;
-
-
 };
-

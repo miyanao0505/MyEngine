@@ -10,7 +10,14 @@
 class Skydome : public BaseObject
 {
 public:	// メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Skydome();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Skydome();
 
 	/// <summary>
@@ -20,10 +27,12 @@ public:	// メンバ関数
 	/// <param name="position">初期位置</param>
 	/// <param name="scale">初期スケール</param>
 	void Initialize(const std::string& filePath, MyBase::Vector3 position, MyBase::Vector3 scale);
+	
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update() override;
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -37,8 +46,11 @@ public:	// メンバ関数
 #endif // _DEBUG
 
 public:	// getter
-	// 
-	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+	/// <summary>
+	/// オブジェクトのワールド座標を取得
+	/// </summary>
+	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
+	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
 private:	// メンバ変数
 	

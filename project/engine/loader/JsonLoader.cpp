@@ -6,16 +6,17 @@
 using namespace std;
 using namespace nlohmann;
 
-LevelData* JsonLoader::LoadFile(const string& filePath)
+/// JSONファイルを読み込みレベルデータ(LevelData)を返す
+std::unique_ptr<JsonLevelData> JsonLoader::LoadFile(const string& filePath)
 {
 	// 連結してフルパスを得る
-	const string fullpath = "resources/jsons/" + filePath;
+	const string absolutePath = "resources/jsons/" + filePath;
 
 	// ファイルストリーム
 	ifstream file;
 
 	// ファイルを開く
-	file.open(fullpath);
+	file.open(absolutePath);
 	// ファイルオープン失敗をチェック
 	if (file.fail()) {
 		assert(0);
@@ -38,7 +39,7 @@ LevelData* JsonLoader::LoadFile(const string& filePath)
 	assert(name.compare("scene") == 0);
 
 	// レベルデータを格納するマップ
-	LevelData* levelData = new LevelData();
+	std::unique_ptr<JsonLevelData> levelData = std::make_unique<JsonLevelData>();
 
 	// "objects"の全オブジェクトを走査
 	for (json& object : deserialized["objects"]) {
@@ -47,7 +48,8 @@ LevelData* JsonLoader::LoadFile(const string& filePath)
 	return levelData;
 }
 
-void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData, ObjectData* parent)
+/// JSONオブジェクトからObjectDataを解析し、LevelDataへ登録
+void JsonLoader::ParseObject(const nlohmann::json& object, JsonLevelData& levelData, JsonObjectData* outObject)
 {
 	assert(object.contains("type"));
 
@@ -67,7 +69,7 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData,
 	// MESH
 	if (type.compare("MESH") == 0) {
 		// オブジェクトデータを生成
-		ObjectData objectData;
+		JsonObjectData objectData;
 		// 必要なデータを取得
 		objectData.name = object["name"];
 		json transform = object["transform"];
@@ -79,24 +81,24 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData,
 		objectData.scale = { (float)transform["scaling"][0], (float)transform["scaling"][2], (float)transform["scaling"][1] };
 		// オブジェクト名があれば取得
 		if (object.contains("file_name")) {
-			objectData.objectName = object["file_name"];
+			objectData.modelFileName = object["file_name"];
 		}
 		// コライダーがあれば取得
 		if (object.contains("collider")) {
 			json collider = object["collider"];
-			objectData.meshName = collider["type"];
-			if (objectData.meshName.compare("SPHERE") == 0) {
+			objectData.colliderType = collider["type"];
+			if (objectData.colliderType.compare("SPHERE") == 0) {
 				objectData.radius = (float)collider["radius"];
 			}
-			else if (objectData.meshName.compare("AABB") == 0) {
+			else if (objectData.colliderType.compare("AABB") == 0) {
 				// AABBコライダーの場合
-				json aabb = object["Collider"]["aabb"];
+				json aabb = collider["aabb"];
 				objectData.aabb.min = { (float)aabb["min"][0], (float)aabb["min"][2], (float)aabb["min"][1] };
 				objectData.aabb.max = { (float)aabb["max"][0], (float)aabb["max"][2], (float)aabb["max"][1] };
 			}
-			else if (objectData.meshName.compare("OBB") == 0) {
+			else if (objectData.colliderType.compare("OBB") == 0) {
 				// OBBコライダーの場合
-				json obb = object["Collider"]["obb"];
+				json obb = collider["obb"];
 				objectData.obb.center = { (float)obb["center"][0], (float)obb["center"][2], (float)obb["center"][1] };
 				objectData.obb.size = { (float)obb["size"][0], (float)obb["size"][2], (float)obb["size"][1] };
 			}
@@ -105,14 +107,14 @@ void JsonLoader::ParseObject(const nlohmann::json& object, LevelData& levelData,
 		// 子オブジェクトがあれば再帰的に処理
 		if (object.contains("children")) {
 			for (const auto& child : object["children"]) {
-				ObjectData childData;
+				JsonObjectData childData;
 				ParseObject(child, levelData, &childData);
 				objectData.children.push_back(childData);
 			}
 		}
 
-		if (parent) {
-			*parent = objectData;
+		if (outObject) {
+			*outObject = objectData;
 		}
 		else {
 			// レベルデータに追加

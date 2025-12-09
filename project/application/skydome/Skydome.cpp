@@ -17,10 +17,10 @@ void Skydome::Initialize(const std::string& filePath, MyBase::Vector3 position, 
 {
 	TextureManager::GetInstance()->LoadTexture(filePath);
 
-	ModelManager::GetInstance()->LoadModel("debug/sphere", "sphere.obj");
+	ModelManager::GetInstance()->LoadModel("skydome", "skydome.obj");
 	object_ = std::make_unique<Object3d>();
 
-	object_->Initislize("sphere.obj");
+	object_->Initialize("skydome.obj");
 	object_->SetTexture(filePath);
 	object_->SetScale(scale);
 	object_->SetTranslate(position);

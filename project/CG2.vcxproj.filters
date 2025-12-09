@@ -222,9 +222,6 @@
     <ClCompile Include="engine\scene\SceneManager.cpp">
       <Filter>ソース ファイル\engine\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\scene\SceneFactory.cpp">
-      <Filter>ソース ファイル\engine\scene</Filter>
-    </ClCompile>
     <ClCompile Include="engine\audio\AudioManager.cpp">
       <Filter>ソース ファイル\engine\audio</Filter>
     </ClCompile>
@@ -336,6 +333,18 @@
     <ClCompile Include="application\sequence\GameOverSequence.cpp">
       <Filter>ソース ファイル\application\sequence</Filter>
     </ClCompile>
+    <ClCompile Include="application\camera\RailFollowSystem.cpp">
+      <Filter>ソース ファイル\application\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="application\sequence\ClearSequence.cpp">
+      <Filter>ソース ファイル\application\sequence</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\ClearLogo.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\scene\SceneFactory.cpp">
+      <Filter>ソース ファイル\application\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -414,9 +423,6 @@
       <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\scene\MNFramework.h">
-      <Filter>ヘッダー ファイル\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\scene\SceneFactory.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
     <ClInclude Include="engine\scene\SceneManager.h">
@@ -520,6 +526,21 @@
     </ClInclude>
     <ClInclude Include="application\sequence\GameOverSequence.h">
       <Filter>ヘッダー ファイル\application\sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="application\camera\RailFollowSystem.h">
+      <Filter>ヘッダー ファイル\application\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="application\sequence\ClearSequence.h">
+      <Filter>ヘッダー ファイル\application\sequence</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\ClearLogo.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\scene\SceneFactory.h">
+      <Filter>ヘッダー ファイル\application\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\scene\SceneName.h">
+      <Filter>ヘッダー ファイル\engine\scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

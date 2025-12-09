@@ -9,35 +9,53 @@
 class CollisionManager
 {
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスの取得
+	/// </summary>
+	/// <returns>インスタンス</returns>
 	static CollisionManager* GetInstance();
-	// 終了
+	
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize();
 
-	// Colliderの登録
+	/// <summary>
+	/// Colliderの登録
+	/// </summary>
+	/// <param name="collider">Collider</param>
 	void Register(Collider* collider) { colliders_.push_back(collider); }
 
-	// Colliderの解除
+	/// <summary>
+	/// Colliderの解除
+	/// </summary>
+	/// <param name="collider">Collider/param>
 	void Unregister(Collider* collider) { colliders_.remove(collider); }
 
-	// コライダーリストをクリア
+	/// <summary>
+	/// Colliderリストをクリア
+	/// </summary>
 	void Clear();
 
-	// 更新
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
-	// 衝突判定と応答
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
 	void CheckAllCollisions();
 
 	/// <summary>
-	/// コライダー2つの衝突判定と応答
+	/// Collider2つの衝突判定と応答
 	/// </summary>
-	/// <param name="colliderA">コライダーA</param>
-	/// <param name="colliderB">コライダーB</param>
+	/// <param name="colliderA">ColliderA</param>
+	/// <param name="colliderB">ColliderB</param>
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 private:	// シングルトン
-	static CollisionManager* instance;
+	static CollisionManager* sInstance;
 
 	CollisionManager() = default;
 	~CollisionManager() = default;
@@ -47,6 +65,4 @@ private:	// シングルトン
 private:	// メンバ変数
 	// コライダーリスト
 	std::list<Collider*> colliders_;
-
 };
-

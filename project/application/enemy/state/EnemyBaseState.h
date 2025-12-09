@@ -11,26 +11,37 @@ class Enemy;
 /// </summary>
 class EnemyBaseState
 {
-public:
-	// コンストラクタ
+public:	// メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="name">ステート名</param>
+	/// <param name="enemy">敵キャラクターのポインタ</param>
 	EnemyBaseState(const std::string& name, Enemy* enemy) : name_(name), enemy_(enemy) {};
 
-	// デストラクタ
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	virtual ~EnemyBaseState() {};
 
-	// ステートの初期化
+	/// <summary>
+	/// ステートの初期化
+	/// </summary>
 	virtual void Initialize() = 0;
-	// ステートの更新
+
+	/// <summary>
+	/// ステートの更新
+	/// </summary>
 	virtual void Update() = 0;
 
 #ifdef _DEBUG
-	// デバックログ出力
+	/// <summary>
+	/// デバックログ出力
+	/// </summary>
 	virtual void DebugLog();
 #endif // _DEBUG
 
 protected:
 	std::string name_;
 	Enemy* enemy_ = nullptr;
-
 };
-

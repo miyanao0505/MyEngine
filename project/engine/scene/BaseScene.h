@@ -38,17 +38,29 @@ public:	//メンバ関数
 	virtual void Draw();
 
 #ifdef _DEBUG
-	// デバック描画
+	/// <summary>
+	/// デバック描画
+	/// </summary>
 	virtual void DebugDraw();
 #endif // _DEBUG
+	/// <summary>
+	/// オブジェクト構築
+	/// </summary>
+	/// <param name="data">オブジェクトデータ</param>
+	/// <returns>生成されたオブジェクトのポインタ</returns>
+	std::unique_ptr<BaseObject> CreateObjectFromData(const JsonObjectData& data);
 
-	// オブジェクト構築
-	BaseObject* CreateObjectFromData(const ObjectData& data);
-	// jsonファイルの読み込み
-	virtual void LoadJsonFile(const std::string& filePath) = 0;
+	/// <summary>
+	/// jsonファイルの読み込み
+	/// </summary>
+	///	<param name="filePath">ファイルパス</param>
+	virtual void LoadJsonFile([[maybe_unused]] const std::string& filePath) = 0;
 
 public:	// setter
-	// シーンマネージャのセット
+	/// <summary>
+	/// シーンマネージャのセット
+	/// </summary>
+	/// <param name="sceneManager">シーンマネージャのポインタ</param>
 	virtual void SetSceneManager(SceneManager* sceneManager) { sceneManager_ = sceneManager; }
 
 protected:	// 継承
@@ -56,6 +68,4 @@ protected:	// 継承
 	SceneManager* sceneManager_ = nullptr;
 	// 入力
 	Input* input_ = nullptr;
-
 };
-

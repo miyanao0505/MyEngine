@@ -11,14 +11,21 @@
 class Player : public BaseObject
 {
 public:	// メンバ関数
-	Player();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Player() = default;
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~Player();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="position">初期座標</param>
-	void Initialize(MyBase::Vector3 position);
+	void Initialize(const MyBase::Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -32,26 +39,25 @@ public:	// メンバ関数
 
 #ifdef _DEBUG
 	/// <summary>
-	/// デバック描画
+	/// デバッグ描画
 	/// </summary>
 	void DebugDraw() override;
 #endif // _DEBUG
 
-
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void Move();
+	void HandleMovementInput();
 
 	/// <summary>
 	/// 回転処理
 	/// </summary>
-	void Rotate();
+	void HandleRotationInput();
 
 	/// <summary>
 	/// 攻撃
 	/// </summary>
-	void Attaack();
+	void Attack();
 
 	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
@@ -59,11 +65,23 @@ public:	// メンバ関数
 	void OnCollision([[maybe_unused]] Collider* other) override;
 
 public:	// getter
-	// 
+	/// <summary>
+	/// 攻撃力を取得
+	/// </summary>
+	/// <returns>攻撃力を取得</returns>
 	int GetAttackPower() const { return attackPower_; }
-	MyBase::Vector3 GetWorldPosition() override { return BaseObject::GetWorldPosition(); };
+
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	/// <returns>ワールド座標</returns>
+	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
 public:	// setter
+	/// <summary>
+	/// 攻撃力を設定
+	/// </summary>
+	/// <param name="attackPower">攻撃力</param>
 	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
 
 private:	// メンバ変数	
@@ -76,18 +94,16 @@ private:	// メンバ変数
 	bool isDead_ = false;
 	
 	// プレイヤーの移動速度
-	const float kmoveSpeed_ = 0.2f;
+	const float kMoveSpeed = 0.2f;
 
 	// プレイヤーの攻撃クールタイム
-	const int kAttackCoolTime_ = 30;	// 30フレーム
+	const int kAttackCoolTime = 30;	// 30フレーム
 	int32_t attackCoolTime_ = 0;		// 現在のクールタイム
 
 	// 弾の上限
-	const int kMaxBulletCount_ = 10; // 最大弾数
+	const int kMaxBulletCount = 10; // 最大弾数
 	// 弾の発射位置
 	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
 	// 弾の描画距離
-	const float kBulletDrawDistance_ = 100.0f;
-
+	const float kBulletDrawDistance = 100.0f;
 };
-

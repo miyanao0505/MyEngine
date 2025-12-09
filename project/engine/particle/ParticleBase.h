@@ -24,29 +24,84 @@ class ParticleBase
 public:	// 列挙型
 	
 public:	// メンバ関数
-	// 初期化
-	void initialize(DirectXBase* dxBase);
-	// ルートシグネチャの作成
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="dxBase">DirectXBaseクラスのインスタンス</param>
+	void Initialize(DirectXBase* dxBase);
+
+	/// <summary>
+	/// ルートシグネチャの作成
+	/// </summary>
 	void CreateRootSignature();
-	// グラフィックスパイプラインの生成
+	
+	/// <summary>
+	/// グラフィックスパイプラインの生成
+	/// </summary>
 	void CreateGraphicsPipeline();
-	// 共通画面設定
+	
+	/// <summary>
+	/// 共通画面設定
+	/// </summary>
 	void SetCommonScreen();
 
 public:	// getter
+	/// <summary>
+	/// DirectXBaseの取得
+	/// </summary>
+	/// <returns>DirectXBaseクラスのインスタンス</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
+	
+	/// <summary>
+	/// ブレンドモードの取得
+	/// </summary>
+	/// <returns>ブレンドモード</returns>
 	BlendMode GetBlendMode() const { return blendMode_; }
 
 public:	// setter
+	/// <summary>
+	/// ブレンドモードの設定
+	/// </summary>
+	/// <param name="blendMode">ブレンドモード</param>
 	void SetBlendMode(BlendMode blendMode);
 
 private:	// メンバ関数
 	// ブレンドモード設計
+
+	/// <summary>
+	/// ブレンドなしのブレンド設定
+	/// </summary>
+	/// <returns>NONE 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeNone();
+
+	/// <summary>
+	/// 通常 α ブレンドの設定
+	/// </summary>
+	/// <returns>NORMAL 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeNormal();
+	
+	/// <summary>
+	/// 加算ブレンドの設定
+	/// </summary>
+	/// <returns>ADD 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeAdd();
+	
+	/// <summary>
+	/// 減算ブレンドの設定
+	/// </summary>
+	/// <returns>SUBTRACT 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeSubtract();
+	
+	/// <summary>
+	/// 乗算ブレンドの設定
+	/// </summary>
+	/// <returns>MULTIPLY 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeMultiply();
+	
+	/// <summary>
+	/// スクリーンブレンドの設定を返す。
+	/// </summary>
+	/// <returns>SCREEN 用 D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeScreen();
 
 private:	// メンバ変数
@@ -61,6 +116,4 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_;
-
 };
-

@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseScene.h"
-#include <string>
+#include "SceneName.h"
 
 /// <summary>
 /// シーンファクトリー抽象クラス(AbstractSceneFactory)
@@ -11,7 +11,11 @@ class AbstractSceneFactory
 public:	// メンバ関数
 	// 仮想デストラクタ
 	virtual ~AbstractSceneFactory() = default;
-	// シーンの生成
-	virtual BaseScene* CreateScene(const std::string& sceneName) = 0;
+	
+	/// <summary>
+	/// シーンの生成
+	/// </summary>
+	/// <param name="sceneName">シーン名</param>
+	/// <returns>生成したシーンのポインタ</returns>
+	virtual std::unique_ptr<BaseScene> CreateScene(SceneName sceneName) = 0;
 };
-

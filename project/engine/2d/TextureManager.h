@@ -25,50 +25,83 @@ private: // テクスチャデータ構造体
 	};
 
 public:	// メンバ関数
-	// シングルトンインスタンスの取得
+	/// <summary>
+	/// シングルトンインスタンスを取得
+	/// </summary>
+	/// <returns>TextureManager の唯一のインスタンス</returns>
 	static TextureManager* GetInstance();
-	// 終了
+
+	/// <summary>
+	/// TextureManager を終了(解放)
+	/// </summary>
 	void Finalize();
 
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="srvManager">SRV (Shader Resource View) を管理する SrvManager へのポインタ</param>
 	void Initialize(SrvManager* srvManager);
 
 	/// <summary>
-	/// テクスチャファイルの読み込み
+	/// 指定したテクスチャファイルを読み込み、内部で管理
 	/// </summary>
-	/// <param name="filePath">テクスチャファイルのパス</param>
+	/// <param name="filePath">読み込むテクスチャファイルのパス</param>
 	void LoadTexture(const std::string& filePath);
 
 public: // getter
-	// SRVインデックスの開始番号
+	/// <summary>
+	/// 指定したテクスチャの SRV インデックスを取得
+	/// </summary>
+	/// <param name="filePath">SRV インデックスを取得するテクスチャのファイルパス</param>
+	/// <returns>SRV インデックス</returns>
 	uint32_t GetSrvIndex(const std::string& filePath);
 
-	// テクスチャ番号からGPUハンドルを取得
+	/// <summary>
+	/// 指定したテクスチャの GPU 用 SRV ハンドルを取得
+	/// </summary>
+	/// <param name="filePath">GPU ハンドルを取得するテクスチャのファイルパス</param>
+	/// <returns>D3D12_GPU_DESCRIPTOR_HANDLE 型の GPU ハンドル</returns>
 	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
-	// メタデータを取得
+	/// <summary>
+	/// 指定したテクスチャのメタデータを取得
+	/// </summary>
+	/// <param name="filePath">メタデータを取得するテクスチャのファイルパス</param>
+	/// <returns>DirectX::TexMetadata 型のメタデータへの参照</returns>
 	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
 
-	// spriteBaseの取得
+	/// <summary>
+	/// 内部で管理している SpriteBase を取得
+	/// </summary>
+	/// <returns>SpriteBase へのポインタ</returns>
 	SpriteBase* GetSpriteBase() const { return spriteBase_.get(); }
 
 public:	// setter
-	// スプライト共有部のセット
+	/// <summary>
+	/// 共通の画面設定を SpriteBase に反映
+	/// </summary>
 	void SetCommonScreen() { spriteBase_->SetCommonScreen();}
 
-	// ブレンドモードのセット
+	/// <summary>
+	/// スプライト描画時のブレンドモードを設定
+	/// </summary>
+	/// <param name="blendMode">適用するブレンドモード (SpriteBase::BlendMode 列挙型)</param>
 	void SetBlendMode(SpriteBase::BlendMode blendMode);
 
 private: // シングルトン
-	static TextureManager* instance;
+	static TextureManager* sInstance;
 
 	TextureManager() = default;
 	~TextureManager() = default;
-	TextureManager(TextureManager&) = default;
+	TextureManager(TextureManager&) = delete;
 	TextureManager& operator=(TextureManager&) = delete;
 
 private: // メンバ変数
 	// テクスチャデータ
+	// ★永続Map：読み込んだテクスチャをアプリ終了まで保持し、
+	// ・読み込んだテクスチャをアプリケーション終了まで保持するキャッシュ
+	// ・同じパスの読み込み時は再ロードせず高速化
+	// ・テクスチャ削除は行わない(メモリ管理はアプリ全体の設計に依存)
 	std::unordered_map<std::string, TextureData> textureDatas_;
 
 	// DirectXBase

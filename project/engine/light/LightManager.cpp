@@ -3,22 +3,32 @@
 #include "CameraManager.h"
 #include "imgui.h"
 
-LightManager* LightManager::instance = nullptr;
+LightManager* LightManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 LightManager* LightManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new LightManager;
+	if (sInstance == nullptr) {
+		sInstance = new LightManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
 void LightManager::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	if (directionalLightBuffer_) {
+		directionalLightBuffer_.Reset();
+	}
+	if (pointLightBuffer_) {
+		pointLightBuffer_.Reset();
+	}
+	if (spotLightBuffer_) {
+		spotLightBuffer_.Reset();
+	}
+
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 初期化
@@ -37,14 +47,15 @@ void LightManager::Initialize()
 }
 
 // 描画処理
-void LightManager::Draw(Object3dBase* object3dBase)
+void LightManager::Draw(ID3D12GraphicsCommandList* cmd)
 {
-	// 平行光源用のCBufferの場所を設定
-	object3dBase->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_.Get()->GetGPUVirtualAddress());
-	// 点光源用のCBufferの場所を設定
-	object3dBase->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(5, pointLightResource_.Get()->GetGPUVirtualAddress());
-	// スポットライト用のCBufferの場所を設定
-	object3dBase->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(6, spotLightResource_.Get()->GetGPUVirtualAddress());
+	// RootParameter index (Engine 固定)
+	// 3 : Directional Light(平行光源用)のCBufferの場所を設定
+	cmd->SetGraphicsRootConstantBufferView(3, directionalLightBuffer_.Get()->GetGPUVirtualAddress());
+	// 5 : Point Light(点光源用)のCBufferの場所を設定
+	cmd->SetGraphicsRootConstantBufferView(5, pointLightBuffer_.Get()->GetGPUVirtualAddress());
+	// 6 : Spot Light(スポットライト用)のCBufferの場所を設定
+	cmd->SetGraphicsRootConstantBufferView(6, spotLightBuffer_.Get()->GetGPUVirtualAddress());
 }
 
 #ifdef _DEBUG
@@ -55,33 +66,33 @@ void LightManager::DebugDraw()
 	if (ImGui::CollapsingHeader("Light")) {
 		ImGui::PushID("Point");
 		if (ImGui::TreeNode("Point Light")) {
-			ImGui::ColorEdit4("Color", &pointLightData_->color.x);
-			ImGui::DragFloat3("Position", &pointLightData_->position.x, 0.1f);
-			ImGui::DragFloat("Intensity", &pointLightData_->intensity, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat("Radius", &pointLightData_->radius, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat("Decay", &pointLightData_->decay, 0.01f, 0.0f, 10.0f);
+			ImGui::ColorEdit4("Color", &pointLightMapped_->color.x);
+			ImGui::DragFloat3("Position", &pointLightMapped_->position.x, 0.1f);
+			ImGui::DragFloat("Intensity", &pointLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Radius", &pointLightMapped_->radius, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Decay", &pointLightMapped_->decay, 0.01f, 0.0f, 10.0f);
 			ImGui::TreePop();
 		}
 		ImGui::PopID();
 
 		ImGui::PushID("Directional");
 		if (ImGui::TreeNode("Directional Light")) {
-			ImGui::ColorEdit4("Color", &directionalLightData_->color.x);
-			ImGui::DragFloat3("Direction", &directionalLightData_->direction.x, 0.01f, -1.0f, 1.0f);
-			ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::ColorEdit4("Color", &directionalLightMapped_->color.x);
+			ImGui::DragFloat3("Direction", &directionalLightMapped_->direction.x, 0.01f, -1.0f, 1.0f);
+			ImGui::DragFloat("Intensity", &directionalLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
 			ImGui::TreePop();
 		}
 		ImGui::PopID();
 
 		ImGui::PushID("Spot");
 		if (ImGui::TreeNode("Spot Light")) {
-			ImGui::ColorEdit4("Color", &spotLightData_->color.x);
-			ImGui::DragFloat3("Position", &spotLightData_->position.x, 0.1f);
-			ImGui::DragFloat3("Direction", &spotLightData_->direction.x, 0.01f);
-			ImGui::DragFloat("Intensity", &spotLightData_->intensity, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat("Distance", &spotLightData_->distance, 0.01f, 0.0f, 100.0f);
-			ImGui::DragFloat("Decay", &spotLightData_->decay, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat("CosAngle", &spotLightData_->cosAngle, 0.001f, 0.0f, 1.0f);
+			ImGui::ColorEdit4("Color", &spotLightMapped_->color.x);
+			ImGui::DragFloat3("Position", &spotLightMapped_->position.x, 0.1f);
+			ImGui::DragFloat3("Direction", &spotLightMapped_->direction.x, 0.01f);
+			ImGui::DragFloat("Intensity", &spotLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Distance", &spotLightMapped_->distance, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Decay", &spotLightMapped_->decay, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("CosAngle", &spotLightMapped_->cosAngle, 0.001f, 0.0f, 1.0f);
 			ImGui::TreePop();
 		}
 		ImGui::PopID();
@@ -94,41 +105,43 @@ void LightManager::DebugDraw()
 void LightManager::CreateDirectionalLightData()
 {
 	// 平行光源用のリソースを作る
-	directionalLightResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::DirectionalLight));
-	// 書き込むためのアドレス取得
-	directionalLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
+	directionalLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::DirectionalLight));
+	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)
+	directionalLightBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightMapped_));
 	// デフォルト値はとりあえず以下のようにしておく
-	directionalLightData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	directionalLightData_->direction = { 0.0f, -1.0f, 0.0f };
-	directionalLightData_->intensity = 1.0f;
+	directionalLightMapped_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	directionalLightMapped_->direction = { 0.0f, -1.0f, 0.0f };
+	directionalLightMapped_->intensity = 1.0f;
 }
 
 // 点光源データ作成
 void LightManager::CreatePointLightData()
 {
 	// 点光源データ用のリソースを作る
-	pointLightResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::PointLight));
-	// 書き込むためのアドレス取得
-	pointLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
-	pointLightData_->color = { 1.0f, 1.0f, 1.0f,1.0f };
-	pointLightData_->position = { 0.0f, 0.0f, 0.0f };
-	pointLightData_->intensity = 1.0f;
-	pointLightData_->radius = 1.0f;
-	pointLightData_->decay = 1.0f;
+	pointLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::PointLight));
+	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)
+	pointLightBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&pointLightMapped_));
+	// デフォルト値はとりあえず以下のようにしておく
+	pointLightMapped_->color = { 1.0f, 1.0f, 1.0f,1.0f };
+	pointLightMapped_->position = { 0.0f, 0.0f, 0.0f };
+	pointLightMapped_->intensity = 1.0f;
+	pointLightMapped_->radius = 1.0f;
+	pointLightMapped_->decay = 1.0f;
 }
 
 // スポットライトデータ作成
 void LightManager::CreateSpotLightData()
 {
 	// スポットライトデータ用のリソースを作る
-	spotLightResource_ = dxBase_->CreateBufferResource(sizeof(MyBase::SpotLight));
-	// 書き込むためのアドレス取得
-	spotLightResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&spotLightData_));
-	spotLightData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	spotLightData_->position = { 0.0f, 0.0f, 0.0f };
-	spotLightData_->intensity = 1.0f;
-	spotLightData_->direction = { 0.0f, -1.0f, 0.0f };
-	spotLightData_->distance = 1.0f;
-	spotLightData_->decay = 1.0f;
-	spotLightData_->cosAngle = 0.125f;
+	spotLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::SpotLight));
+	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)
+	spotLightBuffer_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&spotLightMapped_));
+	// デフォルト値はとりあえず以下のようにしておく
+	spotLightMapped_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	spotLightMapped_->position = { 0.0f, 0.0f, 0.0f };
+	spotLightMapped_->intensity = 1.0f;
+	spotLightMapped_->direction = { 0.0f, -1.0f, 0.0f };
+	spotLightMapped_->distance = 1.0f;
+	spotLightMapped_->decay = 1.0f;
+	spotLightMapped_->cosAngle = 0.125f;
 }

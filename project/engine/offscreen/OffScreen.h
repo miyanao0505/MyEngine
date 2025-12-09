@@ -11,16 +11,31 @@ class DirectXBase;
 class OffScreen
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
-	// ルートシグネチャの作成
+
+	/// <summary>
+	/// ルートシグネチャの作成
+	/// </summary>
 	void CreateRootSignature();
-	// グラフィックスパイプラインの生成
+	
+	/// <summary>
+	/// グラフィックスパイプラインの生成
+	/// </summary>
 	void CreateGraphicsPipeline();
-	// 描画
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 public:	// getter
+	/// <summary>
+	/// DirectXBaseの取得
+	/// </summary>
+	/// <returns>DirectXBaseのインスタンス</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
 
 private:	// メンバ変数
@@ -32,4 +47,3 @@ private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
 };
-

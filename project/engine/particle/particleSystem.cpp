@@ -18,7 +18,7 @@ void ParticleSystem::Draw()
 }
 
 #ifdef _DEBUG
-void ParticleSystem::Imgui(std::string name)
+void ParticleSystem::ImGui(const std::string& name)
 {
 	std::string ID = name;
 	for (auto& [groupName, groupData] : particleGroupDatas_) {
@@ -51,7 +51,7 @@ void ParticleSystem::SetParticleGroupName(const std::string& groupName)
 }
 
 // パーティクルグループデータの追加
-void ParticleSystem::SetParticleGroupData(const std::string& groupName, ParticleGroupData& data)
+void ParticleSystem::SetParticleGroupData(const std::string& groupName, const ParticleGroupData& data)
 {
 	if (!particleGroupDatas_.empty()) {
 		// パーティクルグループデータのセット

@@ -48,7 +48,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 終了チェック
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>終了要求が来たらtrueを返す</returns>
 	virtual bool IsEndRequest() { return endRequest_; }
 
 	/// <summary>

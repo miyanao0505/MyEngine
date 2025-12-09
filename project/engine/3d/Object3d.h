@@ -6,7 +6,6 @@
 #include "MyBase.h"
 #include "WorldTransform.h"
 
-
 // 前方宣言
 class Object3dBase;
 
@@ -17,36 +16,123 @@ class Object3dBase;
 class Object3d
 {
 public:	// メンバ関数
-	// 初期化
-	void Initislize(const std::string& filePath);
-	// 更新処理
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="filePath">読み込むモデルファイルのパス</param>
+	void Initialize(const std::string& filePath);
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
-	// 描画処理
+	
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw();
 
 public:	// getter
+	/// <summary>
+	/// 使用しているモデルを取得
+	/// </summary>
+	/// <returns>Model クラスのポインタ</returns>
 	Model* GetModel() const { return model_; }
+	
+	/// <summary>
+	/// オブジェクトのスケール値を取得
+	/// </summary>
+	/// <returns>スケールベクトル (X, Y, Z) への参照</returns>
 	const MyBase::Vector3& GetScale() const { return worldTransform_->GetScale(); }
+	
+	/// <summary>
+	/// オブジェクトの回転値を取得
+	/// </summary>
+	/// <returns>回転ベクトル (X, Y, Z) への参照</returns>
 	const MyBase::Vector3& GetRotate() const { return worldTransform_->GetRotate(); }
+	
+	/// <summary>
+	/// オブジェクトの位置(平行移動)を取得
+	/// </summary>
+	/// <returns>位置ベクトル (X, Y, Z) への参照</returns>
 	const MyBase::Vector3& GetTranslate() const { return worldTransform_->GetTranslate(); }
+	
+	/// <summary>
+	/// ワールド変換クラスの取得
+	/// </summary>
+	/// <returns>WorldTransform クラス</returns>
 	WorldTransform* GetWorldTransform() const { return worldTransform_.get(); }
-	const int& GetEnableLighting() const { return model_->GetEnableLighting(); }
+	
+	/// <summary>
+	/// ライティングの有効状態を取得
+	/// </summary>
+	/// <returns>有効なら 1、無効なら 0</returns>
+	const int GetEnableLighting() const { return model_->GetEnableLighting(); }
 
 public:	// setter
+	/// <summary>
+	/// モデルを指定して設定
+	/// </summary>
+	/// <param name="model">設定するモデル</param>
 	void SetModel(Model* model) { model_ = model; }
+	
+	/// <summary>
+	/// モデルファイルを指定して読み込み・設定
+	/// </summary>
+	/// <param name="filePath">読み込むモデルファイルパス</param>
 	void SetModel(const std::string& filePath);
+	
+	/// <summary>
+	/// 描画に使用するテクスチャを変更
+	/// </summary>
+	/// <param name="filename">テクスチャファイル名</param>
 	void SetTexture(const std::string& filename);
+	
+	/// <summary>
+	/// スケール値を設定
+	/// </summary>
+	/// <param name="scale">スケールベクトル (X, Y, Z)</param>
 	void SetScale(const MyBase::Vector3& scale) { worldTransform_->SetScale(scale); }
+	
+	/// <summary>
+	/// 回転値を設定
+	/// </summary>
+	/// <param name="rotate">回転ベクトル (X, Y, Z)</param>
 	void SetRotate(const MyBase::Vector3& rotate) { worldTransform_->SetRotate(rotate); }
+	
+	/// <summary>
+	/// 座標値を設定
+	/// </summary>
+	/// <param name="translate">位置ベクトル (X, Y, Z)</param>
 	void SetTranslate(const MyBase::Vector3& translate) { worldTransform_->SetTranslate(translate); }
+	
+	/// <summary>
+	/// Transform を設定
+	/// </summary>
+	/// <param name="transform">新しい Transform</param>
 	void SetTransform(const MyBase::Transform& transform) { worldTransform_->SetScale(transform.scale); worldTransform_->SetRotate(transform.rotate); worldTransform_->SetTranslate(transform.translate); }
+	
+	/// <summary>
+	/// 外部の WorldTransform をコピーして設定
+	/// </summary>
+	/// <param name="worldTransform">設定するワールドトランスフォーム</param>
 	void SetWorldTransform(const WorldTransform& worldTransform) { *worldTransform_ = worldTransform; }
-	void SetEnableLighting(const bool& enableLighting) { model_->SetEnableLighting(enableLighting); }
+	
+	/// <summary>
+	/// ライティングの有効/無効を設定
+	/// </summary>
+	/// <param name="enableLighting">true でライティング有効、false で無効</param>
+	void SetEnableLighting(bool enableLighting) { model_->SetEnableLighting(enableLighting); }
 
 private:	// メンバ関数
-	// 座標変換行列データ作成
+	/// <summary>
+	/// 座標変換行列データを GPU に送信するためのリソースを生成
+	/// </summary>
 	void CreateTransformationMatrixData();
-	// カメラデータ作成
+	
+	/// <summary>
+	/// カメラ情報を GPU に送信するためのリソースを生成
+	/// </summary>
 	void CreateCameraData();
 
 private:	// メンバ変数

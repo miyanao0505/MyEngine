@@ -4,6 +4,8 @@
 #include <vector>
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Skydome.h"
+#include "ClearLogo.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
@@ -14,43 +16,55 @@
 class ClearScene : public BaseScene
 {
 public:	// メンバ関数
-	// 初期化
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
 
-	// 終了
+	/// <summary>
+	/// 終了
+	/// </summary>
 	void Finalize() override;
 
-	// 毎フレーム更新
+	/// <summary>
+	/// 毎フレーム更新
+	/// </summary>
 	void Update() override;
 
-	// 描画
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
 #ifdef _DEBUG
-	// デバッグ描画
+	/// <summary>
+	/// デバッグ更新
+	/// </summary>
+	void DebugUpdate();
+
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
 	void DebugDraw() override;
 #endif // _DEBUG
 
-	// jsonファイルの読み込み
-	void LoadJsonFile(const std::string& filePath) override;
+	/// <summary>
+	/// jsonファイルの読み込み
+	/// </summary>
+	/// <param name="filePath">ファイルパス</param>
+	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
-#pragma region シーン初期化
-	// テクスチャファイルパス
-	std::string clearTextureFilePath_ = "resources/texture/Clear.png";
-
 	// スプライト
-	std::unique_ptr<Sprite> clearSprite_ = nullptr;	// クリアスプライト
 
-	// モデルファイルパス
-	
+	// 天球
+	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// 3Dオブジェクト
-	
+	// ロゴ
+	std::unique_ptr<ClearLogo> clearLogo_ = nullptr;
 
 	// パーティクル
-	//std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
-#pragma endregion シーン初期化
 
 	bool isParticleActive_;
 	bool isAccelerationField_;
@@ -58,6 +72,5 @@ private:	// メンバ変数
 	MyBase::AABB area_{};
 
 	// デルタイム
-	const float kDeltaTime_ = 1.0f / 60.0f;
+	const float kDeltaTime = 1.0f / 60.0f;
 };
-

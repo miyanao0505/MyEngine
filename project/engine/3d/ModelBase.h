@@ -7,15 +7,19 @@
 class ModelBase
 {
 public:	// メンバ関数
-	// 初期化
-	void Initislize();
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
 
 public:	// getter
+	/// <summary>
+	/// DirectX の基盤クラスへの参照を取得
+	/// </summary>
+	/// <returns>DirectXBase インスタンスへのポインタ</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
 
 private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
-
 };
-

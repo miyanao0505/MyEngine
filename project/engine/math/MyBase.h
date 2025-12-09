@@ -110,7 +110,7 @@ public:
 		Vector2 pos;			// 位置
 		Vector2 size;			// サイズ
 		Vector2 velocity;		// 速度
-		Vector2 accleration;	// 加速度
+		Vector2 acceleration;	// 加速度
 		float mass;				// 質量
 		unsigned int color;		// 色
 	};
@@ -119,10 +119,10 @@ public:
 	/// 矩形の範囲
 	/// </summary>
 	struct Rect {
-		float Top;				// 上辺 Y座標
-		float Bottom;			// 下辺 Y座標
-		float Left;				// 左辺 X座標
-		float Right;			// 右辺 X座標
+		float top;				// 上辺 Y座標
+		float bottom;			// 下辺 Y座標
+		float left;				// 左辺 X座標
+		float right;			// 右辺 X座標
 	};
 
 	/// <summary>
@@ -233,6 +233,9 @@ public:
 	/// <summary>
 	/// Transform
 	/// </summary>
+	/// <param name="scale">拡縮</param>
+	/// <param name="rotate">回転</param>
+	/// <param name="translate">平行移動</param>
 	struct Transform {
 		Vector3 scale;
 		Vector3 rotate;
@@ -419,4 +422,3 @@ public:
 		Vector3 rotation;		// 回転角
 	};
 };
-

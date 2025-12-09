@@ -1,17 +1,17 @@
 #include "SceneTransition.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
+#include <algorithm>
 
-void SceneTransition::Start(std::function<void()> onChange)
+void SceneTransition::Start(FinishCallback onSwitch)
 {
-	onChange_ = onChange;
-	alpha_ = 0.0f;
-	state_ = State::FadeOut;
-	isActive_ = true;
+	phase_ = Phase::kFadeIn;
+	timer_ = 0.0f;
+	onSwitch_ = std::move(onSwitch);
 
 	// フェード用スプライトを作成
 	fadeSprite_ = std::make_unique<Sprite>();
-	fadeSprite_->Initialize(blackbackFilePath_);
+	fadeSprite_->Initialize("blackback.png");
 	fadeSprite_->SetPosition({ 0.0f, 0.0f });
 	fadeSprite_->SetSize({ 1280.0f, 720.0f }); // 画面全体を覆うサイズにする
 	fadeSprite_->SetAnchorPoint({ 0.0f, 0.0f }); // 左上を基準点にする
@@ -20,46 +20,38 @@ void SceneTransition::Start(std::function<void()> onChange)
 
 void SceneTransition::Update()
 {
-	switch (state_)
-	{
-	case State::FadeOut:
-		alpha_ += speed_;
-		fadeSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha_ });
-		fadeSprite_->Update();
-		if (alpha_ >= 1.0f) {
-			alpha_ = 1.0f;
-			state_ = State::ChangeScene;
-		}
-		break;
+	if (phase_ == Phase::kNone) return;
 
-	case State::ChangeScene:
-		if (onChange_) {
-			onChange_();
-			onChange_ = nullptr;
-		}
-		state_ = State::FadeIn;
-		fadeSprite_->Update();
-		break;
+	timer_ += 1.0f / 60.0f; // 仮で60FPS固定
 
-	case State::FadeIn:
-		alpha_ -= speed_;
-		fadeSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha_ });
-		fadeSprite_->Update();
-		if (alpha_ <= 0.0f) {
-			alpha_ = 0.0f;
-			state_ = State::None;
-			isActive_ = false;
-		}
-		break;
+	if (timer_ >= kFadeTime) {
+		timer_ = 0.0f;
 
-	default:
-		break;
+		if (phase_ == Phase::kFadeIn) {
+			// ▼ シーン差し替えタイミング
+			if (onSwitch_) {
+				onSwitch_();
+			}
+			phase_ = Phase::kFadeOut;
+		}
+		else if (phase_ == Phase::kFadeOut) {
+			phase_ = Phase::kNone;
+			onSwitch_ = nullptr;
+		}
 	}
+
+	// フェードの進行に応じてアルファ値を変更
+	float alpha = timer_ / kFadeTime;
+	if (phase_ == Phase::kFadeOut) {
+		alpha = 1.0f - alpha; // フェードアウト時は逆転
+	}
+	fadeSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+	fadeSprite_->Update();
 }
 
 void SceneTransition::Draw()
 {
-#pragma region スプライト
+	if (phase_ == Phase::kNone) return;
 
 	// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 	TextureManager::GetInstance()->SetCommonScreen();
@@ -67,6 +59,4 @@ void SceneTransition::Draw()
 	// 全てのSprite個々の描画
 	// 画面全体に黒い四角形を描画
 	fadeSprite_->Draw();
-
-#pragma endregion スプライト
 }

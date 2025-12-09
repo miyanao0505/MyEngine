@@ -13,14 +13,17 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
 	/// <summary>
 	/// 終了
 	/// </summary>
 	void Finalize();
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -44,7 +47,5 @@ private:	// メンバ変数
 
 	MyBase::Vector3 moveVector_{ 0.0f, 0.0f, 0.0f };
 	float moveDistance_ = 0.0f;
-	const float moveSpeed_ = 0.05f;
-
+	const float kMoveSpeed = 0.05f;
 };
-

@@ -109,8 +109,6 @@ void SpriteBase::CreateGraphicsPipeline()
 
 	// RasiterzerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	// 裏面(時計回り)を表示しない
-	//rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	// カリングしない(裏面も表示する)
 	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	// 三角形の中を塗りつぶす
@@ -121,6 +119,7 @@ void SpriteBase::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;													// InputLayout
 	graphicsPipelineStateDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };	// VertexShader
 	graphicsPipelineStateDesc.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };	// PixelShader
+	// 現在のブレンドモードに応じて BlendState を設定
 	graphicsPipelineStateDesc.BlendState = (this->*spFuncTable[static_cast<size_t>(blendMode_)])();				// BlendState											// BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;													// RasterizerState
 	// 書き込むRTVの情報
@@ -161,8 +160,11 @@ void SpriteBase::SetCommonScreen()
 	dxBase_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+// ブレンドモードの設定
 void SpriteBase::SetBlendMode(BlendMode blendMode)
 {
+	// ブレンドモードを変更した場合は PSO を再生成する必要がある
+	// (PSO は不変オブジェクトなので設定変更は再構築で対応)
 	blendMode_ = blendMode;
 	CreateGraphicsPipeline();
 }

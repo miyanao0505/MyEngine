@@ -1,15 +1,15 @@
 #include "AudioManager.h"
 #include <cassert>
 
-AudioManager* AudioManager::instance = nullptr;
+AudioManager* AudioManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 AudioManager* AudioManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new AudioManager;
+	if (sInstance == nullptr) {
+		sInstance = new AudioManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 初期化
@@ -32,18 +32,19 @@ void AudioManager::Finalize()
 	// xAudio2の解放
 	xAudio2_.Reset();
 	// 音声データの解放
-	soundDatas_.clear();
-	playSoundDatas_.clear();
+	soundDataMap_.clear();
+	playingVoices_.clear();
 
-	delete instance;
-	instance = nullptr;
+	// シングルトンインスタンス削除
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 音声データ(Wave)の読み込み
 void AudioManager::LoadAudioWave(const std::string& filename)
 {
 	// 読み込み済みなら早期リターン
-	if (soundDatas_.contains(filename)) {
+	if (soundDataMap_.contains(filename)) {
 		return;
 	}
 	
@@ -103,9 +104,9 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 	file.close();
 
 	/// 4. 読み込んだ音声データの参照を取得する
-	SoundData& soundData = soundDatas_[filename];
+	SoundData& soundData = soundDataMap_[filename];
 	soundData.wfex = format.fmt;
-	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
+	soundData.buffer = reinterpret_cast<BYTE*>(pBuffer);
 	soundData.bufferSize = data.size;
 }
 
@@ -113,7 +114,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 void AudioManager::PlayWave(const std::string& filename, const float& volume, const bool& loop)
 {
 	HRESULT hr;
-	SoundData& soundData = soundDatas_.at(filename);
+	SoundData& soundData = soundDataMap_.at(filename);
 
 	// 波形フォーマットを元にSoundVoiceの生成
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
@@ -122,14 +123,14 @@ void AudioManager::PlayWave(const std::string& filename, const float& volume, co
 
 	// 再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
-	buf.pAudioData = soundData.pBuffer;
+	buf.pAudioData = soundData.buffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 
 	// ループの設定
 	buf.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 
-	// 波形データの再生
+	// 波形データ送信と再生開始
 	hr = pSourceVoice->SubmitSourceBuffer(&buf);
 	hr = pSourceVoice->Start();
 	hr = pSourceVoice->SetVolume(volume);
@@ -137,41 +138,43 @@ void AudioManager::PlayWave(const std::string& filename, const float& volume, co
 	// ループするなら再生中リストにデータを格納
 	if (loop)
 	{
-		if (playSoundDatas_.contains(filename)) {
+		// すでに再生中なら重複登録しない
+		if (playingVoices_.contains(filename)) {
 			return;
 		}
-		playSoundDatas_[filename] = pSourceVoice;
+		playingVoices_[filename] = pSourceVoice;
 	}
 }
 
 // 音声停止(Wave)
 void AudioManager::StopWave(const std::string& filename)
 {
-	IXAudio2SourceVoice* pSourceVoice = playSoundDatas_[filename];
+	IXAudio2SourceVoice* sourceVoice = playingVoices_[filename];
 
 	// 波形データの停止
-	pSourceVoice->Stop();
+	sourceVoice->Stop();
 
 	// 再生中リストから削除
-	playSoundDatas_.erase(filename);
+	playingVoices_.erase(filename);
 }
 
 // 音声データの解放
-void AudioManager::UnLoadAudio(const std::string& filename)
+void AudioManager::UnloadAudio(const std::string& filename)
 {
 	// 見つからなかったら早期リターン
-	if (!soundDatas_.contains(filename)) {
+	if (!soundDataMap_.contains(filename)) {
 		return;
 	}
 
-	SoundData& soundData = soundDatas_.at(filename);
+	SoundData& soundData = soundDataMap_.at(filename);
 
 	// バッファのメモリを解放
-	delete[] soundData.pBuffer;
+	delete[] soundData.buffer;
 
-	soundData.pBuffer = 0;
+	// データを初期化して無効化
+	soundData.buffer = 0;
 	soundData.bufferSize = 0;
 	soundData.wfex = {};
 
-	soundDatas_.erase(filename);
+	soundDataMap_.erase(filename);
 }

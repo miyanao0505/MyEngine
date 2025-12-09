@@ -16,7 +16,7 @@ void TitleScene::Initialize()
 	BaseScene::Initialize();
 
 #pragma region カメラ
-	CameraManager::GetInstance()->FindCamera("default");
+	CameraManager::GetInstance()->SetCamera("default");
 	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
 	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
 #pragma endregion カメラ
@@ -43,7 +43,7 @@ void TitleScene::Initialize()
 #pragma region Skydome
 	// Skydome
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
 #pragma endregion Skybox
 
 #pragma region 3Dオブジェクト
@@ -108,8 +108,8 @@ void TitleScene::Update()
 #endif // _DEBUG
 
 	// ゲームシーンへの遷移
-	if (input_->TriggerKey(DIK_RETURN)) {
-		SceneManager::GetInstance()->ChangeScene("GAME");
+	if (input_->IsKeyTriggered(DIK_RETURN)) {
+		SceneManager::GetInstance()->ChangeScene(SceneName::Game);
 		return;
 	}
 
@@ -143,7 +143,6 @@ void TitleScene::Draw()
 #pragma region パーティクル
 
 	// パーティクルの描画準備。パーティクルの描画に共通グラフィックスコマンドを積む
-	//ParticleManager::GetInstance()->Draw();
 
 #pragma endregion パーティクル
 
@@ -184,13 +183,13 @@ void TitleScene::DebugDraw()
 #endif // _DEBUG
 
 // jsonファイルの読み込み
-void TitleScene::LoadJsonFile(const std::string& filePath)
+void TitleScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
 {
 	// レベルデータの読み込み
-	LevelData* levelData = jsonLoader_->LoadFile(filePath);
+	std::unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 
 	// 3Dオブジェクトの読み込み
-	for (const ObjectData& objectData : levelData->objects) {
+	for (const JsonObjectData& objectData : levelData->objects) {
 		objectData;
 	}
 }

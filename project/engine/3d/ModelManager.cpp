@@ -1,35 +1,37 @@
 #include "ModelManager.h"
 
-using namespace std;
+using std::string;
+using std::unique_ptr;
+using std::make_unique;
 
-ModelManager* ModelManager::instance = nullptr;
+ModelManager* ModelManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 ModelManager* ModelManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new ModelManager;
+	if (sInstance == nullptr) {
+		sInstance = new ModelManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
 void ModelManager::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 初期化
 void ModelManager::Initialize()
 {
-	// モデル共通部の初期化
+	// ModelBaseの生成と初期化
 	modelBase_ = make_unique<ModelBase>();
-	modelBase_->Initislize();
+	modelBase_->Initialize();
 
-	// 3dオブジェクト共通部の初期化
+	// Object3dBaseの生成と初期化
 	object3dBase_ = make_unique<Object3dBase>();
-	object3dBase_->Initislize();
+	object3dBase_->Initialize();
 }
 
 /// モデルファイルの読み込み
@@ -65,9 +67,12 @@ Model* ModelManager::FindModel(const string& filePath)
 	return nullptr;
 }
 
-
+// モデル描画のブレンドモードを設定
 void ModelManager::SetBlendMode(Object3dBase::BlendMode blendMode)
 {
+	// Object3dBase にブレンドモードを設定
 	object3dBase_->SetBlendMode(blendMode);
+
+	// グラフィックスパイプラインの再作成
 	object3dBase_->CreateGraphicsPipeline();
 }
