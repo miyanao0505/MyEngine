@@ -8,11 +8,6 @@
 
 using namespace std;
 
-Player::Player()
-{
-	
-}
-
 /// デストラクタ
 Player::~Player()
 {

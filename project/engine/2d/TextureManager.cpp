@@ -49,8 +49,11 @@ void TextureManager::LoadTexture(const string& filePath)
 	// テクスチャ枚数上限チェック
 	assert(srvManager_->IsSecure());
 
+	// フルパス作成
+	string fullPath = "resources/texture/" + filePath;
+
 	// Textureを読んで転送する
-	ScratchImage mipImages = dxBase_->LoadTexture(filePath);
+	ScratchImage mipImages = dxBase_->LoadTexture(fullPath);
 
 	// 追加したテクスチャデータの参照を取得する
 	TextureData& textureData = textureDatas_[filePath];

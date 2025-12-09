@@ -45,10 +45,10 @@ public:	// メンバ関数
 
 private:	// メンバ変数
 	// テクスチャファイルパス
-	std::string spriteTexturePath_ = "resources/texture/uvChecker.png";
+
 
 	// スプライト
-	std::unique_ptr<Sprite> sprite_;
+
 
 	// モデルファイルパス
 	

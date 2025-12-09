@@ -14,7 +14,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Player();
+	Player() = default;
 
 	/// <summary>
 	/// デストラクタ

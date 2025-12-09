@@ -43,7 +43,7 @@ void TitleScene::Initialize()
 #pragma region Skydome
 	// Skydome
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
 #pragma endregion Skybox
 
 #pragma region 3Dオブジェクト

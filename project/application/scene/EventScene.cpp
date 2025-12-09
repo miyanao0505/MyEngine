@@ -14,12 +14,8 @@ void EventScene::Initialize()
 
 #pragma region シーン初期化
 	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture(spriteTexturePath_);
 
 	// スプライト
-	sprite_ = std::make_unique<Sprite>();
-	sprite_->Initialize(spriteTexturePath_);
-	sprite_->SetPosition({ 0.0f, 0.0f });	// スプライトの位置を設定
 
 	// .objファイルからモデルを読み込む
 	ModelManager::GetInstance()->LoadModel("debug/cube", "cube.obj");
@@ -47,7 +43,7 @@ void EventScene::Finalize()
 	
 
 	// スプライト
-	sprite_.reset();
+
 }
 
 // 毎フレーム更新
@@ -89,7 +85,7 @@ void EventScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
-	sprite_->Update();
+
 }
 
 // 描画
@@ -117,7 +113,7 @@ void EventScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
-	sprite_->Draw();
+	
 
 #pragma endregion スプライト
 

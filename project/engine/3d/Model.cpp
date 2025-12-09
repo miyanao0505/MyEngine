@@ -26,7 +26,6 @@ void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, c
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 	// 読み込んだテクスチャの番号を取得
 	modelData_.material.textureIndex = TextureManager::GetInstance()->GetSrvIndex(modelData_.material.textureFilePath);
-
 }
 
 // 描画処理
@@ -118,7 +117,7 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modelData_.material.textureFilePath = std::string("resources/texture/") + textureFilePath.C_Str();
+			modelData_.material.textureFilePath = textureFilePath.C_Str();
 		}
 	}
 	// Scene全体の階層構造を作る

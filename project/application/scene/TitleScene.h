@@ -47,12 +47,6 @@ public:	// メンバ関数
 	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
-	// テクスチャファイルパス
-	std::string skydomeFilePath_ = "resources/texture/skyback.png";
-
-	// テクスチャファイルパス
-	const std::string blackbackFilePath_ = "resources/texture/blackback.png";
-
 	// フェード用スプライト
 	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
 

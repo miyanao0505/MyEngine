@@ -233,6 +233,9 @@ public:
 	/// <summary>
 	/// Transform
 	/// </summary>
+	/// <param name="scale">拡縮</param>
+	/// <param name="rotate">回転</param>
+	/// <param name="translate">平行移動</param>
 	struct Transform {
 		Vector3 scale;
 		Vector3 rotate;
@@ -419,4 +422,3 @@ public:
 		Vector3 rotation;		// 回転角
 	};
 };
-

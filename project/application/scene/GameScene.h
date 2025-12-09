@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Player.h"
 #include "FollowCamera.h"
+#include "RailCamera.h"
 #include "Enemy.h"
 #include "Skydome.h"
 #include "StartSequence.h"
@@ -57,9 +58,6 @@ public:	// メンバ関数
 	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
-	// テクスチャファイルパス
-	std::string skydomeFilePath_ = "resources/texture/skyback.png";
-
 	// スプライト
 
 	
@@ -73,6 +71,7 @@ private:	// メンバ変数
 
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
+	std::unique_ptr<RailCamera> railCamera_ = nullptr;
 	
 	// スポーンポイント
 	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;

@@ -40,7 +40,7 @@ void GameOverScene::Initialize()
 #pragma region 3Dオブジェクト
 	// 3Dオブジェクト
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
+	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
 
 	// ロゴ
 	gameOverLogo_ = std::make_unique<GameOverLogo>();

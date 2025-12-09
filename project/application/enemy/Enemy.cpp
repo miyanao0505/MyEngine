@@ -5,6 +5,7 @@
 #include "CollisionConfig.h"
 #include "Player.h"
 #include <imgui.h>
+#include <cmath>
 
 using namespace std;
 
@@ -16,16 +17,13 @@ Enemy::~Enemy()
 // 初期化
 void Enemy::Initialize()
 {
-	// テクスチャの読み込み
-	TextureManager::GetInstance()->LoadTexture("resources/texture/uvChecker.png");
-
 	// ベースオブジェクトの初期化
-	BaseObject::Initialize("debug/sphere", "sphere.obj");
+	BaseObject::Initialize("enemy", "enemy.obj");
 	
 	// 3Dオブジェクトの初期化
-	object_->SetTexture("resources/texture/uvChecker.png");
-	object_->SetTranslate({ 0.0f, 0.0f, 15.0f });	// 初期位置
+	object_->SetTranslate({ 0.0f, 0.0f, 50.0f });	// 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
+	object_->SetRotate({ 0.0f, float(M_PI), 0.0f});	// 初期回転
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
@@ -37,7 +35,7 @@ void Enemy::Initialize()
 	
 	// パーティクルエミッターの初期化
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
-	particleEmitter_->Initialize("hitEffectEnemy", "resources/texture/circle.png", ParticleType::kEllipse);
+	particleEmitter_->Initialize("hitEffectEnemy", "circle.png", ParticleType::kEllipse);
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffect = {
@@ -52,7 +50,7 @@ void Enemy::Initialize()
 		.isEmitUpdate = true
 	};
 	particleEmitter_->SetParticleGroupData("hitEffectEnemy", hitEffect);
-	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "resources/texture/gradationLine.png", ParticleType::kRing);
+	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "gradationLine.png", ParticleType::kRing);
 	particleEmitter_->SetPosition(object_->GetTranslate());
 	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
 	ParticleSystem::ParticleGroupData hitEffectRing = {
@@ -110,8 +108,7 @@ void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
 void Enemy::DebugDraw()
 {
 	ImGui::PushID(this);
-	if (ImGui::CollapsingHeader("Enemy"))
-	{
+	if (ImGui::CollapsingHeader("Enemy")) {
 		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 		// 移動

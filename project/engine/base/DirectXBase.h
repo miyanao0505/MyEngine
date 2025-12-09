@@ -266,11 +266,11 @@ private:	// メンバ関数
 	void UpdateFixFPS();
 
 private:	// シングルトンインスタンス
-	static DirectXBase* instance;
+	static DirectXBase* sInstance;
 
 	DirectXBase() = default;
 	~DirectXBase() = default;
-	DirectXBase(DirectXBase&) = default;
+	DirectXBase(DirectXBase&) = delete;
 	DirectXBase& operator=(DirectXBase&) = delete;
 
 private:	// メンバ変数
@@ -333,6 +333,4 @@ private:	// メンバ変数
 
 	// 記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
-
 };
-

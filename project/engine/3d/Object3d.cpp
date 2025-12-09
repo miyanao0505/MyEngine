@@ -102,6 +102,9 @@ void Object3d::SetModel(const std::string& filePath)
 // 描画に使用するテクスチャを変更
 void Object3d::SetTexture(const std::string& filename)
 {
+	// テクスチャを読み込む
+	TextureManager::GetInstance()->LoadTexture(filename);
+	// 使用するテクスチャ名を保存
 	textureFileName_ = filename;
 }
 

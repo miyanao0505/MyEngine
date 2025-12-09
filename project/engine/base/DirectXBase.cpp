@@ -15,15 +15,15 @@ using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
 
-DirectXBase* DirectXBase::instance = nullptr;
+DirectXBase* DirectXBase::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 DirectXBase* DirectXBase::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new DirectXBase();
+	if (sInstance == nullptr) {
+		sInstance = new DirectXBase();
 	}
-	return instance;
+	return sInstance;
 }
 
 // 初期化
@@ -64,8 +64,8 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 
 void DirectXBase::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 描画前処理(RenderTexture)
@@ -413,18 +413,28 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 	}
 	assert(SUCCEEDED(hr));
 
-	//ミニマップの作成
-	ScratchImage mipImages{};
-	// 圧縮フォーマットかどうかを調べる
-	if (IsCompressed(image.GetMetadata().format)) {
-		mipImages = std::move(image);	// 圧縮フォーマットならそのまま使うのでmoveする
-	} else {
-		hr = GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), TEX_FILTER_SRGB, 4, mipImages);
-	}
-	assert(SUCCEEDED(hr));
+	const TexMetadata& metadata = image.GetMetadata();
 
-	// ミニマップ付きのデータを返す
-	return mipImages;
+	// デフォルトは元画像
+	ScratchImage resultImage = std::move(image);
+
+	//ミニマップの作成
+	// 非圧縮 & ミップ生成可能なサイズのみ
+	if (!IsCompressed(metadata.format) &&
+		metadata.width > 1 &&
+		metadata.height > 1) {
+		ScratchImage mipImages{};
+		hr = GenerateMipMaps(resultImage.GetImages(), resultImage.GetImageCount(), resultImage.GetMetadata(), TEX_FILTER_SRGB, 0, mipImages);
+
+		if (SUCCEEDED(hr) && mipImages.GetImageCount() > 0) {
+			resultImage = std::move(mipImages);
+		}
+	}
+
+	assert(resultImage.GetImageCount() > 0);
+
+	// データを返す
+	return resultImage;
 }
 
 ///
@@ -655,8 +665,7 @@ void DirectXBase::InitializeRenderTargetView()
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// 2dテクスチャとして書き込む
 	
 	// 要素の2つ分
-	for (uint32_t i = 0; i < 2; ++i)
-	{
+	for (uint32_t i = 0; i < 2; ++i) {
 		// RTVハンドルを取得
 		rtvHandles_[i].ptr = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart().ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * i;
 		// レンダーターゲットビューの生成

@@ -33,10 +33,8 @@ void BaseObject::DebugDraw()
 {
 	ImGui::PushID(this);
 
-	if (ImGui::CollapsingHeader("object"))
-	{
-		if (ImGui::TreeNode("Transform"))
-		{
+	if (ImGui::CollapsingHeader("object")) {
+		if (ImGui::TreeNode("Transform")) {
 			// 現在の変換情報を取得
 			MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
@@ -53,8 +51,7 @@ void BaseObject::DebugDraw()
 			ImGui::TreePop();
 		}
 		//ImGui::Text("\n");
-		if (ImGui::TreeNode("Material"))
-		{
+		if (ImGui::TreeNode("Material")) {
 			// 現在のマテリアル情報を取得
 			MyBase::ModelMaterial* materialData = object_->GetModel()->GetModelMaterial();
 

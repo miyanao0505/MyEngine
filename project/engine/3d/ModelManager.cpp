@@ -4,22 +4,22 @@ using std::string;
 using std::unique_ptr;
 using std::make_unique;
 
-ModelManager* ModelManager::instance = nullptr;
+ModelManager* ModelManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
 ModelManager* ModelManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new ModelManager;
+	if (sInstance == nullptr) {
+		sInstance = new ModelManager;
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
 void ModelManager::Finalize()
 {
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 初期化

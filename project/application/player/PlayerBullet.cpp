@@ -13,7 +13,7 @@ void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vec
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("debug/sphere", "sphere.obj");
 
-	object_->SetTexture("resources/texture/playerBullet.png");
+	object_->SetTexture("playerBullet.png");
 	object_->SetTranslate(position);
 	object_->SetScale({ 0.5f, 0.5f, 0.5f });
 

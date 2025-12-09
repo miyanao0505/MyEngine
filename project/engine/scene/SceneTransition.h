@@ -51,9 +51,6 @@ private:	// メンバ変数
 
 	FinishCallback onSwitch_ = nullptr; // シーン切替タイミングのコールバック
 
-	// テクスチャファイルパス
-	const std::string blackbackFilePath_ = "resources/texture/blackback.png";
-
 	// フェード用スプライト
 	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
 };

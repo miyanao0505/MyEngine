@@ -11,7 +11,7 @@ void SceneTransition::Start(FinishCallback onSwitch)
 
 	// フェード用スプライトを作成
 	fadeSprite_ = std::make_unique<Sprite>();
-	fadeSprite_->Initialize(blackbackFilePath_);
+	fadeSprite_->Initialize("blackback.png");
 	fadeSprite_->SetPosition({ 0.0f, 0.0f });
 	fadeSprite_->SetSize({ 1280.0f, 720.0f }); // 画面全体を覆うサイズにする
 	fadeSprite_->SetAnchorPoint({ 0.0f, 0.0f }); // 左上を基準点にする

@@ -113,5 +113,4 @@ protected:	// メンバ変数
 
 	std::string name_;								// オブジェクト名
 	bool isDisabled_ = false;						// 無効化フラグ
-
 };

@@ -40,7 +40,7 @@ void GameScene::Initialize()
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(skydomeFilePath_, { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
 	
 #pragma endregion 3Dオブジェクト
 
@@ -49,6 +49,13 @@ void GameScene::Initialize()
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Initialize();
 	followCamera_->SetPlayer(player_.get());
+	// レールカメラ
+	railCamera_ = std::make_unique<RailCamera>();
+	railCamera_->Initialize({
+		{ 0.0f, 0.0f, -50.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 50.0f },
+		});
 #pragma endregion カメラ
 
 #pragma region シーケンス
@@ -83,6 +90,7 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
+	railCamera_->Update(kDeltaTime);
 	followCamera_->Update(kDeltaTime);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update();
@@ -101,6 +109,7 @@ void GameScene::Finalize()
 		spawnPoint.reset();
 	}
 	spawnPoints_.clear();
+	railCamera_.reset();
 	followCamera_.reset();
 
 	// 3Dオブジェクト
@@ -149,6 +158,9 @@ void GameScene::Update()
 	// フォローカメラの更新
 	followCamera_->Update(kDeltaTime);
 
+	// レールカメラの更新
+	railCamera_->Update(kDeltaTime);
+
 	// 敵の更新処理
 	enemy_->Update();
 
@@ -191,7 +203,7 @@ void GameScene::Draw()
 	if(!startSequence_->IsFinished()){
 		startSequence_->Draw();
 	}
-	
+
 	// 天球の描画
 	skydome_->Draw();
 
@@ -272,6 +284,8 @@ void GameScene::DebugDraw()
 	CameraManager::GetInstance()->DebugDraw();
 	// FollowCamera
 	followCamera_->DebugDraw();
+	// RailCamera
+	railCamera_->DebugDraw();
 
 	// Lighting
 	LightManager::GetInstance()->DebugDraw();
