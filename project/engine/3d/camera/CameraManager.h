@@ -116,4 +116,3 @@ private:	// メンバ変数
 	// シェイク状態
 	ShakeState shakeState_;
 };
-

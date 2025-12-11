@@ -78,4 +78,3 @@ private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
 };
-

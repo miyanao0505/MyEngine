@@ -42,7 +42,7 @@ public:	// getter
 	/// スプライトの現在の位置(2D座標)を取得
 	/// </summary>
 	/// <returns>スプライトの位置を表す MyBase::Vector2 への参照</returns>
-	const MyBase::Vector2& GetPosition() const { return position_; }
+	const MyBase::Vector2 GetPosition() const { return position_; }
 
 	/// <summary>
 	/// スプライトの現在の回転角度を取得
@@ -54,56 +54,56 @@ public:	// getter
 	/// スプライトに適用されているカラー情報を取得
 	/// </summary>
 	/// <returns>RGBA のカラー値を表す MyBase::Vector4 への参照</returns>
-	const MyBase::Vector4& GetColor() const { return materialData_->color; }
+	const MyBase::Vector4 GetColor() const { return materialData_->color; }
 
 	/// <summary>
 	/// スプライトの現在の表示サイズを取得
 	/// </summary>
 	/// <returns>スプライトの幅と高さを表す MyBase::Vector2 への参照</returns>
-	const MyBase::Vector2& GetSize() const { return size_; }
+	const MyBase::Vector2 GetSize() const { return size_; }
 
 	/// <summary>
 	/// スプライトのアンカーポイント(基準座標)を取得
 	/// </summary>
 	/// <returns>アンカーポイントを表す MyBase::Vector2 への参照。(0,0) が左上、(1,1) が右下を示します</returns>
-	const MyBase::Vector2& GetAnchorPoint() const { return anchorPoint_; }
+	const MyBase::Vector2 GetAnchorPoint() const { return anchorPoint_; }
 
 	/// <summary>
 	/// スプライトが左右反転されているかを取得
 	/// </summary>
 	/// <returns>左右反転フラグの参照。true の場合、スプライトは左右に反転されています</returns>
-	const bool& GetIsFlipX() const { return isFlipX_; }
+	const bool GetIsFlipX() const { return isFlipX_; }
 
 	/// <summary>
 	/// スプライトが上下反転されているかを取得
 	/// </summary>
 	/// <returns>上下反転フラグの参照。true の場合、スプライトは上下に反転されています</returns>
-	const bool& GetIsFlipY() const { return isFlipY_; }
+	const bool GetIsFlipY() const { return isFlipY_; }
 
 	/// <summary>
 	/// スプライトで使用するテクスチャの描画範囲における、左上座標を取得
 	/// </summary>
 	/// <returns>テクスチャ範囲の左上位置を示す MyBase::Vector2 への参照。テクスチャのピクセル座標で指定されます。</returns>
-	const MyBase::Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
+	const MyBase::Vector2 GetTextureLeftTop() const { return textureLeftTop_; }
 
 	/// <summary>
 	/// スプライトで使用するテクスチャの切り出しサイズを取得
 	/// </summary>
 	/// <returns>テクスチャ範囲の幅と高さ(ピクセル単位)を表す MyBase::Vector2 への参照</returns>
-	const MyBase::Vector2& GetTextureSize() const { return textureSize_; }
+	const MyBase::Vector2 GetTextureSize() const { return textureSize_; }
 
 	/// <summary>
 	/// スプライトが持つ本来のサイズ(テクスチャの解像度に基づく値)を取得
 	/// </summary>
 	/// <returns>スプライトの元となるテクスチャサイズを表す MyBase::Vector2 への参照</returns>
-	const MyBase::Vector2& GetSpriteSize() const { return spriteSize_; }
+	const MyBase::Vector2 GetSpriteSize() const { return spriteSize_; }
 
 public:	// setter
 	/// <summary>
 	/// スプライトの表示位置を設定
 	/// </summary>
 	/// <param name="position">スプライトに適用する新しい位置(2D座標)</param>
-	void SetPosition(const MyBase::Vector2& position) { position_ = position; }
+	void SetPosition(const MyBase::Vector2 position) { position_ = position; }
 
 	/// <summary>
 	/// スプライトの回転角度を設定
@@ -115,13 +115,13 @@ public:	// setter
 	/// スプライトに適用するカラー値(RGBA)を設定
 	/// </summary>
 	/// <param name="color">新しく適用するカラー値。MyBase::Vector4 で RGBA を指定します</param>
-	void SetColor(const MyBase::Vector4& color) { materialData_->color = color; }
+	void SetColor(const MyBase::Vector4 color) { materialData_->color = color; }
 
 	/// <summary>
 	/// スプライトの表示サイズ(幅・高さ)を設定
 	/// </summary>
 	/// <param name="size">新しく適用するサイズ。MyBase::Vector2 で幅と高さを指定します</param>
-	void SetSize(const MyBase::Vector2& size) { size_ = size; }
+	void SetSize(const MyBase::Vector2 size) { size_ = size; }
 
 	/// <summary>
 	/// スプライトに使用するテクスチャを変更
@@ -133,7 +133,7 @@ public:	// setter
 	/// スプライトのアンカーポイント(基準位置)を設定
 	/// </summary>
 	/// <param name="anchorPoint">新しく適用するアンカーポイント。(0,0) が左上、(1,1) が右下を示します</param>
-	void SetAnchorPoint(const MyBase::Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
+	void SetAnchorPoint(const MyBase::Vector2 anchorPoint) { anchorPoint_ = anchorPoint; }
 	
 	/// <summary>
 	/// スプライトの左右反転状態を設定
@@ -151,13 +151,13 @@ public:	// setter
 	/// スプライトで使用するテクスチャの描画範囲における左上座標を設定
 	/// </summary>
 	/// <param name="textureLeftTop">新しく設定するテクスチャ範囲の左上座標(ピクセル単位)</param>
-	void SetTextureLeftTop(const MyBase::Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; }
+	void SetTextureLeftTop(const MyBase::Vector2 textureLeftTop) { textureLeftTop_ = textureLeftTop; }
 
 	/// <summary>
 	/// スプライトで使用するテクスチャの切り出しサイズを設定
 	/// </summary>
 	/// <param name="textureSize">新しく設定するテクスチャ範囲の幅と高さ(ピクセル単位)</param>
-	void SetTextureSize(const MyBase::Vector2& textureSize) { textureSize_ = textureSize; }				// 切り出しサイズ
+	void SetTextureSize(const MyBase::Vector2 textureSize) { textureSize_ = textureSize; }				// 切り出しサイズ
 
 private:	// メンバ関数
 	/// <summary>
@@ -218,4 +218,23 @@ private:	// メンバ変数
 	// テクスチャ範囲指定
 	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };	// 左上座標
 	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };	// 切り出しサイズ
+
+#pragma region 定数
+	// 頂点・インデックス関連
+	static constexpr uint32_t kVertexCount = 4;	// 頂点数
+	static constexpr uint32_t kIndexCount = 6;	// インデックス数
+
+	// UV 正規化範囲
+	static constexpr MyBase::ScopeF kUVScope = { 0.0f, 1.0f };
+
+	// 2Dスプライト用法線
+	static constexpr MyBase::Vector3 kSpriteNormal = { 0.0f, 0.0f, -1.0f };
+
+#ifdef _DEBUG
+	// ImGui 調整用
+	static const float kImGuiDragSpeed;
+	static const float kImGuiTranslateLimit;
+	static const MyBase::ScopeF kImGuiScaleScope;
+#endif // _DEBUG
+#pragma endregion
 };

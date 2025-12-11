@@ -71,7 +71,7 @@ public:	// setter
 	/// ライティングの有効/無効を設定
 	/// </summary>
 	/// <param name="enableLighting">true でライティング有効、false で無効</param>
-	void SetEnableLighting(const bool& enableLighting) { materialDataPtr_->enableLighting = enableLighting; }
+	void SetEnableLighting(bool enableLighting) { materialDataPtr_->enableLighting = enableLighting; }
 	
 	/// <summary>
 	/// モデルに使用するテクスチャを設定
@@ -89,7 +89,7 @@ public:	// setter
 	/// 環境マップ用のテクスチャ名を設定
 	/// </summary>
 	/// <param name="textureName">設定する環境テクスチャ名</param>
-	void SetEnvironmentTexture(const std::string& textureName) { environmentTexturePath_ = textureName; }
+	void SetEnvironmentTexture(std::string textureName) { environmentTexturePath_ = textureName; }
 
 private:	// メンバ関数
 	/// <summary>

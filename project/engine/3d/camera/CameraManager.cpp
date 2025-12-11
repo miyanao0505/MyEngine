@@ -71,6 +71,9 @@ void CameraManager::Update(float deltaTime) {
 		// 復帰
 		StopShake();
 	}
+
+	// カメラ更新
+	activeCamera_->Update();
 }
 
 // 新しいカメラを追加し、cameras_ に登録する

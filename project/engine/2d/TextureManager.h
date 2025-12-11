@@ -112,5 +112,9 @@ private: // メンバ変数
 
 	// スプライト共通部
 	std::unique_ptr<SpriteBase> spriteBase_ = nullptr;
-};
 
+#pragma region 定数
+	// テクスチャディレクトリパス
+	constexpr static const char* kTextureDirectory = "resources/texture/";
+#pragma endregion
+};

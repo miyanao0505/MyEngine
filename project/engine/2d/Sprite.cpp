@@ -4,6 +4,13 @@
 #include "TextureManager.h"
 #include <imgui.h>
 
+// 定数の定義と初期化
+#ifdef _DEBUG
+const float Sprite::kImGuiDragSpeed = 0.1f;
+const float Sprite::kImGuiTranslateLimit = 100.0f;
+const MyBase::ScopeF Sprite::kImGuiScaleScope = { 0.01f, 10.0f };
+#endif // _DEBUG
+
 // 初期化
 void Sprite::Initialize(const std::string& textureFilePath)
 {
@@ -31,10 +38,10 @@ void Sprite::Initialize(const std::string& textureFilePath)
 void Sprite::Update()
 {
 	// アンカーポイントの反映処理
-	float left = 0.0f - anchorPoint_.x;
-	float right = 1.0f - anchorPoint_.x;
-	float top = 0.0f - anchorPoint_.y;
-	float bottom = 1.0f - anchorPoint_.y;
+	float left = kUVScope.min - anchorPoint_.x;
+	float right = kUVScope.max - anchorPoint_.x;
+	float top = kUVScope.min - anchorPoint_.y;
+	float bottom = kUVScope.max - anchorPoint_.y;
 
 	// フリップの反映処理
 	// 左右反転
@@ -59,19 +66,19 @@ void Sprite::Update()
 	// 左下
 	vertexData_[0].position = { left, bottom, 0.0f, 1.0f };
 	vertexData_[0].texcoord = { tex_left, tex_bottom };
-	vertexData_[0].normal = { 0.0f, 0.0f, -1.0f };
+	vertexData_[0].normal = kSpriteNormal;
 	// 左上
 	vertexData_[1].position = { left, top, 0.0f, 1.0f };
 	vertexData_[1].texcoord = { tex_left, tex_top };
-	vertexData_[1].normal = { 0.0f, 0.0f, -1.0f };
+	vertexData_[1].normal = kSpriteNormal;
 	// 右下
 	vertexData_[2].position = { right, bottom, 0.0f, 1.0f };
 	vertexData_[2].texcoord = { tex_right, tex_bottom };
-	vertexData_[2].normal = { 0.0f, 0.0f, -1.0f };
+	vertexData_[2].normal = kSpriteNormal;
 	// 右上
 	vertexData_[3].position = { right, top, 0.0f, 1.0f };
 	vertexData_[3].texcoord = { tex_right, tex_top };
-	vertexData_[3].normal = { 0.0f, 0.0f, -1.0f };
+	vertexData_[3].normal = kSpriteNormal;
 	// インデックスリソースにデータを書き込む(6個分)
 	indexData_[0] = 0;		indexData_[1] = 1;		indexData_[2] = 2;
 	indexData_[3] = 1;		indexData_[4] = 3;		indexData_[5] = 2;
@@ -118,11 +125,11 @@ void Sprite::DebugDraw() {
 		if (ImGui::TreeNode("Transform"))
 		{
 			// 移動
-			ImGui::DragFloat2("Translate", &position_.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat2("Translate", &position_.x, kImGuiDragSpeed, -kImGuiTranslateLimit, kImGuiTranslateLimit);
 			// 回転
-			ImGui::DragFloat("Rotate", &rotation_, 0.01f, -3.14f, 3.14f);
+			ImGui::DragFloat("Rotate", &rotation_, kImGuiDragSpeed, -DirectX::XM_PI, DirectX::XM_PI);
 			// 拡縮
-			ImGui::DragFloat3("Scale", &size_.x, 0.01f, 0.01f, 10.0f);
+			ImGui::DragFloat3("Scale", &size_.x, kImGuiDragSpeed, kImGuiScaleScope.min, kImGuiScaleScope.max);
 
 			ImGui::TreePop();
 		}
@@ -145,15 +152,15 @@ void Sprite::SetTexture(const std::string& textureFilePath)
 void Sprite::CreateVertexData()
 {
 	// VertexResourceを作る
-	vertexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::SpriteVertexData) * 4);
+	vertexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::SpriteVertexData) * kVertexCount);
 	// IndexResourceを作る
-	indexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(uint32_t) * 6);
+	indexResource_ = spriteBase_->GetDxBase()->CreateBufferResource(sizeof(uint32_t) * kIndexCount);
 	
 	// VertexBufferViewを作成する(値を設定するだけ)
 	// リソースの先頭のアドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_.Get()->GetGPUVirtualAddress();
 	// 使用するリソースのサイズは頂点6つ分のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(MyBase::SpriteVertexData) * 4;
+	vertexBufferView_.SizeInBytes = sizeof(MyBase::SpriteVertexData) * kVertexCount;
 	// 1頂点あたりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(MyBase::SpriteVertexData);
 	
@@ -161,7 +168,7 @@ void Sprite::CreateVertexData()
 	// リソースの先頭のアドレスから使う
 	indexBufferView_.BufferLocation = indexResource_.Get()->GetGPUVirtualAddress();
 	// 使用するリソースのサイズはインデックス6つ分のサイズ
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * 6;
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * kIndexCount;
 	// インデックスはuint32_tとする
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 

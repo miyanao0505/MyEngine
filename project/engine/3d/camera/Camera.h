@@ -52,37 +52,37 @@ public:	// getter
 	/// カメラの回転値を取得
 	/// </summary>
 	/// <returns>回転ベクトル (X, Y, Z) への参照</returns>
-	const MyBase::Vector3& GetRotate() const { return transform_.rotate; }
+	MyBase::Vector3 GetRotate() const { return transform_.rotate; }
 	
 	/// <summary>
 	/// カメラの位置(平行移動)を取得
 	/// </summary>
 	/// <returns>位置ベクトル (X, Y, Z) への参照</returns>
-	const MyBase::Vector3& GetTranslate() const { return transform_.translate; }
+	MyBase::Vector3 GetTranslate() const { return transform_.translate; }
 	
 	/// <summary>
 	/// 垂直方向の視野角を取得
 	/// </summary>
 	/// <returns>視野角(ラジアン)への参照</returns>
-	const float& GetFovY() const { return fovY_; }
+	float GetFovY() const { return fovY_; }
 
 	/// <summary>
 	///  アスペクト比を取得
 	/// </summary>
 	/// <returns>画面幅 / 画面高さの比率への参照</returns>
-	const float& GetAspectRatio() const { return aspectRatio_; }
+	const float GetAspectRatio() const { return aspectRatio_; }
 
 	/// <summary>
 	/// ニアクリップ距離を取得
 	/// </summary>
 	/// <returns>ニアクリップ距離への参照</returns>
-	const float& GetNearCip() const { return nearClip_; }
+	const float GetNearClip() const { return nearClip_; }
 
 	/// <summary>
 	/// ファークリップ距離を取得
 	/// </summary>
 	/// <returns>ファークリップ距離への参照</returns>
-	const float& GetFarClip() const { return farClip_; }
+	const float GetFarClip() const { return farClip_; }
 
 public:	// setter
 	/// <summary>
@@ -95,37 +95,37 @@ public:	// setter
 	/// カメラの回転値を設定
 	/// </summary>
 	/// <param name="rotate">回転ベクトル (X, Y, Z)</param>
-	void SetRotate(const MyBase::Vector3& rotate) { transform_.rotate = rotate; }
+	void SetRotate(const MyBase::Vector3 rotate) { transform_.rotate = rotate; }
 	
 	/// <summary>
 	/// カメラの位置(平行移動)を設定
 	/// </summary>
 	/// <param name="translate">位置ベクトル (X, Y, Z)</param>
-	void SetTranslate(const MyBase::Vector3& translate) { transform_.translate = translate; };
+	void SetTranslate(const MyBase::Vector3 translate) { transform_.translate = translate; };
 	
 	/// <summary>
 	/// 垂直方向の視野角を設定
 	/// </summary>
 	/// <param name="fovY">視野角(ラジアン)</param>
-	void SetFovY(const float& fovY) { fovY_ = fovY; }
+	void SetFovY(const float fovY) { fovY_ = fovY; }
 	
 	/// <summary>
 	/// アスペクト比を設定
 	/// </summary>
 	/// <param name="aspectRatio">画面幅 / 画面高さの比率</param>
-	void SetAspectRatio(const float& aspectRatio) { aspectRatio_ = aspectRatio; }
+	void SetAspectRatio(const float aspectRatio) { aspectRatio_ = aspectRatio; }
 	
 	/// <summary>
 	/// ニアクリップ距離を設定
 	/// </summary>
 	/// <param name="nearClip">ニアクリップ距離</param>
-	void SetNearClip(const float& nearClip) { nearClip_ = nearClip; }
+	void SetNearClip(const float nearClip) { nearClip_ = nearClip; }
 	
 	/// <summary>
 	/// ファークリップ距離を設定
 	/// </summary>
 	/// <param name="farClip">ファークリップ距離</param>
-	void SetFarClip(const float& farClip) { farClip_ = farClip; }
+	void SetFarClip(const float farClip) { farClip_ = farClip; }
 
 protected:	// メンバ変数
 	// ビュー関連データ
@@ -143,5 +143,13 @@ protected:	// メンバ変数
 	// 合成行列
 	MyBase::Matrix4x4 viewProjectionMatrix_;
 
+public:
+#pragma region 定数
+	static constexpr float kDefaultFovY = 0.45f;									// デフォルトの垂直方向視野角
+	static constexpr float kDefaultNearClip = 0.1f;									// デフォルトのニアクリップ距離
+	static constexpr float kDefaultFarClip = 100.0f;								// デフォルトのファークリップ距離
+	static constexpr MyBase::Vector3 kDefaultScale = { 1.0f, 1.0f, 1.0f };			// デフォルトのスケール
+	static constexpr MyBase::Vector3 kDefaultRotate = { 0.0f, 0.0f, 0.0f };			// デフォルトの回転
+	static constexpr MyBase::Vector3 kDefaultTranslate = { 0.0f, 0.0f, 0.0f };		// デフォルトの位置(平行移動)
+#pragma endregion
 };
-

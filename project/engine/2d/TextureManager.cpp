@@ -50,7 +50,7 @@ void TextureManager::LoadTexture(const string& filePath)
 	assert(srvManager_->IsSecure());
 
 	// フルパス作成
-	string fullPath = "resources/texture/" + filePath;
+	string fullPath = kTextureDirectory + filePath;
 
 	// Textureを読んで転送する
 	ScratchImage mipImages = dxBase_->LoadTexture(fullPath);
@@ -80,34 +80,28 @@ void TextureManager::LoadTexture(const string& filePath)
 // SRVインデックスの開始番号
 uint32_t TextureManager::GetSrvIndex(const string& filePath)
 {
-	// 読み込み済みチェック。未読込ならバグなのでassert
-	if (textureDatas_.contains(filePath)) {
-		// 読み込み済みなら要素番号を返す
-		uint32_t textureIndex = static_cast<uint32_t>(distance(textureDatas_.begin(), textureDatas_.end()));
-		return textureIndex;
-	}
-	assert(0);
-	return 0;
+	auto it = textureDatas_.find(filePath);
+	assert(it != textureDatas_.end()); // 未ロードはバグ
+
+	return it->second.srvIndex;
 }
 
 // テクスチャ番号からGPUハンドルを取得
 D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePath)
 {
-	// 範囲外指定違反チェック
-	assert(srvManager_->IsSecure());
+	auto it = textureDatas_.find(filePath);
+	assert(it != textureDatas_.end()); // 未ロードはバグ
 
-	TextureData& textureData = textureDatas_[filePath];
-	return textureData.srvHandleGPU;
+	return it->second.srvHandleGPU;
 }
 
 // メタデータを取得
 const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath)
 {
-	// 範囲外指定違反チェック
-	assert(srvManager_->IsSecure());
+	auto it = textureDatas_.find(filePath);
+	assert(it != textureDatas_.end()); // 未ロードはバグ
 
-	TextureData& textureData = textureDatas_[filePath];
-	return textureData.metadata;
+	return it->second.metadata;
 }
 
 // ブレンドモードのセット
