@@ -23,7 +23,7 @@ void Enemy::Initialize()
 	// 3Dオブジェクトの初期化
 	object_->SetTranslate({ 0.0f, 0.0f, 50.0f });	// 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
-	object_->SetRotate({ 0.0f, float(M_PI), 0.0f});	// 初期回転
+	object_->SetRotate({ 0.0f, 3.14f, 0.0f});	// 初期回転
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
