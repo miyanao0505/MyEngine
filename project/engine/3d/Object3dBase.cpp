@@ -58,11 +58,14 @@ void Object3dBase::CreateRootSignature()
 	rootParameters.push_back(textureParam);
 
 	// CBV: Lightingなど(Pixel Shader)
-	for (UINT i = 1; i <= 4; ++i) {
+	constexpr UINT kLightingCBVStartRegister = 1;
+	constexpr UINT kLightingCBVCount = 4;
+
+	for (UINT i = 0; i < kLightingCBVCount; ++i) {
 		D3D12_ROOT_PARAMETER cbvParam{};
 		cbvParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 		cbvParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-		cbvParam.Descriptor.ShaderRegister = i;
+		cbvParam.Descriptor.ShaderRegister = kLightingCBVStartRegister + i;
 		rootParameters.push_back(cbvParam);
 	}
 
@@ -117,7 +120,7 @@ void Object3dBase::CreateGraphicsPipeline()
 	CreateRootSignature();
 
 	// InputLayer
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[kInputElementCount] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;

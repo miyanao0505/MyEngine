@@ -59,7 +59,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 音声データ(Wave)の読み込み
 	/// </summary>
-	/// <param name="filename">ファイル名 パスは "resources/" に続く</param>
+	/// <param name="filename">ファイル名 パスは "resources/audio/" に続く</param>
 	void LoadAudioWave(const std::string& filename);
 
 
@@ -70,7 +70,7 @@ public:	// メンバ関数
 	/// <param name="filename">ファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="loop">ループの有無</param>
-	void PlayWave(const std::string& filename, const float& volume = 1.0f, const bool& loop = false);
+	void PlayWave(const std::string& filename, const float& volume = kDefaultVolume, const bool& loop = false);
 
 
 	/// 音声停止
@@ -108,5 +108,18 @@ private:	// メンバ変数
 	// 音声データ
 	std::unordered_map<std::string, SoundData> soundDataMap_;
 	std::unordered_map<std::string, IXAudio2SourceVoice*> playingVoices_;
-};
 
+#pragma region 定数
+	// ファイルパス
+	static const std::string kAudioRootPath;
+
+	static constexpr char kRiffId[] = "RIFF";
+	static constexpr char kWaveId[] = "WAVE";
+	static constexpr char kFmtId[] = "fmt ";
+	static constexpr char kDataId[] = "data";
+	static constexpr char kJunkId[] = "JUNK";
+
+	static constexpr size_t kChunkIdSize = 4;
+	static constexpr float kDefaultVolume = 1.0f;
+#pragma endregion
+};

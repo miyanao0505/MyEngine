@@ -4,12 +4,21 @@
 #include "Object3dBase.h"
 
 /// <summary>
-/// 3Dシーン内で使用されるライトの種類を表す列挙型。
+/// 3Dシーン内で使用されるライトの種類を表す列挙型
 /// </summary>
 enum class LightType {
 	Directional,
 	Point,
 	Spot,
+};
+
+/// <summary>
+/// ルートパラメータのインデックスを表す列挙型
+/// </summary>
+enum RootParameterIndex {
+	kDirectionalLight = 3,
+	kPointLight = 5,
+	kSpotLight = 6,
 };
 
 /// <summary>
@@ -302,4 +311,13 @@ private:	// メンバ変数
 	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;
 	MyBase::PointLight* pointLightMapped_ = nullptr;									// 点光源
 	MyBase::SpotLight* spotLightMapped_ = nullptr;
+
+#pragma region 定数
+	static constexpr float kDefaultSpotLightCosAngle = 0.125f;
+
+#ifdef _DEBUG
+	static constexpr MyBase::ScopeF kLightIntensity = { 0.0f, 10.0f };
+	static constexpr float kLightIntensitySpeed = 0.01f;
+#endif // _DEBUG
+#pragma endregion
 };

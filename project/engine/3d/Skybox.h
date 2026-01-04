@@ -3,6 +3,13 @@
 #include "WorldTransform.h"
 #include "MyBase.h"
 
+enum class RootParam : UINT {
+	kMaterial = 0,
+	kTransform = 1,
+	kTexture = 2,
+	kCamera = 4,
+};
+
 /// <summary>
 /// シーン全体を包み込む天空背景(スカイボックス)を描画するクラス
 /// </summary>
@@ -195,11 +202,6 @@ private:	// メンバ変数
 	uint32_t* indexMapped_ = nullptr;													// index
 	MyBase::ModelMaterial* materialMapped_ = nullptr;									// マテリアル
 
-	// 頂点数
-	static const size_t kVertexCount = 24;	// Skyboxの頂点数
-	// インデックス数
-	static const size_t kIndexCount = 36;	// Skyboxのインデックス数
-
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
@@ -212,4 +214,27 @@ private:	// メンバ変数
 
 	// 使用フラグ
 	bool useEnvironmentMap_ = false;	// デフォルトOFF
+
+#pragma region 定数
+	static constexpr UINT kRootParamCount = 7;
+	static constexpr UINT kDescriptorCount = 1;
+	static constexpr UINT kSamplerCount = 1;
+	static constexpr UINT kInputElementCount = 2;
+
+	// 頂点数
+	static const size_t kVertexCount;	// Skyboxの頂点数
+	// インデックス数
+	static const size_t kIndexCount;	// Skyboxのインデックス数
+
+#ifdef _DEBUG
+	static const float kPi;
+	static const float kImGuiDragSpeed;				// ImGui のドラッグ速度	
+	static const MyBase::ScopeF kTranslateScope;	// 平行移動の範囲
+	static const MyBase::ScopeF kRotateScope;		// 回転の範囲
+	static const MyBase::ScopeF kScaleScope;		// スケールの範囲
+#endif // _DEBUG
+
+	static const float kDefaultShininess;			// デフォルトの光沢度
+	static const float kDefaultReflectivity;		// デフォルトの反射率
+#pragma endregion
 };

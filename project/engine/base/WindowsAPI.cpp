@@ -27,16 +27,16 @@ LRESULT CALLBACK WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPAR
 // 初期化
 void WindowsAPI::Initialize(const wchar_t* title){
 	// システムタイマーの分解能を上げる
-	timeBeginPeriod(1);
+	timeBeginPeriod(kTimerResolutionMs);
 
 	HRESULT hr;
 
-	hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	// ウィンドウプロシージャ
 	windowClass_.lpfnWndProc = WindowProc;
 	// ウィンドウクラス名(なんでも良い)
-	windowClass_.lpszClassName = L"GE3WindowClass";
+	windowClass_.lpszClassName = kWindowClassName;
 	// インスタンスハンドル
 	windowClass_.hInstance = GetModuleHandle(nullptr);
 	// カーソル

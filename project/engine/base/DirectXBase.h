@@ -19,6 +19,13 @@ class SrvManager;
 /// </summary>
 class DirectXBase
 {
+public:	// 列挙型
+	enum RTVIndex : uint32_t {
+		kRTV_BackBuffer0 = 0,
+		kRTV_BackBuffer1 = 1,
+		kRTV_RenderTexture = 2,
+	};
+
 public:	// メンバ関数
 	/// <summary>
 	/// シングルトンインスタンスを取得
@@ -333,4 +340,15 @@ private:	// メンバ変数
 
 	// 記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
+
+#pragma region 定数
+	static constexpr uint32_t kBackBuffferCount = 2;
+	static constexpr uint32_t kMaxRTVCount = 100;
+
+	static const float kDefaultClearColor[4];
+
+	static constexpr uint32_t kTargetFPS = 60;
+	static constexpr uint32_t kFPSCheckMargin = 65;
+	static constexpr uint64_t kMicroSecondsPerSecond = 1000000;
+#pragma endregion
 };

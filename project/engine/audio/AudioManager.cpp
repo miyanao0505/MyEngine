@@ -1,6 +1,10 @@
 #include "AudioManager.h"
 #include <cassert>
 
+#pragma region 定数
+const std::string AudioManager::kAudioRootPath = "resources/audio/";
+#pragma endregion
+
 AudioManager* AudioManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
@@ -48,7 +52,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 		return;
 	}
 	
-	std::string filePath = "resources/" + filename;
+	std::string filePath = kAudioRootPath + filename;
 
 	/// 1. ファイルオープン
 	// ファイル入力ストリームのインスタンス
@@ -63,11 +67,11 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 	RiffHeader riff;
 	file.read((char*)&riff, sizeof(riff));
 	// ファイルがRIFFかチェック
-	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
+	if (strncmp(riff.chunk.id, kRiffId, kChunkIdSize) != 0) {
 		assert(0);
 	}
 	// タイプがWAVEかチェック
-	if (strncmp(riff.type, "WAVE", 4) != 0) {
+	if (strncmp(riff.type, kWaveId, kChunkIdSize) != 0) {
 		assert(0);
 	}
 	
@@ -75,7 +79,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 	FormatChunk format = {};
 	// チャンクヘッダーの確認
 	file.read((char*)&format, sizeof(ChunkHeader));
-	if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
+	if (strncmp(format.chunk.id, kFmtId, kChunkIdSize) != 0) {
 		assert(0);
 	}
 	// チャンク本体の読み込み
@@ -86,13 +90,13 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 	ChunkHeader data;
 	file.read((char*)&data, sizeof(data));
 	// JUNKチャンクを検出した場合
-	if (strncmp(data.id, "JUNK", 4) == 0) {
+	if (strncmp(data.id, kJunkId, kChunkIdSize) == 0) {
 		// 読み込み一をJUNKチャンクの終わりまで進める
 		file.seekg(data.size, std::ios_base::cur);
 		// 再読み込み
 		file.read((char*)&data, sizeof(data));
 	}
-	if (strncmp(data.id, "data", 4) != 0) {
+	if (strncmp(data.id, kDataId, kChunkIdSize) != 0) {
 		assert(0);
 	}
 

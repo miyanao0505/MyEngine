@@ -1,6 +1,6 @@
 #pragma once
-#define _USE_MATH_DEFINES
 #include <cmath>
+#include <numbers>
 #include "MyBase.h"
 
 /// <summary>
@@ -8,14 +8,17 @@
 /// </summary>
 class MyTools
 {
-public:
+public:	// メンバ変数
+	static constexpr int kColumnWidth = 60;			// 表示文字サイズ_横幅
+	static constexpr int kRowHeight = 20;			// 表示文字サイズ_縦幅
 
-	// メンバ変数
-	static const int kColumnWidth = 60;			// 表示文字サイズ_横幅
-	static const int kRowHeight = 20;			// 表示文字サイズ_縦幅
+private:
+#pragma region 定数
+	static constexpr uint32_t kOBBVertexCount = 8;
+	static constexpr uint32_t kSeparationAxisCount = 15;
+#pragma endregion
 
-	// メンバ関数
-
+public:	// メンバ関数
 #pragma region ツール関数	
 	/// <summary>
 	/// 範囲内の値を返す関数
@@ -24,7 +27,7 @@ public:
 	/// <param name="min">最低値</param>
 	/// <param name="max">最大値</param>
 	/// <returns>範囲内の値</returns>
-	static float Clamp(const float& num, const float& min, const float& max);
+	static float Clamp(float num, float min, float max);
 
 	/// <summary>
 	/// 線形補間
@@ -33,7 +36,7 @@ public:
 	/// <param name="num2">数値2</param>
 	/// <param name="t">媒介変数</param>
 	/// <returns>補間後の値</returns>
-	static float Lerp(const float& num1, const float& num2, const float& t);
+	static float Lerp(float num1, float num2, float t);
 
 	/// <summary>
 	/// 三角形の存在する平面情報を求める関数

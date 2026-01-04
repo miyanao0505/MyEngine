@@ -4,6 +4,17 @@
 
 using namespace std;
 
+// 定数の定義と初期化
+const MyBase::Vector3 BaseObject::kZeroVector{ 0.0f, 0.0f, 0.0f };
+#ifdef _DEBUG
+const float BaseObject::kPi = 3.14159265359f;
+const float BaseObject::kImGuiDragSpeed = 0.01f;
+const MyBase::ScopeF BaseObject::kTranslateScope{ -100.0f, 100.0f };
+const MyBase::ScopeF BaseObject::kRotateScope{ -kPi, kPi };
+const MyBase::ScopeF BaseObject::kScaleScope{ 0.01f, 10.0f };
+const MyBase::ScopeF BaseObject::kMaterialScope{ 0.0f, 1.0f };
+#endif // _DEBUG
+
 // 初期化
 void BaseObject::Initialize(const std::string& folderPath, const std::string& filePath)
 {
@@ -39,11 +50,11 @@ void BaseObject::DebugDraw()
 			MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 			// 移動
-			ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+			ImGui::DragFloat3("Translate", &transform.translate.x, kImGuiDragSpeed, kTranslateScope.min, kTranslateScope.max);
 			// 回転
-			ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+			ImGui::DragFloat3("Rotate", &transform.rotate.x, kImGuiDragSpeed, kRotateScope.min, kRotateScope.max);
 			// 拡縮
-			ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+			ImGui::DragFloat3("Scale", &transform.scale.x, kImGuiDragSpeed, kScaleScope.min, kScaleScope.max);
 			
 			// 変換情報をオブジェクトに設定
 			object_->SetTransform(transform);
@@ -58,9 +69,9 @@ void BaseObject::DebugDraw()
 			// 色
 			ImGui::ColorEdit4("color", &materialData->color.x);
 			// 光沢度
-			ImGui::SliderFloat("shininess", &materialData->shininess, 0.0f, 1.0f);
+			ImGui::SliderFloat("shininess", &materialData->shininess, kMaterialScope.min, kMaterialScope.max);
 			// 反射強度
-			ImGui::SliderFloat("reflectivity", &materialData->reflectivity, 0.0f, 1.0f);
+			ImGui::SliderFloat("reflectivity", &materialData->reflectivity, kMaterialScope.min, kMaterialScope.max);
 			// 有効かどうか
 			bool isEnabled = materialData->enableLighting;
 			ImGui::Checkbox("enableLighting", &isEnabled);
@@ -83,4 +94,9 @@ void BaseObject::OnCollision(Collider* other)
 	if (collider_) {
 		collider_->OnCollision(other);
 	}
+}
+
+MyBase::Vector3 BaseObject::GetWorldPosition() const
+{
+	return object_ ? object_->GetTranslate() : kZeroVector;
 }

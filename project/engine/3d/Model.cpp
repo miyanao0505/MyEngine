@@ -7,6 +7,13 @@
 #include "Matrix.h"
 #include "TextureManager.h"
 
+#pragma region 定数
+const MyBase::Vector4 Model::kDefaultMaterialColor{ 1.0f, 1.0f,1.0f,1.0f };
+const float Model::kDefaultShininess = 40.8f;
+const float Model::kDefaultReflectivity = 0.0f;
+#pragma endregion
+
+
 // 初期化
 void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, const std::string& fileName)
 {
@@ -34,15 +41,15 @@ void Model::Draw()
 	// VBVの設定
 	modelBase_->GetDxBase()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// マテリアルCBufferの場所を設定
-	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_.Get()->GetGPUVirtualAddress());
+	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(kRootParamMaterialCBV, materialResource_.Get()->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
-	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
+	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(kRootParamMainTexture, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 	// 環境マップのテクスチャがある場合のみ設定。
 	if (!environmentTexturePath_.empty()) {
-		modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(7, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexturePath_));
+		modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(kRootParamEnviromentTexture, TextureManager::GetInstance()->GetSrvHandleGPU(environmentTexturePath_));
 	}
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。インスタンスについては今後
-	modelBase_->GetDxBase()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	modelBase_->GetDxBase()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), kDefaultInstanceCount, kVertexStartOffset, kInstanceStartOffset);
 }
 
 // .mtlファイルの読み取り
@@ -93,7 +100,7 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 		// ここからMeshの中身(face)の解析を行っていく
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3);						// 三角形のみサポート
+			assert(face.mNumIndices == kTriangleVertexCount);			// 三角形のみサポート
 			// ここからFaceの中身(Vertex)の解析を行っていく
 			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
@@ -105,8 +112,8 @@ void Model::LoadObjFile(const std::string& directoryPath, const std::string& fil
 				vertex.normal = { normal.x, normal.y, normal.z };
 				vertex.texcoord = { texcoord.x, texcoord.y };
 				// aiProcess_MakeLeftHandedは z*=-1 で、右手->左手に変換するので手動で対処
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
+				vertex.position.x *= -kPositionW;
+				vertex.normal.x *= kLeftHandedFlipSign;
 				modelData_.vertices.push_back(vertex);
 			}
 		}
@@ -158,13 +165,13 @@ void Model::CreateMaterialData()
 	// 書き込むためのアドレスを取得
 	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialDataPtr_));
 	// 白で読み込む
-	materialDataPtr_->color = MyBase::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialDataPtr_->color = kDefaultMaterialColor;
 	// 単位行列で初期化
 	materialDataPtr_->uvTransform = Matrix::MakeIdentity4x4();
 	// 光沢度
-	materialDataPtr_->shininess = 40.80f;
+	materialDataPtr_->shininess = kDefaultShininess;
 	// 反射強度
-	materialDataPtr_->reflectivity = 0.0f;
+	materialDataPtr_->reflectivity = kDefaultReflectivity;
 	// Lightingを有効にする
 	materialDataPtr_->enableLighting = true;
 }
@@ -177,8 +184,8 @@ MyBase::Node Model::ReadNode(aiNode* node)
 	aiMatrix4x4 aiLocalMatrix = node->mTransformation;	// nodeのlocalMatrixを取得
 	aiLocalMatrix.Transpose();							// 列ベクトル形式を行ベクトル形式に転置
 	// 全てのの要素を移す
-	for (uint32_t i = 0; i < 4; i++) {
-		for (uint32_t j = 0; j < 4; j++) {
+	for (uint32_t i = 0; i < kMatrixSize; i++) {
+		for (uint32_t j = 0; j < kMatrixSize; j++) {
 			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
 		}
 	}

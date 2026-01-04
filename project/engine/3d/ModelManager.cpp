@@ -4,6 +4,10 @@ using std::string;
 using std::unique_ptr;
 using std::make_unique;
 
+#pragma region 定数
+const string ModelManager::kModelRootPath = "resources/model/";
+#pragma endregion
+
 ModelManager* ModelManager::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
@@ -38,7 +42,7 @@ void ModelManager::Initialize()
 void ModelManager::LoadModel(const string& directoryPath, const string& filePath)
 {
 	// 連結してフルパスを得る
-	const string fullpath = "resources/model/" + directoryPath;
+	const string fullpath = kModelRootPath + directoryPath;
 
 	// 読み込み済みモデルを検索
 	if (models_.contains(filePath)) {

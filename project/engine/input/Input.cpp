@@ -42,8 +42,8 @@ void Input::Initialize(WindowsAPI* winApi)
 // 終了
 void Input::Finalize()
 {
-	delete sInstance;
-	sInstance = nullptr;
+	keyboard.Reset();
+	directInput.Reset();
 }
 
 /// 更新
@@ -58,10 +58,16 @@ void Input::Update()
 	hr = keyboard->Acquire();
 	// 全キーの入力状態を取得する
 	hr = keyboard->GetDeviceState(sizeof(key_), key_.data());
+
+	if (FAILED(hr)) {
+		keyboard->Acquire();
+	}
 }
 
 /// キーのトリガーをチェック
 bool Input::IsKeyTriggered(BYTE keyNumber){
+	assert(keyNumber < key_.size());
+
 	// 指定キーを押した時にtrueを返す
 	if (!keyPre_[keyNumber] && key_[keyNumber]) {
 		return true;
@@ -72,6 +78,8 @@ bool Input::IsKeyTriggered(BYTE keyNumber){
 
 /// キーの押下をチェック
 bool Input::IsKeyPressed(BYTE keyNumber) {
+	assert(keyNumber < key_.size());
+
 	// 指定キーを押していればtrueを返す
 	if (key_[keyNumber]) {
 		return true;

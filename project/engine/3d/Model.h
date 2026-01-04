@@ -122,9 +122,30 @@ private:	// メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
 
 	// バッファリソース内のデータを指すポインタ
-	MyBase::ModelVertexData* vertexDataPtr_ = nullptr;										// vertex
-	MyBase::ModelMaterial* materialDataPtr_ = nullptr;									// マテリアル
+	MyBase::ModelVertexData* vertexDataPtr_ = nullptr;								// vertex
+	MyBase::ModelMaterial* materialDataPtr_ = nullptr;								// マテリアル
 
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};									// vertex
+
+#pragma region 定数
+private:
+	static constexpr uint32_t kRootParamMaterialCBV = 0;	// ルートパラメータ：マテリアル用 CBV
+	static constexpr uint32_t kRootParamMainTexture = 2;	// ルートパラメータ：メインテクスチャ SRV
+	static constexpr uint32_t kRootParamEnviromentTexture = 7;	// ルートパラメータ：環境テクスチャ SRV
+
+	static constexpr uint32_t kDefaultInstanceCount = 1;
+	static constexpr uint32_t kVertexStartOffset = 0;
+	static constexpr uint32_t kInstanceStartOffset = 0;
+
+	static constexpr uint32_t kTriangleVertexCount = 3;
+	static constexpr uint32_t kMatrixSize = 4;
+
+	static constexpr float kPositionW = 1.0f;
+	static constexpr float kLeftHandedFlipSign = -1.0f;
+
+	static const MyBase::Vector4 kDefaultMaterialColor;
+	static const float kDefaultShininess;
+	static const float kDefaultReflectivity;
+#pragma endregion
 };

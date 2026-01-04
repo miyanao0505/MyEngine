@@ -93,7 +93,13 @@ private:	// メンバ変数
 	// 次に使用するSRVインデックス
 	uint32_t useIndex_ = 0;
 
-public: // メンバ定数
+#pragma region 定数
+public:
 	// 最大SRV数(最大テクスチャ枚数)
 	static const uint32_t kMaxSRVCount;
+
+private:
+	static constexpr UINT kDescriptorHeapCount = 1;
+	static constexpr UINT kFirstElementOffset = 0;
+#pragma endregion
 };

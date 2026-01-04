@@ -50,7 +50,7 @@ public:	// getter
 	/// オブジェクトのワールド座標を取得
 	/// </summary>
 	/// <returns>オブジェクトのワールド座標(Vector3)</returns>
-	virtual MyBase::Vector3 GetWorldPosition() const { return object_ ? object_->GetTranslate() : MyBase::Vector3{ 0,0,0 }; }
+	virtual MyBase::Vector3 GetWorldPosition() const;
 
 	/// <summary>
 	/// オブジェクトに関連付けられた Collider を取得
@@ -113,4 +113,20 @@ protected:	// メンバ変数
 
 	std::string name_;								// オブジェクト名
 	bool isDisabled_ = false;						// 無効化フラグ
+
+#pragma region 定数
+protected:
+	static const MyBase::Vector3 kZeroVector;
+
+#ifdef _DEBUG
+private:
+	static const float kPi;
+	static const float kImGuiDragSpeed;				// ImGui のドラッグ速度	
+	static const MyBase::ScopeF kTranslateScope;	// 平行移動の範囲
+	static const MyBase::ScopeF kRotateScope;		// 回転の範囲
+	static const MyBase::ScopeF kScaleScope;		// スケールの範囲
+
+	static const MyBase::ScopeF kMaterialScope;		// マテリアルの範囲
+#endif // _DEBUG
+#pragma endregion
 };

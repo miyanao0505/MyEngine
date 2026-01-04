@@ -5,7 +5,7 @@
 /// 
 
 /// 2x2回転行列の作成関数
-MyBase::Matrix2x2 Matrix::MakeRotateMatrix2x2(const float& theta)
+MyBase::Matrix2x2 Matrix::MakeRotateMatrix2x2(float theta)
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
@@ -62,7 +62,7 @@ MyBase::Matrix2x2 Matrix::Multiply(const MyBase::Matrix2x2& matrix1, const MyBas
 }
 
 /// スカラーと2x2行列の積を返す関数
-MyBase::Matrix2x2 Matrix::Multiply(const float& scalar, const MyBase::Matrix2x2& matrix)
+MyBase::Matrix2x2 Matrix::Multiply(float scalar, const MyBase::Matrix2x2& matrix)
 {
 	MyBase::Matrix2x2 ans = { 0 };
 
@@ -142,7 +142,7 @@ MyBase::Matrix3x3 Matrix::MakeScaleMatrix(const MyBase::Vector2& scale)
 }
 
 /// 3x3回転行列の作成
-MyBase::Matrix3x3 Matrix::MakeRotateMatrix3x3(const float& theta)
+MyBase::Matrix3x3 Matrix::MakeRotateMatrix3x3(float theta)
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
@@ -171,7 +171,7 @@ MyBase::Matrix3x3 Matrix::MakeTranslateMatrix(const MyBase::Vector2& translate)
 }
 
 /// 2次元アフィン変換行列の作成
-MyBase::Matrix3x3 Matrix::MakeAffineMatrix(const MyBase::Vector2& scale, const float& rotate, const MyBase::Vector2& translate)
+MyBase::Matrix3x3 Matrix::MakeAffineMatrix(const MyBase::Vector2& scale, float rotate, const MyBase::Vector2& translate)
 {
 	MyBase::Matrix3x3 scaleMatrix = { 0 };
 	MyBase::Matrix3x3 rotateMatrix = { 0 };
@@ -195,7 +195,7 @@ MyBase::Matrix3x3 Matrix::MakeAffineMatrix(const MyBase::Vector2& scale, const f
 }
 
 /// 3x3正射影行列の作成
-MyBase::Matrix3x3 Matrix::MakeOrthographicMatrix(const float& left, const float& top, const float& right, const float& bottom)
+MyBase::Matrix3x3 Matrix::MakeOrthographicMatrix(float left, float top, float right, float bottom)
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
@@ -209,7 +209,7 @@ MyBase::Matrix3x3 Matrix::MakeOrthographicMatrix(const float& left, const float&
 }
 
 /// 3x3ビューポート行列の作成
-MyBase::Matrix3x3 Matrix::MakeViewportMatrix(const float& left, const float& top, const float& width, const float& height)
+MyBase::Matrix3x3 Matrix::MakeViewportMatrix(float left, float top, float width, float height)
 {
 	MyBase::Matrix3x3 ans = { 0 };
 
@@ -267,7 +267,7 @@ MyBase::Matrix3x3 Matrix::Multiply(const MyBase::Matrix3x3& matrix1, const MyBas
 }
 
 /// スカラーと3x3行列の積を返す関数
-MyBase::Matrix3x3 Matrix::Multiply(const float& scalar, const MyBase::Matrix3x3& matrix)
+MyBase::Matrix3x3 Matrix::Multiply(float scalar, const MyBase::Matrix3x3& matrix)
 {
 	MyBase::Matrix3x3 ans;
 
@@ -361,7 +361,7 @@ MyBase::Matrix4x4 Matrix::MakeScaleMatrix(const MyBase::Vector3& scale)
 }
 
 /// X軸回転行列の作成
-MyBase::Matrix4x4 Matrix::MakeRotateXMatrix4x4(const float& radian)
+MyBase::Matrix4x4 Matrix::MakeRotateXMatrix4x4(float radian)
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
@@ -376,7 +376,7 @@ MyBase::Matrix4x4 Matrix::MakeRotateXMatrix4x4(const float& radian)
 }
 
 /// Y軸回転行列の作成
-MyBase::Matrix4x4 Matrix::MakeRotateYMatrix4x4(const float& radian)
+MyBase::Matrix4x4 Matrix::MakeRotateYMatrix4x4(float radian)
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
@@ -391,7 +391,7 @@ MyBase::Matrix4x4 Matrix::MakeRotateYMatrix4x4(const float& radian)
 }
 
 /// Z軸回転行列の作成
-MyBase::Matrix4x4 Matrix::MakeRotateZMatrix4x4(const float& radian)
+MyBase::Matrix4x4 Matrix::MakeRotateZMatrix4x4(float radian)
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
@@ -406,7 +406,7 @@ MyBase::Matrix4x4 Matrix::MakeRotateZMatrix4x4(const float& radian)
 }
 
 /// 4x4回転行列の作成
-MyBase::Matrix4x4 Matrix::MakeRotateMatrix4x4(const float& radianX, const float& radianY, const float& radianZ)
+MyBase::Matrix4x4 Matrix::MakeRotateMatrix4x4(float radianX, float radianY, float radianZ)
 {
 	MyBase::Matrix4x4 rotateX = MakeRotateXMatrix4x4(radianX);
 	MyBase::Matrix4x4 rotateY = MakeRotateYMatrix4x4(radianY);
@@ -553,7 +553,7 @@ MyBase::Matrix4x4 Matrix::Multiply(const MyBase::Matrix4x4& matrix1, const MyBas
 }
 
 /// スカラーと4x4行列の積を返す関数
-MyBase::Matrix4x4 Matrix::Multiply(const float& scalar, const MyBase::Matrix4x4& matrix)
+MyBase::Matrix4x4 Matrix::Multiply(float scalar, const MyBase::Matrix4x4& matrix)
 {
 	MyBase::Matrix4x4 ans = { 0 };
 
@@ -566,7 +566,7 @@ MyBase::Matrix4x4 Matrix::Multiply(const float& scalar, const MyBase::Matrix4x4&
 	return ans;
 }
 
-/// 3次元ベクトルを同時座標として変換する
+/// 3次元ベクトルを同次座標として変換する
 MyBase::Vector3 Matrix::Transform(const MyBase::Vector3& vector, const MyBase::Matrix4x4& matrix)
 {
 	MyBase::Vector3 result;
@@ -602,6 +602,8 @@ MyBase::Matrix4x4 Matrix::Inverse(const MyBase::Matrix4x4& matrix)
 {
 	MyBase::Matrix4x4 ans = { 0 };
 	float determinant = Determinant(matrix);
+
+	assert(determinant != 0.0f);
 
 	if (determinant == 0) {
 		return matrix;

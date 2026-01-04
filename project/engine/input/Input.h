@@ -56,6 +56,10 @@ private:	// シングルトンインスタンス
 	Input(const Input&) = delete;
 	Input& operator=(const Input&) = delete;
 
+#pragma region 定数
+	static constexpr size_t kKeyCount = 256;
+#pragma endregion
+
 private: // メンバ変数
 	// キーボードのデバイス
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard;
@@ -66,7 +70,7 @@ private: // メンバ変数
 	WindowsAPI* winApi_ = nullptr;
 
 	// 前回の全キーの状態
-	std::array<BYTE, 256> keyPre_;
+	std::array<BYTE, kKeyCount> keyPre_;
 	// 全キーの状態
-	std::array<BYTE, 256> key_;
+	std::array<BYTE, kKeyCount> key_;
 };

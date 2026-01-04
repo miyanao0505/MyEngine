@@ -6,11 +6,32 @@
 using namespace std;
 using namespace nlohmann;
 
+namespace {
+	constexpr int kAxisX = 0;
+	constexpr int kAxisY = 1;
+	constexpr int kAxisZ = 2;
+}
+
+namespace {
+	constexpr const char* kJsonBasePath = "resources/jsons/";
+}
+
+namespace {
+	constexpr const char* kTypeMesh = "MESH";
+	constexpr const char* kTypePlayerSpawn = "PlayerSpawn";
+}
+
+namespace {
+	constexpr const char* kColliderSphere = "SPHERE";
+	constexpr const char* kColliderAABB = "AABB";
+	constexpr const char* kColliderOBB = "OBB";
+}
+
 /// JSONファイルを読み込みレベルデータ(LevelData)を返す
 std::unique_ptr<JsonLevelData> JsonLoader::LoadFile(const string& filePath)
 {
 	// 連結してフルパスを得る
-	const string absolutePath = "resources/jsons/" + filePath;
+	const string absolutePath = string(kJsonBasePath) + filePath;
 
 	// ファイルストリーム
 	ifstream file;
@@ -67,14 +88,14 @@ void JsonLoader::ParseObject(const nlohmann::json& object, JsonLevelData& levelD
 
 	/// 種類ごとの処理
 	// MESH
-	if (type.compare("MESH") == 0) {
+	if (type.compare(kTypeMesh) == 0) {
 		// オブジェクトデータを生成
 		JsonObjectData objectData;
 		// 必要なデータを取得
 		objectData.name = object["name"];
 		json transform = object["transform"];
 		// 平行移動
-		objectData.translation = { (float)transform["translation"][0], (float)transform["translation"][2], (float)transform["translation"][1] };
+		objectData.translation = { (float)transform["translation"][kAxisX], (float)transform["translation"][kAxisZ], (float)transform["translation"][kAxisY] };
 		// 回転
 		objectData.rotation = { -(float)transform["rotation"][0], -(float)transform["rotation"][2], -(float)transform["rotation"][1] };
 		// 拡大縮小
@@ -87,16 +108,16 @@ void JsonLoader::ParseObject(const nlohmann::json& object, JsonLevelData& levelD
 		if (object.contains("collider")) {
 			json collider = object["collider"];
 			objectData.colliderType = collider["type"];
-			if (objectData.colliderType.compare("SPHERE") == 0) {
+			if (objectData.colliderType.compare(kColliderSphere) == 0) {
 				objectData.radius = (float)collider["radius"];
 			}
-			else if (objectData.colliderType.compare("AABB") == 0) {
+			else if (objectData.colliderType.compare(kColliderAABB) == 0) {
 				// AABBコライダーの場合
 				json aabb = collider["aabb"];
 				objectData.aabb.min = { (float)aabb["min"][0], (float)aabb["min"][2], (float)aabb["min"][1] };
 				objectData.aabb.max = { (float)aabb["max"][0], (float)aabb["max"][2], (float)aabb["max"][1] };
 			}
-			else if (objectData.colliderType.compare("OBB") == 0) {
+			else if (objectData.colliderType.compare(kColliderOBB) == 0) {
 				// OBBコライダーの場合
 				json obb = collider["obb"];
 				objectData.obb.center = { (float)obb["center"][0], (float)obb["center"][2], (float)obb["center"][1] };
@@ -122,7 +143,7 @@ void JsonLoader::ParseObject(const nlohmann::json& object, JsonLevelData& levelD
 		}
 	}
 	// 自キャラ生成ポイント
-	else if (type.compare("PlayerSpawn") == 0) {
+	else if (type.compare(kTypePlayerSpawn) == 0) {
 		MyBase::PlayerSpawnData playerSpawn;
 		// 必要なデータを取得
 		json transform = object["transform"];

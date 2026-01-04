@@ -66,9 +66,9 @@ void Object3d::Update()
 void Object3d::Draw()
 {
 	// ルートパラメータ 1：座標変換行列(WVP)用のCBufferの場所を設定
-	object3dBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixResource_.Get()->GetGPUVirtualAddress());
+	object3dBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootParam::kTransformationMatrix), transformationMatrixResource_.Get()->GetGPUVirtualAddress());
 	// ルートパラメータ 4：カメラ情報用のCBufferの場所を設定
-	object3dBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraResource_.Get()->GetGPUVirtualAddress());
+	object3dBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootParam::kCamera), cameraResource_.Get()->GetGPUVirtualAddress());
 	// LightManager 内部で必要な CBuffer をセット
 	LightManager::GetInstance()->Draw(object3dBase_->GetDxBase()->GetCommandList());
 

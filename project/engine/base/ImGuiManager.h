@@ -39,4 +39,8 @@ private:	// メンバ変数
 	DirectXBase* dxBase_ = nullptr;
 	// ImGui用のデスクリプタヒープを管理するSRVマネージャ
 	SrvManager* srvManager_ = nullptr;
+
+#pragma region 定数
+	static constexpr uint32_t kImGuiDescriptorHeapCount = 1;
+#pragma endregion
 };

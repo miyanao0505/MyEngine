@@ -3,6 +3,11 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx12.h>
 
+namespace
+{
+	constexpr DXGI_FORMAT kImGuiRTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+}
+
 // 初期化
 void ImGuiManager::Initialize(WindowsAPI* winBase, SrvManager* srvManager)
 {
@@ -22,7 +27,8 @@ void ImGuiManager::Initialize(WindowsAPI* winBase, SrvManager* srvManager)
 	ImGui_ImplDX12_Init(
 		dxBase_->GetDevice(),
 		static_cast<int>(dxBase_->GetBackBufferCount()),
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvManager_->GetDescriptorHeapForImGui(),
+		kImGuiRTVFormat, 
+		srvManager_->GetDescriptorHeapForImGui(),
 		srvManager_->GetDescriptorHeapForImGui()->GetCPUDescriptorHandleForHeapStart(),
 		srvManager_->GetDescriptorHeapForImGui()->GetGPUDescriptorHandleForHeapStart()
 	);
@@ -61,7 +67,7 @@ void ImGuiManager::Draw()
 
 	// デスクリプタヒープの配列をセットするコマンド
 	ID3D12DescriptorHeap* ppHeaps[] = { srvManager_->GetDescriptorHeapForImGui() };
-	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	commandList->SetDescriptorHeaps(kImGuiDescriptorHeapCount, ppHeaps);
 	// 描画コマンドを発行
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
 }

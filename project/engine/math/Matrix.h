@@ -1,6 +1,6 @@
 #pragma once
-#define _USE_MATH_DEFINES
 #include <cmath>
+#include <numbers>
 #include <assert.h>
 #include "MyBase.h"
 
@@ -22,7 +22,7 @@ public:
 	/// </summary>
 	/// <param name="theta">角度(radian)</param>
 	/// <returns>回転行列</returns>
-	static MyBase::Matrix2x2 MakeRotateMatrix2x2(const float& theta);
+	static MyBase::Matrix2x2 MakeRotateMatrix2x2(float theta);
 
 	/// <summary>
 	/// 2x2行列の加算を返す関数
@@ -54,7 +54,7 @@ public:
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="matrix">行列</param>
 	/// <returns>積の行列</returns>
-	static MyBase::Matrix2x2 Multiply(const float& scalar, const MyBase::Matrix2x2& matrix);
+	static MyBase::Matrix2x2 Multiply(float scalar, const MyBase::Matrix2x2& matrix);
 	
 	/// <summary>
 	/// 2次元ベクトルと2x2行列の積を返す関数
@@ -94,7 +94,7 @@ public:
 	/// </summary>
 	/// <param name="theta">角度(radian)</param>
 	/// <returns>回転行列</returns>
-	static MyBase::Matrix3x3 MakeRotateMatrix3x3(const float& theta);
+	static MyBase::Matrix3x3 MakeRotateMatrix3x3(float theta);
 
 	/// <summary>
 	/// 3x3平行移動行列の作成関数
@@ -110,7 +110,7 @@ public:
 	/// <param name="rotate">角度のベクトル</param>
 	/// <param name="translate">移動のベクトル</param>
 	/// <returns>アフィン変換行列</returns>
-	static MyBase::Matrix3x3 MakeAffineMatrix(const MyBase::Vector2& scale, const float& rotate, const MyBase::Vector2& translate);
+	static MyBase::Matrix3x3 MakeAffineMatrix(const MyBase::Vector2& scale, float rotate, const MyBase::Vector2& translate);
 
 	/// <summary>
 	/// 3x3正射影行列の作成
@@ -120,7 +120,7 @@ public:
 	/// <param name="right">右辺 X値</param>
 	/// <param name="bottom">下辺 Y値</param>
 	/// <returns>正射影行列</returns>
-	static MyBase::Matrix3x3 MakeOrthographicMatrix(const float& left, const float& top, const float& right, const float& bottom);
+	static MyBase::Matrix3x3 MakeOrthographicMatrix(float left, float top, float right, float bottom);
 
 	/// <summary>
 	/// 3x3ビューポート行列の作成
@@ -130,7 +130,7 @@ public:
 	/// <param name="width">横幅</param>
 	/// <param name="height">縦幅</param>
 	/// <returns>ビューポート変換行列</returns>
-	static MyBase::Matrix3x3 MakeViewportMatrix(const float& left, const float& top, const float& width, const float& height);
+	static MyBase::Matrix3x3 MakeViewportMatrix(float left, float top, float width, float height);
 
 	/// <summary>
 	/// 3x3行列の加算を返す関数
@@ -162,7 +162,7 @@ public:
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="matrix">行列</param>
 	/// <returns>積の行列</returns>
-	static MyBase::Matrix3x3 Multiply(const float& scalar, const MyBase::Matrix3x3& matrix);
+	static MyBase::Matrix3x3 Multiply(float scalar, const MyBase::Matrix3x3& matrix);
 
 	/// <summary>
 	/// 2次元ベクトルを同次座標として変換する関数
@@ -202,21 +202,21 @@ public:
 	/// </summary>
 	/// <param name="radian">角度(radian)</param>
 	/// <returns>X軸回転行列</returns>
-	static MyBase::Matrix4x4 MakeRotateXMatrix4x4(const float& radian);
+	static MyBase::Matrix4x4 MakeRotateXMatrix4x4(float radian);
 
 	/// <summary>
 	/// Y軸回転行列の作成
 	/// </summary>
 	/// <param name="radian">角度(radian)</param>
 	/// <returns>Y軸回転行列</returns>
-	static MyBase::Matrix4x4 MakeRotateYMatrix4x4(const float& radian);
+	static MyBase::Matrix4x4 MakeRotateYMatrix4x4(float radian);
 
 	/// <summary>
 	/// Z軸回転行列の作成
 	/// </summary>
 	/// <param name="radian">角度(radian)</param>
 	/// <returns>Z軸回転行列</returns>
-	static MyBase::Matrix4x4 MakeRotateZMatrix4x4(const float& radian);
+	static MyBase::Matrix4x4 MakeRotateZMatrix4x4(float radian);
 
 	/// <summary>
 	/// 4x4回転行列の作成
@@ -225,7 +225,7 @@ public:
 	/// <param name="radianY">Y軸周りのθ値(radian)</param>
 	/// <param name="radianZ">Z軸周りのθ値(radian)</param>
 	/// <returns>回転行列</returns>
-	static MyBase::Matrix4x4 MakeRotateMatrix4x4(const float& radianX, const float& radianY, const float& radianZ);
+	static MyBase::Matrix4x4 MakeRotateMatrix4x4(float radianX, float radianY, float radianZ);
 
 	/// <summary>
 	/// 4x4平行移動行列の作成
@@ -313,10 +313,10 @@ public:
 	/// <param name="scalar">スカラー値</param>
 	/// <param name="matrix">行列</param>
 	/// <returns>積の行列</returns>
-	static MyBase::Matrix4x4 Multiply(const float& scalar, const MyBase::Matrix4x4& matrix);
+	static MyBase::Matrix4x4 Multiply(float scalar, const MyBase::Matrix4x4& matrix);
 
 	/// <summary>
-	/// 3次元ベクトルを同時座標として変換する
+	/// 3次元ベクトルを同次座標として変換する
 	/// </summary>
 	/// <param name="vector">ベクトル</param>
 	/// <param name="matrix">行列</param>
@@ -340,7 +340,7 @@ public:
 
 	/// <summary>
 	/// 4x4行列式の作成
-	/// </sumary>
+	/// </summary>
 	/// <param name="matrix">行列</param>
 	/// <returns>行列式</returns>
 	static float Determinant(const MyBase::Matrix4x4& matrix);

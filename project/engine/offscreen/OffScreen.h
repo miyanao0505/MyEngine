@@ -46,4 +46,20 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
+
+#pragma region 定数
+	static constexpr UINT kSrvDescriptorCount = 1;
+	static constexpr UINT kRootParameterCount = 1;
+	static constexpr UINT kStaticSamplerCount = 2;
+
+	static constexpr UINT kMainTextureRegister = 0;
+	static constexpr UINT kDepthTextureRegister = 1;
+
+	static constexpr UINT kRenderTargetCount = 1;
+	static constexpr UINT kFullScreenTriangleVertexCount = 3;
+	static constexpr UINT kInstanceCount = 1;
+
+	static constexpr UINT kSampleCount = 1;
+	static constexpr UINT kMipLevelCount = 1;
+#pragma endregion
 };

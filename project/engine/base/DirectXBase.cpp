@@ -15,6 +15,11 @@ using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
 
+#pragma region 定数
+// 青っぽい色。RGBAの順
+const float DirectXBase::kDefaultClearColor[4]{ 0.1f, 0.25f, 0.5f, 1.0f };
+#pragma endregion
+
 DirectXBase* DirectXBase::sInstance = nullptr;
 
 // シングルトンインスタンスの取得
@@ -73,9 +78,9 @@ void DirectXBase::PreRenderTexture()
 {
 	// 描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[2], false, &dsvHandle);
+	commandList_->OMSetRenderTargets(1, &rtvHandles_[kRTV_RenderTexture], false, &dsvHandle);
 	// 指定した色で画面全体をクリアする
-	commandList_->ClearRenderTargetView(rtvHandles_[2], clearValue_.Color, 0, nullptr);
+	commandList_->ClearRenderTargetView(rtvHandles_[kRTV_RenderTexture], clearValue_.Color, 0, nullptr);
 	// 指定した深度で画面全体をクリアする
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -98,8 +103,7 @@ void DirectXBase::PreDraw()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
 	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };	// 青っぽい色。RGBAの順
-	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], kDefaultClearColor, 0, nullptr);
 	commandList_->RSSetViewports(1, &viewport_);		// Viewportを設定
 	commandList_->RSSetScissorRects(1, &scissorRect_);	// Scirssorを設定
 }
@@ -161,8 +165,8 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 	DirectX::TexMetadata metadata;
 	
 	// TexMetadata を手動で構築
-	metadata.width = 1024;
-	metadata.height = 1024;
+	metadata.width = WindowsAPI::kClientWidth;
+	metadata.height = WindowsAPI::kClientHeight;
 	metadata.arraySize = 1;
 	metadata.depth = 1;
 	metadata.miscFlags = 0;
@@ -570,7 +574,7 @@ void DirectXBase::CreateSwapChain()
 	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				// 色の形式
 	swapChainDesc_.SampleDesc.Count = 1;							// マルチサンプルしない
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	// 描画のターゲットとして利用する
-	swapChainDesc_.BufferCount = 2;									// ダブルバッファ
+	swapChainDesc_.BufferCount = kBackBuffferCount;									// ダブルバッファ
 	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		// モニタにうつしたら、中身を破棄
 	// コマンドキュー、ウィンドウハンドル、設定を渡して生成する
 	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), winApi_->GetHwnd(), &swapChainDesc_, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
@@ -641,7 +645,7 @@ void DirectXBase::CreateDescriptorHeapAllKinds()
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	// RTV用のデスクリプタヒープの生成
-	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 100, false);
+	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kMaxRTVCount, false);
 	// DSV用のデスクリプタヒープの生成
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 }
@@ -651,7 +655,7 @@ void DirectXBase::InitializeRenderTargetView()
 {
 	HRESULT hr;
 
-	backBuffer_.resize(2);
+	backBuffer_.resize(kBackBuffferCount);
 
 	// SwapChainからResourceを引っ張ってくる
 	hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&backBuffer_[0]));
@@ -665,7 +669,7 @@ void DirectXBase::InitializeRenderTargetView()
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// 2dテクスチャとして書き込む
 	
 	// 要素の2つ分
-	for (uint32_t i = 0; i < 2; ++i) {
+	for (uint32_t i = 0; i < kBackBuffferCount; ++i) {
 		// RTVハンドルを取得
 		rtvHandles_[i].ptr = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart().ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * i;
 		// レンダーターゲットビューの生成
@@ -676,8 +680,8 @@ void DirectXBase::InitializeRenderTargetView()
 	const MyBase::Vector4 kRenderTargetClearValue{ 0.1f, 0.25f, 0.5f, 1.0f };
 	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kClientWidth, WindowsAPI::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 	// RTVハンドルの取得
-	rtvHandles_[2].ptr = rtvHandles_[1].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, rtvHandles_[2]);
+	rtvHandles_[kRTV_RenderTexture].ptr = rtvHandles_[kRTV_BackBuffer1].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, rtvHandles_[kRTV_RenderTexture]);
 }
 
 // CPUDescriptorHandle取得関数
@@ -793,6 +797,3 @@ void DirectXBase::UpdateFixFPS()
 	// 現在の時間を記録する
 	reference_ = std::chrono::steady_clock::now();
 }
-
-
-

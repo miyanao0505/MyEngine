@@ -51,11 +51,11 @@ void LightManager::Draw(ID3D12GraphicsCommandList* cmd)
 {
 	// RootParameter index (Engine 固定)
 	// 3 : Directional Light(平行光源用)のCBufferの場所を設定
-	cmd->SetGraphicsRootConstantBufferView(3, directionalLightBuffer_.Get()->GetGPUVirtualAddress());
+	cmd->SetGraphicsRootConstantBufferView(kDirectionalLight, directionalLightBuffer_.Get()->GetGPUVirtualAddress());
 	// 5 : Point Light(点光源用)のCBufferの場所を設定
-	cmd->SetGraphicsRootConstantBufferView(5, pointLightBuffer_.Get()->GetGPUVirtualAddress());
+	cmd->SetGraphicsRootConstantBufferView(kPointLight, pointLightBuffer_.Get()->GetGPUVirtualAddress());
 	// 6 : Spot Light(スポットライト用)のCBufferの場所を設定
-	cmd->SetGraphicsRootConstantBufferView(6, spotLightBuffer_.Get()->GetGPUVirtualAddress());
+	cmd->SetGraphicsRootConstantBufferView(kSpotLight, spotLightBuffer_.Get()->GetGPUVirtualAddress());
 }
 
 #ifdef _DEBUG
@@ -68,7 +68,7 @@ void LightManager::DebugDraw()
 		if (ImGui::TreeNode("Point Light")) {
 			ImGui::ColorEdit4("Color", &pointLightMapped_->color.x);
 			ImGui::DragFloat3("Position", &pointLightMapped_->position.x, 0.1f);
-			ImGui::DragFloat("Intensity", &pointLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Intensity", &pointLightMapped_->intensity, kLightIntensitySpeed, kLightIntensity.min, kLightIntensity.max);
 			ImGui::DragFloat("Radius", &pointLightMapped_->radius, 0.01f, 0.0f, 10.0f);
 			ImGui::DragFloat("Decay", &pointLightMapped_->decay, 0.01f, 0.0f, 10.0f);
 			ImGui::TreePop();
@@ -79,7 +79,7 @@ void LightManager::DebugDraw()
 		if (ImGui::TreeNode("Directional Light")) {
 			ImGui::ColorEdit4("Color", &directionalLightMapped_->color.x);
 			ImGui::DragFloat3("Direction", &directionalLightMapped_->direction.x, 0.01f, -1.0f, 1.0f);
-			ImGui::DragFloat("Intensity", &directionalLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Intensity", &directionalLightMapped_->intensity, kLightIntensitySpeed, kLightIntensity.min, kLightIntensity.max);
 			ImGui::TreePop();
 		}
 		ImGui::PopID();
@@ -89,7 +89,7 @@ void LightManager::DebugDraw()
 			ImGui::ColorEdit4("Color", &spotLightMapped_->color.x);
 			ImGui::DragFloat3("Position", &spotLightMapped_->position.x, 0.1f);
 			ImGui::DragFloat3("Direction", &spotLightMapped_->direction.x, 0.01f);
-			ImGui::DragFloat("Intensity", &spotLightMapped_->intensity, 0.01f, 0.0f, 10.0f);
+			ImGui::DragFloat("Intensity", &spotLightMapped_->intensity, kLightIntensitySpeed, kLightIntensity.min, kLightIntensity.max);
 			ImGui::DragFloat("Distance", &spotLightMapped_->distance, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Decay", &spotLightMapped_->decay, 0.01f, 0.0f, 10.0f);
 			ImGui::DragFloat("CosAngle", &spotLightMapped_->cosAngle, 0.001f, 0.0f, 1.0f);
@@ -143,5 +143,5 @@ void LightManager::CreateSpotLightData()
 	spotLightMapped_->direction = { 0.0f, -1.0f, 0.0f };
 	spotLightMapped_->distance = 1.0f;
 	spotLightMapped_->decay = 1.0f;
-	spotLightMapped_->cosAngle = 0.125f;
+	spotLightMapped_->cosAngle = kDefaultSpotLightCosAngle;
 }

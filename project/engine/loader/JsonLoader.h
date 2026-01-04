@@ -51,5 +51,8 @@ private:	// メンバ関数
 	/// <param name="levelData">解析結果を格納するLevelData</param>
 	/// <param name="outObject">親のObjectData (ルートの場合はnullptr)</param>
 	void ParseObject(const nlohmann::json& object, JsonLevelData& levelData, JsonObjectData* outObject = nullptr);
-};
 
+#pragma region 定数
+	
+#pragma endregion
+};

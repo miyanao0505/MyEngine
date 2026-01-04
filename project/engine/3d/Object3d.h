@@ -66,15 +66,15 @@ public:	// getter
 	/// <summary>
 	/// ライティングの有効状態を取得
 	/// </summary>
-	/// <returns>有効なら 1、無効なら 0</returns>
-	const int GetEnableLighting() const { return model_->GetEnableLighting(); }
+	/// <returns>有効なら true、無効なら false</returns>
+	bool GetEnableLighting() const { return model_->GetEnableLighting(); }
 
 public:	// setter
 	/// <summary>
 	/// モデルを指定して設定
 	/// </summary>
 	/// <param name="model">設定するモデル</param>
-	void SetModel(Model* model) { model_ = model; }
+	void SetModel(Model* model) { assert(model);  model_ = model; }
 	
 	/// <summary>
 	/// モデルファイルを指定して読み込み・設定
@@ -153,4 +153,3 @@ private:	// メンバ変数
 	// Texture
 	std::string textureFileName_;
 };
-
