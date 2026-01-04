@@ -79,7 +79,7 @@ void GameScene::Initialize()
 	// BGM
 
 	// お試し用
-	AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
+	AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
 #pragma endregion オーディオ
 
 #pragma region 変数
@@ -87,6 +87,9 @@ void GameScene::Initialize()
 	isAccelerationField_ = false;
 	acceleration_ = { 15.0f, 0.0f, 0.0f };
 	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+
+	isGameClear_ = false;
+	gameClearTimer_ = 0.0f;
 #pragma endregion 変数
 
 	// 最初の更新
@@ -138,6 +141,19 @@ void GameScene::Update()
 		CameraManager::GetInstance()->GetCamera()->Update();
 	}
 
+	// クリアフラグが立っている場合
+	if (isGameClear_) {
+		// クリアタイマー更新
+		gameClearTimer_ -= kDeltaTime;
+		// タイマーが0以下になったら
+		if (gameClearTimer_ <= 0.0f) {
+			// シーン切り替え依頼
+			SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
+			return;
+		}
+		return;
+	}
+
 	// スタート演出中
 	if (!startSequence_->IsFinished()) {
 		startSequence_->Update(kDeltaTime);
@@ -146,8 +162,10 @@ void GameScene::Update()
 	
 	// クリア条件
 	if (enemy_->IsDead()) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
+		// ゲームクリアフラグON
+		isGameClear_ = true;
+		// クリアタイマーセット
+		gameClearTimer_ = kGameClearDuration;
 		return;
 	}
 

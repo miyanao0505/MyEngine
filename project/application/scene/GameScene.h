@@ -93,4 +93,8 @@ private:	// メンバ変数
 
 	// デルタイム
 	const float kDeltaTime = 1.0f / 60.0f;
+
+	bool isGameClear_ = false;
+	float gameClearTimer_ = 0.0f;
+	static constexpr float kGameClearDuration = 3.0f;
 };
