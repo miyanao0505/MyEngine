@@ -8,11 +8,13 @@
 const size_t Skybox::kVertexCount = 24;
 const size_t Skybox::kIndexCount = 36;
 
+#ifdef _DEBUG
 const float Skybox::kPi = 3.14159265359f;
 const float Skybox::kImGuiDragSpeed = 0.01f;
 const MyBase::ScopeF Skybox::kTranslateScope{ -100.0f, 100.0f };
 const MyBase::ScopeF Skybox::kRotateScope{ -kPi, kPi };
 const MyBase::ScopeF Skybox::kScaleScope{ 0.0f, 100.0f };
+#endif // _DEBUG
 
 const float Skybox::kDefaultShininess = 40.8f;
 const float Skybox::kDefaultReflectivity = 0.0f;
