@@ -132,7 +132,7 @@ void Enemy::DamageReactionStart()
 	damageReactionTimer_ = kDamageReactionDuration;
 
 	// パーティクルを発生させる
-	//particleEmitter_->Emit();
+	particleEmitter_->Emit();
 
 	// 赤を強調
 	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
