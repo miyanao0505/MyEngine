@@ -11,7 +11,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize() override;
+	void Initialize(const wchar_t* windowTitle) override;
 
 	/// <summary>
 	/// 終了

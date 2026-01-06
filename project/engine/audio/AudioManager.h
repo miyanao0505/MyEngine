@@ -110,9 +110,6 @@ private:	// メンバ変数
 	std::unordered_map<std::string, IXAudio2SourceVoice*> playingVoices_;
 
 #pragma region 定数
-	// ファイルパス
-	static const std::string kAudioRootPath;
-
 	static constexpr char kRiffId[] = "RIFF";
 	static constexpr char kWaveId[] = "WAVE";
 	static constexpr char kFmtId[] = "fmt ";

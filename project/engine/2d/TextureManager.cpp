@@ -1,4 +1,5 @@
 #include "TextureManager.h"
+#include "AssetPath.h"
 
 using namespace DirectX;
 using namespace StringUtility;
@@ -50,7 +51,7 @@ void TextureManager::LoadTexture(const string& filePath)
 	assert(srvManager_->IsSecure());
 
 	// フルパス作成
-	string fullPath = kTextureDirectory + filePath;
+	string fullPath = AssetPath::kTextureRootPath + filePath;
 
 	// Textureを読んで転送する
 	ScratchImage mipImages = dxBase_->LoadTexture(fullPath);

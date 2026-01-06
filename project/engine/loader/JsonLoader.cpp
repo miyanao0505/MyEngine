@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <cassert>
+#include "AssetPath.h"
 
 using namespace std;
 using namespace nlohmann;
@@ -10,10 +11,6 @@ namespace {
 	constexpr int kAxisX = 0;
 	constexpr int kAxisY = 1;
 	constexpr int kAxisZ = 2;
-}
-
-namespace {
-	constexpr const char* kJsonBasePath = "resources/jsons/";
 }
 
 namespace {
@@ -31,7 +28,7 @@ namespace {
 std::unique_ptr<JsonLevelData> JsonLoader::LoadFile(const string& filePath)
 {
 	// 連結してフルパスを得る
-	const string absolutePath = string(kJsonBasePath) + filePath;
+	const string absolutePath = AssetPath::kJsonRootPath + filePath;
 
 	// ファイルストリーム
 	ifstream file;

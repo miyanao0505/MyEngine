@@ -45,7 +45,7 @@ public:	// setter
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 private:	// シングルトンインスタンス
-	static SceneManager* instance;
+	static SceneManager* sInstance;
 
 	SceneManager() = default;
 	~SceneManager() = default;

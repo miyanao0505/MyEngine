@@ -1,9 +1,6 @@
 #include "AudioManager.h"
 #include <cassert>
-
-#pragma region 定数
-const std::string AudioManager::kAudioRootPath = "resources/audio/";
-#pragma endregion
+#include "AssetPath.h"
 
 AudioManager* AudioManager::sInstance = nullptr;
 
@@ -52,7 +49,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 		return;
 	}
 	
-	std::string filePath = kAudioRootPath + filename;
+	std::string filePath = AssetPath::kAudioRootPath + filename;
 
 	/// 1. ファイルオープン
 	// ファイル入力ストリームのインスタンス

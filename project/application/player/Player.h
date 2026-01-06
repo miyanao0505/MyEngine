@@ -30,7 +30,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	void Update(float deltaTime) override;
 
 	/// <summary>
 	/// 描画
@@ -47,7 +47,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void HandleMovementInput();
+	void HandleMovementInput(float deltaTime);
 
 	/// <summary>
 	/// 回転処理
@@ -60,9 +60,20 @@ public:	// メンバ関数
 	void Attack();
 
 	/// <summary>
+	/// 攻撃可能かどうか
+	/// </summary>
+	/// <returns>攻撃可能時 true, 不可なら false</returns>
+	bool CanAttack();
+
+	/// <summary>
+	/// 弾生成
+	/// </summary>
+	void SpawnBullet();
+
+	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
-	void OnCollision([[maybe_unused]] Collider* other) override;
+	void OnCollision(Collider* other) override;
 
 public:	// getter
 	/// <summary>
@@ -94,11 +105,11 @@ private:	// メンバ変数
 	bool isDead_ = false;
 	
 	// プレイヤーの移動速度
-	const float kMoveSpeed = 0.2f;
+	const float kMoveSpeed = 10.0f;
 
 	// プレイヤーの攻撃クールタイム
-	const int kAttackCoolTime = 30;	// 30フレーム
-	int32_t attackCoolTime_ = 0;		// 現在のクールタイム
+	const float kAttackCoolTime = 1.0f / 60.0f * 30.0f;	// 30フレーム
+	float attackCoolTime_ = 0;		// 現在のクールタイム
 
 	// 弾の上限
 	const int kMaxBulletCount = 10; // 最大弾数

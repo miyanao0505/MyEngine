@@ -13,7 +13,7 @@ class BaseObject
 {
 public:	// メンバ関数
 	BaseObject() = default;
-	virtual ~BaseObject() = default;
+	virtual ~BaseObject();
 
 	/// <summary>
 	/// 初期化
@@ -25,7 +25,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	virtual void Update();
+	virtual void Update(float deltaTime = 0.0f);
 	
 	/// <summary>
 	/// 描画
@@ -93,7 +93,7 @@ public:	// setter
 	/// Collider インスタンスを設定
 	/// </summary>
 	/// <param name="collider">所有権を移譲する Collider のユニークポインタ</param>
-	void SetCollider(std::unique_ptr<Collider> collider) { collider_ = std::move(collider); }
+	void SetCollider(std::unique_ptr<Collider> collider);
 	
 	/// <summary>
 	/// オブジェクト名を設定

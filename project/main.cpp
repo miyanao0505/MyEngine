@@ -8,7 +8,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	auto game = std::make_unique<MyGame>();
 
 	// ゲームループ
-	game->Run();
+	game->Run(L"進空戦");
 
 	return 0;
 }

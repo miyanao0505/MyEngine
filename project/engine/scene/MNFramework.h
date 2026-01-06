@@ -13,6 +13,7 @@
 #include "ParticleManager.h"
 #include "ModelManager.h"
 #include "AudioManager.h"
+#include "TimeManager.h"
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
 
@@ -28,7 +29,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	virtual void Initialize();
+	virtual void Initialize(const wchar_t* windowTitle);
 
 	/// <summary>
 	/// 終了
@@ -54,7 +55,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 実行
 	/// </summary>
-	void Run();
+	void Run(const wchar_t* windowTitle);
 
 protected:	// メンバ変数
 	D3DResourceLeakChecker leakCheck;
@@ -91,6 +92,8 @@ protected:	// メンバ変数
 	ModelManager* modelManager_ = nullptr;
 	// オーディオマネージャ
 	AudioManager* audioManager_ = nullptr;
+	// タイムマネージャ
+	TimeManager* timeManager_ = nullptr;
 	// シーンマネージャ
 	SceneManager* sceneManager_ = nullptr;
 	// シーンファクトリー

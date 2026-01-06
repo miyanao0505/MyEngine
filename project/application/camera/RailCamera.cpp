@@ -58,9 +58,9 @@ void RailCamera::MoveAlongRail(float deltaTime)
 
 	lerpT_ += deltaTime * railSpeed_;
 
-	if (lerpT_ >= 1.0f) {
+	if (lerpT_ >= kLerpEnd) {
 		// 次の区間へ
-		lerpT_ = 0.0f;
+		lerpT_ = kLerpStart;
 		currentPointIndex_++;
 		nextPointIndex_++;
 		if (nextPointIndex_ >= controlPoints_.size()) return;

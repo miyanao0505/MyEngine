@@ -5,10 +5,10 @@
 #pragma comment(lib, "dxcompiler.lib")
 
 // 初期化
-void MyGame::Initialize()
+void MyGame::Initialize(const wchar_t* windowTitle)
 {
 	// 基底クラスの初期化処理
-	MNFramework::Initialize();
+	MNFramework::Initialize(windowTitle);
 
 	// シーンマネージャに最初のシーンをセット
 	SceneManager::GetInstance()->ChangeScene(SceneName::Title);

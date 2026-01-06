@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include"SceneManager.h"
+#include "TimeManager.h"
 #include "MyBase.h"
 #include "MyTools.h"
 
@@ -80,7 +81,7 @@ void TitleScene::Initialize()
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->Update();
 	skydome_->Update();
-	titleLogo_->Update();
+	titleLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 #pragma endregion シーン初期化
 }
@@ -117,7 +118,7 @@ void TitleScene::Update()
 	skydome_->Update();
 
 	// 3Dオブジェクトの更新処理
-	titleLogo_->Update();
+	titleLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();

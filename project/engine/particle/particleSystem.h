@@ -13,18 +13,45 @@ class ParticleEmitter;
 /// </summary>
 class ParticleSystem
 {
+private:
+#pragma region 定数
+	// 構造体の初期値
+	static constexpr MyBase::ScopeF kDefaultSize = { 1.0f, 1.0f };
+	static constexpr MyBase::ScopeF kDefaultEnergy = { 1.0f, 1.0f };
+	static constexpr MyBase::ScopeI kDefaultCount = { 1, 1 };
+	static constexpr MyBase::ScopeF kDefaultSpeed = { 1.0f, 1.0f };
+	static constexpr MyBase::Vector3 kDefaultDirection = { 0.0f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector4 kDefaultColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+	static constexpr float kDefaultFrequency = 1.5f;
+	static constexpr float kDefaultFrequencyTime = 0.0f;
+	static constexpr bool kDefaultIsBillboard = false;
+	static constexpr bool kDefaultIsEmitUpdate = true;
+
+#ifdef _DEBUG
+	static constexpr float kImGuiDragSpeed = 0.01f;
+	static constexpr int kImGuiCountDragSpeed = 1;
+	static constexpr MyBase::ScopeF kSize = { 0.0f, 10.0f };
+	static constexpr MyBase::ScopeF kEnergy = { 0.0f, 10.0f };
+	static constexpr MyBase::ScopeI kParticleCount = { 1, 100 };
+	static constexpr MyBase::ScopeF kSpeed = { 0.0f, 10.0f };
+	static constexpr MyBase::ScopeF kDirection = { -1.0f, 1.0f };
+	static constexpr MyBase::ScopeF kFrequency = { 0.1f, 5.0f };
+#endif // _DEBUG
+
+#pragma endregion
+
 public: // 構造体
 	struct ParticleGroupData {
-		MyBase::ScopeF size{ 1.0f, 1.0f };						// パーティクルのサイズ
-		MyBase::ScopeF energy{ 1.0f, 1.0f };					// パーティクルの寿命
-		MyBase::ScopeI count{ 1, 1 };							// パーティクルの発生数
-		MyBase::ScopeF speed{ 1.0f, 1.0f };						// パーティクルの速度
-		MyBase::Vector3 direction = { 0.0f, 0.0f, 0.0f };		// パーティクルの方向
-		MyBase::Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };		// パーティクルの色
-		float frequency = 1.5f;									// 発生頻度
-		float frequencyTime = 0.0f;								// 頻度用時刻
-		bool isBillboard = false;								// ビルボードかどうか
-		bool isEmitUpdate = true;								// 更新時に発生するか
+		MyBase::ScopeF size = kDefaultSize;						// パーティクルのサイズ
+		MyBase::ScopeF energy = kDefaultEnergy;					// パーティクルの寿命
+		MyBase::ScopeI count = kDefaultCount;					// パーティクルの発生数
+		MyBase::ScopeF speed = kDefaultSpeed;					// パーティクルの速度
+		MyBase::Vector3 direction = kDefaultDirection;			// パーティクルの方向
+		MyBase::Vector4 color = kDefaultColor;					// パーティクルの色
+		float frequency = kDefaultFrequency;					// 発生頻度
+		float frequencyTime = kDefaultFrequencyTime;			// 頻度用時刻
+		bool isBillboard = kDefaultIsBillboard;					// ビルボードかどうか
+		bool isEmitUpdate = kDefaultIsEmitUpdate;				// 更新時に発生するか
 	};
 
 public:	// メンバ関数

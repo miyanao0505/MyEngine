@@ -2,14 +2,21 @@
 #include <cassert>
 #include <imgui.h>
 
-SceneManager* SceneManager::instance = nullptr;
+namespace {
+	constexpr float kDebugSceneWindowPosX = 20.0f;
+	constexpr float kDebugSceneWindowPosY = 20.0f;
+	constexpr float kDebugSceneWindowWidth = 350.0f;
+	constexpr float kDebugSceneWindowHeight = 150.0f;
+}
+
+SceneManager* SceneManager::sInstance = nullptr;
 
 SceneManager* SceneManager::GetInstance()
 {
-	if (instance == nullptr) {
-		instance = new SceneManager();
+	if (sInstance == nullptr) {
+		sInstance = new SceneManager();
 	}
-	return instance;
+	return sInstance;
 }
 
 // 終了
@@ -17,16 +24,16 @@ void SceneManager::Finalize()
 {
 	scene_.reset();
 
-	delete instance;
-	instance = nullptr;
+	delete sInstance;
+	sInstance = nullptr;
 }
 
 // 更新
 void SceneManager::Update()
 {
 #ifdef _DEBUG
-	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(ImVec2(kDebugSceneWindowPosX, kDebugSceneWindowPosY), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(kDebugSceneWindowWidth, kDebugSceneWindowHeight), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 	ImGui::Begin("scene");
 	if (ImGui::Button("Title")) {
 		nextScene_ = sceneFactory_->CreateScene(SceneName::Title);

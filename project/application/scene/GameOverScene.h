@@ -4,6 +4,9 @@
 #include "Skydome.h"
 #include "GameOverLogo.h"
 #include "MyBase.h"
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
 
 /// <summary>
 /// プレイヤーが敗北した際に表示されるゲームオーバー演出シーンを管理するクラス。
@@ -11,6 +14,32 @@
 /// </summary>
 class GameOverScene : public BaseScene
 {
+private:
+#pragma region 定数
+	// カメラ初期設定
+	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 0.0f,-40.0f };
+	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
+
+	// ライト初期設定
+	static constexpr MyBase::Vector4 kClearLightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+	static constexpr MyBase::Vector3 kClearLightPos{ 0.0f, 0.0f, -40.0f };
+	static constexpr float kClearLightIntensity = 1.0f;
+	static constexpr float kClearLightRadius = 500.0f;
+	static constexpr float kClearLightDecay = 2.0f;
+
+	// Skydome初期設定
+	static constexpr MyBase::Vector3 kSkydomeScale{ 100.0f, 100.0f, 100.0f };
+
+	// パーティクル加速フィールド初期設定
+	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
+	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
+#ifdef _DEBUG
+	// ImGuiウィンドウサイズ
+	static constexpr ImVec2 kDebugWindowPos{ 20.0f, 350.0f };
+	static constexpr ImVec2 kDebugWindowSize{ 350.0f, 150.0f };
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -65,7 +94,4 @@ private:	// メンバ変数
 	bool isAccelerationField_;
 	MyBase::Vector3 acceleration_{};
 	MyBase::AABB area_{};
-
-	// デルタイム
-	const float kDeltaTime = 1.0f / 60.0f;
 };

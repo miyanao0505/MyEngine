@@ -76,8 +76,4 @@ private:	// メンバ変数
 
 	std::unique_ptr<ModelBase> modelBase_ = nullptr;
 	std::unique_ptr<Object3dBase> object3dBase_ = nullptr;
-
-#pragma region 定数
-	static const std::string kModelRootPath;
-#pragma endregion
 };

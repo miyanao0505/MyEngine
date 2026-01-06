@@ -47,9 +47,8 @@ void ParticleManager::Update()
 	if (CameraManager::GetInstance()->GetCamera()) {
 		viewProjectionMatrix = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
 		billboardMatrix = CameraManager::GetInstance()->GetCamera()->GetWorldMatrix();
-		billboardMatrix.m[3][0] = 0.0f;
-		billboardMatrix.m[3][1] = 0.0f;
-		billboardMatrix.m[3][2] = 0.0f;
+		// 平行移動成分をリセット
+		billboardMatrix = Matrix::ResetTranslation(billboardMatrix);
 	}
 	for (std::pair<const std::string, std::unique_ptr<ParticleGroup>>& pair : particleGroups_) {
 		ParticleGroup& group = *pair.second;
@@ -383,8 +382,6 @@ void ParticleManager::Emit(const std::string& name, const MyBase::Vector3& posit
 		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
 	}
 	group.isBillboard = particleGroupData.isBillboard;
-
-	particleBase_->CreateGraphicsPipeline();
 }
 
 void ParticleManager::CreateIndexResource(ParticleType type)
@@ -401,8 +398,9 @@ void ParticleManager::CreateIndexResource(ParticleType type)
 
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
 	if (type == ParticleType::kEllipse) {
-		indexData_[0] = 0; indexData_[1] = 1; indexData_[2] = 2;
-		indexData_[3] = 1; indexData_[4] = 3; indexData_[5] = 2;
+		for (size_t index = 0; index < _countof(kQuadIndices); index++){
+			indexData_[index] = kQuadIndices[index];
+		}
 	} else if (type == ParticleType::kRing) {
 		for (uint32_t index = 0; index < kRingDivide; index++) {
 			indexData_[index * 6] = index * 4;
@@ -467,7 +465,7 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 
 	if (type == ParticleType::kEllipse) {
 		// 横に潰し、縦方向の大きさをランダムに入れる
-		particle.transform.scale = { distScale(randomEngine) * 0.08f, distScale(randomEngine), 1.0f };
+		particle.transform.scale = { distScale(randomEngine) * kEllipseScaleXRotio, distScale(randomEngine), 1.0f };
 		// ランダムに回転させる
 		particle.transform.rotate = { 0.0f, 0.0f, distRotate(randomEngine) };
 	} else if (type == ParticleType::kRing) {
@@ -476,7 +474,7 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 	} else if (type == ParticleType::kCylinder) {
 		particle.transform.scale = { distScale(randomEngine), distScale(randomEngine), distScale(randomEngine) };
 		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
-		particle.lifeTime = 2.0f;
+		particle.lifeTime = kCylinderDefaultLifeTime;
 	}
 	
 	return particle;

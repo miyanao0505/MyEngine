@@ -13,7 +13,6 @@ const float Model::kDefaultShininess = 40.8f;
 const float Model::kDefaultReflectivity = 0.0f;
 #pragma endregion
 
-
 // 初期化
 void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, const std::string& fileName)
 {

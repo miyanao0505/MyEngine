@@ -72,7 +72,7 @@ void Enemy::Initialize()
 }
 
 // 更新
-void Enemy::Update()
+void Enemy::Update(float deltaTime)
 {
 	// 敵の更新処理
 	if (isDead_) {
@@ -82,8 +82,12 @@ void Enemy::Update()
 	// ダメージリアクションの更新
 	if(damageReactionTimer_ > 0.0f){
 		// ダメージリアクションタイマーの更新
-		damageReactionTimer_ -= 1.0f / 60.0f;
+		damageReactionTimer_ -= deltaTime;
 		DamageReactionUpdate();
+	}
+
+	if (state_) {
+		state_->Update();
 	}
 
 	// モデルの更新
@@ -110,7 +114,7 @@ void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
 }
 
 // ダメージ処理
-void Enemy::Damege(int damage)
+void Enemy::Damage(int damage)
 {
 	if(damageReactionTimer_ > 0.0f){
 		return; // ダメージリアクション中はダメージを受け付けない
@@ -194,7 +198,7 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 	// プレイヤー弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
 		// プレイヤーの攻撃力分ダメージを受ける
-		Damege(player_->GetAttackPower());
+		Damage(player_->GetAttackPower());
 		if (hp_ <= 0) {
 			isDead_ = true;
 		}

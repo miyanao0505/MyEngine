@@ -8,6 +8,14 @@
 /// </summary>
 class RailCamera
 {
+private:
+#pragma region 定数
+	static constexpr float kDefaultRailSpeed = 0.05f;	// レールの進行速度
+
+	static constexpr float kLerpEnd = 1.0f;
+	static constexpr float kLerpStart = 0.0f;
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -58,17 +66,14 @@ public:	// setter
 private:	// メンバ変数
 	std::vector<MyBase::Vector3> controlPoints_;	// レールの制御点リスト
 
-	size_t currentPointIndex_ = 0;		// 現在の制御点インデックス
-	size_t nextPointIndex_ = 1;			// 次の制御点インデックス
+	size_t currentPointIndex_ = 0;			// 現在の制御点インデックス
+	size_t nextPointIndex_ = 1;				// 次の制御点インデックス
 
-	float lerpT_ = 0.0f;				// 区間内の補間値 0～1
-	float railSpeed_ = 0.05f;			// レールの進行速度
+	float lerpT_ = kLerpStart;				// 区間内の補間値 0～1
+	float railSpeed_ = kDefaultRailSpeed;	// レールの進行速度
 
-	MyBase::Vector3 railPosition_;		// レール上の現在位置
-	MyBase::Vector3 railDirection_;		// レールの向き
-
-	// 定数
-	const size_t kNumRailPoints = 5; // レールの制御点の最大数
+	MyBase::Vector3 railPosition_;			// レール上の現在位置
+	MyBase::Vector3 railDirection_;			// レールの向き
 
 #ifdef _DEBUG
 	bool isDebugMode_ = false;	// デバッグモードフラグ

@@ -352,5 +352,11 @@ public:
 	/// <returns>転置行列</returns>
 	static MyBase::Matrix4x4 Transpose(const MyBase::Matrix4x4& matrix);
 
+	/// <summary>
+	/// 4x4行列の平行移動成分をリセットする関数
+	/// </summary>
+	/// <param name="matrix">行列</param>
+	/// <returns>平行移動成分をリセットした4x4行列</returns>
+	static MyBase::Matrix4x4 ResetTranslation(const MyBase::Matrix4x4& matrix);
 #pragma endregion 4x4の行列
 };

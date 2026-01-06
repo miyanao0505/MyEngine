@@ -2,6 +2,7 @@
 #include <string>
 #include <filesystem>
 #include "ModelManager.h"
+#include "AssetPath.h"
 
 using std::string;
 using std::unique_ptr;
@@ -40,7 +41,7 @@ unique_ptr<BaseObject> BaseScene::CreateObjectFromData(const JsonObjectData& dat
 	// ファイルパスからフォルダパスを抽出
 	const string folderPath = path.parent_path().string();
 
-	baseObject->Initialize("debug/" + folderPath, data.modelFileName);
+	baseObject->Initialize(AssetPath::kDebugModelRoot + folderPath, data.modelFileName);
 	baseObject->SetName(data.name);
 	baseObject->GetObject3D()->SetModel(data.modelFileName);
 	baseObject->GetObject3D()->Initialize(data.modelFileName);

@@ -43,20 +43,20 @@ void TitleLogo::Finalize() {
 }
 
 // 更新
-void TitleLogo::Update() {
+void TitleLogo::Update(float deltaTime) {
 	Move();
 
 	if (titleCharFirst_) {
-		titleCharFirst_->Update();
+		titleCharFirst_->Update(deltaTime);
 	}
 	if (titleCharSecond_) {
-		titleCharSecond_->Update();
+		titleCharSecond_->Update(deltaTime);
 	}
 	if (titleCharThird_) {
-		titleCharThird_->Update();
+		titleCharThird_->Update(deltaTime);
 	}
 	if (startButton_) {
-		startButton_->Update();
+		startButton_->Update(deltaTime);
 	}
 }
 

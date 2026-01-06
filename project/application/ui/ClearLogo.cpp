@@ -1,5 +1,6 @@
 #include "ClearLogo.h"
 #include "MyTools.h"
+#include "TimeManager.h"
 
 /// 初期化
 void ClearLogo::Initialize() {
@@ -28,14 +29,14 @@ void ClearLogo::Finalize() {
 }
 
 /// 更新
-void ClearLogo::Update() {
+void ClearLogo::Update(float deltaTime) {
 	Move();
 
 	if (clearChar_) {
-		clearChar_->Update();
+		clearChar_->Update(deltaTime);
 	}
 	if (transitionButton_) {
-		transitionButton_->Update();
+		transitionButton_->Update(deltaTime);
 	}
 }
 

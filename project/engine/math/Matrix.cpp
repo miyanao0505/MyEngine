@@ -675,6 +675,18 @@ MyBase::Matrix4x4 Matrix::Transpose(const MyBase::Matrix4x4& matrix)
 	return ans;
 }
 
+/// 4x4行列の平行移動成分をリセットする関数
+MyBase::Matrix4x4 Matrix::ResetTranslation(const MyBase::Matrix4x4& matrix)
+{
+	MyBase::Matrix4x4 ans = matrix;
+
+	ans.m[3][0] = 0;
+	ans.m[3][1] = 0;
+	ans.m[3][2] = 0;
+
+	return ans;
+}
+
 /// 
 /// 4x4行列関数 ここまで
 /// 

@@ -158,6 +158,7 @@ void ParticleBase::SetCommonScreen()
 void ParticleBase::SetBlendMode(BlendMode blendMode)
 {
 	blendMode_ = blendMode;
+	// ブレンドモード変更時のみ呼ばれる想定
 	CreateGraphicsPipeline();
 }
 

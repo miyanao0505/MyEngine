@@ -47,10 +47,17 @@ private:	// メンバ変数
 	Phase phase_ = Phase::kNone;
 	float timer_ = 0.0f;        // タイマー
 
-	static constexpr float kFadeTime = 1.0f;
+	
 
 	FinishCallback onSwitch_ = nullptr; // シーン切替タイミングのコールバック
 
 	// フェード用スプライト
 	std::unique_ptr<Sprite> fadeSprite_ = nullptr;
+
+#pragma region 定数
+	static constexpr float kFadeTime = 1.0f;
+	static constexpr float kDeltaTime = 1.0f / 60.0f;
+
+	static constexpr MyBase::Vector2 kScreenSize = { 1280.0f, 720.0f };
+#pragma endregion
 };

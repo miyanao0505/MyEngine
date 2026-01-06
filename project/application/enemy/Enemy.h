@@ -14,6 +14,14 @@ class Player;
 /// </summary>
 class Enemy : public BaseObject
 {
+private:
+#pragma region 定数
+	static constexpr float kDamageReactionDuration = 0.1f;	// ダメージリアクション時間
+	static constexpr float kDeadReactionDuration = 1.0f;	// 死亡リアクション時間
+
+	
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -33,7 +41,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	void Update(float deltaTime) override;
 
 	/// <summary>
 	/// 描画
@@ -50,7 +58,7 @@ public:	// メンバ関数
 	/// ダメージ処理
 	/// </summary>
 	/// <param name="damage">ダメージ値</param>
-	void Damege(int damage);
+	void Damage(int damage);
 
 	/// <summary>
 	/// ダメージリアクションの開始
@@ -117,8 +125,6 @@ private:	/// メンバ変数
 	// 演出系
 	float damageReactionTimer_ = 0.0f;
 	float deadReactionTimer_ = 0.0f;
-	const float kDamageReactionDuration = 0.1f;	// ダメージリアクション時間
-	const float kDeadReactionDuration = 1.0f;		// 死亡リアクション時間
 
 	// プレイヤー
 	Player* player_;

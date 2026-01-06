@@ -1,5 +1,4 @@
 #include "GameScene.h"
-#include <imgui.h>
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "ModelManager.h"
@@ -7,6 +6,7 @@
 #include "ParticleManager.h"
 #include "AudioManager.h"
 #include"SceneManager.h"
+#include "TimeManager.h"
 #include "MyTools.h"
 
 using namespace std;
@@ -93,11 +93,11 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	railCamera_->Update(kDeltaTime);
-	followCamera_->Update(kDeltaTime);
+	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	followCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	CameraManager::GetInstance()->GetCamera()->Update();
-	player_->Update();
-	enemy_->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	skydome_->Update();
 
 #pragma endregion シーン初期化
@@ -135,7 +135,7 @@ void GameScene::Update()
 #endif // _DEBUG
 
 	// カメラマネージャーの更新
-	CameraManager::GetInstance()->Update(kDeltaTime);
+	CameraManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 	// カメラの更新
 	if (CameraManager::GetInstance()->GetCamera()) {
 		CameraManager::GetInstance()->GetCamera()->Update();
@@ -144,7 +144,7 @@ void GameScene::Update()
 	// クリアフラグが立っている場合
 	if (isGameClear_) {
 		// クリアタイマー更新
-		gameClearTimer_ -= kDeltaTime;
+		gameClearTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 		// タイマーが0以下になったら
 		if (gameClearTimer_ <= 0.0f) {
 			// シーン切り替え依頼
@@ -156,7 +156,7 @@ void GameScene::Update()
 
 	// スタート演出中
 	if (!startSequence_->IsFinished()) {
-		startSequence_->Update(kDeltaTime);
+		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
 		return;
 	}
 	
@@ -171,16 +171,16 @@ void GameScene::Update()
 
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
-	player_->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// フォローカメラの更新
-	followCamera_->Update(kDeltaTime);
+	followCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// レールカメラの更新
-	railCamera_->Update(kDeltaTime);
+	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// 敵の更新処理
-	enemy_->Update();
+	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// 天球の更新
 	skydome_->Update();
@@ -193,7 +193,7 @@ void GameScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime(), acceleration_));
 				}
 
 				++it;

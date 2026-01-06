@@ -47,4 +47,3 @@ private:	// メンバ変数
 	float maxOffsetX_ = 5.0f;			// X方向の最大オフセット
 	float maxOffsetY_ = 3.0f;			// Y方向の最大オフセット
 };
-

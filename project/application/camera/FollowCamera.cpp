@@ -11,9 +11,9 @@ void FollowCamera::Initialize()
 	camera_ = CameraManager::GetInstance()->GetCamera();
 
 	// 注視点からのオフセットを設定
-	offset_ = { 0.0f, 7.50f, -40.0f };
+	offset_ = kDefaultOffset;
 	// カメラの方向を設定
-	upDirection_ = { 0.0f, 1.0f, 0.0f };
+	upDirection_ = kWorldUp;
 }
 
 /// 更新
@@ -76,7 +76,7 @@ void FollowCamera::DebugDraw() {
 		MyBase::Vector3 offset = offset_;
 		
 		// ImGuiを用いた変更
-		ImGui::DragFloat3("offset", &offset.x, 0.05f);
+		ImGui::DragFloat3("offset", &offset.x, kOffsetDragSpeed);
 
 		// 変更を反映
 		offset_ = offset;

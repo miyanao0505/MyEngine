@@ -61,7 +61,7 @@ void CollisionManager::CheckAllCollisions()
 // コライダー2つの衝突判定と応答
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
 {
-	// 衝突フィルタリング
+	// 衝突判定が無効なら早期リターン
 	if (!colliderA->IsCollisionEnabled() || !colliderB->IsCollisionEnabled()) {
 		return;
 	}

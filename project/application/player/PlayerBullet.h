@@ -22,7 +22,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	/// <param name="deltaTime">前フレームからの経過時間[秒]</param>
+	void Update(float deltaTime) override;
 
 	/// <summary>
 	/// 描画
@@ -39,7 +40,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void Move();
+	/// <param name="deltaTime">前フレームからの経過時間[秒]</param>
+	void Move(float deltaTime);
 
 	/// <summary>
 	/// 当たり判定
@@ -67,14 +69,14 @@ private:	// メンバ変数
 	bool isDead_ = false;
 
 	// 弾の移動速度
-	const float kMoveSpeed = 0.5f;
+	const float kMoveSpeed = 50.0f;
 
 	// 弾の速度
 	MyBase::Vector3 velocity_;
 
 	// 寿命<frm>
-	static const int32_t kLifeTime = 60 * 5;
+	static constexpr float kLifeTime = 60.0f * 5.0f;
 
 	// デスタイマー
-	int32_t deathTimer_ = kLifeTime;
+	float deathTimer_ = kLifeTime;
 };

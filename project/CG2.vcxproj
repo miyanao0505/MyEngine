@@ -29,6 +29,7 @@
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
+    <ClCompile Include="engine\base\TimeManager.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
     <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
@@ -95,6 +96,8 @@
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
+    <ClInclude Include="engine\base\AssetPath.h" />
+    <ClInclude Include="engine\base\TimeManager.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />

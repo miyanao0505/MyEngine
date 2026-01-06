@@ -31,15 +31,17 @@ void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vec
 }
 
 // 更新
-void PlayerBullet::Update()
+void PlayerBullet::Update(float deltaTime)
 {
+	if (isDead_) return; // 弾が消滅している場合は更新しない
+
 	// 移動処理
-	Move();
+	Move(deltaTime);
 	// オブジェクトの更新
 	object_->Update();
 
 	// 寿命を減らす
-	deathTimer_--;
+	deathTimer_ -= deltaTime;
 }
 
 // 描画
@@ -75,10 +77,10 @@ void PlayerBullet::DebugDraw()
 #endif // _DEBUG
 
 // 移動処理
-void PlayerBullet::Move()
+void PlayerBullet::Move(float deltaTime)
 {
 	// 弾の移動
-	MyBase::Vector3 move = MyTools::Multiply(kMoveSpeed, velocity_);
+	MyBase::Vector3 move = MyTools::Multiply(deltaTime * kMoveSpeed, velocity_);
 	object_->SetTranslate(MyTools::Add(object_->GetTranslate(), move));
 	// 画面外に出たら削除
 	if (deathTimer_ <= 0) {
@@ -96,7 +98,4 @@ void PlayerBullet::OnCollision([[maybe_unused]] Collider* other)
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) { // 敵の属性
 		isDead_ = true;
 	}
-	
-	
-
 }

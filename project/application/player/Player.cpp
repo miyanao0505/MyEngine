@@ -28,8 +28,6 @@ void Player::Initialize(const MyBase::Vector3& position)
 	// プレイヤーのコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
 	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
-	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
-	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	SetCollider(std::move(col)); // コライダーをセット
 
@@ -44,10 +42,10 @@ void Player::Initialize(const MyBase::Vector3& position)
 }
 
 /// 更新
-void Player::Update()
+void Player::Update(float deltaTime)
 {
 	// 移動処理
-	HandleMovementInput();
+	HandleMovementInput(deltaTime);
 
 	// 回転処理
 	HandleRotationInput();
@@ -67,14 +65,14 @@ void Player::Update()
 			it = bullets_.erase(it); // listから完全に削除
 		}
 		else {
-			it->get()->Update(); // 弾の更新
+			it->get()->Update(deltaTime); // 弾の更新
 			++it;
 		}
 	}
 
 	// 攻撃のクールタイムを減らす
 	if (attackCoolTime_ > 0) {
-		attackCoolTime_--;
+		attackCoolTime_ -= deltaTime;
 	}
 }
 
@@ -116,21 +114,21 @@ void Player::DebugDraw()
 
 
 /// 移動処理
-void Player::HandleMovementInput()
+void Player::HandleMovementInput(float deltaTime)
 {
 	// プレイヤーの移動
 	MyBase::Vector3 velocity = { 0.0f, 0.0f, 0.0f };
 	if (Input::GetInstance()->IsKeyPressed(DIK_W)) {
-		velocity.y += kMoveSpeed;
+		velocity.y += kMoveSpeed * deltaTime;
 	}
 	if (Input::GetInstance()->IsKeyPressed(DIK_S)) {
-		velocity.y -= kMoveSpeed;
+		velocity.y -= kMoveSpeed * deltaTime;
 	}
 	if (Input::GetInstance()->IsKeyPressed(DIK_A)) {
-		velocity.x -= kMoveSpeed;
+		velocity.x -= kMoveSpeed * deltaTime;
 	}
 	if (Input::GetInstance()->IsKeyPressed(DIK_D)) {
-		velocity.x += kMoveSpeed;
+		velocity.x += kMoveSpeed * deltaTime;
 	}
 	
 	// 座標更新
@@ -163,9 +161,25 @@ void Player::HandleRotationInput()
 /// 攻撃
 void Player::Attack()
 {
-	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE) && bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0)
-	{
-		// 弾の生成
+	// 攻撃不可なら早期リターン
+	if (!CanAttack()) return;
+	// 弾の生成
+	SpawnBullet();
+}
+
+/// 攻撃可能かどうか
+bool Player::CanAttack()
+{
+	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0) {
+		return true;
+	}
+	return false;
+}
+
+/// 弾生成
+void Player::SpawnBullet()
+{
+	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE)) {
 		auto bullet = std::make_unique<PlayerBullet>();
 		MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
 		bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
@@ -178,5 +192,5 @@ void Player::Attack()
 /// 衝突を検出したら呼び出されるコールバック関数
 void Player::OnCollision([[maybe_unused]] Collider* other)
 {
-
+	// 現在は敵・敵弾の衝突処理のみ想定しており、未実装
 }

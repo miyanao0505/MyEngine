@@ -8,6 +8,17 @@
 /// プレイヤーの動きを追従するタイプのカメラを制御するクラス。
 /// </summary>
 class FollowCamera {
+private:
+#pragma region 定数
+	static constexpr MyBase::Vector3 kDefaultOffset{ 0.0f, 7.5f, -40.0f };
+	static constexpr MyBase::Vector3 kWorldUp{ 0.0f, 1.0f, 0.0f };
+	static constexpr float kDefaultFollowSmooth = 8.0f;
+
+#ifdef _DEBUG
+	static constexpr float kOffsetDragSpeed = 0.05f;
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -82,15 +93,14 @@ private:	// メンバ変数
 	Player* player_ = nullptr;
 	
 	// 注視点からのオフセット
-	MyBase::Vector3 offset_ = { 0.0f, 7.50f, -40.0f };
+	MyBase::Vector3 offset_ = kDefaultOffset;
 	// カメラの方向
-	MyBase::Vector3 upDirection_ = { 0.0f, 1.0f, 0.0f };
+	MyBase::Vector3 upDirection_ = kWorldUp;
 	// カメラの追従のスムージング係数
-	float followSmooth_ = 8.0f;
+	float followSmooth_ = kDefaultFollowSmooth;
 
 	// プレイヤーを追っただけの理想位置
 	MyBase::Vector3 currentFollowPosition_;
 	// 注視点の位置
 	MyBase::Vector3 target_;
 };
-
