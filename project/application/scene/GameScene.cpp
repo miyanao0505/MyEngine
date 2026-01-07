@@ -5,7 +5,7 @@
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include "AudioManager.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
 #include "TimeManager.h"
 #include "MyTools.h"
 
@@ -45,17 +45,24 @@ void GameScene::Initialize()
 #pragma endregion 3Dオブジェクト
 
 #pragma region カメラ
+	CameraManager::GetInstance()->AddCamera("FollowCamera");
+	CameraManager::GetInstance()->SetCamera("FollowCamera");
 	// フォローカメラ
 	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	followCamera_->SetPlayer(player_.get());
+	followCamera_->Initialize(CameraManager::GetInstance()->GetCamera());
 	// レールカメラ
 	railCamera_ = std::make_unique<RailCamera>();
-	railCamera_->Initialize({
-		{ 0.0f, 0.0f, -50.0f },
+	railCamera_->Initialize();
+	railCamera_->SetRailPoints({
+		{ 0.0f, 0.0f, -40.0f },
 		{ 0.0f, 0.0f, 0.0f },
 		{ 0.0f, 0.0f, 50.0f },
+		{ 0.0f, 0.0f, 100.0f },
 		});
+	// レール追従システム
+	railFollowSystem_ = std::make_unique<RailFollowSystem>();
+	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get(), CameraManager::GetInstance()->GetCamera());
+	
 #pragma endregion カメラ
 
 #pragma region シーケンス
@@ -93,8 +100,9 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
-	followCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	followCamera_->SetTargetPosition(player_->GetWorldPosition());
+	followCamera_->UpdateLookAtTarget();
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({0.0f, 5.0f, -40.0f});
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
@@ -173,11 +181,10 @@ void GameScene::Update()
 	// プレイヤーの更新処理
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
-	// フォローカメラの更新
-	followCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
 
-	// レールカメラの更新
-	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	// レール追従システムの更新
+	railFollowSystem_->Update();
 
 	// 敵の更新処理
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());

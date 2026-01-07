@@ -7,10 +7,10 @@
 using namespace std;
 
 /// 初期化
-void RailCamera::Initialize(const vector<MyBase::Vector3>& points)
+void RailCamera::Initialize()
 {
-	// 制御点リストの設定
-	controlPoints_ = points;
+	lerpT_ = kLerpStart;
+	speed_ = kDefaultRailSpeed;
 }
 
 /// 更新
@@ -54,17 +54,31 @@ void RailCamera::DebugDraw()
 /// レールに沿って移動
 void RailCamera::MoveAlongRail(float deltaTime)
 {
-	if (nextPointIndex_ >= controlPoints_.size()) return;
+	if (controlPoints_.size() < 4) return;
 
-	lerpT_ += deltaTime * railSpeed_;
+	// 進行度更新
+	lerpT_ += speed_ * deltaTime;
 
-	if (lerpT_ >= kLerpEnd) {
-		// 次の区間へ
-		lerpT_ = kLerpStart;
-		currentPointIndex_++;
-		nextPointIndex_++;
-		if (nextPointIndex_ >= controlPoints_.size()) return;
-	}
+	// ループorクランプ
+	lerpT_ = MyTools::Clamp(lerpT_, kLerpStart, kLerpEnd);
 
-	railPosition_ = MyTools::Lerp(controlPoints_[currentPointIndex_], controlPoints_[nextPointIndex_], lerpT_);
+	// 現在位置
+	position_ = MyTools::CatmullRomPosition(controlPoints_, lerpT_);
+
+	// 少し先の位置
+	const float epsilon = 0.001f;
+	float tNext = MyTools::Clamp(lerpT_ + epsilon, kLerpStart, kLerpEnd);
+	MyBase::Vector3 nextPos = MyTools::CatmullRomPosition(controlPoints_, tNext);
+
+	// 進行方向
+	forward_ = MyTools::Normalize(MyTools::Subtract(nextPos, position_));
+}
+
+/// レールデータの取得
+MyBase::RailData RailCamera::GetRailData() const
+{
+	MyBase::RailData railData{};
+	railData.position = position_;
+	railData.forward = forward_;
+	return railData;
 }

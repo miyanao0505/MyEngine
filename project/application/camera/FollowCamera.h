@@ -1,6 +1,5 @@
 #pragma once
 #include "Camera.h"
-#include "Player.h"
 #include "MyBase.h"
 
 /// <summary>
@@ -23,24 +22,25 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	/// <param name="camera">担当のカメラ</param>
+	void Initialize(Camera* camera);
 	
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="deltaTime">前フレームからの経過時間</param>
-	void Update([[maybe_unused]] float deltaTime);
-
-	/// <summary>
-	///  描画
-	/// </summary>
-	void Draw();
+	void Update(float deltaTime);
 
 	/// <summary>
 	/// 追従処理を更新する
 	/// </summary>
 	/// <param name="deltaTime">前フレームからの経過時間</param>
-	void UpdateFollow( float deltaTime);
+	void UpdateFollowTranslate( float deltaTime);
+
+	/// <summary>
+	/// 注視点の更新
+	/// </summary>
+	void UpdateLookAtTarget();
 
 #ifdef _DEBUG
 	/// <summary>
@@ -76,10 +76,10 @@ public:	// setter
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	
 	/// <summary>
-	/// プレイヤーの設定
+	/// 追従対象の設定
 	/// </summary>
-	/// <param name="player">担当のプレイヤー</param>
-	void SetPlayer(Player* player) { player_ = player; }
+	/// <param name="player">追従対象</param>
+	void SetTargetPosition(const MyBase::Vector3& target) { target_ = target; isTargetSet_ = true; }
 	
 	/// <summary>
 	/// プレイヤーとカメラのオフセットの設定
@@ -90,17 +90,15 @@ public:	// setter
 private:	// メンバ変数
 	Camera* camera_ = nullptr;
 
-	Player* player_ = nullptr;
+	MyBase::Vector3 target_;	// 追従対象(外部からセット)
+	MyBase::Vector3 offset_;	// ターゲットからの相対位置
+	float followSmooth_;		// 補間係数
 	
-	// 注視点からのオフセット
-	MyBase::Vector3 offset_ = kDefaultOffset;
+	bool isTargetSet_ = false;	// 追従対象がセットされたかどうか
+
 	// カメラの方向
 	MyBase::Vector3 upDirection_ = kWorldUp;
-	// カメラの追従のスムージング係数
-	float followSmooth_ = kDefaultFollowSmooth;
 
 	// プレイヤーを追っただけの理想位置
 	MyBase::Vector3 currentFollowPosition_;
-	// 注視点の位置
-	MyBase::Vector3 target_;
 };

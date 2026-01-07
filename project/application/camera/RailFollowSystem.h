@@ -28,6 +28,18 @@ public:	// getter
 
 public:	// setter
 	/// <summary>
+	/// プレイヤーの位置の設定
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの位置</param>
+	void SetPlayerPosition(const MyBase::Vector3& playerPos) { playerPos_ = playerPos; }
+
+	/// <summary>
+	/// 入力の設定
+	/// </summary>
+	/// <param name="input">入力</param>
+	void SetInput(const MyBase::Vector2& input) { input_ = input; }
+
+	/// <summary>
 	/// X方向の最大オフセットの設定
 	/// </summary>
 	/// <param name="maxOffsetX">X方向の最大オフセット</param>
@@ -44,6 +56,10 @@ private:	// メンバ変数
 	FollowCamera* followCamera_ = nullptr;	// 追従カメラ
 	Camera* camera_ = nullptr;				// 出力カメラ
 
-	float maxOffsetX_ = 5.0f;			// X方向の最大オフセット
-	float maxOffsetY_ = 3.0f;			// Y方向の最大オフセット
+	// 入力合成用
+	MyBase::Vector2 input_;			// -1.0f ～ 1.0f の範囲で入力される想定
+	float maxOffsetX_ = 5.0f;				// X方向の最大オフセット
+	float maxOffsetY_ = 3.0f;				// Y方向の最大オフセット
+
+	MyBase::Vector3 playerPos_;	// プレイヤーの位置
 };

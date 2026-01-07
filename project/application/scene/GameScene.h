@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "FollowCamera.h"
 #include "RailCamera.h"
+#include "RailFollowSystem.h"
 #include "Enemy.h"
 #include "Skydome.h"
 #include "StartSequence.h"
@@ -104,6 +105,7 @@ private:	// メンバ変数
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 	std::unique_ptr<RailCamera> railCamera_ = nullptr;
+	std::unique_ptr<RailFollowSystem> railFollowSystem_ = nullptr;
 	
 	// スポーンポイント
 	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;

@@ -421,4 +421,20 @@ public:
 		Vector3 translation;	// 平行移動
 		Vector3 rotation;		// 回転角
 	};
+
+	/// <summary>
+	/// 敵キャラの生成データ
+	/// </summary>
+	struct EnemySpawnData {
+		Vector3 translation;	// 平行移動
+		Vector3 rotation;		// 回転角
+	};
+
+	/// <summary>
+	/// レール上のデータ
+	/// </summary>
+	struct RailData {
+		Vector3 position;		// レール上の座標
+		Vector3 forward;		// 接線方向(進行方向)
+	};
 };

@@ -10,7 +10,7 @@ class RailCamera
 {
 private:
 #pragma region 定数
-	static constexpr float kDefaultRailSpeed = 0.05f;	// レールの進行速度
+	static constexpr float kDefaultRailSpeed = 0.2f;	// レールの進行速度
 
 	static constexpr float kLerpEnd = 1.0f;
 	static constexpr float kLerpStart = 0.0f;
@@ -20,8 +20,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="points">レールの制御点リスト</param>
-	void Initialize(const std::vector<MyBase::Vector3>& points);
+	void Initialize();
 
 	/// <summary>
 	/// 更新
@@ -49,31 +48,34 @@ private:	// メンバ関数
 
 public:	// getter
 	/// <summary>
+	/// レールデータの取得
+	/// </summary>
+	/// <returns>レールデータの取得</returns>
+	MyBase::RailData GetRailData() const;
+
+	/// <summary>
 	/// レール上の現在位置を取得
 	/// </summary>
 	/// <returns>レール上の現在位置</returns>
-	MyBase::Vector3 GetRailPosition() const { return railPosition_; }
+	MyBase::Vector3 GetRailPosition() const { return position_; }
 
 	/// <summary>
 	/// レールの向きを取得
 	/// </summary>
 	/// <returns>レールの向き</returns>
-	MyBase::Vector3 GetRailDirection() const { return railDirection_; }
+	MyBase::Vector3 GetRailDirection() const { return forward_; }
 
 public:	// setter
-
+	void SetRailPoints(const std::vector<MyBase::Vector3>& points) { controlPoints_ = points; }
 
 private:	// メンバ変数
 	std::vector<MyBase::Vector3> controlPoints_;	// レールの制御点リスト
 
-	size_t currentPointIndex_ = 0;			// 現在の制御点インデックス
-	size_t nextPointIndex_ = 1;				// 次の制御点インデックス
+	float lerpT_;			// 区間内の補間値 0～1
+	float speed_;			// レールの進行速度
 
-	float lerpT_ = kLerpStart;				// 区間内の補間値 0～1
-	float railSpeed_ = kDefaultRailSpeed;	// レールの進行速度
-
-	MyBase::Vector3 railPosition_;			// レール上の現在位置
-	MyBase::Vector3 railDirection_;			// レールの向き
+	MyBase::Vector3 position_;	// レール上の現在位置
+	MyBase::Vector3 forward_;	// レール上の現在向き
 
 #ifdef _DEBUG
 	bool isDebugMode_ = false;	// デバッグモードフラグ
