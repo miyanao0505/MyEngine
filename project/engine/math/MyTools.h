@@ -234,12 +234,26 @@ public:	// メンバ関数
 	static float Length(float x, float y);
 
 	/// <summary>
+	/// 2次元ベクトルの長さ(ノルム)を返す関数
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>ベクトルの長さ</returns>
+	static float Length(const MyBase::Vector2& v);
+
+	/// <summary>
 	/// 2次元ベクトルの正規化した値を返す関数
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
 	/// <returns>正規化したベクトル</returns>
 	static MyBase::Vector2 Normalize(float x, float y);
+
+	/// <summary>
+	/// 2次元ベクトルの正規化した値を返す関数
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>正規化したベクトル</returns>
+	static MyBase::Vector2 Normalize(const MyBase::Vector2& v);
 
 	/// <summary>
 	/// 2次元ベクトルの方向を求める関数

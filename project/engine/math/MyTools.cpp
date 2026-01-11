@@ -589,6 +589,11 @@ float MyTools::Length(float x, float y)
 	return sqrtf(x * x + y * y);
 }
 
+float MyTools::Length(const MyBase::Vector2& v)
+{
+	return Length(v.x, v.y);
+}
+
 /// 2次元ベクトルの正規化した値を返す関数
 MyBase::Vector2 MyTools::Normalize(float x, float y)
 {
@@ -598,6 +603,11 @@ MyBase::Vector2 MyTools::Normalize(float x, float y)
 		y = y / length;
 	}
 	return MyBase::Vector2{ x,y };
+}
+
+MyBase::Vector2 MyTools::Normalize(const MyBase::Vector2& v)
+{
+	return Normalize(v.x, v.y);
 }
 
 /// 2次元ベクトルの方向を求める関数

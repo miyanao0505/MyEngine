@@ -14,6 +14,11 @@ void RailFollowSystem::Initialize(RailCamera* rail, FollowCamera* follow, Camera
 /// 更新
 void RailFollowSystem::Update()
 {
+	if(railCamera_->GetRailLerpT() >= 1.0f)
+	{
+		isFinished_ = true;
+	}
+
 	// レール更新
 	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
@@ -27,10 +32,12 @@ void RailFollowSystem::Update()
 	MyBase::Vector3 up = MyTools::Normalize(MyTools::Cross(rail.forward, right));
 
 	// 入力
-	MyBase::Vector3 offset = MyTools::Add(MyTools::Multiply(maxOffsetX_, MyTools::Multiply(input_.x, right)), MyTools::Multiply(maxOffsetY_, MyTools::Multiply(input_.y, up)));
+	offsetX_ = MyTools::Add(MyTools::Multiply(input_.x * playerSpeed_ * TimeManager::GetInstance()->GetDeltaTime(), right), offsetX_);
+	offsetY_ = MyTools::Add(MyTools::Multiply(input_.y * playerSpeed_ * TimeManager::GetInstance()->GetDeltaTime(), up), offsetY_);
+	offset_ = MyTools::Add(offsetX_, offsetY_);
 
 	// 最終座標
-	playerPos_ = MyTools::Add(rail.position, offset);
+	playerPos_ = MyTools::Add(rail.position, offset_);
 
 	// FollowCamera に追従対象を渡す
 	followCamera_->SetTargetPosition(playerPos_);

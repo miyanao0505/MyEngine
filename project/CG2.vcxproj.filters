@@ -348,6 +348,9 @@
     <ClCompile Include="engine\base\TimeManager.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
+    <ClCompile Include="application\enemy\EnemyBullet.cpp">
+      <Filter>ソース ファイル\application\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -550,6 +553,9 @@
     </ClInclude>
     <ClInclude Include="engine\base\TimeManager.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="application\enemy\EnemyBullet.h">
+      <Filter>ヘッダー ファイル\application\enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

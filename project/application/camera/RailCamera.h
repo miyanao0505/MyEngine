@@ -65,6 +65,12 @@ public:	// getter
 	/// <returns>レールの向き</returns>
 	MyBase::Vector3 GetRailDirection() const { return forward_; }
 
+	/// <summary>
+	/// レールの補間値を取得
+	/// </summary>
+	/// <returns></returns>
+	float GetRailLerpT() const { return lerpT_; }
+
 public:	// setter
 	void SetRailPoints(const std::vector<MyBase::Vector3>& points) { controlPoints_ = points; }
 

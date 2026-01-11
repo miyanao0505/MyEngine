@@ -47,12 +47,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 移動処理
 	/// </summary>
-	void HandleMovementInput(float deltaTime);
-
-	/// <summary>
-	/// 回転処理
-	/// </summary>
-	void HandleRotationInput();
+	void ReadMoveInput();
 
 	/// <summary>
 	/// 攻撃
@@ -88,12 +83,30 @@ public:	// getter
 	/// <returns>ワールド座標</returns>
 	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
+	/// <summary>
+	/// 移動入力を取得
+	/// </summary>
+	/// <returns>移動入力</returns>
+	MyBase::Vector2 GetMoveInput() const { return moveInput_; }
+
+	/// <summary>
+	/// 移動速度を取得
+	/// </summary>
+	/// <returns>移動速度</returns>
+	float GetMoveSpeed() const { return kMoveSpeed; }
+
 public:	// setter
 	/// <summary>
 	/// 攻撃力を設定
 	/// </summary>
 	/// <param name="attackPower">攻撃力</param>
 	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
+
+	/// <summary>
+	/// ワールド座標を設定
+	/// </summary>
+	/// <param name="pos">新たな座標</param>
+	void SetWorldPosition(const MyBase::Vector3& pos);
 
 private:	// メンバ変数	
 	// プレイヤーの弾リスト
@@ -106,6 +119,8 @@ private:	// メンバ変数
 	
 	// プレイヤーの移動速度
 	const float kMoveSpeed = 10.0f;
+	MyBase::Vector2 moveInput_;	// 入力意図(-1～1)
+	MyBase::Vector3 externalPosition_; // 外部からの位置影響（ノックバックなど）
 
 	// プレイヤーの攻撃クールタイム
 	const float kAttackCoolTime = 1.0f / 60.0f * 30.0f;	// 30フレーム

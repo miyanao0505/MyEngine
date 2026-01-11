@@ -69,7 +69,7 @@ private:	// メンバ変数
 	bool isDead_ = false;
 
 	// 弾の移動速度
-	const float kMoveSpeed = 50.0f;
+	const float kMoveSpeed = 80.0f;
 
 	// 弾の速度
 	MyBase::Vector3 velocity_;

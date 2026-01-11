@@ -24,7 +24,17 @@ public:	// メンバ関数
 	void Update();
 
 public:	// getter
+	/// <summary>
+	/// プレイヤーの位置の取得
+	/// </summary>
+	/// <returns>プレイヤーの位置</returns>
+	MyBase::Vector3 GetPlayerPosition() const { return playerPos_; }
 
+	/// <summary>
+	/// 終了判定の取得
+	/// </summary>
+	/// <returns></returns>
+	bool IsFinished() const { return isFinished_; }
 
 public:	// setter
 	/// <summary>
@@ -32,6 +42,12 @@ public:	// setter
 	/// </summary>
 	/// <param name="playerPos">プレイヤーの位置</param>
 	void SetPlayerPosition(const MyBase::Vector3& playerPos) { playerPos_ = playerPos; }
+
+	/// <summary>
+	/// プレイヤーの速度の設定
+	/// </summary>
+	/// <param name="speed">プレイヤーの速度</param>
+	void SetPlayerSpeed(float speed) { playerSpeed_ = speed; }
 
 	/// <summary>
 	/// 入力の設定
@@ -58,8 +74,14 @@ private:	// メンバ変数
 
 	// 入力合成用
 	MyBase::Vector2 input_;			// -1.0f ～ 1.0f の範囲で入力される想定
-	float maxOffsetX_ = 5.0f;				// X方向の最大オフセット
-	float maxOffsetY_ = 3.0f;				// Y方向の最大オフセット
+	float maxOffsetX_ = 5.0f;		// X方向の最大オフセット
+	float maxOffsetY_ = 3.0f;		// Y方向の最大オフセット
+	MyBase::Vector3 offsetX_;		// X方向のオフセット
+	MyBase::Vector3 offsetY_;		// Y方向のオフセット
+	MyBase::Vector3 offset_;		// 現在のオフセット
 
 	MyBase::Vector3 playerPos_;	// プレイヤーの位置
+	float playerSpeed_;			// プレイヤーの速度
+
+	bool isFinished_ = false;	// レール追従終了フラグ
 };

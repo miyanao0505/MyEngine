@@ -45,10 +45,7 @@ void Player::Initialize(const MyBase::Vector3& position)
 void Player::Update(float deltaTime)
 {
 	// 移動処理
-	HandleMovementInput(deltaTime);
-
-	// 回転処理
-	HandleRotationInput();
+	ReadMoveInput();
 
 	// オブジェクトの更新
 	object_->Update();
@@ -114,48 +111,19 @@ void Player::DebugDraw()
 
 
 /// 移動処理
-void Player::HandleMovementInput(float deltaTime)
+void Player::ReadMoveInput()
 {
-	// プレイヤーの移動
-	MyBase::Vector3 velocity = { 0.0f, 0.0f, 0.0f };
-	if (Input::GetInstance()->IsKeyPressed(DIK_W)) {
-		velocity.y += kMoveSpeed * deltaTime;
-	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_S)) {
-		velocity.y -= kMoveSpeed * deltaTime;
-	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_A)) {
-		velocity.x -= kMoveSpeed * deltaTime;
-	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_D)) {
-		velocity.x += kMoveSpeed * deltaTime;
-	}
-	
-	// 座標更新
-	MyBase::Vector3 newPos = MyTools::Add(object_->GetTranslate(), velocity);
-	object_->SetTranslate(newPos);
-}
+	moveInput_ = { 0.0f, 0.0f };
 
-/// 回転処理
-void Player::HandleRotationInput()
-{
-	// プレイヤーの回転
-	MyBase::Vector3 angularVelocity = { 0.0f, 0.0f, 0.0f };
-	if (Input::GetInstance()->IsKeyPressed(DIK_UP)) {
-		angularVelocity.x -= 0.05f;
+	if (Input::GetInstance()->IsKeyPressed(DIK_W)) moveInput_.y += kMoveSpeed;
+	if (Input::GetInstance()->IsKeyPressed(DIK_S)) moveInput_.y -= kMoveSpeed;
+	if (Input::GetInstance()->IsKeyPressed(DIK_D)) moveInput_.x += kMoveSpeed;
+	if (Input::GetInstance()->IsKeyPressed(DIK_A)) moveInput_.x -= kMoveSpeed;
+
+	// 正規化
+	if (MyTools::Length(moveInput_) > 1.0f) {
+		moveInput_ = MyTools::Normalize(moveInput_);
 	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_DOWN)) {
-		angularVelocity.x += 0.05f;
-	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_LEFT)) {
-		angularVelocity.y -= 0.05f;
-	}
-	if (Input::GetInstance()->IsKeyPressed(DIK_RIGHT)) {
-		angularVelocity.y += 0.05f;
-	}
-	// 回転更新
-	MyBase::Vector3 newRot = MyTools::Add(object_->GetRotate(), angularVelocity);
-	object_->SetRotate(newRot);
 }
 
 /// 攻撃
@@ -193,4 +161,12 @@ void Player::SpawnBullet()
 void Player::OnCollision([[maybe_unused]] Collider* other)
 {
 	// 現在は敵・敵弾の衝突処理のみ想定しており、未実装
+}
+
+/// ワールド座標を設定
+void Player::SetWorldPosition(const MyBase::Vector3& pos)
+{
+	externalPosition_ = pos;
+	object_->SetTranslate(pos);
+	object_->Update();
 }
