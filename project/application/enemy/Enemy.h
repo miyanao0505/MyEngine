@@ -4,6 +4,7 @@
 #include "EnemyBaseState.h"
 #include "TextureManager.h"
 #include "ParticleEmitter.h"
+#include "EnemyBullet.h"
 
 /// 前方宣言
 class Player;
@@ -83,6 +84,22 @@ public:	// メンバ関数
 #endif // _DEBUG
 
 	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
+
+	/// <summary>
+	/// 攻撃可能かどうか
+	/// </summary>
+	/// <returns>攻撃可能時 true, 不可なら false</returns>
+	bool CanAttack();
+
+	/// <summary>
+	/// 弾生成
+	/// </summary>
+	void SpawnBullet();
+
+	/// <summary>
 	/// 衝突を検出したら呼び出されるコールバック関数
 	/// </summary>
 	void OnCollision([[maybe_unused]] Collider* other) override;
@@ -114,17 +131,32 @@ public:	// setter
 	void SetPlayer(Player* player) { player_ = player; }
 
 private:	/// メンバ変数
+	// 敵の弾リスト
+	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
 	// パーティクルエミッター
 	std::unique_ptr<ParticleEmitter> particleEmitter_ = nullptr;
 
 	// ステータス
 	int hp_;
+	int attackPower_ = 1;
 	bool isDead_ = false;
 	std::unique_ptr<EnemyBaseState> state_;
 
 	// 演出系
 	float damageReactionTimer_ = 0.0f;
 	float deadReactionTimer_ = 0.0f;
+
+	// 敵の攻撃クールタイム
+	const float kAttackCoolTime = 1.0f / 60.0f * 30.0f;	// 30フレーム
+	float attackCoolTime_ = 0;		// 現在のクールタイム
+
+	// 弾の上限
+	const int kMaxBulletCount = 10; // 最大弾数
+	// 弾の発射位置
+	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, -1.0f }; // 敵の前方に発射
+	// 弾の描画距離
+	const float kBulletDrawDistance = 100.0f;
 
 	// プレイヤー
 	Player* player_;

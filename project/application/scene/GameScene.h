@@ -39,7 +39,7 @@ private:
 	static constexpr MyBase::Vector3 kSkydomeScale{ 100.0f, 100.0f, 100.0f };
 
 	// ゲームクリア演出時間
-	static constexpr float kGameClearDuration = 3.0f;
+	static constexpr float kGameClearDuration = 1.0f;
 
 	// パーティクル加速フィールド初期設定
 	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };

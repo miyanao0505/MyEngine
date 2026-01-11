@@ -4,6 +4,7 @@
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
 #include "Player.h"
+#include "MyTools.h"
 #include <imgui.h>
 #include <cmath>
 
@@ -21,7 +22,7 @@ void Enemy::Initialize()
 	BaseObject::Initialize("enemy", "enemy.obj");
 	
 	// 3Dオブジェクトの初期化
-	object_->SetTranslate({ 0.0f, 0.0f, 50.0f });	// 初期位置
+	object_->SetTranslate({ 10.0f, 0.0f, 70.0f });	// 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
 	object_->SetRotate({ 0.0f, 3.14f, 0.0f});	// 初期回転
 
@@ -66,9 +67,14 @@ void Enemy::Initialize()
 	};
 	particleEmitter_->SetParticleGroupData("hitEffectRingEnemy", hitEffectRing);
 
+	// 弾の初期化
+	bullets_.clear();
+
 	// 敵のステータスの初期化
 	hp_ = 50; // 初期HP
 	isDead_ = false; // 初期状態は生存
+	attackPower_ = 10;
+	attackCoolTime_ = kAttackCoolTime;
 }
 
 // 更新
@@ -77,6 +83,27 @@ void Enemy::Update(float deltaTime)
 	// 敵の更新処理
 	if (isDead_) {
 		return; // 死んでいる場合は更新しない
+	}
+
+	Attack();
+
+	// 弾更新
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+		const bool isDead = (*it)->IsDead();
+		const float distance = MyTools::Length(MyTools::Subtract((*it)->GetWorldPosition(), GetWorldPosition()));
+
+		if (isDead || distance >= kBulletDrawDistance) {
+			it = bullets_.erase(it); // listから完全に削除
+		}
+		else {
+			it->get()->Update(deltaTime); // 弾の更新
+			++it;
+		}
+	}
+
+	// 攻撃のクールタイムを減らす
+	if (attackCoolTime_ > 0) {
+		attackCoolTime_ -= deltaTime;
 	}
 
 	// ダメージリアクションの更新
@@ -104,6 +131,12 @@ void Enemy::Draw()
 
 	// モデルの描画
 	object_->Draw();
+
+	// 弾の描画
+	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
+		it->get()->Draw();
+		++it;
+	}
 }
 
 // Updateのステートチェンジ
@@ -188,6 +221,32 @@ void Enemy::DebugDraw()
 	ImGui::PopID();
 }
 #endif // _DEBUG
+
+void Enemy::Attack()
+{
+	// 攻撃不可なら早期リターン
+	if (!CanAttack()) return;
+	// 弾の生成
+	SpawnBullet();
+}
+
+bool Enemy::CanAttack()
+{
+	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0) {
+		return true;
+	}
+	return false;
+}
+
+void Enemy::SpawnBullet()
+{
+	auto bullet = std::make_unique<EnemyBullet>();
+	MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, -1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
+	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
+	bullets_.emplace_back(std::move(bullet));
+	// 攻撃のクールタイムを設定
+	attackCoolTime_ = kAttackCoolTime;
+}
 
 // 当たり判定
 void Enemy::OnCollision([[maybe_unused]] Collider* other)

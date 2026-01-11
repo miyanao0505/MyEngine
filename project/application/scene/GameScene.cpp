@@ -169,7 +169,7 @@ void GameScene::Update()
 	}
 	
 	// クリア条件
-	if (enemy_->IsDead()) {
+	if (railFollowSystem_->IsFinished()) {
 		// ゲームクリアフラグON
 		isGameClear_ = true;
 		// クリアタイマーセット
@@ -182,9 +182,13 @@ void GameScene::Update()
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
+	railFollowSystem_->SetPlayerSpeed(player_->GetMoveSpeed());
+	railFollowSystem_->SetInput(player_->GetMoveInput());
 
 	// レール追従システムの更新
 	railFollowSystem_->Update();
+
+	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
 
 	// 敵の更新処理
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
