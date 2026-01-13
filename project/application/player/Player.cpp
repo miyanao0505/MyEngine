@@ -2,7 +2,6 @@
 #include "Input.h"
 #include "ModelManager.h"
 #include "BaseObjectCollider.h"
-#include "EnemyBullet.h"
 #include "CollisionConfig.h"
 #include "MyTools.h"
 #include <imgui.h>
@@ -104,6 +103,11 @@ void Player::DebugDraw()
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Player"))
 	{
+		// ステータス表示
+		ImGui::Text("HP: %d", hp_);
+		ImGui::Text("Attack Power: %d", attackPower_);
+		ImGui::Text("\n");
+
 		MyBase::Transform transform = {object_->GetScale(), object_->GetRotate(), object_->GetTranslate()};
 
 		// 移動
@@ -178,10 +182,8 @@ void Player::OnCollision([[maybe_unused]] Collider* other)
 
 	// 敵弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) { // 敵弾の属性
-		// 敵の弾のポインタを取得
-		EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other);
 		// 敵の攻撃力分ダメージを受ける
-		Damage(enemyBullet->GetAttackPower());
+		Damage(10);
 		if (hp_ <= 0) {
 			isDead_ = true;
 		}
