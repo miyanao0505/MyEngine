@@ -72,6 +72,10 @@ public:	// getter
 	float GetRailLerpT() const { return lerpT_; }
 
 public:	// setter
+	/// <summary>
+	/// レールの制御点リストを設定
+	/// </summary>
+	/// <param name="points">レールの制御点</param>
 	void SetRailPoints(const std::vector<MyBase::Vector3>& points) { controlPoints_ = points; }
 
 private:	// メンバ変数
