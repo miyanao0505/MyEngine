@@ -37,6 +37,12 @@ public:	// メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// ダメージ処理
+	/// </summary>
+	/// <param name="damage">ダメージ値</param>
+	void Damage(int damage);
+
 #ifdef _DEBUG
 	/// <summary>
 	/// デバッグ描画

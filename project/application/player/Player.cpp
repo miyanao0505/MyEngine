@@ -2,7 +2,8 @@
 #include "Input.h"
 #include "ModelManager.h"
 #include "BaseObjectCollider.h"
-#include"CollisionConfig.h"
+#include "EnemyBullet.h"
+#include "CollisionConfig.h"
 #include "MyTools.h"
 #include <imgui.h>
 
@@ -86,6 +87,16 @@ void Player::Draw()
 	}
 }
 
+/// ダメージ処理
+void Player::Damage(int damage)
+{
+	hp_ -= damage;
+	if (hp_ <= 0) {
+		isDead_ = true;
+		hp_ = 0;
+	}
+}
+
 #ifdef _DEBUG
 /// デバック描画
 void Player::DebugDraw()
@@ -161,6 +172,20 @@ void Player::SpawnBullet()
 void Player::OnCollision([[maybe_unused]] Collider* other)
 {
 	// 現在は敵・敵弾の衝突処理のみ想定しており、未実装
+
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeId();
+
+	// 敵弾が当たった時の処理
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) { // 敵弾の属性
+		// 敵の弾のポインタを取得
+		EnemyBullet* enemyBullet = dynamic_cast<EnemyBullet*>(other);
+		// 敵の攻撃力分ダメージを受ける
+		Damage(enemyBullet->GetAttackPower());
+		if (hp_ <= 0) {
+			isDead_ = true;
+		}
+	}
 }
 
 /// ワールド座標を設定
