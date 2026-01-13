@@ -148,7 +148,7 @@ private:	/// メンバ変数
 	float deadReactionTimer_ = 0.0f;
 
 	// 敵の攻撃クールタイム
-	const float kAttackCoolTime = 1.0f / 60.0f * 30.0f;	// 30フレーム
+	const float kAttackCoolTime = 1.0f / 60.0f * 50.0f;	// 30フレーム
 	float attackCoolTime_ = 0;		// 現在のクールタイム
 
 	// 弾の上限

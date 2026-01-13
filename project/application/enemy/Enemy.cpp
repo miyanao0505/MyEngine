@@ -22,13 +22,13 @@ void Enemy::Initialize()
 	BaseObject::Initialize("enemy", "enemy.obj");
 	
 	// 3Dオブジェクトの初期化
-	object_->SetTranslate({ 10.0f, 0.0f, 70.0f });	// 初期位置
+	object_->SetTranslate({ 10.0f, 0.0f, 150.0f });	// 初期位置
 	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
 	object_->SetRotate({ 0.0f, 3.14f, 0.0f});	// 初期回転
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
-	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
+	col->SetRadius(1.50f); // 半径1.50fの球体コライダー
 	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
 	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)); // コリジョン属性
@@ -201,6 +201,10 @@ void Enemy::DebugDraw()
 {
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Enemy")) {
+		// ステータス表示
+		ImGui::Text("HP: %d\n", hp_);
+		ImGui::Text("Attack Power: %d\n", attackPower_);
+
 		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 		// 移動
