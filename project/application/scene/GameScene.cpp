@@ -40,7 +40,7 @@ void GameScene::Initialize()
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {500.0f, 500.0f, 500.0f});
 	
 #pragma endregion 3Dオブジェクト
 
@@ -54,10 +54,10 @@ void GameScene::Initialize()
 	railCamera_ = std::make_unique<RailCamera>();
 	railCamera_->Initialize();
 	railCamera_->SetRailPoints({
-		{ 0.0f, 0.0f, -40.0f },
 		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 50.0f },
 		{ 0.0f, 0.0f, 100.0f },
+		{ 0.0f, 0.0f, 200.0f },
+		{ 0.0f, 0.0f, 400.0f },
 		});
 	// レール追従システム
 	railFollowSystem_ = std::make_unique<RailFollowSystem>();
@@ -100,13 +100,13 @@ void GameScene::Initialize()
 #pragma endregion 変数
 
 	// 最初の更新
-	followCamera_->SetTargetPosition(player_->GetWorldPosition());
-	followCamera_->UpdateLookAtTarget();
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({0.0f, 5.0f, -40.0f});
+	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 5.0f, -40.0f });
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	skydome_->Update();
+	followCamera_->SetTargetPosition(player_->GetWorldPosition());
+	followCamera_->UpdateLookAtTarget();
 
 #pragma endregion シーン初期化
 }

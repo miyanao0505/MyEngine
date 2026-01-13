@@ -10,7 +10,7 @@ class RailCamera
 {
 private:
 #pragma region 定数
-	static constexpr float kDefaultRailSpeed = 0.2f;	// レールの進行速度
+	static constexpr float kDefaultRailSpeed = 0.1f;	// レールの進行速度
 
 	static constexpr float kLerpEnd = 1.0f;
 	static constexpr float kLerpStart = 0.0f;

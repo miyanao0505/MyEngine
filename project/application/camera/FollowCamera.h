@@ -9,7 +9,7 @@
 class FollowCamera {
 private:
 #pragma region 定数
-	static constexpr MyBase::Vector3 kDefaultOffset{ 0.0f, 7.5f, -40.0f };
+	static constexpr MyBase::Vector3 kDefaultOffset{ 0.0f, 5.0f, -40.0f };
 	static constexpr MyBase::Vector3 kWorldUp{ 0.0f, 1.0f, 0.0f };
 	static constexpr float kDefaultFollowSmooth = 8.0f;
 
