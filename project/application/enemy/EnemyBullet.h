@@ -56,6 +56,12 @@ public:	// getter
 	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); };
 
 	/// <summary>
+	/// 攻撃力を取得
+	/// </summary>
+	/// <returns>攻撃力</returns>
+	int GetAttackPower() const { return attackPower_; }
+
+	/// <summary>
 	/// 弾が消滅したかどうかを取得
 	/// </summary>
 	/// <returns>true:消滅している、false:消滅していない</returns>
@@ -63,10 +69,12 @@ public:	// getter
 
 public:	// setter
 
+	void SetAttackPower(int attackPower) { attackPower_ = attackPower; }
 
 private:	// メンバ変数
 	// ステータス
 	bool isDead_ = false;
+	int attackPower_;
 
 	// 弾の移動速度
 	const float kMoveSpeed = -50.0f;

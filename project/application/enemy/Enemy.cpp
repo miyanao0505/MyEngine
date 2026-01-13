@@ -243,6 +243,7 @@ void Enemy::SpawnBullet()
 	auto bullet = std::make_unique<EnemyBullet>();
 	MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, -1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
 	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
+	bullet->SetAttackPower(attackPower_);
 	bullets_.emplace_back(std::move(bullet));
 	// 攻撃のクールタイムを設定
 	attackCoolTime_ = kAttackCoolTime;
