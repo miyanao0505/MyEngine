@@ -72,5 +72,12 @@ void EnemyBullet::Move(float deltaTime)
 // 当たり判定
 void EnemyBullet::OnCollision([[maybe_unused]] Collider* other)
 {
-	
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeId();
+
+	// プレイヤー又はプレイヤーの弾に当たったら削除
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayer) ||			// プレイヤーの属性
+		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) {	// プレイヤーの弾の属性
+		isDead_ = true;
+	}
 }

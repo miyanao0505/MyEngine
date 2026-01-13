@@ -255,8 +255,9 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeId();
 
-	// プレイヤー弾が当たった時の処理
-	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) { // プレイヤー弾の属性
+	// プレイヤー又はプレイヤー弾が当たった時の処理
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayer) ||			// プレイヤーの属性
+		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)) {	// プレイヤー弾の属性
 		// プレイヤーの攻撃力分ダメージを受ける
 		Damage(player_->GetAttackPower());
 		if (hp_ <= 0) {
