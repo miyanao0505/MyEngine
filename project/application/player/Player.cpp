@@ -181,7 +181,8 @@ void Player::OnCollision([[maybe_unused]] Collider* other)
 	uint32_t typeID = other->GetTypeId();
 
 	// 敵弾が当たった時の処理
-	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) { // 敵弾の属性
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy) ||			// 敵の属性
+		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) {	// 敵弾の属性
 		// 敵の攻撃力分ダメージを受ける
 		Damage(10);
 		if (hp_ <= 0) {

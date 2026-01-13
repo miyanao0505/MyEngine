@@ -95,7 +95,8 @@ void PlayerBullet::OnCollision([[maybe_unused]] Collider* other)
 	uint32_t typeID = other->GetTypeId();
 
 	// プレイヤー弾が敵に当たったら削除
-	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) { // 敵の属性
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy) ||			// 敵の属性
+		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) {	// 敵弾の属性
 		isDead_ = true;
 	}
 }
