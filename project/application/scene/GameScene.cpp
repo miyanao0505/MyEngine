@@ -194,6 +194,7 @@ void GameScene::Update()
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// 天球の更新
+	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
 	skydome_->Update();
 
 	if (isAccelerationField_) {
