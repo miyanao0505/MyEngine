@@ -24,6 +24,7 @@ void FollowCamera::Update([[maybe_unused]] float deltaTime)
 	// 追従処理の更新
 	UpdateFollowTranslate(deltaTime);
 
+	// 注視点の更新
 	UpdateLookAtTarget();
 
 	// カメラの更新
@@ -51,13 +52,15 @@ void FollowCamera::UpdateFollowTranslate(float deltaTime)
 	currentFollowPosition_ = newPos;
 }
 
+/// 注視点の更新
 void FollowCamera::UpdateLookAtTarget()
 {
 	// カメラの向きをプレイヤーの方向に設定
 	MyBase::Vector3 direction = MyTools::Subtract(target_, currentFollowPosition_);
 	direction = MyTools::Normalize(direction);
 	// カメラの回転を計算(見下ろし型)
-	float pitch = -atan2(direction.y, sqrt(direction.x * direction.x + direction.z * direction.z));
+	float horizontalLength = sqrt(direction.x * direction.x + direction.z * direction.z);
+	float pitch = -atan2(direction.y, horizontalLength);
 	camera_->SetRotate({ pitch, 0.0f, 0.0f });
 }
 
@@ -72,7 +75,7 @@ void FollowCamera::DebugDraw() {
 		MyBase::Vector3 offset = offset_;
 		
 		// ImGuiを用いた変更
-		ImGui::DragFloat3("offset", &offset.x, kOffsetDragSpeed);
+		ImGui::DragFloat3(kOffsetLabel, &offset.x, kOffsetDragSpeed);
 
 		// 変更を反映
 		offset_ = offset;

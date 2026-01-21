@@ -11,9 +11,12 @@ class RailCamera
 private:
 #pragma region 定数
 	static constexpr float kDefaultRailSpeed = 0.1f;	// レールの進行速度
+	static constexpr size_t kMinCatmullRomPoints = 4;	// Catmull-Rom点の最小数
 
 	static constexpr float kLerpEnd = 1.0f;
 	static constexpr float kLerpStart = 0.0f;
+
+	static constexpr float kForwardSampleOffset = 0.001f;	// 接線方向計算用のサンプリングオフセット値
 #pragma endregion
 
 public:	// メンバ関数

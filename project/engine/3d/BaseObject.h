@@ -11,6 +11,21 @@
 /// </summary>
 class BaseObject
 {
+#pragma region 定数
+protected:
+	static const MyBase::Vector3 kZeroVector;
+
+#ifdef _DEBUG
+private:
+	static const float kPi;
+	static const float kImGuiDragSpeed;				// ImGui のドラッグ速度	
+	static const MyBase::ScopeF kTranslateScope;	// 平行移動の範囲
+	static const MyBase::ScopeF kRotateScope;		// 回転の範囲
+	static const MyBase::ScopeF kScaleScope;		// スケールの範囲
+
+	static const MyBase::ScopeF kMaterialScope;		// マテリアルの範囲
+#endif // _DEBUG
+#pragma endregion
 public:	// メンバ関数
 	BaseObject() = default;
 	virtual ~BaseObject();
@@ -114,19 +129,4 @@ protected:	// メンバ変数
 	std::string name_;								// オブジェクト名
 	bool isDisabled_ = false;						// 無効化フラグ
 
-#pragma region 定数
-protected:
-	static const MyBase::Vector3 kZeroVector;
-
-#ifdef _DEBUG
-private:
-	static const float kPi;
-	static const float kImGuiDragSpeed;				// ImGui のドラッグ速度	
-	static const MyBase::ScopeF kTranslateScope;	// 平行移動の範囲
-	static const MyBase::ScopeF kRotateScope;		// 回転の範囲
-	static const MyBase::ScopeF kScaleScope;		// スケールの範囲
-
-	static const MyBase::ScopeF kMaterialScope;		// マテリアルの範囲
-#endif // _DEBUG
-#pragma endregion
 };

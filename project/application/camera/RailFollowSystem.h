@@ -15,8 +15,7 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="rail">レールカメラ</param>
 	/// <param name="follow">フォローカメラ</param>
-	/// <param name="outCamera">カメラ</param>
-	void Initialize(RailCamera* rail, FollowCamera* follow, Camera* outCamera);
+	void Initialize(RailCamera* rail, FollowCamera* follow);
 	
 	/// <summary>
 	/// 更新
@@ -70,7 +69,6 @@ public:	// setter
 private:	// メンバ変数
 	RailCamera* railCamera_ = nullptr;		// レールカメラ
 	FollowCamera* followCamera_ = nullptr;	// 追従カメラ
-	Camera* camera_ = nullptr;				// 出力カメラ
 
 	// 入力合成用
 	MyBase::Vector2 input_;			// -1.0f ～ 1.0f の範囲で入力される想定

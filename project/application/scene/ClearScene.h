@@ -4,6 +4,7 @@
 #include <vector>
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Player.h"
 #include "Skydome.h"
 #include "ClearLogo.h"
 #include "ParticleEmitter.h"
@@ -20,8 +21,12 @@ class ClearScene : public BaseScene
 {
 private:
 #pragma region 定数
+	// プレイヤー初期設定
+	static constexpr MyBase::Vector3 kPlayerTranslate{ 0.0f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector3 kPlayerScale{ 1.0f, 1.0f, 1.0f };
+
 	// カメラ初期設定
-	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 0.0f,-40.0f };
+	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 2.0f,-40.0f };
 	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
 
 	// ライト初期設定
@@ -32,6 +37,7 @@ private:
 	static constexpr float kClearLightDecay = 2.0f;
 
 	// Skydome初期設定
+	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
 	static constexpr MyBase::Vector3 kSkydomeScale{ 100.0f, 100.0f, 100.0f };
 
 	// パーティクル加速フィールド初期設定
@@ -90,6 +96,9 @@ private:	// メンバ変数
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// 3Dオブジェクト
+	// プレイヤー
+	std::unique_ptr<Player> player_ = nullptr;
+	
 	// ロゴ
 	std::unique_ptr<ClearLogo> clearLogo_ = nullptr;
 

@@ -28,7 +28,7 @@ void StartSequence::Update(float deltaTime) {
 	switch (state_) {
 	case State::EngineStart:
 		EngineStartEffect();
-		if (/*timer_ > 1.5f*/ timer_ > 0.5f) {
+		if (timer_ > 0.5f) {
 			TextSet();
 			state_ = State::MissionText;
 			timer_ = 0.0f;

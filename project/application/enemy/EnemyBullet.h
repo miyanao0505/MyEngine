@@ -7,6 +7,19 @@
 /// </summary>
 class EnemyBullet : public BaseObject
 {
+private:
+#pragma region 定数
+	static constexpr float kLifeTime = 80.0f;	// 寿命
+	static constexpr float kMoveSpeed = 5.0f;	// 弾の移動速度
+	
+	static const MyBase::Vector3 kInitialScale;		// 弾の初期スケール
+	static const float kColliderRadius;	// コライダーの半径
+
+#ifdef _DEBUG
+
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// デストラクタ
@@ -76,14 +89,8 @@ private:	// メンバ変数
 	bool isDead_ = false;
 	int attackPower_;
 
-	// 弾の移動速度
-	const float kMoveSpeed = -50.0f;
-
 	// 弾の速度
 	MyBase::Vector3 velocity_;
-
-	// 寿命<frm>
-	static constexpr float kLifeTime = 60.0f * 5.0f;
 
 	// デスタイマー
 	float deathTimer_ = kLifeTime;

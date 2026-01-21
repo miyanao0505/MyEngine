@@ -7,6 +7,12 @@
 /// </summary>
 class GameOverLogo
 {
+private:
+#pragma region 定数
+	static const MyBase::Transform kCharTransform;
+	static const MyBase::Transform kButtonTransform;
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化

@@ -5,8 +5,25 @@
 #include "CollisionConfig.h"
 #include "MyTools.h"
 #include <imgui.h>
+#include <numbers>
 
 using namespace std;
+using namespace numbers;
+
+#pragma region 定数
+const MyBase::Vector3 Player::kInitialScale = { 1.0f, 1.0f, 1.0f };
+const float Player::kColliderRadius = 1.0f;
+
+const int Player::kInitialHP = 100;
+const int Player::kInitialAttackPower = 10;
+
+#ifdef _DEBUG
+const float Player::kDebugMoveSpeed = 0.01f;
+const MyBase::ScopeF Player::kTranslateScope = { -100.0f, 100.0f };
+const MyBase::ScopeF Player::kRotateScope = { -pi_v<float>, pi_v<float> };
+const MyBase::ScopeF Player::kScaleScope = { 0.01f, 10.0f };
+#endif // _DEBUG
+#pragma endregion
 
 /// デストラクタ
 Player::~Player()
@@ -23,11 +40,11 @@ void Player::Initialize(const MyBase::Vector3& position)
 
 	// プレイヤーのオブジェクトの設定
 	object_->SetTranslate(position);
-	object_->SetScale({ 1.0f, 1.0f, 1.0f });
+	object_->SetScale(kInitialScale);
 
 	// プレイヤーのコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
-	col->SetRadius(1.0f); // 半径1.0fの球体コライダー
+	col->SetRadius(kColliderRadius); // 球体コライダー
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	SetCollider(std::move(col)); // コライダーをセット
 
@@ -35,9 +52,9 @@ void Player::Initialize(const MyBase::Vector3& position)
 	bullets_.clear();
 
 	// ステータスの初期化
-	hp_ = 100;
-	attackPower_ = 10;
-	attackCoolTime_ = 0;
+	hp_ = kInitialHP;
+	attackPower_ = kInitialAttackPower;
+	attackCoolTime_ = kAttackCoolTime;
 	isDead_ = false;
 }
 
@@ -111,11 +128,11 @@ void Player::DebugDraw()
 		MyBase::Transform transform = {object_->GetScale(), object_->GetRotate(), object_->GetTranslate()};
 
 		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("Translate", &transform.translate.x, kDebugMoveSpeed, kTranslateScope.min, kTranslateScope.max);
 		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, kDebugMoveSpeed, kRotateScope.min, kRotateScope.max);
 		// 拡縮
-		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, kDebugMoveSpeed, kScaleScope.min, kScaleScope.max);
 		object_->SetTransform(transform);
 
 		ImGui::Text("\n");
@@ -146,8 +163,10 @@ void Player::Attack()
 {
 	// 攻撃不可なら早期リターン
 	if (!CanAttack()) return;
-	// 弾の生成
-	SpawnBullet();
+	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE)) {
+		// 弾の生成
+		SpawnBullet();
+	}
 }
 
 /// 攻撃可能かどうか
@@ -162,25 +181,21 @@ bool Player::CanAttack()
 /// 弾生成
 void Player::SpawnBullet()
 {
-	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE)) {
-		auto bullet = std::make_unique<PlayerBullet>();
-		MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
-		bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
-		bullets_.emplace_back(std::move(bullet));
-		// 攻撃のクールタイムを設定
-		attackCoolTime_ = kAttackCoolTime;
-	}
+	auto bullet = std::make_unique<PlayerBullet>();
+	MyBase::Vector3 direction = Matrix::TransformNormal(kBulletOffset, object_->GetWorldTransform()->GetWorldMatrix());
+	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
+	bullets_.emplace_back(std::move(bullet));
+	// 攻撃のクールタイムを設定
+	attackCoolTime_ = kAttackCoolTime;
 }
 
 /// 衝突を検出したら呼び出されるコールバック関数
 void Player::OnCollision([[maybe_unused]] Collider* other)
 {
-	// 現在は敵・敵弾の衝突処理のみ想定しており、未実装
-
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeId();
 
-	// 敵弾が当たった時の処理
+	// 敵 or 敵弾が当たった時の処理
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy) ||			// 敵の属性
 		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) {	// 敵弾の属性
 		// 敵の攻撃力分ダメージを受ける

@@ -19,8 +19,31 @@ private:
 #pragma region 定数
 	static constexpr float kDamageReactionDuration = 0.1f;	// ダメージリアクション時間
 	static constexpr float kDeadReactionDuration = 1.0f;	// 死亡リアクション時間
+	static constexpr float kAttackCoolTime = 1.5f;			// 攻撃クールタイム
 
-	
+	static const int kMaxBulletCount;				// 最大弾数
+	static const float kBulletDrawDistance;			// 弾の描画距離
+	static const MyBase::Vector3 kBulletSpawOffset;	// 弾の発射位置オフセット
+
+	static const MyBase::Vector3 kInitialPosition;	// 敵の初期位置
+	static const MyBase::Vector3 kInitialScale;		// 敵の初期スケール
+	static const MyBase::Vector3 kInitialRotation;	// 敵の初期回転
+
+	static const float kColliderRadius;				// コライダーの半径
+
+	static const int kInitialHP;				// 初期体力
+	static const int kInitialAttackPower;		// 初期攻撃力
+
+	static const MyBase::Vector3 kEmitterSize;		// エミッターサイズ
+	static const ParticleSystem::ParticleGroupData kHitEffectParams;		// ヒットエフェクトパーティクルパラメータ
+	static const ParticleSystem::ParticleGroupData kHitEffectRingParams;	// ヒットエフェクトパーティクルパラメータ(リング)
+
+#ifdef _DEBUG
+	static const float kImGuiDragSpeed;				// ImGuiドラッグ速度
+	static const MyBase::ScopeF kTranslateScope;	// 平行移動範囲
+	static const MyBase::ScopeF kRotateScope;		// 回転範囲
+	static const MyBase::ScopeF kScaleScope;		// スケール範囲
+#endif // _DEBUG
 #pragma endregion
 
 public:	// メンバ関数
@@ -139,25 +162,20 @@ private:	/// メンバ変数
 
 	// ステータス
 	int hp_;
-	int attackPower_ = 1;
+	int attackPower_;
 	bool isDead_ = false;
 	std::unique_ptr<EnemyBaseState> state_;
 
 	// 演出系
-	float damageReactionTimer_ = 0.0f;
-	float deadReactionTimer_ = 0.0f;
+	float damageReactionTimer_;
+	float deadReactionTimer_;
 
 	// 敵の攻撃クールタイム
-	const float kAttackCoolTime = 1.0f / 60.0f * 50.0f;	// 30フレーム
-	float attackCoolTime_ = 0;		// 現在のクールタイム
-
-	// 弾の上限
-	const int kMaxBulletCount = 10; // 最大弾数
+	float attackCoolTime_ = 0.0f;		// 現在のクールタイム
+	
 	// 弾の発射位置
 	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, -1.0f }; // 敵の前方に発射
-	// 弾の描画距離
-	const float kBulletDrawDistance = 100.0f;
 
 	// プレイヤー
-	Player* player_;
+	Player* player_ = nullptr;
 };

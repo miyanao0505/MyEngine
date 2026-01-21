@@ -14,6 +14,7 @@ private:
 	static constexpr float kDefaultFollowSmooth = 8.0f;
 
 #ifdef _DEBUG
+	static constexpr const char* kOffsetLabel = "Offset";
 	static constexpr float kOffsetDragSpeed = 0.05f;
 #endif // _DEBUG
 #pragma endregion

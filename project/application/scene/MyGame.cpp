@@ -16,12 +16,12 @@ void MyGame::Initialize(const wchar_t* windowTitle)
 #pragma region カメラ
 	CameraManager::GetInstance()->AddCamera("default");
 	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.4f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kDefaultCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kDefaultCameraRotate);
 	CameraManager::GetInstance()->AddCamera("sub");
 	CameraManager::GetInstance()->SetCamera("sub");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 1.57f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ -15.0f, 7.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kSubCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kSubCameraRotate);
 
 	CameraManager::GetInstance()->SetCamera("default");
 #pragma endregion

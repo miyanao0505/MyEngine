@@ -7,6 +7,22 @@
 /// </summary>
 class PlayerBullet : public BaseObject
 {
+private:
+#pragma region 定数
+	static constexpr float kMoveSpeed = 80.0f;		// 弾の移動速度
+	static constexpr float kLifeTime = 5.0f;		// 弾の寿命
+
+	static const MyBase::Vector3 kInitialScale;	// 初期スケール
+	static const float kColliderRadius;			// コライダー半径
+
+#ifdef _DEBUG
+	static const float kDebugMoveSpeed;				// デバッグ用移動速度
+	static const MyBase::ScopeF kTranslateScope;	// デバッグ用平行移動範囲
+	static const MyBase::ScopeF kRotateScope;		// デバッグ用回転範囲
+	static const MyBase::ScopeF kScaleScope;		// デバッグ用スケール範囲
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// デストラクタ
@@ -68,14 +84,8 @@ private:	// メンバ変数
 	// ステータス
 	bool isDead_ = false;
 
-	// 弾の移動速度
-	const float kMoveSpeed = 80.0f;
-
 	// 弾の速度
 	MyBase::Vector3 velocity_;
-
-	// 寿命<frm>
-	static constexpr float kLifeTime = 60.0f * 5.0f;
 
 	// デスタイマー
 	float deathTimer_ = kLifeTime;

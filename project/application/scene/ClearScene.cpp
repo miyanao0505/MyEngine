@@ -38,9 +38,14 @@ void ClearScene::Initialize()
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
-	// 3Dオブジェクト
+	// プレイヤー
+	player_ = std::make_unique<Player>();
+	player_->Initialize(kPlayerTranslate);
+	player_->GetObject3D()->SetScale(kPlayerScale);
+
+	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, kSkydomeScale);
+	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 
 	// ロゴ
 	clearLogo_ = std::make_unique<ClearLogo>();
@@ -64,6 +69,7 @@ void ClearScene::Initialize()
 
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	skydome_->Update();
 	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 }
@@ -99,10 +105,13 @@ void ClearScene::Update()
 	CameraManager::GetInstance()->GetCamera()->Update();
 
 	// 3Dオブジェクトの更新処理
+	// プレイヤーの更新
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+
 	// 天球の更新
 	skydome_->Update();
 
-	// ロゴ
+	// ロゴの更新
 	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	if (isAccelerationField_) {
@@ -137,7 +146,10 @@ void ClearScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// 天球の描画
+	// プレイヤー
+	player_->Draw();
+
+	// 天球
 	skydome_->Draw();
 
 	// ロゴ

@@ -1,14 +1,62 @@
 #include "Enemy.h"
+#include <imgui.h>
+#include <numbers>
+#include <cmath>
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
 #include "Player.h"
 #include "MyTools.h"
-#include <imgui.h>
-#include <cmath>
 
 using namespace std;
+using namespace numbers;
+
+#pragma region 定数定義
+const int Enemy::kMaxBulletCount = 10;									// 最大弾数
+const float Enemy::kBulletDrawDistance = 300.0f;						// 弾の描画距離
+const MyBase::Vector3 Enemy::kBulletSpawOffset = { 0.0f, 0.0f, -1.0f }; // 弾の発射位置オフセット
+
+const MyBase::Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 150.0f };	// 敵の初期位置
+const MyBase::Vector3 Enemy::kInitialScale = { 1.0f, 1.0f, 1.0f };			// 敵の初期スケール
+const MyBase::Vector3 Enemy::kInitialRotation = { 0.0f, pi_v<float>, 0.0f };// 敵の初期回転
+
+const float Enemy::kColliderRadius = 1.50f;						// コライダーの半径
+
+const int Enemy::kInitialHP = 50;				// 初期体力
+const int Enemy::kInitialAttackPower = 10;		// 初期攻撃力
+
+const MyBase::Vector3 Enemy::kEmitterSize = { 1.0f, 1.0f, 1.0f };		// エミッターサイズ
+const ParticleSystem::ParticleGroupData Enemy::kHitEffectParams = {
+	.size = { 1.f, 10.0f },
+	.energy = { 1.0f, 1.0f },
+	.count = { 10, 15 },
+	.speed = { 0.0f, 0.0f },
+	.direction = { 0.0f, 0.0f, 0.0f },
+	.color = { 0.88f, 0.28f, 0.0f, 1.0f },
+	.frequency = 1.5f,
+	.isBillboard = true,
+	.isEmitUpdate = true
+};		// ヒットエフェクトパーティクルパラメータ
+const ParticleSystem::ParticleGroupData Enemy::kHitEffectRingParams = {
+	.size = { 1.75f, 1.75f },
+	.energy = { 1.0f, 1.0f },
+	.count = { 1, 5 },
+	.speed = { 0.0f, 0.0f },
+	.direction = { 0.0f, 0.0f, 0.0f },
+	.color = { 0.88f, 0.28f, 0.0f, 1.0f },
+	.frequency = 1.5f,
+	.isBillboard = true,
+	.isEmitUpdate = true
+};	// ヒットエフェクトパーティクルパラメータ(リング)
+
+#ifdef _DEBUG
+const float Enemy::kImGuiDragSpeed = 0.01f;				// ImGuiドラッグ速度
+const MyBase::ScopeF Enemy::kTranslateScope = { -100.0f, 100.0f };	// 平行移動範囲
+const MyBase::ScopeF Enemy::kRotateScope = { -pi_v<float>, pi_v<float> };		// 回転範囲
+const MyBase::ScopeF Enemy::kScaleScope = { 0.1f, 10.0f };		// スケール範囲
+#endif // _DEBUG
+#pragma endregion
 
 Enemy::~Enemy()
 {
@@ -22,15 +70,13 @@ void Enemy::Initialize()
 	BaseObject::Initialize("enemy", "enemy.obj");
 	
 	// 3Dオブジェクトの初期化
-	object_->SetTranslate({ 10.0f, 0.0f, 150.0f });	// 初期位置
-	object_->SetScale({ 1.0f, 1.0f, 1.0f });		// 初期スケール
-	object_->SetRotate({ 0.0f, 3.14f, 0.0f});	// 初期回転
+	object_->SetTranslate(kInitialPosition);	// 初期位置
+	object_->SetScale(kInitialScale);			// 初期スケール
+	object_->SetRotate(kInitialRotation);		// 初期回転
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
-	col->SetRadius(1.50f); // 半径1.50fの球体コライダー
-	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
-	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
+	col->SetRadius(kColliderRadius); // 球体コライダー
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)); // コリジョン属性
 	SetCollider(std::move(col)); // コライダーをセット
 	
@@ -38,42 +84,22 @@ void Enemy::Initialize()
 	particleEmitter_ = std::make_unique<ParticleEmitter>();
 	particleEmitter_->Initialize("hitEffectEnemy", "circle.png", ParticleType::kEllipse);
 	particleEmitter_->SetPosition(object_->GetTranslate());
-	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
-	ParticleSystem::ParticleGroupData hitEffect = {
-		.size = { 1.f, 10.0f },
-		.energy = { 1.0f, 1.0f },
-		.count = { 10, 15 },
-		.speed = { 0.0f, 0.0f },
-		.direction = { 0.0f, 0.0f, 0.0f },
-		.color = { 0.88f, 0.28f, 0.0f, 1.0f },
-		.frequency = 1.5f,
-		.isBillboard = true,
-		.isEmitUpdate = true
-	};
+	particleEmitter_->SetSize(kEmitterSize); // 初期サイズ
+	ParticleSystem::ParticleGroupData hitEffect = kHitEffectParams;
 	particleEmitter_->SetParticleGroupData("hitEffectEnemy", hitEffect);
 	particleEmitter_->CreateParticleGroup("hitEffectRingEnemy", "gradationLine.png", ParticleType::kRing);
 	particleEmitter_->SetPosition(object_->GetTranslate());
-	particleEmitter_->SetSize({ 1.0f, 1.0f, 1.0f }); // 初期サイズ
-	ParticleSystem::ParticleGroupData hitEffectRing = {
-		.size = { 1.75f, 1.75f },
-		.energy = { 1.0f, 1.0f },
-		.count = { 1, 5 },
-		.speed = { 0.0f, 0.0f },
-		.direction = { 0.0f, 0.0f, 0.0f },
-		.color = { 0.88f, 0.28f, 0.0f, 1.0f },
-		.frequency = 1.5f,
-		.isBillboard = true,
-		.isEmitUpdate = true
-	};
+	particleEmitter_->SetSize(kEmitterSize); // 初期サイズ
+	ParticleSystem::ParticleGroupData hitEffectRing = kHitEffectRingParams;
 	particleEmitter_->SetParticleGroupData("hitEffectRingEnemy", hitEffectRing);
 
 	// 弾の初期化
 	bullets_.clear();
 
 	// 敵のステータスの初期化
-	hp_ = 50; // 初期HP
+	hp_ = kInitialHP; // 初期HP
 	isDead_ = false; // 初期状態は生存
-	attackPower_ = 10;
+	attackPower_ = kInitialAttackPower;
 	attackCoolTime_ = kAttackCoolTime;
 }
 
@@ -102,7 +128,7 @@ void Enemy::Update(float deltaTime)
 	}
 
 	// 攻撃のクールタイムを減らす
-	if (attackCoolTime_ > 0) {
+	if (attackCoolTime_ > 0.0f) {
 		attackCoolTime_ -= deltaTime;
 	}
 
@@ -208,11 +234,11 @@ void Enemy::DebugDraw()
 		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("Translate", &transform.translate.x, kImGuiDragSpeed, kTranslateScope.min, kTranslateScope.max);
 		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, kImGuiDragSpeed, kRotateScope.min, kRotateScope.max);
 		// 拡縮
-		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, kImGuiDragSpeed, kScaleScope.min, kScaleScope.max);
 		object_->SetTransform(transform);
 
 		ImGui::Text("\n");
@@ -236,7 +262,7 @@ void Enemy::Attack()
 
 bool Enemy::CanAttack()
 {
-	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0) {
+	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0.0f) {
 		return true;
 	}
 	return false;
@@ -245,7 +271,7 @@ bool Enemy::CanAttack()
 void Enemy::SpawnBullet()
 {
 	auto bullet = std::make_unique<EnemyBullet>();
-	MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, -1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
+	MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
 	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
 	bullet->SetAttackPower(attackPower_);
 	bullets_.emplace_back(std::move(bullet));

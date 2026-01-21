@@ -18,17 +18,17 @@ void TitleScene::Initialize()
 
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kCameraRotate);
 #pragma endregion カメラ
 
 #pragma region ライト
 	MyBase::PointLight pointLight;
-	pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	pointLight.position = { 0.0f, 0.0f, -40.0f };
-	pointLight.intensity = 1.0f;
-	pointLight.radius = 500.0f;
-	pointLight.decay = 2.0f;
+	pointLight.color = kClearLightColor;
+	pointLight.position = kCameraTranslate;
+	pointLight.intensity = kClearLightIntensity;
+	pointLight.radius = kClearLightRadius;
+	pointLight.decay = kClearLightDecay;
 	LightManager::GetInstance()->SetPointLight(pointLight);
 #pragma endregion ライト
 
@@ -44,7 +44,7 @@ void TitleScene::Initialize()
 #pragma region Skydome
 	// Skydome
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 #pragma endregion Skybox
 
 #pragma region 3Dオブジェクト

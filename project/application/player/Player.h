@@ -10,6 +10,28 @@
 /// </summary>
 class Player : public BaseObject
 {
+private:
+#pragma region 定数
+	static constexpr float kMoveSpeed = 10.0f;								// プレイヤーの移動速度
+	static constexpr float kAttackCoolTime = 0.5f;							// 攻撃クールタイム
+	static constexpr int kMaxBulletCount = 10;								// 最大弾数
+	static constexpr float kBulletDrawDistance = 100.0f;					// 弾の描画距離
+	static constexpr MyBase::Vector3 kBulletOffset = {0.0f, 0.0f, 1.0f};	// 弾の発射位置オフセット
+
+	static const MyBase::Vector3 kInitialScale;		// 初期スケール
+	static const float kColliderRadius;				// コライダー半径
+
+	static const int kInitialHP;					// 初期HP
+	static const int kInitialAttackPower;			// 初期攻撃力
+
+#ifdef _DEBUG
+	static const float kDebugMoveSpeed;	// デバッグ用移動速度
+	static const MyBase::ScopeF kTranslateScope;	// デバッグ用平行移動範囲
+	static const MyBase::ScopeF kRotateScope;		// デバッグ用回転範囲
+	static const MyBase::ScopeF kScaleScope;		// デバッグ用スケール範囲
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -123,19 +145,12 @@ private:	// メンバ変数
 	int attackPower_ = 1;
 	bool isDead_ = false;
 	
-	// プレイヤーの移動速度
-	const float kMoveSpeed = 10.0f;
 	MyBase::Vector2 moveInput_;	// 入力意図(-1～1)
 	MyBase::Vector3 externalPosition_; // 外部からの位置影響（ノックバックなど）
 
 	// プレイヤーの攻撃クールタイム
-	const float kAttackCoolTime = 1.0f / 60.0f * 30.0f;	// 30フレーム
 	float attackCoolTime_ = 0;		// 現在のクールタイム
 
-	// 弾の上限
-	const int kMaxBulletCount = 10; // 最大弾数
 	// 弾の発射位置
 	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
-	// 弾の描画距離
-	const float kBulletDrawDistance = 100.0f;
 };

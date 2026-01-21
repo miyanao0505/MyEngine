@@ -28,6 +28,7 @@ private:
 	static constexpr float kClearLightDecay = 2.0f;
 
 	// Skydome初期設定
+	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
 	static constexpr MyBase::Vector3 kSkydomeScale{ 100.0f, 100.0f, 100.0f };
 
 	// パーティクル加速フィールド初期設定

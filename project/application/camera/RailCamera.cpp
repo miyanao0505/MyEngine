@@ -66,8 +66,7 @@ void RailCamera::MoveAlongRail(float deltaTime)
 	position_ = MyTools::CatmullRomPosition(controlPoints_, lerpT_);
 
 	// 少し先の位置
-	const float epsilon = 0.001f;
-	float tNext = MyTools::Clamp(lerpT_ + epsilon, kLerpStart, kLerpEnd);
+	float tNext = MyTools::Clamp(lerpT_ + kForwardSampleOffset, kLerpStart, kLerpEnd);
 	MyBase::Vector3 nextPos = MyTools::CatmullRomPosition(controlPoints_, tNext);
 
 	// 進行方向

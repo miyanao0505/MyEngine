@@ -10,6 +10,7 @@ class Collider
 {
 private:
 #pragma region 定数
+	static constexpr uint32_t kInvalidTypeId = 0u;
 	static constexpr float kDefaultExtent = 1.0f;
 	static constexpr MyBase::Vector3 kZeroVector{ 0.0f, 0.0f, 0.0f };
 #pragma endregion
@@ -101,14 +102,14 @@ public:	// setter
 
 private:	// メンバ変数
 	// 半径
-	float radius_ = 1.0f;
+	float radius_ = kDefaultExtent;
 	// AABB
 	MyBase::AABB aabb_{};	// 使う前に必ず SetAABB する設計
 	// OBB
 	MyBase::OBB obb_{};		// 使う前に必ず SetOBB する設計
 
 	// 衝突属性
-	uint32_t typeId_ = 0u;
+	uint32_t typeId_ = kInvalidTypeId;
 
 	bool isCollisionEnabled_ = true; // 衝突判定を有効にするかどうか
 };

@@ -11,6 +11,11 @@
 
 using namespace std;
 
+#pragma region 定数
+const MyBase::Vector3 GameScene::kPlayerInitialTranslate{ 0.0f, 0.0f, 0.0f };
+#pragma endregion
+
+
 // 初期化
 void GameScene::Initialize()
 {
@@ -31,7 +36,7 @@ void GameScene::Initialize()
 #pragma region 3Dオブジェクト
 	// プレイヤー
 	player_ = std::make_unique<Player>();
-	player_->Initialize({ 0.0f, 0.0f, 0.0f });
+	player_->Initialize(kPlayerInitialTranslate);
 
 	// 敵
 	enemy_ = std::make_unique<Enemy>();
@@ -40,7 +45,7 @@ void GameScene::Initialize()
 
 	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {500.0f, 500.0f, 500.0f});
+	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 	
 #pragma endregion 3Dオブジェクト
 
@@ -61,8 +66,7 @@ void GameScene::Initialize()
 		});
 	// レール追従システム
 	railFollowSystem_ = std::make_unique<RailFollowSystem>();
-	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get(), CameraManager::GetInstance()->GetCamera());
-	
+	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get());
 #pragma endregion カメラ
 
 #pragma region シーケンス
@@ -92,15 +96,15 @@ void GameScene::Initialize()
 #pragma region 変数
 	isParticleActive_ = true;
 	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	acceleration_ = kAcceleration;
+	area_ = kAccelArea;
 
 	isGameClear_ = false;
 	gameClearTimer_ = 0.0f;
 #pragma endregion 変数
 
 	// 最初の更新
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 5.0f, -40.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
@@ -289,8 +293,8 @@ void GameScene::DebugUpdate()
 void GameScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(kDebugWindowPosScene, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSizeScene, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Game");
 	ImGui::Text("N key : clearScene");
@@ -306,8 +310,8 @@ void GameScene::DebugDraw()
 	ImGui::End();
 
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(kDebugWindowPosSettings, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSizeSettings, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Settings");
 	// Camera
@@ -320,7 +324,8 @@ void GameScene::DebugDraw()
 	// Lighting
 	LightManager::GetInstance()->DebugDraw();
 
-	// Skybox
+	// Skydome
+	skydome_->DebugDraw();
 
 	// プレイヤー
 	player_->DebugDraw();

@@ -24,8 +24,11 @@ class GameScene : public BaseScene
 {
 private:
 #pragma region 定数
+	// プレイヤー
+	static const MyBase::Vector3 kPlayerInitialTranslate;
+
 	// カメラ初期設定
-	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 0.0f,-40.0f };
+	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 5.0f,-40.0f };
 	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
 
 	// ライト初期設定
@@ -36,7 +39,8 @@ private:
 	static constexpr float kClearLightDecay = 2.0f;
 
 	// Skydome初期設定
-	static constexpr MyBase::Vector3 kSkydomeScale{ 100.0f, 100.0f, 100.0f };
+	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector3 kSkydomeScale{ 500.0f, 500.0f, 500.0f };
 
 	// ゲームクリア演出時間
 	static constexpr float kGameClearDuration = 1.0f;
@@ -46,8 +50,10 @@ private:
 	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
 #ifdef _DEBUG
 	// ImGuiウィンドウサイズ
-	static constexpr ImVec2 kDebugWindowPos{ 20.0f, 350.0f };
-	static constexpr ImVec2 kDebugWindowSize{ 350.0f, 150.0f };
+	static constexpr ImVec2 kDebugWindowPosScene{ 20.0f, 350.0f };
+	static constexpr ImVec2 kDebugWindowSizeScene{ 350.0f, 150.0f };
+	static constexpr ImVec2 kDebugWindowPosSettings{ 900.0f, 20.0f };
+	static constexpr ImVec2 kDebugWindowSizeSettings{ 350.0f, 150.0f };
 #endif // _DEBUG
 #pragma endregion
 

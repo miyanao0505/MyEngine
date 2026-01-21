@@ -3,9 +3,22 @@
 #include "MyTools.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
-#include "imgui.h"
+#include <imgui.h>
+#include <numbers>
 
 using namespace std;
+using namespace numbers;
+
+#pragma region 定数
+const MyBase::Vector3 PlayerBullet::kInitialScale{ 0.5f, 0.5f, 0.5f };
+const float PlayerBullet::kColliderRadius = 0.50f;
+#ifdef _DEBUG
+const float PlayerBullet::kDebugMoveSpeed = 0.01f;
+const MyBase::ScopeF PlayerBullet::kTranslateScope = { -100.0f, 100.0f };
+const MyBase::ScopeF PlayerBullet::kRotateScope = { -pi_v<float>, pi_v<float> };
+const MyBase::ScopeF PlayerBullet::kScaleScope = { 0.0f, 10.0f };
+#endif // _DEBUG
+#pragma endregion
 
 // 初期化
 void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vector3& velocity)
@@ -15,15 +28,13 @@ void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vec
 
 	object_->SetTexture("playerBullet.png");
 	object_->SetTranslate(position);
-	object_->SetScale({ 0.5f, 0.5f, 0.5f });
+	object_->SetScale(kInitialScale);
 
 	velocity_ = velocity;
 
 	// プレイヤー弾のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
-	col->SetRadius(0.50f); // 半径0.50fの球体コライダー
-	col->SetAABB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f} });
-	col->SetOBB({ { 0.0f, 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 1.0f} });
+	col->SetRadius(kColliderRadius); // 球体コライダー
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerBullet)); // プレイヤー弾
 	SetCollider(std::move(col)); // コライダーをセット
 
@@ -37,11 +48,16 @@ void PlayerBullet::Update(float deltaTime)
 
 	// 移動処理
 	Move(deltaTime);
-	// オブジェクトの更新
-	object_->Update();
 
 	// 寿命を減らす
 	deathTimer_ -= deltaTime;
+	// 寿命が尽きたら消滅フラグを立てる
+	if (deathTimer_ <= 0.0f) {
+		isDead_ = true;
+	}
+
+	// オブジェクトの更新
+	object_->Update();
 }
 
 // 描画
@@ -63,11 +79,11 @@ void PlayerBullet::DebugDraw()
 		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("Translate", &transform.translate.x, kDebugMoveSpeed, kTranslateScope.min, kTranslateScope.max);
 		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, kDebugMoveSpeed, kRotateScope.min, kRotateScope.max);
 		// 拡縮
-		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.01f, 10.0f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, kDebugMoveSpeed, kScaleScope.min, kScaleScope.max);
 		object_->SetTransform(transform);
 
 		ImGui::Text("\n");
@@ -82,10 +98,6 @@ void PlayerBullet::Move(float deltaTime)
 	// 弾の移動
 	MyBase::Vector3 move = MyTools::Multiply(deltaTime * kMoveSpeed, velocity_);
 	object_->SetTranslate(MyTools::Add(object_->GetTranslate(), move));
-	// 画面外に出たら削除
-	if (deathTimer_ <= 0) {
-		isDead_ = true;
-	}
 }
 
 // 当たり判定

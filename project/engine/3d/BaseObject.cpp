@@ -1,14 +1,16 @@
 #include "BaseObject.h"
 #include <imgui.h>
+#include <numbers>
 #include "ModelManager.h"
 #include "CollisionManager.h"
 
 using namespace std;
+using namespace numbers;
 
 // 定数の定義と初期化
 const MyBase::Vector3 BaseObject::kZeroVector{ 0.0f, 0.0f, 0.0f };
 #ifdef _DEBUG
-const float BaseObject::kPi = 3.14159265359f;
+const float BaseObject::kPi = pi_v<float>;
 const float BaseObject::kImGuiDragSpeed = 0.01f;
 const MyBase::ScopeF BaseObject::kTranslateScope{ -100.0f, 100.0f };
 const MyBase::ScopeF BaseObject::kRotateScope{ -kPi, kPi };

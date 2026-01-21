@@ -3,24 +3,23 @@
 #include "MyTools.h"
 
 /// 初期化
-void RailFollowSystem::Initialize(RailCamera* rail, FollowCamera* follow, Camera* outCamera)
+void RailFollowSystem::Initialize(RailCamera* rail, FollowCamera* follow)
 {
 	// メンバ変数の設定
 	railCamera_ = rail;
 	followCamera_ = follow;
-	camera_ = outCamera;
 }
 
 /// 更新
 void RailFollowSystem::Update()
 {
-	if(railCamera_->GetRailLerpT() >= 1.0f)
-	{
-		isFinished_ = true;
-	}
-
 	// レール更新
 	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
+
+	// レール終了判定
+	if (railCamera_->GetRailLerpT() >= 1.0f) {
+		isFinished_ = true;
+	}
 
 	// レール情報取得
 	MyBase::RailData rail = railCamera_->GetRailData();
@@ -34,6 +33,16 @@ void RailFollowSystem::Update()
 	// 入力
 	offsetX_ = MyTools::Add(MyTools::Multiply(input_.x * playerSpeed_ * TimeManager::GetInstance()->GetDeltaTime(), right), offsetX_);
 	offsetY_ = MyTools::Add(MyTools::Multiply(input_.y * playerSpeed_ * TimeManager::GetInstance()->GetDeltaTime(), up), offsetY_);
+	
+	// オフセット制限
+	if (MyTools::Length(offsetX_) > maxOffsetX_) {
+		offsetX_ = MyTools::Multiply(maxOffsetX_, MyTools::Normalize(offsetX_));
+	}
+	if (MyTools::Length(offsetY_) > maxOffsetY_) {
+		offsetY_ = MyTools::Multiply(maxOffsetY_, MyTools::Normalize(offsetY_));
+	}
+
+	// 合成オフセット
 	offset_ = MyTools::Add(offsetX_, offsetY_);
 
 	// 最終座標
