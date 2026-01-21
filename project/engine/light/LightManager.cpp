@@ -111,7 +111,7 @@ void LightManager::CreateDirectionalLightData()
 	// デフォルト値はとりあえず以下のようにしておく
 	directionalLightMapped_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
 	directionalLightMapped_->direction = { 0.0f, -1.0f, 0.0f };
-	directionalLightMapped_->intensity = 1.0f;
+	directionalLightMapped_->intensity = 0.0f;
 }
 
 // 点光源データ作成
@@ -124,7 +124,7 @@ void LightManager::CreatePointLightData()
 	// デフォルト値はとりあえず以下のようにしておく
 	pointLightMapped_->color = { 1.0f, 1.0f, 1.0f,1.0f };
 	pointLightMapped_->position = { 0.0f, 0.0f, 0.0f };
-	pointLightMapped_->intensity = 1.0f;
+	pointLightMapped_->intensity = 0.0f;
 	pointLightMapped_->radius = 1.0f;
 	pointLightMapped_->decay = 1.0f;
 }
@@ -141,7 +141,7 @@ void LightManager::CreateSpotLightData()
 	spotLightMapped_->position = { 0.0f, 0.0f, 0.0f };
 	spotLightMapped_->intensity = 1.0f;
 	spotLightMapped_->direction = { 0.0f, -1.0f, 0.0f };
-	spotLightMapped_->distance = 1.0f;
+	spotLightMapped_->distance = 0.0f;
 	spotLightMapped_->decay = 1.0f;
 	spotLightMapped_->cosAngle = kDefaultSpotLightCosAngle;
 }

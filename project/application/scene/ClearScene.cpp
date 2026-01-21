@@ -203,6 +203,25 @@ void ClearScene::DebugDraw()
 	ImGui::Text("N key : titleScene");
 	ImGui::Text("B key : eventScene");
 	ImGui::End();
+
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(kDebugWindowPosSettings, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSizeSettings, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
+	ImGui::Begin("Settings");
+	// Camera
+	CameraManager::GetInstance()->DebugDraw();
+
+	// Lighting
+	LightManager::GetInstance()->DebugDraw();
+
+	// Skydome
+	skydome_->DebugDraw();
+
+	// プレイヤー
+	player_->DebugDraw();
+
+	ImGui::End();
 }
 #endif // _DEBUG
 

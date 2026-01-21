@@ -49,7 +49,7 @@ private:
 	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
 	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
 #ifdef _DEBUG
-	// ImGuiウィンドウサイズ
+	// ImGui
 	static constexpr ImVec2 kDebugWindowPosScene{ 20.0f, 350.0f };
 	static constexpr ImVec2 kDebugWindowSizeScene{ 350.0f, 150.0f };
 	static constexpr ImVec2 kDebugWindowPosSettings{ 900.0f, 20.0f };

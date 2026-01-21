@@ -23,18 +23,18 @@ private:
 #pragma region 定数
 	// プレイヤー初期設定
 	static constexpr MyBase::Vector3 kPlayerTranslate{ 0.0f, 0.0f, 0.0f };
-	static constexpr MyBase::Vector3 kPlayerScale{ 1.0f, 1.0f, 1.0f };
+	static constexpr MyBase::Vector3 kPlayerScale{ 0.75f, 0.75f, 0.75f };
 
 	// カメラ初期設定
-	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 2.0f,-40.0f };
-	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 5.0f,-30.0f };
+	static constexpr MyBase::Vector3 kCameraRotate{ 0.150f, 0.0f, 0.0f };
 
 	// ライト初期設定
 	static constexpr MyBase::Vector4 kClearLightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-	static constexpr MyBase::Vector3 kClearLightPos{ 0.0f, 0.0f, -40.0f };
+	static constexpr MyBase::Vector3 kClearLightPos{ 0.0f, -5.0f, -40.0f };
 	static constexpr float kClearLightIntensity = 1.0f;
 	static constexpr float kClearLightRadius = 500.0f;
-	static constexpr float kClearLightDecay = 2.0f;
+	static constexpr float kClearLightDecay = 0.50f;
 
 	// Skydome初期設定
 	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
@@ -44,9 +44,11 @@ private:
 	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
 	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
 #ifdef _DEBUG
-	// ImGuiウィンドウサイズ
+	// ImGui
 	static constexpr ImVec2 kDebugWindowPos{ 20.0f, 350.0f };
 	static constexpr ImVec2 kDebugWindowSize{ 350.0f, 150.0f };
+	static constexpr ImVec2 kDebugWindowPosSettings{ 900.0f, 20.0f };
+	static constexpr ImVec2 kDebugWindowSizeSettings{ 350.0f, 150.0f };
 #endif // _DEBUG
 #pragma endregion
 

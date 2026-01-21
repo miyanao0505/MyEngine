@@ -303,14 +303,14 @@ private:	// メンバ変数
 	DirectXBase* dxBase_ = nullptr;
 
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightBuffer_ = nullptr;		// 平行光源
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightBuffer_ = nullptr;	// 平行光源
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightBuffer_ = nullptr;			// 点光源
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightBuffer_ = nullptr;			// スポットライト
 
 	// バッファリソース内のデータを指すポインタ
-	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;
-	MyBase::PointLight* pointLightMapped_ = nullptr;									// 点光源
-	MyBase::SpotLight* spotLightMapped_ = nullptr;
+	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;				// 平行光源
+	MyBase::PointLight* pointLightMapped_ = nullptr;							// 点光源
+	MyBase::SpotLight* spotLightMapped_ = nullptr;								// スポットライト
 
 #pragma region 定数
 	static constexpr float kDefaultSpotLightCosAngle = 0.125f;

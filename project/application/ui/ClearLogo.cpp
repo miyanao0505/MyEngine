@@ -8,7 +8,7 @@ const MyBase::Transform ClearLogo::kButtonTransform{ {2.5f, 2.5f, 2.5f}, {0.0f, 
 
 const MyBase::Vector3 ClearLogo::kMoveVector = { 0.0f,-1.0f,0.0f };
 const float ClearLogo::kMoveDistance = 0.0f;
-const float ClearLogo::kMoveSpeed = 60.0f;
+const float ClearLogo::kMoveSpeed = 5.0f;
 #pragma endregion
 
 /// 初期化
