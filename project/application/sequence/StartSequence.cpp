@@ -49,9 +49,6 @@ void StartSequence::Update(float deltaTime) {
 			HideText();
 			isFinished_ = true;
 			state_ = State::Finished;
-
-			// ライトのリセット
-			LightManager::GetInstance()->Initialize();
 		}
 		break;
 	case State::Finished:
@@ -81,7 +78,7 @@ void StartSequence::EngineStartEffect()
 		pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		pointLight.position = CameraManager::GetInstance()->GetCamera()->GetTranslate();
 		pointLight.intensity = 1.0f;
-		pointLight.radius = 50.0f;
+		pointLight.radius = 500.0f;
 		pointLight.decay = 2.0f;
 		LightManager::GetInstance()->SetPointLight(pointLight);
 

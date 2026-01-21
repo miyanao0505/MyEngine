@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "StartSequence.h"
+#include "GoalSequence.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 #ifdef _DEBUG
@@ -118,6 +119,7 @@ private:	// メンバ変数
 
 	// シーケンス
 	std::unique_ptr<StartSequence> startSequence_ = nullptr;
+	std::unique_ptr<GoalSequence> goalSequence_ = nullptr;
 
 	// 3Dオブジェクト
 

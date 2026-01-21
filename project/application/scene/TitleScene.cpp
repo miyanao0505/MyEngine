@@ -25,7 +25,7 @@ void TitleScene::Initialize()
 #pragma region ライト
 	MyBase::PointLight pointLight;
 	pointLight.color = kClearLightColor;
-	pointLight.position = kCameraTranslate;
+	pointLight.position = kClearLightPos;
 	pointLight.intensity = kClearLightIntensity;
 	pointLight.radius = kClearLightRadius;
 	pointLight.decay = kClearLightDecay;

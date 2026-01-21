@@ -47,8 +47,6 @@ private:	// メンバ変数
 	Phase phase_ = Phase::kNone;
 	float timer_ = 0.0f;        // タイマー
 
-	
-
 	FinishCallback onSwitch_ = nullptr; // シーン切替タイミングのコールバック
 
 	// フェード用スプライト

@@ -23,7 +23,10 @@ void GameScene::Initialize()
 	BaseScene::Initialize();
 
 #pragma region ライト
-	LightManager::GetInstance()->Initialize();
+	//LightManager::GetInstance()->Initialize();
+	LightManager::GetInstance()->SetPointLightIntensity(1.0f);
+	LightManager::GetInstance()->SetDirectionalLightIntensity(1.0f);
+	LightManager::GetInstance()->SetSpotLightIntensity(1.0f);
 #pragma endregion ライト
 
 #pragma region スプライト
@@ -70,9 +73,11 @@ void GameScene::Initialize()
 #pragma endregion カメラ
 
 #pragma region シーケンス
-	// シーケンス
+	// 開始演出
 	startSequence_ = std::make_unique<StartSequence>();
 	startSequence_->Initialize();
+	// ゴール演出
+	goalSequence_ = std::make_unique<GoalSequence>();
 #pragma endregion シーケンス
 
 #pragma region パーティクル
@@ -153,24 +158,33 @@ void GameScene::Update()
 		CameraManager::GetInstance()->GetCamera()->Update();
 	}
 
+	// スタート演出中
+	if (!startSequence_->IsFinished()) {
+		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
+		return;
+	}
+
 	// クリアフラグが立っている場合
 	if (isGameClear_) {
 		// クリアタイマー更新
 		gameClearTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
-		// タイマーが0以下になったら
-		if (gameClearTimer_ <= 0.0f) {
+		// ゴール演出中
+		if (!goalSequence_->IsFinished()) {
+			goalSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
+		}
+		else {
 			// シーン切り替え依頼
 			SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 			return;
 		}
 		return;
 	}
+	
+	// プレイヤーの更新処理
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
-	// スタート演出中
-	if (!startSequence_->IsFinished()) {
-		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
-		return;
-	}
+	// 敵の更新処理
+	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	
 	// クリア条件
 	if (railFollowSystem_->IsFinished()) {
@@ -178,24 +192,22 @@ void GameScene::Update()
 		isGameClear_ = true;
 		// クリアタイマーセット
 		gameClearTimer_ = kGameClearDuration;
+
+		// ゴール演出の初期化
+		goalSequence_->Initialize(player_.get(), CameraManager::GetInstance()->GetCamera(), followCamera_->GetOffset());
+
 		return;
 	}
+	else {
+		railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
+		railFollowSystem_->SetPlayerSpeed(player_->GetMoveSpeed());
+		railFollowSystem_->SetInput(player_->GetMoveInput());
 
-	// 3Dオブジェクトの更新処理
-	// プレイヤーの更新処理
-	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+		// レール追従システムの更新
+		railFollowSystem_->Update();
 
-	railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
-	railFollowSystem_->SetPlayerSpeed(player_->GetMoveSpeed());
-	railFollowSystem_->SetInput(player_->GetMoveInput());
-
-	// レール追従システムの更新
-	railFollowSystem_->Update();
-
-	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
-
-	// 敵の更新処理
-	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
+		player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
+	}
 
 	// 天球の更新
 	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
@@ -220,8 +232,6 @@ void GameScene::Update()
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();
-
-	// スプライトの更新処理
 }
 
 // 描画
@@ -236,6 +246,9 @@ void GameScene::Draw()
 	// シーケンスの描画
 	if(!startSequence_->IsFinished()){
 		startSequence_->Draw();
+	}
+	if (!goalSequence_->IsFinished()) {
+		goalSequence_->Draw();
 	}
 
 	// 天球の描画
