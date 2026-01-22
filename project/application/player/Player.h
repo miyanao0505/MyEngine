@@ -15,7 +15,7 @@ private:
 	static constexpr float kMoveSpeed = 10.0f;								// プレイヤーの移動速度
 	static constexpr float kAttackCoolTime = 0.5f;							// 攻撃クールタイム
 	static constexpr int kMaxBulletCount = 10;								// 最大弾数
-	static constexpr float kBulletDrawDistance = 100.0f;					// 弾の描画距離
+	static constexpr float kBulletDrawDistance = 500.0f;					// 弾の描画距離
 	static constexpr MyBase::Vector3 kBulletOffset = {0.0f, 0.0f, 1.0f};	// 弾の発射位置オフセット
 
 	static const MyBase::Vector3 kInitialScale;		// 初期スケール

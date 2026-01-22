@@ -49,9 +49,6 @@ void StartSequence::Update(float deltaTime) {
 			HideText();
 			isFinished_ = true;
 			state_ = State::Finished;
-
-			// ライトのリセット
-			LightManager::GetInstance()->Initialize();
 		}
 		break;
 	case State::Finished:
@@ -84,6 +81,7 @@ void StartSequence::EngineStartEffect()
 		pointLight.radius = 50.0f;
 		pointLight.decay = 2.0f;
 		LightManager::GetInstance()->SetPointLight(pointLight);
+		LightManager::GetInstance()->SetDirectionalLightIntensity(1.0f);
 
 		// エンジン起動エフェクト再生処理
 		

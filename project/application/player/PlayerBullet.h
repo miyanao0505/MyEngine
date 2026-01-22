@@ -10,7 +10,7 @@ class PlayerBullet : public BaseObject
 private:
 #pragma region 定数
 	static constexpr float kMoveSpeed = 80.0f;		// 弾の移動速度
-	static constexpr float kLifeTime = 5.0f;		// 弾の寿命
+	static constexpr float kLifeTime = 20.0f;		// 弾の寿命
 
 	static const MyBase::Vector3 kInitialScale;	// 初期スケール
 	static const float kColliderRadius;			// コライダー半径

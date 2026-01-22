@@ -23,7 +23,9 @@ void GameScene::Initialize()
 	BaseScene::Initialize();
 
 #pragma region ライト
-	LightManager::GetInstance()->Initialize();
+	LightManager::GetInstance()->SetPointLightIntensity(0.0f);
+	LightManager::GetInstance()->SetDirectionalLightIntensity(1.0f);
+	LightManager::GetInstance()->SetSpotLightIntensity(0.0f);
 #pragma endregion ライト
 
 #pragma region スプライト
