@@ -11,7 +11,7 @@ private:
 #pragma region 定数
 	static constexpr MyBase::Vector3 kDefaultOffset{ 0.0f, 5.0f, -40.0f };
 	static constexpr MyBase::Vector3 kWorldUp{ 0.0f, 1.0f, 0.0f };
-	static constexpr float kDefaultFollowSmooth = 8.0f;
+	static constexpr float kDefaultFollowSmooth = 5.0f;
 
 #ifdef _DEBUG
 	static constexpr const char* kOffsetLabel = "Offset";

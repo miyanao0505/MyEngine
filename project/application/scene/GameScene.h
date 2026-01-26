@@ -40,7 +40,7 @@ private:
 
 	// Skydome初期設定
 	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
-	static constexpr MyBase::Vector3 kSkydomeScale{ 500.0f, 500.0f, 500.0f };
+	static constexpr MyBase::Vector3 kSkydomeScale{ 800.0f, 800.0f, 800.0f };
 
 	// ゲームクリア演出時間
 	static constexpr float kGameClearDuration = 1.0f;

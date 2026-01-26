@@ -10,7 +10,7 @@ class RailCamera
 {
 private:
 #pragma region 定数
-	static constexpr float kDefaultRailSpeed = 0.1f;	// レールの進行速度
+	static constexpr float kDefaultRailSpeed = 0.075f;	// レールの進行速度
 	static constexpr size_t kMinCatmullRomPoints = 4;	// Catmull-Rom点の最小数
 
 	static constexpr float kLerpEnd = 1.0f;

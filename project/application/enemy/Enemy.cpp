@@ -17,7 +17,7 @@ const int Enemy::kMaxBulletCount = 10;									// 最大弾数
 const float Enemy::kBulletDrawDistance = 500.0f;						// 弾の描画距離
 const MyBase::Vector3 Enemy::kBulletSpawOffset = { 0.0f, 0.0f, -1.0f }; // 弾の発射位置オフセット
 
-const MyBase::Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 300.0f };	// 敵の初期位置
+const MyBase::Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 500.0f };	// 敵の初期位置
 const MyBase::Vector3 Enemy::kInitialScale = { 1.0f, 1.0f, 1.0f };			// 敵の初期スケール
 const MyBase::Vector3 Enemy::kInitialRotation = { 0.0f, pi_v<float>, 0.0f };// 敵の初期回転
 

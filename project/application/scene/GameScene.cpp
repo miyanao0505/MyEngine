@@ -62,9 +62,9 @@ void GameScene::Initialize()
 	railCamera_->Initialize();
 	railCamera_->SetRailPoints({
 		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 100.0f },
-		{ 0.0f, 0.0f, 200.0f },
-		{ 0.0f, 0.0f, 400.0f },
+		{ 0.0f, 0.0f, 250.0f },
+		{ 0.0f, 0.0f, 500.0f },
+		{ 0.0f, 0.0f, 1000.0f },
 		});
 	// レール追従システム
 	railFollowSystem_ = std::make_unique<RailFollowSystem>();

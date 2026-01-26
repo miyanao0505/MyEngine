@@ -9,7 +9,7 @@ class EnemyBullet : public BaseObject
 {
 private:
 #pragma region 定数
-	static constexpr float kMoveSpeed = 50.0f;	// 弾の移動速度
+	static constexpr float kMoveSpeed = 70.0f;	// 弾の移動速度
 	static constexpr float kLifeTime = 20.0f;	// 寿命
 	
 	static const MyBase::Vector3 kInitialScale;		// 弾の初期スケール
