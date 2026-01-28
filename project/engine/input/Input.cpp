@@ -17,37 +17,59 @@ Input* Input::GetInstance()
 /// 初期化
 void Input::Initialize(WindowsAPI* winApi)
 {
-	HRESULT hr;
-
 	// 狩りてきたWinApiのインスタンスを記録
 	winApi_ = winApi;
 
-	// DirectInputの初期化
-	hr = DirectInput8Create(winApi_->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput, nullptr);
-	assert(SUCCEEDED(hr));
+	// キーボード初期化
+	KeyboardInitialize();
 
-	// キーボードデバイスの生成
-	hr = directInput->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
-	assert(SUCCEEDED(hr));
-
-	// 入力データ形式のセット
-	hr = keyboard->SetDataFormat(&c_dfDIKeyboard);	// 標準形式
-	assert(SUCCEEDED(hr));
-
-	// 排他制御レベルのセット
-	hr = keyboard->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-	assert(SUCCEEDED(hr));
+	// マウス初期化
+	MouseInitialize();
 }
 
 // 終了
 void Input::Finalize()
 {
-	keyboard.Reset();
-	directInput.Reset();
+	keyboard_.Reset();
+	mouseDevice_.Reset();
+	directInput_.Reset();
 }
 
 /// 更新
 void Input::Update()
+{
+	// キーボードの更新
+	KeyboardUpdate();
+
+	// マウスの更新
+	MouseUpdate();
+}
+
+#pragma region キーボード
+/// キーボードの初期化
+void Input::KeyboardInitialize()
+{
+	HRESULT hr;
+
+	// DirectInputの初期化
+	hr = DirectInput8Create(winApi_->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&directInput_, nullptr);
+	assert(SUCCEEDED(hr));
+
+	// キーボードデバイスの生成
+	hr = directInput_->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
+	assert(SUCCEEDED(hr));
+
+	// 入力データ形式のセット
+	hr = keyboard_->SetDataFormat(&c_dfDIKeyboard);	// 標準形式
+	assert(SUCCEEDED(hr));
+
+	// 排他制御レベルのセット
+	hr = keyboard_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+	assert(SUCCEEDED(hr));
+}
+
+/// キーボードの更新
+void Input::KeyboardUpdate()
 {
 	HRESULT hr;
 
@@ -55,17 +77,112 @@ void Input::Update()
 	keyPre_ = key_;
 
 	// キーボード情報の取得開始
-	hr = keyboard->Acquire();
+	hr = keyboard_->Acquire();
 	// 全キーの入力状態を取得する
-	hr = keyboard->GetDeviceState(sizeof(key_), key_.data());
+	hr = keyboard_->GetDeviceState(sizeof(key_), key_.data());
 
 	if (FAILED(hr)) {
-		keyboard->Acquire();
+		keyboard_->Acquire();
+	}
+}
+#pragma endregion
+
+#pragma region マウス
+// マウスの初期化
+void Input::MouseInitialize()
+{
+	// マウスデバイスの生成
+	mouseHr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
+	assert(SUCCEEDED(mouseHr));
+
+	// 入力データ形式のセット
+	mouseHr = mouseDevice_->SetDataFormat(&c_dfDIMouse2);
+	assert(SUCCEEDED(mouseHr));
+
+	// 排他制御レベルのセット
+	mouseHr = mouseDevice_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(SUCCEEDED(mouseHr));
+}
+
+/// マウスの更新
+void Input::MouseUpdate()
+{
+	// マウス情報の更新
+	MouseStateUpdate();
+
+	// マウス座標更新
+	MousePosUpdate();
+
+	// マウス移動量
+	MouseMoveUpdate();
+
+	// ホイール回転量
+	MouseWheelUpdate();
+}
+
+/// マウス情報の更新
+void Input::MouseStateUpdate()
+{
+	// 前回のマウス状態を保存
+	mouseStatePre_ = mouseState_;
+
+	if (FAILED(mouseHr)) {
+		// マウス情報の取得開始
+		mouseDevice_->Acquire();
+		// マウス状態取得
+		mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
+	}
+
+	// マウスボタン状態を配列に反映
+	for (size_t i = 0; i < kMouseCount; ++i) {
+		mouseButtonsPre_[i] = mouseButtons_[i];
+		mouseButtons_[i] = (mouseState_.rgbButtons[i] & 0x80) ? 1 : 0;
 	}
 }
 
+/// マウス座標更新
+void Input::MousePosUpdate()
+{
+	mousePosPre_ = mousePos_;
+
+	POINT pos;
+	GetCursorPos(&pos);
+	ScreenToClient(winApi_->GetHwnd(), &pos);
+
+	mousePos_ = pos;
+}
+
+/// マウス移動量更新
+void Input::MouseMoveUpdate()
+{
+	mouseMove_.x = mouseState_.lX;
+	mouseMove_.y = mouseState_.lY;
+}
+
+/// マウスホイールの更新
+void Input::MouseWheelUpdate()
+{
+	wheelDelta_ = mouseState_.lZ;
+}
+#pragma endregion
+
+#pragma region getter
+
+#pragma region キーボード関係
+/// キーの押下をチェック
+bool Input::PushKey(BYTE keyNumber) {
+	assert(keyNumber < key_.size());
+
+	// 指定キーを押していればtrueを返す
+	if (key_[keyNumber]) {
+		return true;
+	}
+	// そうでなければfalseを返す
+	return false;
+}
+
 /// キーのトリガーをチェック
-bool Input::IsKeyTriggered(BYTE keyNumber){
+bool Input::TriggerKey(BYTE keyNumber) {
 	assert(keyNumber < key_.size());
 
 	// 指定キーを押した時にtrueを返す
@@ -76,14 +193,79 @@ bool Input::IsKeyTriggered(BYTE keyNumber){
 	return false;
 }
 
-/// キーの押下をチェック
-bool Input::IsKeyPressed(BYTE keyNumber) {
+/// キーのリリースをチェック
+bool Input::ReleaseKey(BYTE keyNumber) {
 	assert(keyNumber < key_.size());
 
-	// 指定キーを押していればtrueを返す
-	if (key_[keyNumber]) {
+	// 指定キーをリリースした時にtrueを返す
+	if (keyPre_[keyNumber] && !key_[keyNumber]) {
 		return true;
 	}
 	// そうでなければfalseを返す
 	return false;
 }
+#pragma endregion
+
+#pragma region マウス関係
+/// マウスボタンの押下をチェック
+bool Input::PushMouse(MouseButton button) {
+	const uint8_t index = static_cast<uint8_t>(button);
+
+	assert(index < mouseButtons_.size());
+
+	// 指定マウスボタンを押していればtrueを返す
+	if (mouseButtons_[index]) {
+		return true;
+	}
+	// そうでなければfalseを返す
+	return false;
+}
+
+/// マウスボタンのトリガーをチェック
+bool Input::TriggerMouse(MouseButton button) {
+	const uint8_t index = static_cast<uint8_t>(button);
+
+	assert(index < mouseButtons_.size());
+
+	// 指定マウスボタンを押した時にtrueを返す
+	if (!mouseButtonsPre_[index] && mouseButtons_[index]) {
+		return true;
+	}
+	// そうでなければfalseを返す
+	return false;
+}
+
+/// マウスボタンのリリースをチェック
+bool Input::ReleaseMouse(MouseButton button) {
+	const uint8_t index = static_cast<uint8_t>(button);
+
+	assert(index < mouseButtons_.size());
+
+	// 指定マウスボタンをリリースした時にtrueを返す
+	if (mouseButtonsPre_[index] && !mouseButtons_[index]) {
+		return true;
+	}
+	// そうでなければfalseを返す
+	return false;
+}
+
+/// マウスカーソルの座標取得
+POINT Input::GetMousePosition()
+{
+	return mousePos_;
+}
+
+/// マウスカーソルの移動距離取得
+POINT Input::GetMouseMove()
+{
+	return mouseMove_;
+}
+
+/// マウスホイールの回転量取得
+int Input::GetWheelDelta()
+{
+	return wheelDelta_;
+}
+#pragma endregion 
+
+#pragma endregion

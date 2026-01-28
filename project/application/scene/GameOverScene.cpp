@@ -89,7 +89,7 @@ void GameOverScene::Update()
 #endif // _DEBUG
 
 	// タイトルシーンへの遷移
-	if (input_->IsKeyTriggered(DIK_RETURN)) {
+	if (input_->TriggerKey(DIK_RETURN)) {
 		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 		return;
 	}
@@ -166,12 +166,12 @@ void GameOverScene::Draw()
 void GameOverScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 	// Bキーを押したら
-	if (input_->IsKeyTriggered(DIK_B)) {
+	if (input_->TriggerKey(DIK_B)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}

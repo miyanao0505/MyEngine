@@ -111,7 +111,7 @@ void MNFramework::Update()
 	Input::GetInstance()->Update();
 
 	// 終了
-	if (winApi_->ProcessMessage() || input_->IsKeyTriggered(DIK_ESCAPE)) {
+	if (winApi_->ProcessMessage()) {
 		endRequest_ = true;
 		return;
 	}

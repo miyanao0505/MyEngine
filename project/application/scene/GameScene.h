@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "StartSequence.h"
+#include "PauseController.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 #ifdef _DEBUG
@@ -98,7 +99,7 @@ public:	// メンバ関数
 
 private:	// メンバ変数
 	// スプライト
-
+	std::unique_ptr<Sprite> escapeUI_ = nullptr;
 	
 	// 3Dオブジェクト
 	// プレイヤー
@@ -118,6 +119,9 @@ private:	// メンバ変数
 
 	// シーケンス
 	std::unique_ptr<StartSequence> startSequence_ = nullptr;
+
+	// ポーズ管理
+	std::unique_ptr<PauseController> pauseController_ = nullptr;
 
 	// 3Dオブジェクト
 

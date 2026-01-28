@@ -25,8 +25,12 @@
     <ClCompile Include="application\sequence\ClearSequence.cpp" />
     <ClCompile Include="application\sequence\GameOverSequence.cpp" />
     <ClCompile Include="application\sequence\StartSequence.cpp" />
+    <ClCompile Include="application\system\PauseController.cpp" />
     <ClCompile Include="application\ui\ClearLogo.cpp" />
     <ClCompile Include="application\ui\GameOverLogo.cpp" />
+    <ClCompile Include="application\ui\PauseButton.cpp" />
+    <ClCompile Include="application\ui\PauseInput.cpp" />
+    <ClCompile Include="application\ui\PauseUI.cpp" />
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
@@ -93,13 +97,20 @@
     <ClInclude Include="application\sequence\ClearSequence.h" />
     <ClInclude Include="application\sequence\GameOverSequence.h" />
     <ClInclude Include="application\sequence\StartSequence.h" />
+    <ClInclude Include="application\system\PauseController.h" />
     <ClInclude Include="application\ui\ClearLogo.h" />
     <ClInclude Include="application\ui\GameOverLogo.h" />
+    <ClInclude Include="application\ui\PauseButton.h" />
+    <ClInclude Include="application\ui\PauseButtonDesc.h" />
+    <ClInclude Include="application\ui\PauseButtonType.h" />
+    <ClInclude Include="application\ui\PauseInput.h" />
+    <ClInclude Include="application\ui\PauseUI.h" />
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
     <ClInclude Include="engine\base\AssetPath.h" />
     <ClInclude Include="engine\base\TimeManager.h" />
+    <ClInclude Include="engine\input\InputTypes.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />
@@ -298,7 +309,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -325,7 +336,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

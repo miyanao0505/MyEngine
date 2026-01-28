@@ -208,7 +208,31 @@ public:	// メンバ関数
 	static float LenSegOnSeparateAxis(const MyBase::Vector3* seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
 #pragma endregion ツール関数
 
-#pragma region 2次元ベクトル	
+#pragma region 2次元ベクトル
+	/// <summary>
+	/// 2次元ベクトルの加算を返す関数
+	/// </summary>
+	/// <param name="v1">ベクトルA</param>
+	/// <param name="v2">ベクトルB</param>
+	/// <returns>加算結果のベクトル</returns>
+	static MyBase::Vector2 Add(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
+
+	/// <summary>
+	/// 2次元ベクトルの減算を返す関数
+	/// </summary>
+	/// <param name="v1">ベクトルA</param>
+	/// <param name="v2">ベクトルB</param>
+	/// <returns>減算結果のベクトル</returns>
+	static MyBase::Vector2 Subtract(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
+
+	/// <summary>
+	/// 2次元ベクトルのスカラー倍
+	/// </summary>
+	/// <param name="scalar">スカラー倍</param>
+	/// <param name="v">ベクトル</param>
+	/// <returns>スカラー倍したベクトル</returns>
+	static MyBase::Vector2 Multiply(float scalar, const MyBase::Vector2 v);
+
 	/// <summary>
 	/// 2次元ベクトルの内積を返す関数
 	/// </summary>

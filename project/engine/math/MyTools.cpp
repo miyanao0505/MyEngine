@@ -571,6 +571,24 @@ float MyTools::LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Ve
 /// 2次元ベクトル ここから
 ///
 
+/// 2次元ベクトルの加算を返す関数
+MyBase::Vector2 MyTools::Add(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
+{
+	return MyBase::Vector2{ v1.x + v2.x, v1.y + v2.y };
+}
+
+/// 2次元ベクトルの減算を返す関数
+MyBase::Vector2 MyTools::Subtract(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
+{
+	return MyBase::Vector2{ v1.x - v2.x, v1.y - v2.y };
+}
+
+/// 2次元ベクトルのスカラー倍
+MyBase::Vector2 MyTools::Multiply(float scalar, const MyBase::Vector2 v)
+{
+	return MyBase::Vector2{ scalar * v.x, scalar * v.y };
+}
+
 /// 2次元ベクトルの内積を返す関数
 float MyTools::Dot(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
 {

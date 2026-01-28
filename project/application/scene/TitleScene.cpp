@@ -109,7 +109,7 @@ void TitleScene::Update()
 #endif // _DEBUG
 
 	// ゲームシーンへの遷移
-	if (input_->IsKeyTriggered(DIK_RETURN)) {
+	if (input_->TriggerKey(DIK_RETURN)) {
 		SceneManager::GetInstance()->ChangeScene(SceneName::Game);
 		return;
 	}

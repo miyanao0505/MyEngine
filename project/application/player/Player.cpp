@@ -147,10 +147,10 @@ void Player::ReadMoveInput()
 {
 	moveInput_ = { 0.0f, 0.0f };
 
-	if (Input::GetInstance()->IsKeyPressed(DIK_W)) moveInput_.y += kMoveSpeed;
-	if (Input::GetInstance()->IsKeyPressed(DIK_S)) moveInput_.y -= kMoveSpeed;
-	if (Input::GetInstance()->IsKeyPressed(DIK_D)) moveInput_.x += kMoveSpeed;
-	if (Input::GetInstance()->IsKeyPressed(DIK_A)) moveInput_.x -= kMoveSpeed;
+	if (Input::GetInstance()->PushKey(DIK_W)) moveInput_.y += kMoveSpeed;
+	if (Input::GetInstance()->PushKey(DIK_S)) moveInput_.y -= kMoveSpeed;
+	if (Input::GetInstance()->PushKey(DIK_D)) moveInput_.x += kMoveSpeed;
+	if (Input::GetInstance()->PushKey(DIK_A)) moveInput_.x -= kMoveSpeed;
 
 	// 正規化
 	if (MyTools::Length(moveInput_) > 1.0f) {
@@ -163,7 +163,7 @@ void Player::Attack()
 {
 	// 攻撃不可なら早期リターン
 	if (!CanAttack()) return;
-	if (Input::GetInstance()->IsKeyPressed(DIK_SPACE)) {
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		// 弾の生成
 		SpawnBullet();
 	}

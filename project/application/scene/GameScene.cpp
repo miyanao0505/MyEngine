@@ -29,24 +29,25 @@ void GameScene::Initialize()
 #pragma endregion ライト
 
 #pragma region スプライト
-	// テクスチャの読み込み
-
 	// スプライト
-
+	escapeUI_ = make_unique<Sprite>();
+	escapeUI_->Initialize("EscButton.png");
+	escapeUI_->SetPosition({ 20.0f, 20.0f });
+	escapeUI_->SetSize({ 100.0f, 50.0f });
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
 	// プレイヤー
-	player_ = std::make_unique<Player>();
+	player_ = make_unique<Player>();
 	player_->Initialize(kPlayerInitialTranslate);
 
 	// 敵
-	enemy_ = std::make_unique<Enemy>();
+	enemy_ = make_unique<Enemy>();
 	enemy_->Initialize();
 	enemy_->SetPlayer(player_.get());
 
 	// 天球
-	skydome_ = std::make_unique<Skydome>();
+	skydome_ = make_unique<Skydome>();
 	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 	
 #pragma endregion 3Dオブジェクト
@@ -55,10 +56,10 @@ void GameScene::Initialize()
 	CameraManager::GetInstance()->AddCamera("FollowCamera");
 	CameraManager::GetInstance()->SetCamera("FollowCamera");
 	// フォローカメラ
-	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_ = make_unique<FollowCamera>();
 	followCamera_->Initialize(CameraManager::GetInstance()->GetCamera());
 	// レールカメラ
-	railCamera_ = std::make_unique<RailCamera>();
+	railCamera_ = make_unique<RailCamera>();
 	railCamera_->Initialize();
 	railCamera_->SetRailPoints({
 		{ 0.0f, 0.0f, 0.0f },
@@ -67,15 +68,21 @@ void GameScene::Initialize()
 		{ 0.0f, 0.0f, 1000.0f },
 		});
 	// レール追従システム
-	railFollowSystem_ = std::make_unique<RailFollowSystem>();
+	railFollowSystem_ = make_unique<RailFollowSystem>();
 	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get());
 #pragma endregion カメラ
 
 #pragma region シーケンス
 	// シーケンス
-	startSequence_ = std::make_unique<StartSequence>();
+	startSequence_ = make_unique<StartSequence>();
 	startSequence_->Initialize();
 #pragma endregion シーケンス
+
+#pragma region ポーズ管理
+	// ポーズコントローラ
+	pauseController_ = make_unique<PauseController>();
+	pauseController_->Initialize();
+#pragma endregion
 
 #pragma region パーティクル
 	// パーティクル
@@ -84,7 +91,7 @@ void GameScene::Initialize()
 
 #pragma region jsonローダー
 	// jsonローダー
-	jsonLoader_ = std::make_unique<JsonLoader>();
+	jsonLoader_ = make_unique<JsonLoader>();
 	LoadJsonFile("gameScene.json");
 #pragma endregion jsonローダー
 
@@ -108,6 +115,7 @@ void GameScene::Initialize()
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
 	CameraManager::GetInstance()->GetCamera()->Update();
+	escapeUI_->Update();
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	skydome_->Update();
@@ -122,7 +130,7 @@ void GameScene::Finalize()
 {
 	jsonLoader_.reset();
 	startSequence_.reset();
-	for(std::unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
+	for(unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
 		spawnPoint.reset();
 	}
 	spawnPoints_.clear();
@@ -135,6 +143,7 @@ void GameScene::Finalize()
 	player_.reset();
 
 	// スプライト
+	escapeUI_.reset();
 
 	BaseScene::Finalize();
 }
@@ -173,7 +182,13 @@ void GameScene::Update()
 		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
 		return;
 	}
+
+	// ポーズ入力の更新
+	pauseController_->Update();
 	
+	// ポーズ中ならゲーム更新を止める
+	if (pauseController_->IsPaused()) return;
+
 	// クリア条件
 	if (railFollowSystem_->IsFinished()) {
 		// ゲームクリアフラグON
@@ -204,10 +219,10 @@ void GameScene::Update()
 	skydome_->Update();
 
 	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
+		for (pair<const string, unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
 			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
+			for (list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
@@ -224,6 +239,7 @@ void GameScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
+	escapeUI_->Update();
 }
 
 // 描画
@@ -264,8 +280,16 @@ void GameScene::Draw()
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
+	escapeUI_->Draw();
 
 #pragma endregion スプライト
+
+#pragma region ポーズ関連
+	// ポーズ中はUIを最前面に描画
+	if (pauseController_->IsPaused()) {
+		pauseController_->Draw();
+	}
+#pragma endregion
 }
 
 #ifdef _DEBUG
@@ -273,17 +297,17 @@ void GameScene::Draw()
 void GameScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 	}
 	// Mキーを押したら
-	if (input_->IsKeyTriggered(DIK_M)) {
+	if (input_->TriggerKey(DIK_M)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
 	}
 	// Bキーを押したら
-	if (input_->IsKeyTriggered(DIK_B)) {
+	if (input_->TriggerKey(DIK_B)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
@@ -343,10 +367,10 @@ void GameScene::DebugDraw()
 #endif // _DEBUG
 
 // JSONファイルの読み込み
-void GameScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
+void GameScene::LoadJsonFile([[maybe_unused]] const string& filePath)
 {
 	// レベルデータの読み込み
-	std::unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
+	unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 	
 	// 3Dオブジェクトの読み込み
 	for (const JsonObjectData& objectData : levelData->objects) {

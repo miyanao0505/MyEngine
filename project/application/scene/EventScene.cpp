@@ -118,7 +118,7 @@ void EventScene::Draw()
 void EventScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}

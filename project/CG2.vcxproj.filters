@@ -154,6 +154,12 @@
     <Filter Include="ヘッダー ファイル\application\sequence">
       <UniqueIdentifier>{349a0770-6496-42ba-bbaa-faa876093a7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\system">
+      <UniqueIdentifier>{1c056994-15dc-4bcf-9990-5845c16bd55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\system">
+      <UniqueIdentifier>{bc0d3fc7-909d-486e-a036-7eef9a94502e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -350,6 +356,18 @@
     </ClCompile>
     <ClCompile Include="application\enemy\EnemyBullet.cpp">
       <Filter>ソース ファイル\application\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseUI.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\system\PauseController.cpp">
+      <Filter>ソース ファイル\application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseInput.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseButton.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -556,6 +574,27 @@
     </ClInclude>
     <ClInclude Include="application\enemy\EnemyBullet.h">
       <Filter>ヘッダー ファイル\application\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseUI.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\PauseController.h">
+      <Filter>ヘッダー ファイル\application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseInput.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButton.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\InputTypes.h">
+      <Filter>ヘッダー ファイル\engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButtonDesc.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButtonType.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
