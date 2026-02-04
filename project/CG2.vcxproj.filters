@@ -160,6 +160,12 @@
     <Filter Include="ヘッダー ファイル\application\system">
       <UniqueIdentifier>{bc0d3fc7-909d-486e-a036-7eef9a94502e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\engine\3d\debug">
+      <UniqueIdentifier>{34a4a042-4ab5-4291-8434-53b66d9bd376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\3d\debug">
+      <UniqueIdentifier>{04b2a4c7-a42a-4820-ac40-d8fb3b8d5cd5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -282,9 +288,6 @@
     <ClCompile Include="engine\math\Matrix.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\math\MyBase.cpp">
-      <Filter>ソース ファイル\engine\math</Filter>
-    </ClCompile>
     <ClCompile Include="engine\math\MyTools.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
@@ -368,6 +371,15 @@
     </ClCompile>
     <ClCompile Include="application\ui\PauseButton.cpp">
       <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineRenderer.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineBase.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\MyBase.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -595,6 +607,12 @@
     </ClInclude>
     <ClInclude Include="application\ui\PauseButtonType.h">
       <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineRenderer.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineBase.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

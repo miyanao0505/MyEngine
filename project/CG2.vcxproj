@@ -33,9 +33,12 @@
     <ClCompile Include="application\ui\PauseUI.cpp" />
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineBase.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineRenderer.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
     <ClCompile Include="engine\base\TimeManager.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
+    <ClCompile Include="engine\math\MyBase.cpp" />
     <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
@@ -68,7 +71,6 @@
     <ClCompile Include="engine\input\Input.cpp" />
     <ClCompile Include="engine\light\LightManager.cpp" />
     <ClCompile Include="engine\math\Matrix.cpp" />
-    <ClCompile Include="engine\math\MyBase.cpp" />
     <ClCompile Include="engine\math\MyTools.cpp" />
     <ClCompile Include="engine\offscreen\OffScreen.cpp" />
     <ClCompile Include="engine\particle\ParticleBase.cpp" />
@@ -107,6 +109,8 @@
     <ClInclude Include="application\ui\PauseUI.h" />
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineBase.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineRenderer.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
     <ClInclude Include="engine\base\AssetPath.h" />
     <ClInclude Include="engine\base\TimeManager.h" />

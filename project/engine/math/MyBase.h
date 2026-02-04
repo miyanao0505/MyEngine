@@ -4,13 +4,10 @@
 #include <vector>
 
 /// <summary>
-/// 基本データ型・構造体の集約クラス
+/// 基本データ型・構造体の集約
 /// </summary>
-class MyBase
+namespace MyBase
 {
-public:
-	// 構造体
-	
 	/// <summary>
 	/// 2次元ベクトル
 	/// </summary>
@@ -166,6 +163,16 @@ public:
 	};
 
 	/// <summary>
+	/// デバック3Dライン
+	/// </summary>
+	struct DebugLine {
+		Vector3 start;		//!< 始点
+		Vector3 end;		//!< 終点
+		Vector4 color;		//!< 色
+		bool isHit = false;	//!< 当たっているか(Collider用)
+	};
+
+	/// <summary>
 	/// 平面
 	/// </summary>
 	struct Plane {
@@ -268,7 +275,7 @@ public:
 	};
 
 	/// <summary>
-	/// 頂点データ(パーティクル)
+	/// 頂点データ(パーティクル用)
 	/// </summary>
 	struct ParticleVertexData {
 		Vector4 position;
@@ -277,6 +284,13 @@ public:
 		Vector4 color;
 	};
 	
+	/// <summary>
+	/// 頂点データ(デバック3Dライン用)
+	/// </summary>
+	struct DebugLineVertexData {
+		Vector3 position;
+		Vector4 color;
+	};
 
 	/// <summary>
 	/// マテリアル(モデル用)
