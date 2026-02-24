@@ -20,6 +20,30 @@ class DebugLineBase
 {
 public:	// メンバ関数
 	/// <summary>
+	/// シングルトンインスタンス取得
+	/// </summary>
+	/// <returns>DebugLineBase</returns>
+	static DebugLineBase* GetInstance();
+
+	// ------ Passkey Idion ------
+	// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class DebugLineBase;
+	};
+
+	// PassKeyを受け取るコンストラクタ
+	explicit DebugLineBase(ConstructorKey) {}
+
+	// default_delete にアクセスを許可する
+	friend struct std::default_delete<DebugLineBase>;
+
+	// コピー禁止
+	DebugLineBase(const DebugLineBase&) = delete;
+	DebugLineBase& operator=(const DebugLineBase&) = delete;
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="dxBase">DirectXBase</param>
@@ -29,6 +53,11 @@ public:	// メンバ関数
 	/// 共通描画設定
 	/// </summary>
 	void SetCommonScreen();
+
+	/// <summary>
+	/// 終了処理(unique_ptr をリセット)
+	/// </summary>
+	static void Finalize();
 
 private:
 	/// <summary>
@@ -48,6 +77,18 @@ public:	// getter
 	/// <returns>DirectXBase</returns>
 	DirectXBase* GetDxBase() const { return dxBase_; }
 
+	/// <summary>
+	/// グラフィックパイプラインステートの取得
+	/// </summary>
+	/// <returns>GraphicsPipelineState</returns>
+	ID3D12PipelineState* GetGraphicsPipelineState() const { return graphicsPipelineState_.Get(); }
+
+	/// <summary>
+	/// ルートシグネチャの取得
+	/// </summary>
+	/// <returns>RootSignature</returns>
+	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
+
 public:	// setter
 	/// <summary>
 	/// ブレンドモード設定
@@ -59,6 +100,9 @@ public:	// setter
 	D3D12_BLEND_DESC SetBlendNone();
 	D3D12_BLEND_DESC SetBlendAlpha();
 	D3D12_BLEND_DESC SetBlendAdd();
+
+private:	// インスタンス
+	static std::unique_ptr<DebugLineBase> sInstance_;
 
 private:	// メンバ変数
 	// DirectXBase
@@ -73,4 +117,3 @@ private:	// メンバ変数
 	DebugLineBlendMode blendMode_ = DebugLineBlendMode::kAlppha;
 	static D3D12_BLEND_DESC(DebugLineBase::* spBlendTable[])();
 };
-

@@ -3,9 +3,10 @@
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
 #include "TimeManager.h"
 #include "MyTools.h"
+#include "DebugLineBase.h"
 
 // 初期化
 void EventScene::Initialize()
@@ -27,10 +28,7 @@ void EventScene::Initialize()
 #pragma endregion シーン初期化
 
 #pragma region 変数
-	isParticleActive_ = true;
-	isAccelerationField_ = false;
-	acceleration_ = kAcceleration;
-	area_ = kAccelArea;
+	
 #pragma endregion 変数
 }
 
@@ -57,23 +55,6 @@ void EventScene::Update()
 
 	// 3Dオブジェクトの更新処理
 	
-
-	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
-			ParticleManager::ParticleGroup& group = *pair.second;
-			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
-
-				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime(), acceleration_));
-				}
-
-				++it;
-				++index;
-			}
-		}
-	}
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();

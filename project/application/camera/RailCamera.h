@@ -74,6 +74,14 @@ public:	// getter
 	/// <returns></returns>
 	float GetRailLerpT() const { return lerpT_; }
 
+#ifdef _DEBUG
+	/// <summary>
+	/// デバッグモードフラグ
+	/// </summary>
+	/// <returns>デバッグモードON:ture / OFF:false</returns>
+	bool IsDebugMode() const { return isDebugMode_; }
+#endif // _DEBUG
+
 public:	// setter
 	/// <summary>
 	/// レールの制御点リストを設定

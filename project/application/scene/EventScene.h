@@ -81,8 +81,4 @@ private:	// メンバ変数
 
 	// パーティクル
 
-	bool isParticleActive_;
-	bool isAccelerationField_;
-	MyBase::Vector3 acceleration_{};
-	MyBase::AABB area_{};
 };

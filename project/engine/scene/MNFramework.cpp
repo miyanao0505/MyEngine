@@ -34,6 +34,10 @@ void MNFramework::Initialize(const wchar_t* windowTitle)
 	// ImGuiManagerの初期化
 	imGuiManager_ = std::make_unique<ImGuiManager>();
 	imGuiManager_->Initialize(winApi_.get(), srvManager_.get());
+
+	// デバッグラインの初期化
+	//debugLine_ = std::make_unique<DebugLineBase>();
+	//debugLine_->Initilize(dxBase_);
 #endif // _DEBUG
 
 	// オフスクリーンの作成

@@ -8,13 +8,22 @@
 #include "SceneManager.h"
 #include "TimeManager.h"
 #include "MyTools.h"
+#ifdef _DEBUG
+#include "DebugLineBase.h"
+#endif // _DEBUG
 
 using namespace std;
+using namespace MyBase;
 
 #pragma region 定数
-const MyBase::Vector3 GameScene::kPlayerInitialTranslate{ 0.0f, 0.0f, 0.0f };
+const Vector3 GameScene::kPlayerInitialTranslate{ 0.0f, 0.0f, 0.0f };
+const vector<Vector3> GameScene::kRailPoints{
+	{ 0.0f, 0.0f, 0.0f },
+	{ 0.0f, 0.0f, 250.0f },
+	{ 0.0f, 0.0f, 500.0f },
+	{ 0.0f, 0.0f, 1000.0f },
+};
 #pragma endregion
-
 
 // 初期化
 void GameScene::Initialize()
@@ -61,12 +70,7 @@ void GameScene::Initialize()
 	// レールカメラ
 	railCamera_ = make_unique<RailCamera>();
 	railCamera_->Initialize();
-	railCamera_->SetRailPoints({
-		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 250.0f },
-		{ 0.0f, 0.0f, 500.0f },
-		{ 0.0f, 0.0f, 1000.0f },
-		});
+	railCamera_->SetRailPoints(kRailPoints);
 	// レール追従システム
 	railFollowSystem_ = make_unique<RailFollowSystem>();
 	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get());
@@ -82,6 +86,14 @@ void GameScene::Initialize()
 	// ポーズコントローラ
 	pauseController_ = make_unique<PauseController>();
 	pauseController_->Initialize();
+#pragma endregion
+
+#pragma region デバッグ
+#ifdef _DEBUG
+	// デバッグラインレンダラー
+	debugLineRenderer_ = make_unique<DebugLineRenderer>();
+	debugLineRenderer_->Initialize(DebugLineBase::GetInstance());
+#endif // _DEBUG
 #pragma endregion
 
 #pragma region パーティクル
@@ -130,7 +142,7 @@ void GameScene::Finalize()
 {
 	jsonLoader_.reset();
 	startSequence_.reset();
-	for(unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
+	for(unique_ptr<PlayerSpawnData>& spawnPoint : spawnPoints_){
 		spawnPoint.reset();
 	}
 	spawnPoints_.clear();
@@ -154,6 +166,9 @@ void GameScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
+	// 毎フレームクリア
+	debugLineRenderer_->Clear();
+
 	DebugUpdate();
 #endif // _DEBUG
 
@@ -222,8 +237,8 @@ void GameScene::Update()
 		for (pair<const string, unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
 			int index = 0;
-			for (list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
+			for (list<Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
+				Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
 					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime(), acceleration_));
@@ -240,6 +255,11 @@ void GameScene::Update()
 
 	// スプライトの更新処理
 	escapeUI_->Update();
+
+#ifdef _DEBUG
+	// デバッグラインの追加
+	AddDebugLines();
+#endif // _DEBUG
 }
 
 // 描画
@@ -346,6 +366,10 @@ void GameScene::DebugDraw()
 	followCamera_->DebugDraw();
 	// RailCamera
 	railCamera_->DebugDraw();
+	if (railCamera_->IsDebugMode()) {
+		// レールの通過点を結ぶラインを描画
+		debugLineRenderer_->DrawAll();
+	}
 
 	// Lighting
 	LightManager::GetInstance()->DebugDraw();
@@ -363,6 +387,20 @@ void GameScene::DebugDraw()
 	ParticleManager::GetInstance()->ImGui();
 
 	ImGui::End();
+}
+
+/// デバッグライン追加
+void GameScene::AddDebugLines()
+{
+	// レールの通過点を結ぶラインを追加
+	for (size_t i = 0; i + 1 < kRailPoints.size(); ++i) {
+		DebugLine line{};
+		line.start = kRailPoints[i];
+		line.end = kRailPoints[i + 1];
+		line.color = { 0.0f, 1.0f, 0.0f, 1.0f };	// 緑(レール)
+		
+		debugLineRenderer_->AddLine(line);
+	}
 }
 #endif // _DEBUG
 

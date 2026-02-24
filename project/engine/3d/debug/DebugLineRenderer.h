@@ -35,13 +35,20 @@ public:	// メンバ関数
 
 private:	// メンバ関数
 	/// <summary>
-	/// VertexBuffer生成・更新
+	/// VertexBuffer生成
+	/// </summary>
+	void CreateVertexBuffer();
+
+	/// <summary>
+	/// VertexBuffer更新
 	/// </summary>
 	void UpdateVertexBuffer();
 
 private:	// メンバ変数
 	// DebugLineBase
 	DebugLineBase* base_ = nullptr;
+	// DirectXBase
+	DirectXBase* dxBase_ = nullptr;
 
 	// ライン情報
 	std::vector<MyBase::DebugLine> lines_;
@@ -52,7 +59,4 @@ private:	// メンバ変数
 	// VertexBuffer
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
-
-	// 現在の確保頂点数
-	size_t currentVertexCapacity_ = 0;
 };

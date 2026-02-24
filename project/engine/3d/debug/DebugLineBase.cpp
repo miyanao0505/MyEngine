@@ -2,6 +2,23 @@
 #include <cassert>
 
 using namespace Microsoft::WRL;
+using namespace std;
+
+/// static member 定義
+unique_ptr<DebugLineBase> DebugLineBase::sInstance_ = nullptr;
+
+/// Singleton Instance を取得
+DebugLineBase* DebugLineBase::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<DebugLineBase>(ConstructorKey());
+	}
+	return sInstance_.get();
+}
+
+/// 終了処理
+void DebugLineBase::Finalize() {
+	sInstance_.reset();
+}
 
 /// 初期化
 void DebugLineBase::Initilize(DirectXBase* dxBase) {

@@ -4,7 +4,6 @@
 #include "DirectXBase.h"
 #include "Input.h"
 #include "SrvManager.h"
-#include "ImGuiManager.h"
 #include "OffScreen.h"
 #include "CollisionManager.h"
 #include "CameraManager.h"
@@ -16,6 +15,10 @@
 #include "TimeManager.h"
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
+#ifdef _DEBUG
+#include "ImGuiManager.h"
+#include "DebugLineBase.h"
+#endif // _DEBUG
 
 /// <summary>
 /// ゲームフレームワーク基底クラス(MNFramework)
@@ -75,6 +78,8 @@ protected:	// メンバ変数
 #ifdef _DEBUG
 	// ImGuiManagerの宣言
 	std::unique_ptr<ImGuiManager> imGuiManager_ = nullptr;
+	// デバッグライン
+	std::unique_ptr<DebugLineBase> debugLine_ = nullptr;
 #endif // _DEBUG
 	// オフスクリーン
 	std::unique_ptr<OffScreen> offScreen_ = nullptr;
@@ -99,4 +104,3 @@ protected:	// メンバ変数
 	// シーンファクトリー
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
 };
-

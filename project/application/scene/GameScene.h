@@ -15,6 +15,7 @@
 #include "MyBase.h"
 #ifdef _DEBUG
 #include <imgui.h>
+#include "DebugLineRenderer.h"
 #endif // _DEBUG
 
 /// <summary>
@@ -49,6 +50,9 @@ private:
 	// パーティクル加速フィールド初期設定
 	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
 	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
+
+	// レール通過点
+	static const std::vector<MyBase::Vector3> kRailPoints;
 #ifdef _DEBUG
 	// ImGui
 	static constexpr ImVec2 kDebugWindowPosScene{ 20.0f, 350.0f };
@@ -89,6 +93,11 @@ public:	// メンバ関数
 	/// デバッグ描画
 	/// </summary>
 	void DebugDraw() override;
+
+	/// <summary>
+	/// デバッグライン追加
+	/// </summary>
+	void AddDebugLines();
 #endif // _DEBUG
 
 	/// <summary>
@@ -123,7 +132,10 @@ private:	// メンバ変数
 	// ポーズ管理
 	std::unique_ptr<PauseController> pauseController_ = nullptr;
 
-	// 3Dオブジェクト
+#ifdef _DEBUG
+	// デバッグラインレンダラー
+	std::unique_ptr<DebugLineRenderer> debugLineRenderer_ = nullptr;
+#endif // _DEBUG
 
 	// パーティクル
 
