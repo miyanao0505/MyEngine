@@ -23,7 +23,7 @@ private:
 
 	static const int kMaxBulletCount;				// 最大弾数
 	static const float kBulletDrawDistance;			// 弾の描画距離
-	static const MyBase::Vector3 kBulletSpawOffset;	// 弾の発射位置オフセット
+	static const MyBase::Vector3 kBulletSpawnOffset;	// 弾の発射位置オフセット
 
 	static const MyBase::Vector3 kInitialPosition;	// 敵の初期位置
 	static const MyBase::Vector3 kInitialScale;		// 敵の初期スケール
