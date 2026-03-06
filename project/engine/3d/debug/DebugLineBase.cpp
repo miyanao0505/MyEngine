@@ -1,16 +1,22 @@
 #include "DebugLineBase.h"
 #include <cassert>
+#include "MyBase.h"
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
 
 using namespace Microsoft::WRL;
 using namespace std;
+using namespace MyBase;
 
+#ifdef _DEBUG
 /// static member 定義
 unique_ptr<DebugLineBase> DebugLineBase::sInstance_ = nullptr;
 
 /// Singleton Instance を取得
 DebugLineBase* DebugLineBase::GetInstance() {
-	if (sInstance_ == nullptr) {
-		sInstance_ = make_unique<DebugLineBase>(ConstructorKey());
+	if (!sInstance_) {
+		sInstance_ = make_unique<DebugLineBase>(DebugLineBase::ConstructorKey{});
 	}
 	return sInstance_.get();
 }
@@ -20,11 +26,28 @@ void DebugLineBase::Finalize() {
 	sInstance_.reset();
 }
 
+void DebugLineBase::UpdateMatrix(const MyBase::Matrix4x4& wvp) {
+	DebugLineTransformationMatrix* mapped = nullptr;
+	transformCB_->Map(0, nullptr, reinterpret_cast<void**>(&mapped));
+	mapped->WVP = wvp;
+	transformCB_->Unmap(0, nullptr);
+}
+
+void DebugLineBase::UpdateMaterial(const MyBase::Vector4& color) {
+	DebugLineMaterial* mapped = nullptr;
+	materialCB_->Map(0, nullptr, reinterpret_cast<void**>(&mapped));
+	mapped->color = color;
+	materialCB_->Unmap(0, nullptr);
+}
+
 /// 初期化
-void DebugLineBase::Initilize(DirectXBase* dxBase) {
+void DebugLineBase::Initialize(DirectXBase* dxBase) {
 	dxBase_ = dxBase;
 
 	CreateGraphicsPipeline();
+
+	transformCB_ = dxBase_->CreateBufferResource(sizeof(DebugLineTransformationMatrix));
+	materialCB_ = dxBase_->CreateBufferResource(sizeof(DebugLineMaterial));
 }
 
 // 共通画面設定
@@ -32,19 +55,49 @@ void DebugLineBase::SetCommonScreen() {
 	auto* cmd = dxBase_->GetCommandList();
 	cmd->SetGraphicsRootSignature(rootSignature_.Get());
 	cmd->SetPipelineState(graphicsPipelineState_.Get());
+
+	
+
 	cmd->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+}
+
+/// デバッグ更新
+void DebugLineBase::DebugUpdate() {
+	// 深度バッファの有効/無効設定
+	ImGui::Checkbox("Depth Enabled", &depthEnabled_);
+	ImGui::Text("\n");
+}
+
+/// デバッグ描画
+void DebugLineBase::DebugDraw() {
+	ImGui::PushID(this);
+	if (ImGui::CollapsingHeader("DebugLine")) {
+		DebugUpdate();
+	}
+	ImGui::PopID();
 }
 
 /// ルートシグネチャを作成
 void DebugLineBase::CreateRootSignature() {
 	HRESULT hr;
 
+	// CBV : b0 (Transform), b1 (Material)
+	D3D12_ROOT_PARAMETER params[2] = {};
+
+	// b0 : TransformationMatrix
+	params[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	params[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	params[0].Descriptor.ShaderRegister = 0;
+
+	// b1 : DebugLineMaterial
+	params[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	params[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	params[1].Descriptor.ShaderRegister = 1;
+
 	D3D12_ROOT_SIGNATURE_DESC desc{};
 	desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-	// DebugLine は SRV / CBV 不要
-	desc.NumParameters = 0;
-	desc.pParameters = nullptr;
+	desc.NumParameters = _countof(params);
+	desc.pParameters = params;
 	desc.NumStaticSamplers = 0;
 	desc.pStaticSamplers = nullptr;
 
@@ -126,11 +179,18 @@ void DebugLineBase::CreateGraphicsPipeline() {
 
 	// Depth
 	D3D12_DEPTH_STENCIL_DESC depth{};
-	depth.DepthEnable = true;
-	depth.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	depth.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	depth.DepthEnable = depthEnabled_ ? true : false;
+	depth.StencilEnable = false;
+	if (depthEnabled_) {
+		depth.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		depth.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	} else {
+		depth.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		depth.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		desc.DSVFormat = DXGI_FORMAT_UNKNOWN;
+	}
 	desc.DepthStencilState = depth;
-	desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	hr = dxBase_->GetDevice()->CreateGraphicsPipelineState(
 		&desc,
@@ -139,8 +199,19 @@ void DebugLineBase::CreateGraphicsPipeline() {
 	assert(SUCCEEDED(hr));
 }
 
+/// 深度バッファの有効/無効設定
+void DebugLineBase::SetDepthEnabled(bool enabled) {
+	depthEnabled_ = enabled;
+	// 既に DirectXBase がセットされているなら PSO を再作成
+	if (dxBase_) {
+		CreateGraphicsPipeline();
+	}
+}
+
 void DebugLineBase::SetBlendMode(DebugLineBlendMode blendMode) {
 	blendMode_ = blendMode;
+
+	// ※ 頻繁に呼ぶ想定ではない(デバッグ用途)
 	CreateGraphicsPipeline();
 }
 
@@ -188,3 +259,4 @@ D3D12_BLEND_DESC(DebugLineBase::* DebugLineBase::spBlendTable[])() = {
 	&DebugLineBase::SetBlendAlpha,
 	&DebugLineBase::SetBlendAdd,
 };
+#endif // _DEBUG

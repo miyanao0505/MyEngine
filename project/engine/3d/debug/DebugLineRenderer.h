@@ -5,11 +5,17 @@
 #include "DebugLineBase.h"
 #include "MyBase.h"
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグ3Dライン描画管理クラス
 /// </summary>
 class DebugLineRenderer
 {
+private:
+#pragma region 定数
+	static constexpr uint32_t kMaxLineCount = 2048;
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -29,9 +35,9 @@ public:	// メンバ関数
 	void DrawAll();
 	
 	/// <summary>
-	/// ライン全消去(毎フレーム呼ぶ想定)
+	/// フレーム開始時に呼ぶ
 	/// </summary>
-	void Clear();
+	void BeginFrame();
 
 private:	// メンバ関数
 	/// <summary>
@@ -60,3 +66,4 @@ private:	// メンバ変数
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexBuffer_;
 	D3D12_VERTEX_BUFFER_VIEW vbView_{};
 };
+#endif // _DEBUG

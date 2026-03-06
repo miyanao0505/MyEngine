@@ -1,12 +1,13 @@
 #pragma once
 #include "DirectXBase.h"
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグライン描画ブレンドモード
 /// </summary>
 enum class DebugLineBlendMode {
 	kNone,
-	kAlppha,
+	kAlpha,
 	kAdd,
 
 	kCount,	// 使用禁止
@@ -36,9 +37,6 @@ public:	// メンバ関数
 	// PassKeyを受け取るコンストラクタ
 	explicit DebugLineBase(ConstructorKey) {}
 
-	// default_delete にアクセスを許可する
-	friend struct std::default_delete<DebugLineBase>;
-
 	// コピー禁止
 	DebugLineBase(const DebugLineBase&) = delete;
 	DebugLineBase& operator=(const DebugLineBase&) = delete;
@@ -47,7 +45,7 @@ public:	// メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <param name="dxBase">DirectXBase</param>
-	void Initilize(DirectXBase* dxBase);
+	void Initialize(DirectXBase* dxBase);
 
 	/// <summary>
 	/// 共通描画設定
@@ -58,6 +56,28 @@ public:	// メンバ関数
 	/// 終了処理(unique_ptr をリセット)
 	/// </summary>
 	static void Finalize();
+
+	/// <summary>
+	/// 行列の更新
+	/// </summary>
+	/// <param name="wvp">wvp</param>
+	void UpdateMatrix(const MyBase::Matrix4x4& wvp);
+	
+	/// <summary>
+	/// マテリアルの更新
+	/// </summary>
+	/// <param name="color">色</param>
+	void UpdateMaterial(const MyBase::Vector4& color);
+
+	/// <summary>
+	/// デバッグ更新
+	/// </summary>
+	void DebugUpdate();
+
+	/// <summary>
+	/// デバッグ描画
+	/// </summary>
+	void DebugDraw();
 
 private:
 	/// <summary>
@@ -89,7 +109,16 @@ public:	// getter
 	/// <returns>RootSignature</returns>
 	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
 
+	D3D12_GPU_VIRTUAL_ADDRESS GetTransformCB() const { return transformCB_.Get()->GetGPUVirtualAddress(); };
+	D3D12_GPU_VIRTUAL_ADDRESS GetMaterialCB() const { return materialCB_.Get()->GetGPUVirtualAddress(); };
+
 public:	// setter
+	/// <summary>
+	/// 深度バッファの有効/無効設定
+	/// </summary>
+	/// <param name="enabled">深度バッファ有効フラグ</param>
+	void SetDepthEnabled(bool enabled);
+
 	/// <summary>
 	/// ブレンドモード設定
 	/// </summary>
@@ -113,7 +142,14 @@ private:	// メンバ変数
 	// グラフィックスパイプラインステート
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> transformCB_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialCB_;
+
+	// 深度バッファ有効フラグ
+	bool depthEnabled_ = true;
+
 	// Blend
-	DebugLineBlendMode blendMode_ = DebugLineBlendMode::kAlppha;
+	DebugLineBlendMode blendMode_ = DebugLineBlendMode::kAlpha;
 	static D3D12_BLEND_DESC(DebugLineBase::* spBlendTable[])();
 };
+#endif // _DEBUG

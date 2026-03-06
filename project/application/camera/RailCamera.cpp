@@ -38,11 +38,15 @@ void RailCamera::DebugDraw()
 		DebugUpdate();
 
 		if (isDebugMode_) {
+			ImGui::Text("RailCamera Debug Mode ON");
+
 			// 制御点リストの表示
 			for (size_t i = 0; i < controlPoints_.size(); i++) {
 				MyBase::Vector3& point = controlPoints_[i];
 				ImGui::Text("Point %zu: (%.2f, %.2f, %.2f)", i, point.x, point.y, point.z);
 			}
+		} else {
+			ImGui::Text("RailCamera Debug Mode OFF");
 		}
 
 		ImGui::Text("\n");

@@ -315,12 +315,26 @@ namespace MyBase
 	};
 
 	/// <summary>
+	/// マテリアル(デバッグ3Dライン用)
+	/// </summary>
+	struct DebugLineMaterial {
+		Vector4 color;
+	};
+
+	/// <summary>
 	/// トランスフォーメーション行列
 	/// </summary>
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 		Matrix4x4 WorldInverseTranspose;
+	};
+
+	/// <summary>
+	/// トランスフォーメーション行列(デバッグ3Dライン用)
+	/// </summary>
+	struct DebugLineTransformationMatrix {
+		Matrix4x4 WVP;
 	};
 
 	/// <summary>

@@ -36,8 +36,7 @@ void MNFramework::Initialize(const wchar_t* windowTitle)
 	imGuiManager_->Initialize(winApi_.get(), srvManager_.get());
 
 	// デバッグラインの初期化
-	//debugLine_ = std::make_unique<DebugLineBase>();
-	//debugLine_->Initilize(dxBase_);
+	DebugLineBase::GetInstance()->Initialize(dxBase_);
 #endif // _DEBUG
 
 	// オフスクリーンの作成
@@ -99,6 +98,7 @@ void MNFramework::Finalize()
 	cameraManager_->Finalize();
 	collisionManager_->Finalize();
 #ifdef _DEBUG
+	DebugLineBase::GetInstance()->Finalize();
 	imGuiManager_->Finalize();
 #endif // _DEBUG
 	input_->Finalize();

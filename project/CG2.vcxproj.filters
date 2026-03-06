@@ -667,6 +667,12 @@
     <FxCompile Include="resources\shaders\Skybox.VS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.VS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">
@@ -682,6 +688,9 @@
       <Filter>シェダー ファイル</Filter>
     </None>
     <None Include="resources\shaders\Skybox.hlsli">
+      <Filter>シェダー ファイル</Filter>
+    </None>
+    <None Include="resources\shaders\DebugLine.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
   </ItemGroup>

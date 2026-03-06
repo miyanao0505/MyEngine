@@ -90,6 +90,8 @@ void GameScene::Initialize()
 
 #pragma region デバッグ
 #ifdef _DEBUG
+	DebugLineBase::GetInstance()->Initialize(DirectXBase::GetInstance());
+
 	// デバッグラインレンダラー
 	debugLineRenderer_ = make_unique<DebugLineRenderer>();
 	debugLineRenderer_->Initialize(DebugLineBase::GetInstance());
@@ -156,6 +158,12 @@ void GameScene::Finalize()
 
 	// スプライト
 	escapeUI_.reset();
+	
+#ifdef _DEBUG
+	// デバッグライン関連の解放
+	debugLineRenderer_.reset();
+	DebugLineBase::Finalize();
+#endif // _DEBUG
 
 	BaseScene::Finalize();
 }
@@ -166,9 +174,7 @@ void GameScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// 毎フレームクリア
-	debugLineRenderer_->Clear();
-
+	// デバッグ更新
 	DebugUpdate();
 #endif // _DEBUG
 
@@ -294,6 +300,14 @@ void GameScene::Draw()
 
 #pragma endregion パーティクル
 
+#ifdef _DEBUG
+#pragma region デバッグライン
+	if (railCamera_->IsDebugMode()) {
+		debugLineRenderer_->DrawAll();
+	}
+#pragma endregion
+#endif // _DEBUG
+
 #pragma region スプライト
 
 	// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
@@ -314,47 +328,19 @@ void GameScene::Draw()
 
 #ifdef _DEBUG
 // デバッグ更新
-void GameScene::DebugUpdate()
-{
-	// Nキーを押したら
-	if (input_->TriggerKey(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
-	}
-	// Mキーを押したら
-	if (input_->TriggerKey(DIK_M)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
-	}
-	// Bキーを押したら
-	if (input_->TriggerKey(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
+void GameScene::DebugUpdate() {
+	if (railCamera_->IsDebugMode()) {
+		Matrix4x4 wvp = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
+
+		DebugLineBase::GetInstance()->UpdateMatrix(wvp);
+		DebugLineBase::GetInstance()->UpdateMaterial({ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
 	DebugDraw();
 }
 
 // デバッグ描画
-void GameScene::DebugDraw()
-{
-	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(kDebugWindowPosScene, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(kDebugWindowSizeScene, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-
-	ImGui::Begin("Game");
-	ImGui::Text("N key : clearScene");
-	ImGui::Text("M key : gameOverScene");
-	ImGui::Text("B key : eventScene");
-	ImGui::Text("\n");
-	ImGui::Text("P key : particle On / Off");
-	ImGui::Text("O key : acceleration On / Off");
-	ImGui::Text("\n");
-	ImGui::Text("K key : sampleAudio Play");
-	ImGui::Text("U key : sampleAudio UnLoad");
-	ImGui::Text("L key : sampleAudio Load");
-	ImGui::End();
-
+void GameScene::DebugDraw() {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
 	ImGui::SetNextWindowPos(kDebugWindowPosSettings, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
 	ImGui::SetNextWindowSize(kDebugWindowSizeSettings, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
@@ -366,9 +352,8 @@ void GameScene::DebugDraw()
 	followCamera_->DebugDraw();
 	// RailCamera
 	railCamera_->DebugDraw();
-	if (railCamera_->IsDebugMode()) {
-		// レールの通過点を結ぶラインを描画
-		debugLineRenderer_->DrawAll();
+	if(railCamera_->IsDebugMode()){
+		DebugLineBase::GetInstance()->DebugDraw();
 	}
 
 	// Lighting

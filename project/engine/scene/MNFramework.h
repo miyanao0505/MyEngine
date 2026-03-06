@@ -78,8 +78,6 @@ protected:	// メンバ変数
 #ifdef _DEBUG
 	// ImGuiManagerの宣言
 	std::unique_ptr<ImGuiManager> imGuiManager_ = nullptr;
-	// デバッグライン
-	std::unique_ptr<DebugLineBase> debugLine_ = nullptr;
 #endif // _DEBUG
 	// オフスクリーン
 	std::unique_ptr<OffScreen> offScreen_ = nullptr;
