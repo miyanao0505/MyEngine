@@ -97,8 +97,8 @@ void SrvManager::CreateSRVForTextureCube(uint32_t srvIndex, DirectX::TexMetadata
 void SrvManager::PreDraw()
 {
 	// 描画用のDescriptorHeapの設定
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { descriptorHeap_.Get()};
-	dxBase_->GetCommandList()->SetDescriptorHeaps(kDescriptorHeapCount, descriptorHeaps->GetAddressOf());
+	ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap_.Get()};
+	dxBase_->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 }
 
 // SRVセットコマンド

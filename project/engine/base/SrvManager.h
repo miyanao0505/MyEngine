@@ -99,7 +99,6 @@ public:
 	static const uint32_t kMaxSRVCount;
 
 private:
-	static constexpr UINT kDescriptorHeapCount = 1;
 	static constexpr UINT kFirstElementOffset = 0;
 #pragma endregion
 };

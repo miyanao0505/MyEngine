@@ -10,6 +10,8 @@
 #include <imgui.h>
 #endif // _DEBUG
 
+using namespace std::numbers;
+
 ParticleManager* ParticleManager::sInstance = nullptr;
 
 ParticleManager* ParticleManager::GetInstance()
@@ -50,49 +52,52 @@ void ParticleManager::Update()
 		// 平行移動成分をリセット
 		billboardMatrix = Matrix::ResetTranslation(billboardMatrix);
 	}
+
 	for (std::pair<const std::string, std::unique_ptr<ParticleGroup>>& pair : particleGroups_) {
 		ParticleGroup& group = *pair.second;
+
+		// Cylinder の UV スクロールはグループ単位で一度だけ行う(各パーティクルごとに行うと加算が多重になる)
+		if(group.type == ParticleType::kCylinder) {
+			// フレーム毎の増分（定数とデルタタイムの掛け合わせ）
+			float value = kCylinderUVScrollRate * kDelTime;
+			for (uint32_t i = 0; i < kCylinderDivide; i++) {
+				const uint32_t base = i * kParticleVertexNum;
+				for (uint32_t v = 0; v < kParticleVertexNum; ++v) {
+					group.vertexData[base + v].texcoord.x += value;
+				}
+			}
+		}
+
 		int index = 0;
-		for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
+		for (auto it = group.particles.begin(); it != group.particles.end();) {
 			MyBase::Particle& particle = *it;
 
 			particle.currentTime += kDelTime;
 			particle.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 			particle.transform.translate = MyTools::Add(particle.transform.translate, MyTools::Multiply(kDelTime, particle.velocity));
 
-			if (group.type == ParticleType::kCylinder) {
-				float value = 1.0f / float(kCylinderDivide) * 0.05f;
-				for (uint32_t i = 0; i < kCylinderDivide; i++) {
-					group.vertexData[i * 6].texcoord.x += value;
-					group.vertexData[i * 6 + 1].texcoord.x += value;
-					group.vertexData[i * 6 + 2].texcoord.x += value;
-					group.vertexData[i * 6 + 3].texcoord.x += value;
-					group.vertexData[i * 6 + 4].texcoord.x += value;
-					group.vertexData[i * 6 + 5].texcoord.x += value;
-				}
-			}
-
 			if (particle.lifeTime <= particle.currentTime) {
 				it = group.particles.erase(it);
-				group.numInstance--;
 				particleCount_--;
 				continue;
 			}
-			if (group.isBillboard) {
-				// ビルボード行列の生成
-				billboardMatrix = Matrix::Matrix::Multiply(billboardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z));
-			} else {
-				billboardMatrix = Matrix::MakeIdentity4x4();
-			}
-			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), billboardMatrix), Matrix::MakeTranslateMatrix(particle.transform.translate));
-			MyBase::Matrix4x4 worldViewProjectionMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
+
+			// ワールド行列計算
+			MyBase::Matrix4x4 localBillboard = group.isBillboard ? Matrix::Multiply(billboardMatrix, Matrix::MakeRotateZMatrix4x4(particle.transform.rotate.z)) : Matrix::MakeIdentity4x4();
+
+			MyBase::Matrix4x4 worldMatrix = Matrix::Multiply(Matrix::Multiply(Matrix::MakeScaleMatrix(particle.transform.scale), localBillboard), Matrix::MakeTranslateMatrix(particle.transform.translate));
+			MyBase::Matrix4x4 wvpMatrix = Matrix::Multiply(worldMatrix, viewProjectionMatrix);
+
 			group.instancingData[index].World = worldMatrix;
-			group.instancingData[index].WVP = worldViewProjectionMatrix;
+			group.instancingData[index].WVP = wvpMatrix;
 			group.instancingData[index].color = particle.color;
 
 			++it;
 			++index;
 		}
+
+		// 描画用のインスタンス数
+		group.numInstance = index;
 	}
 }
 
@@ -107,10 +112,16 @@ void ParticleManager::Draw()
 	// 全てのパーティクルグループについて処理
 	for (auto& [name, group] : particleGroups_) {
 		if (group->numInstance == 0) {
-			return;
+			continue;
 		}
 		dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &group->vertexBufferView);	// VBVを設定
-		dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);					// IBAを設定
+
+		// 各タイプごとの IBV を使用する
+		auto itView = indexBufferView_.find(group->type);
+		if (itView != indexBufferView_.end()) {
+			dxBase_->GetCommandList()->IASetIndexBuffer(&itView->second);					// IBAを設定
+		}
+
 		// インスタンシングデータのSRVのDescriptorTableを設定
 		srvManager_->SetGraphicsRootDescriptorTable(0, group->srvIndexForInstancing);
 		// SRVのDescriptorTableの先頭を設定、2はrootParameter[2]である
@@ -143,7 +154,13 @@ void ParticleManager::ImGui()
 			}
 			ImGui::EndCombo();
 		}
+
 		ImGui::Text("ParticleGroupNum : %d", particleGroups_.size());
+
+		// 各 Group のインスタンス数を表示
+		for (auto& [name, group] : particleGroups_) {
+			ImGui::Text("Group '%s' : instances = %u, particles list size = %u", name.c_str(), group->numInstance);
+		}
 
 		ImGui::Text("\n");
 	}
@@ -190,13 +207,13 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
 	// テクスチャの頂点
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
-	textureSize_.x = static_cast<float>(metadata.width);
-	textureSize_.y = static_cast<float>(metadata.height);
+	group->textureSize.x = static_cast<float>(metadata.width);
+	group->textureSize.y = static_cast<float>(metadata.height);
 
-	float texLeft = textureLeftTop_.x / metadata.width;
-	float texRight = (textureLeftTop_.x + textureSize_.x) / metadata.width;
-	float texTop = textureLeftTop_.y / metadata.height;
-	float texBottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+	float texLeft = group->textureLeftTop.x / metadata.width;
+	float texRight = (group->textureLeftTop.x + group->textureSize.x) / metadata.width;
+	float texTop = group->textureLeftTop.y / metadata.height;
+	float texBottom = (group->textureLeftTop.y + group->textureSize.y) / metadata.height;
 
 	// 頂点データを設定(四角形を構成)
 	group->vertexData[0] = { { -0.5f, -0.5f, 0.0f, 1.0f }, { texLeft, texBottom  }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } };
@@ -255,8 +272,8 @@ void ParticleManager::CreateParticleGroupRing(const std::string& name, const std
 	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
 	// テクスチャの頂点
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
-	textureSize_.x = static_cast<float>(metadata.width);
-	textureSize_.y = static_cast<float>(metadata.height);
+	group->textureSize.x = static_cast<float>(metadata.width);
+	group->textureSize.y = static_cast<float>(metadata.height);
 
 	// 頂点データを設定
 	for (uint32_t index = 0; index < kRingDivide; index++) {
@@ -316,18 +333,18 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string& name, const
 	group->numInstance = 0;
 
 	// 頂点リソースの生成
-	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide));
+	group->vertexResource = dxBase_->CreateBufferResource(size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kCylinderDivide));
 
 	// 頂点バッファビューの生成
 	group->vertexBufferView.BufferLocation = group->vertexResource->GetGPUVirtualAddress();
-	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kRingDivide);
+	group->vertexBufferView.SizeInBytes = size_t(sizeof(MyBase::ParticleVertexData) * kParticleVertexNum * kCylinderDivide);
 	group->vertexBufferView.StrideInBytes = sizeof(MyBase::ParticleVertexData);
 	// 頂点リソースに頂点データを書き込む
 	group->vertexResource->Map(0, nullptr, reinterpret_cast<void**>(&group->vertexData));
 	// テクスチャの頂点
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureFilePath);
-	textureSize_.x = static_cast<float>(metadata.width);
-	textureSize_.y = static_cast<float>(metadata.height);
+	group->textureSize.x = static_cast<float>(metadata.width);
+	group->textureSize.y = static_cast<float>(metadata.height);
 
 	// 頂点データを設定
 	for (uint32_t index = 0; index < kCylinderDivide; index++) {
@@ -373,54 +390,63 @@ void ParticleManager::Emit(const std::string& name, const MyBase::Vector3& posit
 	ParticleGroup& group = *particleGroups_[name];
 	std::random_device seedGenerator;
 	std::mt19937 randomEngine(seedGenerator());
-	uint32_t nowInstance = group.numInstance;
 	std::uniform_real_distribution<float> distCount((float)particleGroupData.count.min, (float)particleGroupData.count.max);
 	int countValue = (int)distCount(randomEngine);
-	group.numInstance = group.numInstance + countValue >= kMaxInstance_ ? kMaxInstance_ : group.numInstance + countValue;
-	particleCount_ += group.numInstance;
-	for (uint32_t i = nowInstance; i < group.numInstance; ++i) {
+	for (int i = 0; i < countValue; ++i) {
 		group.particles.push_back(CreateParticle(randomEngine, position, particleGroupData, group.type));
+		particleCount_++;
 	}
 	group.isBillboard = particleGroupData.isBillboard;
 }
 
 void ParticleManager::CreateIndexResource(ParticleType type)
 {
+	// 既に生成済みなら何もしない
+	if (indexResources_.count(type) != 0) {
+		return;
+	}
+
+	const uint32_t indexCount = kParticleIndexNum[int(type)];
+	// インデックスリソースの生成
+	auto resource = dxBase_->CreateBufferResource(sizeof(uint32_t) * indexCount);
+
 	particleIndexSize_ += kParticleIndexNum[int(type)];
 
-	// インデックスリソースの生成
-	indexResource_ = dxBase_->CreateBufferResource(sizeof(uint32_t) * kParticleIndexNum[int(type)]);
-
 	// インデックスバッファビューの生成
-	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * kParticleIndexNum[int(type)];
-	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+	D3D12_INDEX_BUFFER_VIEW view{};
+	view.BufferLocation = resource->GetGPUVirtualAddress();
+	view.SizeInBytes = sizeof(uint32_t) * indexCount;
+	view.Format = DXGI_FORMAT_R32_UINT;
 
-	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+	uint32_t* indexData = nullptr;
+	resource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 	if (type == ParticleType::kEllipse) {
 		for (size_t index = 0; index < _countof(kQuadIndices); index++){
-			indexData_[index] = kQuadIndices[index];
+			indexData[index] = kQuadIndices[index];
 		}
 	} else if (type == ParticleType::kRing) {
 		for (uint32_t index = 0; index < kRingDivide; index++) {
-			indexData_[index * 6] = index * 4;
-			indexData_[index * 6 + 1] = index * 4 + 1;
-			indexData_[index * 6 + 2] = index * 4 + 2;
-			indexData_[index * 6 + 3] = index * 4 + 1;
-			indexData_[index * 6 + 4] = index * 4 + 3;
-			indexData_[index * 6 + 5] = index * 4 + 2;
+			indexData[index * 6] = index * 4;
+			indexData[index * 6 + 1] = index * 4 + 1;
+			indexData[index * 6 + 2] = index * 4 + 2;
+			indexData[index * 6 + 3] = index * 4 + 1;
+			indexData[index * 6 + 4] = index * 4 + 3;
+			indexData[index * 6 + 5] = index * 4 + 2;
 		}
 	} else if (type == ParticleType::kCylinder) {
 		for (uint32_t index = 0; index < kCylinderDivide; index++) {
-			indexData_[index * 6] = index * 4;
-			indexData_[index * 6 + 1] = index * 4 + 1;
-			indexData_[index * 6 + 2] = index * 4 + 2;
-			indexData_[index * 6 + 3] = index * 4 + 1;
-			indexData_[index * 6 + 4] = index * 4 + 3;
-			indexData_[index * 6 + 5] = index * 4 + 2;
+			indexData[index * 6] = index * 4;
+			indexData[index * 6 + 1] = index * 4 + 1;
+			indexData[index * 6 + 2] = index * 4 + 2;
+			indexData[index * 6 + 3] = index * 4 + 1;
+			indexData[index * 6 + 4] = index * 4 + 3;
+			indexData[index * 6 + 5] = index * 4 + 2;
 		}
 	}
-	indexResource_->Unmap(0, nullptr);
+	resource->Unmap(0, nullptr);
+
+	indexResources_[type] = resource;
+	indexBufferView_[type] = view;
 }
 
 ParticleManager::ParticleGroup* ParticleManager::GetParticleGroup(const std::string& name)
@@ -476,6 +502,6 @@ MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, con
 		particle.transform.rotate = { 0.0f, 0.0f, 0.0f };
 		particle.lifeTime = kCylinderDefaultLifeTime;
 	}
-	
+
 	return particle;
 }

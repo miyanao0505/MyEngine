@@ -111,7 +111,11 @@ void Enemy::Update(float deltaTime)
 		return; // 死んでいる場合は更新しない
 	}
 
+	// 攻撃
 	Attack();
+
+	// パーティクルエミッターの更新
+	particleEmitter_->SetPosition(object_->GetTranslate());
 
 	// 弾更新
 	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
@@ -193,6 +197,9 @@ void Enemy::DamageReactionStart()
 {
 	// ダメージリアクションタイマーをリセット
 	damageReactionTimer_ = kDamageReactionDuration;
+
+	// パーティクルエミッターの更新
+	particleEmitter_->Update();
 
 	// パーティクルを発生させる
 	particleEmitter_->Emit();

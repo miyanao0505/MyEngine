@@ -6,8 +6,6 @@
 #include "ParticleEmitter.h"
 #include "MyBase.h"
 
-using namespace std::numbers;
-
 // 前方宣言
 class DirectXBase;
 class SrvManager;
@@ -31,6 +29,10 @@ public:	// パーティクルグループ構造体
 		MyBase::ParticleForGPU* instancingData = nullptr;				// バッファリソース内のデータを指すポインタ
 		ParticleType type;
 		bool isBillboard;	// ビルボードかどうか
+
+		// Group固有のテクスチャ矩形情報
+		MyBase::Vector2 textureLeftTop = { 0.0f, 0.0f };
+		MyBase::Vector2 textureSize = { 100.0f, 100.0f };
 	};
 
 public:	// メンバ関数
@@ -161,22 +163,14 @@ private:	// メンバ変数
 	SrvManager* srvManager_ = nullptr;
 	std::unique_ptr<ParticleBase> particleBase_;
 
-	// バッファリソースの使い道を遅くするバッファビュー
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
-
-	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
-	// バッファリソース内のデータを指すポインタ
-	uint32_t* indexData_ = nullptr;
+	// インデックスバッファビュー(タイプごとに保持)
+	std::map<ParticleType, Microsoft::WRL::ComPtr<ID3D12Resource>> indexResources_;
+	std::map<ParticleType, D3D12_INDEX_BUFFER_VIEW> indexBufferView_;
 
 	uint32_t particleIndexSize_ = 0;	// インデックスリソースのサイズ	
 
 	// パーティクル数
 	uint32_t particleCount_ = 0;
-
-	// テクスチャサイズ
-	MyBase::Vector2 textureLeftTop_ = { 0.0f, 0.0f };
-	MyBase::Vector2 textureSize_ = { 100.0f, 100.0f };
 
 	// パーティクルデータ
 	std::map<std::string, std::unique_ptr<ParticleGroup>> particleGroups_;
@@ -190,13 +184,13 @@ private:	// メンバ変数
 	static constexpr uint32_t kRingDivide = 32;		// 分割数
 	static constexpr float kOuterRadius = 1.0f;		// 外径
 	static constexpr float kInnerRadius = 0.2f;		// 内径
-	static constexpr float kRadianPerDivide = 2.0f * pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
+	static constexpr float kRadianPerDivide = 2.0f * std::numbers::pi_v<float> / float(kRingDivide);	// 1つ分の角度(ラジアン)
 	// Cylinder用
 	static constexpr uint32_t kCylinderDivide = 32;		// 分割数
 	static constexpr float kTopRadius = 1.0f;			// 上径
 	static constexpr float kBottomRadius = 1.0f;		// 下径
 	static constexpr float kHeight = 3.0f;				// 高さ
-	static constexpr float kRadianPerDivideCylinder = 2.0f * pi_v<float> / float(kCylinderDivide);	// 1つ分の角度(ラジアン)
+	static constexpr float kRadianPerDivideCylinder = 2.0f * std::numbers::pi_v<float> / float(kCylinderDivide);	// 1つ分の角度(ラジアン)
 	static constexpr float kCylinderUVScrollRate = 0.05f;	// UVスクロール速度
 	static constexpr float kCylinderDefaultLifeTime = 2.0f;	// デフォルトの寿命
 	// 描画用
@@ -206,7 +200,5 @@ private:	// メンバ変数
 	static constexpr uint32_t kMaxInstance_ = 1000;
 	// デルタイム
 	static constexpr float kDelTime = 1.0f / 60.0f;
-
-	
 #pragma endregion
 };

@@ -20,9 +20,14 @@ void ParticleEmitter::Update()
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
 
+	if (!groupDataPtr) return;
+
 	// 登録されている分だけパーティクルを発生させる
 	for (size_t i = 0; i < particleGroupNames_.size(); i++) {
 		groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+
+		if (!groupDataPtr) continue;
+
 		if (groupDataPtr->isEmitUpdate) {
 			groupDataPtr->frequencyTime -= kDeltaTime_;
 			if (groupDataPtr->frequencyTime <= kEmitThresholdTime) {
@@ -36,6 +41,8 @@ void ParticleEmitter::Update()
 void ParticleEmitter::Emit()
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
+
+	if (!groupDataPtr) return;
 
 	// 登録されている分だけパーティクルを発生させる
 	for (size_t i = 0; i < particleGroupNames_.size(); i++) {
@@ -100,6 +107,7 @@ void ParticleEmitter::ImGui(const std::string& name)
 const ParticleSystem::ParticleGroupData& ParticleEmitter::GetParticleGroupData(const std::string& name)
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(name);
+
 	if (groupDataPtr) {
 		return *groupDataPtr; // データを返す
 	}
