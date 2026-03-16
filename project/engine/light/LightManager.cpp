@@ -3,20 +3,21 @@
 #include "CameraManager.h"
 #include "imgui.h"
 
-LightManager* LightManager::sInstance = nullptr;
+using namespace std;
 
-// シングルトンインスタンスの取得
-LightManager* LightManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new LightManager;
+/// static member 定義
+unique_ptr<LightManager> LightManager::sInstance_ = nullptr;
+
+// Singleton Instance を取得
+LightManager* LightManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<LightManager>(LightManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 終了
-void LightManager::Finalize()
-{
+void LightManager::Finalize() {
 	if (directionalLightBuffer_) {
 		directionalLightBuffer_.Reset();
 	}
@@ -27,8 +28,7 @@ void LightManager::Finalize()
 		spotLightBuffer_.Reset();
 	}
 
-	delete sInstance;
-	sInstance = nullptr;
+	sInstance_.reset();
 }
 
 // 初期化
@@ -102,8 +102,7 @@ void LightManager::DebugDraw()
 #endif // _DEBUG
 
 // 平行光源データ作成
-void LightManager::CreateDirectionalLightData()
-{
+void LightManager::CreateDirectionalLightData() {
 	// 平行光源用のリソースを作る
 	directionalLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::DirectionalLight));
 	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)
@@ -115,8 +114,7 @@ void LightManager::CreateDirectionalLightData()
 }
 
 // 点光源データ作成
-void LightManager::CreatePointLightData()
-{
+void LightManager::CreatePointLightData() {
 	// 点光源データ用のリソースを作る
 	pointLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::PointLight));
 	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)
@@ -130,8 +128,7 @@ void LightManager::CreatePointLightData()
 }
 
 // スポットライトデータ作成
-void LightManager::CreateSpotLightData()
-{
+void LightManager::CreateSpotLightData() {
 	// スポットライトデータ用のリソースを作る
 	spotLightBuffer_ = dxBase_->CreateBufferResource(sizeof(MyBase::SpotLight));
 	// Uploadバッファは Map したままで OK(頻繁な書き換え前提)

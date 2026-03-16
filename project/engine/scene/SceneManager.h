@@ -5,16 +5,31 @@
 
 /// <summary>
 /// ゲームシーン管理クラス
-/// シーンの生成・更新・描画・切り替えを管理するシングルトンクラス。
+/// シーンの生成・更新・描画・切り替えを管理するマネージャークラス。
 /// </summary>
 class SceneManager
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>シングルトンインスタンスのポインタ</returns>
+	/// <returns>SceneManager</returns>
 	static SceneManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コンストラクタを渡すための鍵
+	class ConstructoKey {
+	private:
+		ConstructoKey() = default;
+		friend class SceneManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit SceneManager(ConstructoKey) {}
+
+	/// コピー禁止
+	SceneManager(const SceneManager&) = delete;
+	SceneManager& operator=(const SceneManager&) = delete;
 
 	/// <summary>
 	/// 終了
@@ -44,13 +59,8 @@ public:	// setter
 	/// <param name="sceneFactory">シーンファクトリーのポインタ</param>
 	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
-private:	// シングルトンインスタンス
-	static SceneManager* sInstance;
-
-	SceneManager() = default;
-	~SceneManager() = default;
-	SceneManager(SceneManager&) = default;
-	SceneManager& operator=(SceneManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<SceneManager> sInstance_;
 
 private:	// メンバ変数
 	// 今のシーン(実行中シーン)

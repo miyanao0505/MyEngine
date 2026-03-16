@@ -21,23 +21,23 @@ class DebugLineBase
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンス取得
+	/// Singleton Instance を取得
 	/// </summary>
 	/// <returns>DebugLineBase</returns>
 	static DebugLineBase* GetInstance();
 
-	// ------ Passkey Idion ------
-	// コントラクタを渡すための鍵
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
 	class ConstructorKey {
 	private:
 		ConstructorKey() = default;
 		friend class DebugLineBase;
 	};
 
-	// PassKeyを受け取るコンストラクタ
+	/// PassKeyを受け取るコンストラクタ
 	explicit DebugLineBase(ConstructorKey) {}
 
-	// コピー禁止
+	/// コピー禁止
 	DebugLineBase(const DebugLineBase&) = delete;
 	DebugLineBase& operator=(const DebugLineBase&) = delete;
 
@@ -130,7 +130,7 @@ public:	// setter
 	D3D12_BLEND_DESC SetBlendAlpha();
 	D3D12_BLEND_DESC SetBlendAdd();
 
-private:	// インスタンス
+private:	// Singleton Instance
 	static std::unique_ptr<DebugLineBase> sInstance_;
 
 private:	// メンバ変数

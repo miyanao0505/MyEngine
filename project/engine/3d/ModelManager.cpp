@@ -2,30 +2,26 @@
 #include "AssetPath.h"
 
 using std::string;
-using std::unique_ptr;
-using std::make_unique;
+using namespace std;
 
-ModelManager* ModelManager::sInstance = nullptr;
+/// static member 定義
+unique_ptr<ModelManager> ModelManager::sInstance_ = nullptr;
 
-// シングルトンインスタンスの取得
-ModelManager* ModelManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new ModelManager;
+// Singleton Instance を取得
+ModelManager* ModelManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<ModelManager>(ModelManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 終了
-void ModelManager::Finalize()
-{
-	delete sInstance;
-	sInstance = nullptr;
+void ModelManager::Finalize() {
+	sInstance_.reset();
 }
 
 // 初期化
-void ModelManager::Initialize()
-{
+void ModelManager::Initialize() {
 	// ModelBaseの生成と初期化
 	modelBase_ = make_unique<ModelBase>();
 	modelBase_->Initialize();
@@ -36,16 +32,12 @@ void ModelManager::Initialize()
 }
 
 /// モデルファイルの読み込み
-void ModelManager::LoadModel(const string& directoryPath, const string& filePath)
-{
+void ModelManager::LoadModel(const string& directoryPath, const string& filePath) {
 	// 連結してフルパスを得る
 	const string fullpath = AssetPath::kModelRootPath + directoryPath;
 
-	// 読み込み済みモデルを検索
-	if (models_.contains(filePath)) {
-		// 読み込み済みなら早期return
-		return;
-	}
+	// 読み込み済みモデルを検索し、済みなら早期return
+	if (models_.contains(filePath)) return;
 
 	// モデルの生成とファイル読み込み、初期化
 	unique_ptr<Model> model = make_unique<Model>();
@@ -56,8 +48,7 @@ void ModelManager::LoadModel(const string& directoryPath, const string& filePath
 }
 
 /// モデルの検索
-Model* ModelManager::FindModel(const string& filePath)
-{
+Model* ModelManager::FindModel(const string& filePath) {
 	// 読み込み済みモデルを検索
 	if (models_.contains(filePath)) {
 		// 読み込みモデルを戻り値としてreturn
@@ -69,8 +60,7 @@ Model* ModelManager::FindModel(const string& filePath)
 }
 
 // モデル描画のブレンドモードを設定
-void ModelManager::SetBlendMode(Object3dBase::BlendMode blendMode)
-{
+void ModelManager::SetBlendMode(Object3dBase::BlendMode blendMode) {
 	// Object3dBase にブレンドモードを設定
 	object3dBase_->SetBlendMode(blendMode);
 

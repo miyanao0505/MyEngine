@@ -28,10 +28,25 @@ private:	// 構造体
 
 public:	// メンバ関数
 	/// <summary>
-	/// CameraManager のシングルトンインスタンスを取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>CameraManager の唯一のインスタンス</returns>
+	/// <returns>CameraManager</returns>
 	static CameraManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class CameraManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit CameraManager(ConstructorKey) {}
+
+	/// コピー禁止
+	CameraManager(const CameraManager&) = delete;
+	CameraManager& operator=(const CameraManager&) = delete;
 
 	/// <summary>
 	/// CameraManager を終了(解放)
@@ -98,12 +113,7 @@ public:	// setter
 	void SetCamera(const std::string& cameraName);
 
 private:	// シングルトン
-	static CameraManager* sInstance;
-
-	CameraManager() = default;
-	~CameraManager() = default;
-	CameraManager(CameraManager&) = delete;
-	CameraManager& operator=(CameraManager&) = delete;
+	static std::unique_ptr<CameraManager> sInstance_;
 
 private:	// メンバ変数
 	// カメラデータ

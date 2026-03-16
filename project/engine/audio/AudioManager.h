@@ -40,10 +40,25 @@ private:	// オーディオ関係の構造体
 
 public:	// メンバ関数
 	/// <summary>
-	/// 音声管理システムのシングルトンインスタンスを取得します。
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>AudioManager のインスタンス</returns>
+	/// <returns>AudioManager</returns>
 	static AudioManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class AudioManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit AudioManager(ConstructorKey) {}
+
+	/// コピー禁止
+	AudioManager(const AudioManager&) = delete;
+	AudioManager& operator=(const AudioManager&) = delete;
 
 	/// <summary>
 	/// 初期化
@@ -93,13 +108,8 @@ public:	// getter
 public:	// setter
 
 
-public:	// シングルトンインスタンス
-	static AudioManager* sInstance;
-
-	AudioManager() = default;
-	~AudioManager() = default;
-	AudioManager(const AudioManager&) = delete;
-	AudioManager& operator=(const AudioManager&) = delete;
+public:	// Singleton Instance
+	static std::unique_ptr<AudioManager> sInstance_;
 
 private:	// メンバ変数
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2_ = nullptr;

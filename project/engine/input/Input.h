@@ -2,6 +2,7 @@
 #define DIRECTINPUT_VERSION		0x0800
 #include <dinput.h>
 #include <Windows.h>
+#include <memory>
 #include <wrl.h>
 #include <array>
 #include "WindowsAPI.h"
@@ -20,10 +21,25 @@ private:
 
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>Input クラスの唯一のインスタンス</returns>
+	/// <returns>Input</returns>
 	static Input* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class Input;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit Input(ConstructorKey) {}
+
+	/// コピー禁止
+	Input(const Input&) = delete;
+	Input& operator=(const Input&) = delete;
 
 	/// <summary>
 	/// 初期化
@@ -154,13 +170,8 @@ public:	// getter
 
 public:	// setter
 
-private:	// シングルトンインスタンス
-	static Input* sInstance;
-
-	Input() = default;
-	~Input() = default;
-	Input(const Input&) = delete;
-	Input& operator=(const Input&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<Input> sInstance_;
 
 private: // メンバ変数
 #pragma region キーボード

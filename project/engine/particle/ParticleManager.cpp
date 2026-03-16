@@ -10,26 +10,25 @@
 #include <imgui.h>
 #endif // _DEBUG
 
-using namespace std::numbers;
+using namespace std;
+using namespace numbers;
 
-ParticleManager* ParticleManager::sInstance = nullptr;
+/// static member 定義
+unique_ptr<ParticleManager> ParticleManager::sInstance_ = nullptr;
 
-ParticleManager* ParticleManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new ParticleManager;
+/// Singleton Instance を取得
+ParticleManager* ParticleManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<ParticleManager>(ParticleManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
-void ParticleManager::Finalize()
-{
-	delete sInstance;
-	sInstance = nullptr;
+void ParticleManager::Finalize() {
+	sInstance_.reset();
 }
 
-void ParticleManager::Initialize(SrvManager* srvManager)
-{
+void ParticleManager::Initialize(SrvManager* srvManager) {
 	dxBase_ = DirectXBase::GetInstance();
 	srvManager_ = srvManager;
 
@@ -41,8 +40,7 @@ void ParticleManager::Initialize(SrvManager* srvManager)
 	std::mt19937 randomEngine(seedGenerator());
 }
 
-void ParticleManager::Update()
-{
+void ParticleManager::Update() {
 	MyBase::Matrix4x4 viewProjectionMatrix;
 	MyBase::Matrix4x4 billboardMatrix;
 
@@ -101,8 +99,7 @@ void ParticleManager::Update()
 	}
 }
 
-void ParticleManager::Draw()
-{
+void ParticleManager::Draw() {
 	if (particleCount_ <= 0) {
 		return;
 	}
@@ -132,8 +129,7 @@ void ParticleManager::Draw()
 }
 
 #ifdef _DEBUG
-void ParticleManager::ImGui()
-{
+void ParticleManager::ImGui() {
 	if (ImGui::CollapsingHeader("ParticleManager")) {
 		static ImGuiComboFlags particleFlags = 0;
 		const char* blendModeIndex[] = { "kBlendModeNone", "kBlendModeNormal", "kBlendModeAdd", "kBlendModeSubtract", "kBlendModeMultiply", "kBlendModeScreen" };
@@ -167,8 +163,7 @@ void ParticleManager::ImGui()
 }
 #endif // _DEBUG
 
-void ParticleManager::ChangeBlendMode(BlendMode blendMode)
-{
+void ParticleManager::ChangeBlendMode(BlendMode blendMode) {
 	if (particleBase_->GetBlendMode() == blendMode) {
 		return;
 	}
@@ -177,8 +172,7 @@ void ParticleManager::ChangeBlendMode(BlendMode blendMode)
 	particleBase_->CreateGraphicsPipeline();
 }
 
-void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath)
-{
+void ParticleManager::CreateParticleGroup(const std::string& name, const std::string& textureFilePath) {
 	if (particleGroups_.count(name) != 0) {
 		return;
 	}
@@ -242,8 +236,7 @@ void ParticleManager::CreateParticleGroup(const std::string& name, const std::st
 }
 
 /// パーティクルグループ(Ring)の生成
-void ParticleManager::CreateParticleGroupRing(const std::string& name, const std::string& textureFilePath)
-{
+void ParticleManager::CreateParticleGroupRing(const std::string& name, const std::string& textureFilePath) {
 	if (particleGroups_.count(name) != 0) {
 		return;
 	}
@@ -313,8 +306,7 @@ void ParticleManager::CreateParticleGroupRing(const std::string& name, const std
 }
 
 /// パーティクルグループ(Cylinder)の生成
-void ParticleManager::CreateParticleGroupCylinder(const std::string& name, const std::string& textureFilePath)
-{
+void ParticleManager::CreateParticleGroupCylinder(const std::string& name, const std::string& textureFilePath) {
 	if (particleGroups_.count(name) != 0) {
 		return;
 	}
@@ -383,8 +375,7 @@ void ParticleManager::CreateParticleGroupCylinder(const std::string& name, const
 	particleGroups_[name] = std::move(group);
 }
 
-void ParticleManager::Emit(const std::string& name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData)
-{
+void ParticleManager::Emit(const std::string& name, const MyBase::Vector3& position, const ParticleSystem::ParticleGroupData& particleGroupData) {
 	assert(particleGroups_.count(name) > 0 && "ParticleGroup with this name does not exist.");
 
 	ParticleGroup& group = *particleGroups_[name];
@@ -399,8 +390,7 @@ void ParticleManager::Emit(const std::string& name, const MyBase::Vector3& posit
 	group.isBillboard = particleGroupData.isBillboard;
 }
 
-void ParticleManager::CreateIndexResource(ParticleType type)
-{
+void ParticleManager::CreateIndexResource(ParticleType type) {
 	// 既に生成済みなら何もしない
 	if (indexResources_.count(type) != 0) {
 		return;
@@ -421,7 +411,7 @@ void ParticleManager::CreateIndexResource(ParticleType type)
 	uint32_t* indexData = nullptr;
 	resource->Map(0, nullptr, reinterpret_cast<void**>(&indexData));
 	if (type == ParticleType::kEllipse) {
-		for (size_t index = 0; index < _countof(kQuadIndices); index++){
+		for (size_t index = 0; index < _countof(kQuadIndices); index++) {
 			indexData[index] = kQuadIndices[index];
 		}
 	} else if (type == ParticleType::kRing) {
@@ -449,8 +439,7 @@ void ParticleManager::CreateIndexResource(ParticleType type)
 	indexBufferView_[type] = view;
 }
 
-ParticleManager::ParticleGroup* ParticleManager::GetParticleGroup(const std::string& name)
-{
+ParticleManager::ParticleGroup* ParticleManager::GetParticleGroup(const std::string& name) {
 	auto it = particleGroups_.find(name);
 	if (it != particleGroups_.end()) {
 		return it->second.get();
@@ -458,16 +447,14 @@ ParticleManager::ParticleGroup* ParticleManager::GetParticleGroup(const std::str
 	return nullptr;
 }
 
-bool ParticleManager::GetIsBillboard(const std::string& name)
-{
+bool ParticleManager::GetIsBillboard(const std::string& name) {
 	if (particleGroups_.count(name) == 0) {
 		return false;
 	}
 	return particleGroups_[name]->isBillboard;
 }
 
-void ParticleManager::SetIsBillboard(const std::string& name, bool isBillboard)
-{
+void ParticleManager::SetIsBillboard(const std::string& name, bool isBillboard) {
 	if (particleGroups_.count(name) == 0) {
 		return;
 	}
@@ -475,8 +462,7 @@ void ParticleManager::SetIsBillboard(const std::string& name, bool isBillboard)
 }
 
 /// パーティクルの生成
-MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleType type)
-{
+MyBase::Particle ParticleManager::CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleType type) {
 	std::uniform_real_distribution<float> distRotate(-std::numbers::pi_v<float>, std::numbers::pi_v<float>);
 	std::uniform_real_distribution<float> distScale(particleGroupData.size.min, particleGroupData.size.max);
 	std::uniform_real_distribution<float> distSpeed(particleGroupData.speed.min, particleGroupData.speed.max);

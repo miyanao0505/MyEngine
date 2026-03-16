@@ -3,20 +3,21 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
-Input* Input::sInstance = nullptr;
+using namespace std;
 
-// シングルトンインスタンスの取得
-Input* Input::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new Input();
+/// static member 定義
+unique_ptr<Input> Input::sInstance_ = nullptr;
+
+// Singleton Instance を取得
+Input* Input::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<Input>(Input::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 /// 初期化
-void Input::Initialize(WindowsAPI* winApi)
-{
+void Input::Initialize(WindowsAPI* winApi) {
 	// 狩りてきたWinApiのインスタンスを記録
 	winApi_ = winApi;
 
@@ -28,16 +29,16 @@ void Input::Initialize(WindowsAPI* winApi)
 }
 
 // 終了
-void Input::Finalize()
-{
+void Input::Finalize() {
 	keyboard_.Reset();
 	mouseDevice_.Reset();
 	directInput_.Reset();
+
+	sInstance_.reset();
 }
 
 /// 更新
-void Input::Update()
-{
+void Input::Update() {
 	// キーボードの更新
 	KeyboardUpdate();
 
@@ -47,8 +48,7 @@ void Input::Update()
 
 #pragma region キーボード
 /// キーボードの初期化
-void Input::KeyboardInitialize()
-{
+void Input::KeyboardInitialize() {
 	HRESULT hr;
 
 	// DirectInputの初期化
@@ -69,8 +69,7 @@ void Input::KeyboardInitialize()
 }
 
 /// キーボードの更新
-void Input::KeyboardUpdate()
-{
+void Input::KeyboardUpdate() {
 	HRESULT hr;
 
 	// 前回のキー入力を保存
@@ -89,8 +88,7 @@ void Input::KeyboardUpdate()
 
 #pragma region マウス
 // マウスの初期化
-void Input::MouseInitialize()
-{
+void Input::MouseInitialize() {
 	// マウスデバイスの生成
 	mouseHr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
 	assert(SUCCEEDED(mouseHr));
@@ -105,8 +103,7 @@ void Input::MouseInitialize()
 }
 
 /// マウスの更新
-void Input::MouseUpdate()
-{
+void Input::MouseUpdate() {
 	// マウス情報の更新
 	MouseStateUpdate();
 
@@ -121,8 +118,7 @@ void Input::MouseUpdate()
 }
 
 /// マウス情報の更新
-void Input::MouseStateUpdate()
-{
+void Input::MouseStateUpdate() {
 	// 前回のマウス状態を保存
 	mouseStatePre_ = mouseState_;
 
@@ -141,8 +137,7 @@ void Input::MouseStateUpdate()
 }
 
 /// マウス座標更新
-void Input::MousePosUpdate()
-{
+void Input::MousePosUpdate() {
 	mousePosPre_ = mousePos_;
 
 	POINT pos;
@@ -153,30 +148,26 @@ void Input::MousePosUpdate()
 }
 
 /// マウス移動量更新
-void Input::MouseMoveUpdate()
-{
+void Input::MouseMoveUpdate() {
 	mouseMove_.x = mouseState_.lX;
 	mouseMove_.y = mouseState_.lY;
 }
 
 /// マウスホイールの更新
-void Input::MouseWheelUpdate()
-{
+void Input::MouseWheelUpdate() {
 	wheelDelta_ = mouseState_.lZ;
 }
 #pragma endregion
 
 #pragma region getter
-
 #pragma region キーボード関係
 /// キーの押下をチェック
 bool Input::PushKey(BYTE keyNumber) {
 	assert(keyNumber < key_.size());
 
 	// 指定キーを押していればtrueを返す
-	if (key_[keyNumber]) {
-		return true;
-	}
+	if (key_[keyNumber]) return true;
+
 	// そうでなければfalseを返す
 	return false;
 }
@@ -186,9 +177,8 @@ bool Input::TriggerKey(BYTE keyNumber) {
 	assert(keyNumber < key_.size());
 
 	// 指定キーを押した時にtrueを返す
-	if (!keyPre_[keyNumber] && key_[keyNumber]) {
-		return true;
-	}
+	if (!keyPre_[keyNumber] && key_[keyNumber]) return true;
+
 	// そうでなければfalseを返す
 	return false;
 }
@@ -198,9 +188,8 @@ bool Input::ReleaseKey(BYTE keyNumber) {
 	assert(keyNumber < key_.size());
 
 	// 指定キーをリリースした時にtrueを返す
-	if (keyPre_[keyNumber] && !key_[keyNumber]) {
-		return true;
-	}
+	if (keyPre_[keyNumber] && !key_[keyNumber]) return true;
+	
 	// そうでなければfalseを返す
 	return false;
 }
@@ -214,9 +203,8 @@ bool Input::PushMouse(MouseButton button) {
 	assert(index < mouseButtons_.size());
 
 	// 指定マウスボタンを押していればtrueを返す
-	if (mouseButtons_[index]) {
-		return true;
-	}
+	if (mouseButtons_[index]) return true;
+	
 	// そうでなければfalseを返す
 	return false;
 }
@@ -228,9 +216,8 @@ bool Input::TriggerMouse(MouseButton button) {
 	assert(index < mouseButtons_.size());
 
 	// 指定マウスボタンを押した時にtrueを返す
-	if (!mouseButtonsPre_[index] && mouseButtons_[index]) {
-		return true;
-	}
+	if (!mouseButtonsPre_[index] && mouseButtons_[index]) return true;
+	
 	// そうでなければfalseを返す
 	return false;
 }
@@ -242,30 +229,25 @@ bool Input::ReleaseMouse(MouseButton button) {
 	assert(index < mouseButtons_.size());
 
 	// 指定マウスボタンをリリースした時にtrueを返す
-	if (mouseButtonsPre_[index] && !mouseButtons_[index]) {
-		return true;
-	}
+	if (mouseButtonsPre_[index] && !mouseButtons_[index]) return true;
+	
 	// そうでなければfalseを返す
 	return false;
 }
 
 /// マウスカーソルの座標取得
-POINT Input::GetMousePosition()
-{
+POINT Input::GetMousePosition() {
 	return mousePos_;
 }
 
 /// マウスカーソルの移動距離取得
-POINT Input::GetMouseMove()
-{
+POINT Input::GetMouseMove() {
 	return mouseMove_;
 }
 
 /// マウスホイールの回転量取得
-int Input::GetWheelDelta()
-{
+int Input::GetWheelDelta() {
 	return wheelDelta_;
 }
 #pragma endregion 
-
 #pragma endregion

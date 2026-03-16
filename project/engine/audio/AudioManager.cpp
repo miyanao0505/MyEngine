@@ -2,20 +2,21 @@
 #include <cassert>
 #include "AssetPath.h"
 
-AudioManager* AudioManager::sInstance = nullptr;
+using namespace std;
 
-// シングルトンインスタンスの取得
-AudioManager* AudioManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new AudioManager;
+/// static member 定義
+unique_ptr<AudioManager> AudioManager::sInstance_ = nullptr;
+
+/// Singleton Instance を取得
+AudioManager* AudioManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<AudioManager>(AudioManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 初期化
-void AudioManager::Initialize()
-{
+void AudioManager::Initialize() {
 	HRESULT hr;
 
 	// xAudioエンジンのインスタンスを生成
@@ -28,26 +29,21 @@ void AudioManager::Initialize()
 }
 
 // 終了
-void AudioManager::Finalize()
-{
+void AudioManager::Finalize() {
 	// xAudio2の解放
 	xAudio2_.Reset();
 	// 音声データの解放
 	soundDataMap_.clear();
 	playingVoices_.clear();
 
-	// シングルトンインスタンス削除
-	delete sInstance;
-	sInstance = nullptr;
+	// Singleton Instance の解放
+	sInstance_.reset();
 }
 
 // 音声データ(Wave)の読み込み
-void AudioManager::LoadAudioWave(const std::string& filename)
-{
+void AudioManager::LoadAudioWave(const std::string& filename) {
 	// 読み込み済みなら早期リターン
-	if (soundDataMap_.contains(filename)) {
-		return;
-	}
+	if (soundDataMap_.contains(filename)) return;
 	
 	std::string filePath = AssetPath::kAudioRootPath + filename;
 
@@ -64,21 +60,15 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 	RiffHeader riff;
 	file.read((char*)&riff, sizeof(riff));
 	// ファイルがRIFFかチェック
-	if (strncmp(riff.chunk.id, kRiffId, kChunkIdSize) != 0) {
-		assert(0);
-	}
+	if (strncmp(riff.chunk.id, kRiffId, kChunkIdSize) != 0) assert(0);
 	// タイプがWAVEかチェック
-	if (strncmp(riff.type, kWaveId, kChunkIdSize) != 0) {
-		assert(0);
-	}
+	if (strncmp(riff.type, kWaveId, kChunkIdSize) != 0) assert(0);
 	
 	// Formatチャンクの読み込み
 	FormatChunk format = {};
 	// チャンクヘッダーの確認
 	file.read((char*)&format, sizeof(ChunkHeader));
-	if (strncmp(format.chunk.id, kFmtId, kChunkIdSize) != 0) {
-		assert(0);
-	}
+	if (strncmp(format.chunk.id, kFmtId, kChunkIdSize) != 0) assert(0);
 	// チャンク本体の読み込み
 	assert(format.chunk.size <= sizeof(format.fmt));
 	file.read((char*)&format.fmt, format.chunk.size);
@@ -93,9 +83,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 		// 再読み込み
 		file.read((char*)&data, sizeof(data));
 	}
-	if (strncmp(data.id, kDataId, kChunkIdSize) != 0) {
-		assert(0);
-	}
+	if (strncmp(data.id, kDataId, kChunkIdSize) != 0) assert(0);
 
 	// Dataチャンクのデータ部(波形データ)の読み込み
 	char* pBuffer = new char[data.size];
@@ -112,8 +100,7 @@ void AudioManager::LoadAudioWave(const std::string& filename)
 }
 
 // 音声再生(Wave)
-void AudioManager::PlayWave(const std::string& filename, const float& volume, const bool& loop)
-{
+void AudioManager::PlayWave(const std::string& filename, const float& volume, const bool& loop) {
 	HRESULT hr;
 	SoundData& soundData = soundDataMap_.at(filename);
 
@@ -137,19 +124,16 @@ void AudioManager::PlayWave(const std::string& filename, const float& volume, co
 	hr = pSourceVoice->SetVolume(volume);
 
 	// ループするなら再生中リストにデータを格納
-	if (loop)
-	{
+	if (loop) {
 		// すでに再生中なら重複登録しない
-		if (playingVoices_.contains(filename)) {
-			return;
-		}
+		if (playingVoices_.contains(filename)) return;
+
 		playingVoices_[filename] = pSourceVoice;
 	}
 }
 
 // 音声停止(Wave)
-void AudioManager::StopWave(const std::string& filename)
-{
+void AudioManager::StopWave(const std::string& filename) {
 	IXAudio2SourceVoice* sourceVoice = playingVoices_[filename];
 
 	// 波形データの停止
@@ -160,12 +144,9 @@ void AudioManager::StopWave(const std::string& filename)
 }
 
 // 音声データの解放
-void AudioManager::UnloadAudio(const std::string& filename)
-{
+void AudioManager::UnloadAudio(const std::string& filename) {
 	// 見つからなかったら早期リターン
-	if (!soundDataMap_.contains(filename)) {
-		return;
-	}
+	if (!soundDataMap_.contains(filename)) return;
 
 	SoundData& soundData = soundDataMap_.at(filename);
 

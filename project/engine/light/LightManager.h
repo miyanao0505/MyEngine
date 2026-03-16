@@ -22,16 +22,31 @@ enum RootParameterIndex {
 };
 
 /// <summary>
-/// 3Dシーン内のライト(平行光源・点光源・スポットライト)を管理するシングルトンクラス。
+/// 3Dシーン内のライト(平行光源・点光源・スポットライト)を管理するマネージャークラス。
 /// </summary>
 class LightManager
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>LightManager のインスタンス</returns>
+	/// <returns>LightManager</returns>
 	static LightManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class LightManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit LightManager(ConstructorKey) {}
+
+	/// コピー禁止
+	LightManager(const LightManager&) = delete;
+	LightManager& operator=(const LightManager&) = delete;
 
 	/// <summary>
 	/// 終了
@@ -290,13 +305,8 @@ public:	// setter
 	/// <param name="lightCosAngle">スポットライトの余弦</param>
 	void SetSpotLightCosAngle(float lightCosAngle) { spotLightMapped_->cosAngle = lightCosAngle; }
 
-private:	// シングルトンインスタンス
-	static LightManager* sInstance;
-
-	LightManager() = default;
-	~LightManager() = default;
-	LightManager(const LightManager&) = delete;
-	LightManager& operator=(const LightManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<LightManager> sInstance_;
 
 private:	// メンバ変数
 	// DirectXBase

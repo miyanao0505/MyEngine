@@ -12,7 +12,7 @@ class SrvManager;
 
 /// <summary>
 /// パーティクルマネージャークラス(ParticleManager)
-/// ゲーム内で使用されるすべてのパーティクルグループを管理するシングルトンマネージャーです。
+/// ゲーム内で使用されるすべてのパーティクルグループを管理する Singleton マネージャーです。
 /// </summary>
 class ParticleManager
 {
@@ -37,11 +37,26 @@ public:	// パーティクルグループ構造体
 
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスを取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>ParticleManager のインスタンス</returns>
+	/// <returns>ParticleManager</returns>
 	static ParticleManager* GetInstance();
 	
+	// ------ Passkey Idion ------
+	// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class ParticleManager;
+	};
+
+	// PassKeyを受け取るコンストラクタ
+	explicit ParticleManager(ConstructorKey) {}
+
+	// コピー禁止
+	ParticleManager(const ParticleManager&) = delete;
+	ParticleManager& operator=(const ParticleManager&) = delete;
+
 	/// <summary>
 	/// 終了
 	/// </summary>
@@ -149,13 +164,8 @@ private: // ローカル関数
 	/// <returns>生成されたパーティクルデータ</returns>
 	MyBase::Particle CreateParticle(std::mt19937& randomEngine, const MyBase::Vector3& translate, const ParticleSystem::ParticleGroupData& particleGroupData, ParticleType type = ParticleType::kEllipse);
 
-private:	// シングルトン
-	static ParticleManager* sInstance;
-
-	ParticleManager() = default;
-	~ParticleManager() = default;
-	ParticleManager(ParticleManager&) = delete;
-	ParticleManager& operator=(ParticleManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<ParticleManager> sInstance_;
 
 private:	// メンバ変数
 	// ポインタ

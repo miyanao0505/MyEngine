@@ -5,27 +5,24 @@ using namespace DirectX;
 using namespace StringUtility;
 using namespace std;
 
-TextureManager* TextureManager::sInstance = nullptr;
+/// static member 定義
+unique_ptr<TextureManager> TextureManager::sInstance_ = nullptr;
 
-// シングルトンインスタンスの取得
-TextureManager* TextureManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new TextureManager;
+// Singleton Instance を取得
+TextureManager* TextureManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<TextureManager>(TextureManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 終了
-void TextureManager::Finalize()
-{
-	delete sInstance;
-	sInstance = nullptr;
+void TextureManager::Finalize() {
+	sInstance_.reset();
 }
 
 // 初期化
-void TextureManager::Initialize(SrvManager* srvManager)
-{
+void TextureManager::Initialize(SrvManager* srvManager) {
 	// DirectXBaseの取得
 	dxBase_ = DirectXBase::GetInstance();
 
@@ -40,13 +37,10 @@ void TextureManager::Initialize(SrvManager* srvManager)
 	textureDatas_.reserve(SrvManager::kMaxSRVCount);
 }
 
-void TextureManager::LoadTexture(const string& filePath)
-{
+void TextureManager::LoadTexture(const string& filePath) {
 	// すでに読み込まれている場合は早期リターン
-	if (textureDatas_.contains(filePath)) {
-		return;
-	}
-
+	if (textureDatas_.contains(filePath)) return;
+	
 	// テクスチャ枚数上限チェック
 	assert(srvManager_->IsSecure());
 
@@ -72,15 +66,13 @@ void TextureManager::LoadTexture(const string& filePath)
 	// キューブマップか2Dか判定して適切なSRV作成
 	if ((textureData.metadata.miscFlags & TEX_MISC_TEXTURECUBE) != 0) {
 		srvManager_->CreateSRVForTextureCube(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
-	}
-	else {
+	} else {
 		srvManager_->CreateSRVForTexture2D(textureData.srvIndex, textureData.metadata, textureData.resource.Get());
 	}
 }
 
 // SRVインデックスの開始番号
-uint32_t TextureManager::GetSrvIndex(const string& filePath)
-{
+uint32_t TextureManager::GetSrvIndex(const string& filePath) {
 	auto it = textureDatas_.find(filePath);
 	assert(it != textureDatas_.end()); // 未ロードはバグ
 
@@ -88,8 +80,7 @@ uint32_t TextureManager::GetSrvIndex(const string& filePath)
 }
 
 // テクスチャ番号からGPUハンドルを取得
-D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePath)
-{
+D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePath) {
 	auto it = textureDatas_.find(filePath);
 	assert(it != textureDatas_.end()); // 未ロードはバグ
 
@@ -97,8 +88,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE TextureManager::GetSrvHandleGPU(const string& filePa
 }
 
 // メタデータを取得
-const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath)
-{
+const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath) {
 	auto it = textureDatas_.find(filePath);
 	assert(it != textureDatas_.end()); // 未ロードはバグ
 
@@ -106,8 +96,7 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(const string& filePath)
 }
 
 // ブレンドモードのセット
-void TextureManager::SetBlendMode(SpriteBase::BlendMode blendMode)
-{
+void TextureManager::SetBlendMode(SpriteBase::BlendMode blendMode) {
 	// スプライト共通部にブレンドモードを設定し、パイプラインを再構築
 	spriteBase_->SetBlendMode(blendMode);
 	spriteBase_->CreateGraphicsPipeline();

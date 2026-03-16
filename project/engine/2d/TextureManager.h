@@ -10,7 +10,7 @@
 /// <summary>
 /// DirectX 12 を用いたテクスチャ管理を行うクラス。
 /// ゲームエンジン全体で利用されるテクスチャを一元的に管理する
-/// シングルトンマネージャー。
+/// Singleton マネージャー。
 /// </summary>
 class TextureManager
 {
@@ -26,10 +26,25 @@ private: // テクスチャデータ構造体
 
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスを取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>TextureManager の唯一のインスタンス</returns>
+	/// <returns>TextureManager</returns>
 	static TextureManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class TextureManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit TextureManager(ConstructorKey) {}
+
+	/// コピー禁止
+	TextureManager(const TextureManager&) = delete;
+	TextureManager& operator=(const TextureManager&) = delete;
 
 	/// <summary>
 	/// TextureManager を終了(解放)
@@ -88,13 +103,8 @@ public:	// setter
 	/// <param name="blendMode">適用するブレンドモード (SpriteBase::BlendMode 列挙型)</param>
 	void SetBlendMode(SpriteBase::BlendMode blendMode);
 
-private: // シングルトン
-	static TextureManager* sInstance;
-
-	TextureManager() = default;
-	~TextureManager() = default;
-	TextureManager(TextureManager&) = delete;
-	TextureManager& operator=(TextureManager&) = delete;
+private: // Singleton Instance
+	static std::unique_ptr<TextureManager> sInstance_;
 
 private: // メンバ変数
 	// テクスチャデータ
