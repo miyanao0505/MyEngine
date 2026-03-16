@@ -89,7 +89,7 @@ public:	// setter
 	/// 環境マップ用のテクスチャ名を設定
 	/// </summary>
 	/// <param name="textureName">設定する環境テクスチャ名</param>
-	void SetEnvironmentTexture(std::string textureName) { environmentTexturePath_ = textureName; }
+	void SetEnvironmentTexture(const std::string textureName) { environmentTexturePath_ = textureName; }
 
 private:	// メンバ関数
 	/// <summary>
