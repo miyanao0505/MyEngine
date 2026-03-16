@@ -1,45 +1,41 @@
 #include "CollisionManager.h"
 #include "MyTools.h"
 
-CollisionManager* CollisionManager::sInstance = nullptr;
+using namespace std;
 
-CollisionManager* CollisionManager::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new CollisionManager;
+/// static member 定義
+unique_ptr<CollisionManager> CollisionManager::sInstance_ = nullptr;
+
+/// Singleton Instance を取得
+CollisionManager* CollisionManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<CollisionManager>(CollisionManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 終了
-void CollisionManager::Finalize()
-{
+void CollisionManager::Finalize() {
 	// コライダーリストをクリア
 	Clear();
 	// シングルトンインスタンスを削除
-	delete sInstance;
-	sInstance = nullptr;
+	sInstance_.reset();
 }
 
 // 更新
-void CollisionManager::Update()
-{
+void CollisionManager::Update() {
 	// コライダーリストが空なら何もしない
-	if (colliders_.empty()) {
-		return;
-	}
+	if (colliders_.empty()) return;
 
 	// 衝突判定と応答を行う
 	CheckAllCollisions();
 }
 
 // 衝突判定と応答
-void CollisionManager::CheckAllCollisions()
-{
+void CollisionManager::CheckAllCollisions() {
 	// リスト内のペアを総当たり
 	std::list<Collider*>::iterator itrA = colliders_.begin();
-	for (; itrA != colliders_.end(); ++itrA)
-	{
+	for (; itrA != colliders_.end(); ++itrA) {
 		// イテレータAからコライダーAを取得する
 		Collider* colliderA = *itrA;
 
@@ -47,8 +43,7 @@ void CollisionManager::CheckAllCollisions()
 		std::list<Collider*> ::iterator itrB = itrA;
 		itrB++;
 
-		for (; itrB != colliders_.end(); ++itrB)
-		{
+		for (; itrB != colliders_.end(); ++itrB) {
 			// イテレータBからコライダーBを取得する
 			Collider* colliderB = *itrB;
 
@@ -59,12 +54,9 @@ void CollisionManager::CheckAllCollisions()
 }
 
 // コライダー2つの衝突判定と応答
-void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB)
-{
+void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	// 衝突判定が無効なら早期リターン
-	if (!colliderA->IsCollisionEnabled() || !colliderB->IsCollisionEnabled()) {
-		return;
-	}
+	if (!colliderA->IsCollisionEnabled() || !colliderB->IsCollisionEnabled()) return;
 
 	// コライダーAとBのワールド座標を取得
 	MyBase::Vector3 posA = colliderA->GetWorldPosition();
@@ -74,8 +66,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	float length = MyTools::Length(MyTools::Subtract(posB, posA));
 
 	// 球と球の交差判定
-	if (length <= colliderA->GetRadius() + colliderB->GetRadius())
-	{
+	if (length <= colliderA->GetRadius() + colliderB->GetRadius()) {
 		// 衝突した場合の処理
 		colliderA->OnCollision(colliderB);
 		colliderB->OnCollision(colliderA);
@@ -83,7 +74,6 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 }
 
 // コライダーリストをクリア
-void CollisionManager::Clear()
-{
+void CollisionManager::Clear() {
 	colliders_.clear();
 }

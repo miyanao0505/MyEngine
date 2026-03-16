@@ -1,20 +1,36 @@
 #pragma once
-#include "Collider.h"
 #include <list>
+#include <memory>
+#include "Collider.h"
 
 /// <summary>
 /// CollisionManagerクラス
-/// ゲーム全体の衝突判定を統括管理するシングルトンマネージャー。
+/// ゲーム全体の衝突判定を統括管理するマネージャークラス。
 /// </summary>
 class CollisionManager
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>インスタンス</returns>
+	/// <returns>CollisionManager</returns>
 	static CollisionManager* GetInstance();
 	
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class CollisionManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit CollisionManager(ConstructorKey) {}
+
+	/// コピー禁止
+	CollisionManager(const CollisionManager&) = delete;
+	CollisionManager& operator=(const CollisionManager&) = delete;
+
 	/// <summary>
 	/// 終了
 	/// </summary>
@@ -54,13 +70,8 @@ public:	// メンバ関数
 	/// <param name="colliderB">ColliderB</param>
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
-private:	// シングルトン
-	static CollisionManager* sInstance;
-
-	CollisionManager() = default;
-	~CollisionManager() = default;
-	CollisionManager(CollisionManager&) = delete;
-	CollisionManager& operator=(CollisionManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<CollisionManager>sInstance_;
 
 private:	// メンバ変数
 	// コライダーリスト

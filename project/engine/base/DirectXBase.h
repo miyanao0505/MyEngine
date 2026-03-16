@@ -28,10 +28,25 @@ public:	// 列挙型
 
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスを取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>DirectXBase のインスタンス</returns>
+	/// <returns>DirectXBase</returns>
 	static DirectXBase* GetInstance();
+	
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class DirectXBase;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit DirectXBase(ConstructorKey) {}
+
+	/// コピー禁止
+	DirectXBase(const DirectXBase&) = delete;
+	DirectXBase& operator=(const DirectXBase&) = delete;
 
 	/// <summary>
 	/// 初期化
@@ -273,12 +288,7 @@ private:	// メンバ関数
 	void UpdateFixFPS();
 
 private:	// シングルトンインスタンス
-	static DirectXBase* sInstance;
-
-	DirectXBase() = default;
-	~DirectXBase() = default;
-	DirectXBase(DirectXBase&) = delete;
-	DirectXBase& operator=(DirectXBase&) = delete;
+	static std::unique_ptr<DirectXBase> sInstance_;
 
 private:	// メンバ変数
 	// DirectX12デバイス
