@@ -193,7 +193,18 @@ void GameScene::Update()
 		if (gameClearTimer_ <= 0.0f) {
 			// シーン切り替え依頼
 			SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
-			return;
+		}
+		return;
+	}
+
+	// ゲームオーバーフラグが立っている場合
+	if (isGameOver_) {
+		// ゲームオーバータイマー更新
+		gameOverTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		// タイマーが0以下になったら
+		if (gameOverTimer_ <= 0.0f) {
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
 		}
 		return;
 	}
@@ -216,6 +227,15 @@ void GameScene::Update()
 		isGameClear_ = true;
 		// クリアタイマーセット
 		gameClearTimer_ = kGameClearDuration;
+		return;
+	}
+
+	// ゲームオーバー条件
+	if (player_->IsDead()) {
+		// ゲームオーバーフラグON
+		isGameOver_ = true;
+		// ゲームオーバータイマーセット
+		gameOverTimer_ = kGameOverDuration;
 		return;
 	}
 

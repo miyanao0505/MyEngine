@@ -47,6 +47,9 @@ private:
 	// ゲームクリア演出時間
 	static constexpr float kGameClearDuration = 1.0f;
 
+	// ゲームオーバー演出時間
+	static constexpr float kGameOverDuration = 1.0f;
+
 	// パーティクル加速フィールド初期設定
 	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
 	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
@@ -149,4 +152,7 @@ private:	// メンバ変数
 
 	bool isGameClear_ = false;
 	float gameClearTimer_ = 0.0f;
+
+	bool isGameOver_ = false;
+	float gameOverTimer_ = 0.0f;
 };
