@@ -106,6 +106,12 @@ public:	// getter
 	int GetAttackPower() const { return attackPower_; }
 
 	/// <summary>
+	/// 死亡フラグを取得
+	/// </summary>
+	/// <returns>死亡フラグを取得</returns>
+	bool IsDead() const { return isDead_; }
+
+	/// <summary>
 	/// ワールド座標を取得
 	/// </summary>
 	/// <returns>ワールド座標</returns>
