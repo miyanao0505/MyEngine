@@ -14,7 +14,7 @@ using namespace numbers;
 const MyBase::Vector3 Player::kInitialScale = { 1.0f, 1.0f, 1.0f };
 const float Player::kColliderRadius = 1.0f;
 
-const int Player::kInitialHP = 100;
+const int Player::kInitialHP = 30;
 const int Player::kInitialAttackPower = 10;
 
 #ifdef _DEBUG
