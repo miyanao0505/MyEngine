@@ -72,8 +72,8 @@ private:	// メンバ変数
 
 	// 入力合成用
 	MyBase::Vector2 input_;			// -1.0f ～ 1.0f の範囲で入力される想定
-	float maxOffsetX_ = 15.0f;		// X方向の最大オフセット
-	float maxOffsetY_ = 10.0f;		// Y方向の最大オフセット
+	float maxOffsetX_ = 30.0f;		// X方向の最大オフセット
+	float maxOffsetY_ = 20.0f;		// Y方向の最大オフセット
 	MyBase::Vector3 offsetX_;		// X方向のオフセット
 	MyBase::Vector3 offsetY_;		// Y方向のオフセット
 	MyBase::Vector3 offset_;		// 現在のオフセット
