@@ -17,11 +17,19 @@ using namespace MyBase;
 
 #pragma region 定数
 const Vector3 GameScene::kPlayerInitialTranslate{ 0.0f, 0.0f, 0.0f };
+const vector<Vector3> GameScene::kEnemyInitialTranslates{
+	{ 5.0f, 0.0f, 500.0f },
+	{ 5.0f, 7.0f, 750.0f },
+	{ -5.0f, 0.0f, 1000.0f },
+	{ -5.0f, 7.0f, 1250.0f },
+	{ 5.0f, -7.0f, 1500.0f },
+	{ 5.0f, 7.0f, 1750.0f },
+};
 const vector<Vector3> GameScene::kRailPoints{
 	{ 0.0f, 0.0f, 0.0f },
 	{ 0.0f, 0.0f, 250.0f },
 	{ 0.0f, 0.0f, 500.0f },
-	{ 0.0f, 0.0f, 1000.0f },
+	{ 0.0f, 0.0f, 2000.0f },
 };
 #pragma endregion
 
@@ -51,9 +59,16 @@ void GameScene::Initialize()
 	player_->Initialize(kPlayerInitialTranslate);
 
 	// 敵
-	enemy_ = make_unique<Enemy>();
+	for(size_t i = 0; i < kEnemyInitialTranslates.size(); ++i){
+		unique_ptr<Enemy> enemy = make_unique<Enemy>();
+		enemy->Initialize();
+		enemy->SetPlayer(player_.get());
+		enemy->SetWorldPosition(kEnemyInitialTranslates[i]);
+		enemies_.push_back(std::move(enemy));
+	}
+	/*enemy_ = make_unique<Enemy>();
 	enemy_->Initialize();
-	enemy_->SetPlayer(player_.get());
+	enemy_->SetPlayer(player_.get());*/
 
 	// 天球
 	skydome_ = make_unique<Skydome>();
@@ -131,7 +146,10 @@ void GameScene::Initialize()
 	CameraManager::GetInstance()->GetCamera()->Update();
 	escapeUI_->Update();
 	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
-	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
+	}
+	/*enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());*/
 	skydome_->Update();
 	followCamera_->SetTargetPosition(player_->GetWorldPosition());
 	followCamera_->UpdateLookAtTarget();
@@ -153,7 +171,10 @@ void GameScene::Finalize()
 
 	// 3Dオブジェクト
 	skydome_.reset();
-	enemy_.reset();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy.reset();
+	}
+	/*enemy_.reset();*/
 	player_.reset();
 
 	// スプライト
@@ -253,7 +274,10 @@ void GameScene::Update()
 	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
 
 	// 敵の更新処理
-	enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	for(std::unique_ptr<Enemy>& enemy : enemies_){
+		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
+	}
+	/*enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());*/
 
 	// 天球の更新
 	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
@@ -306,7 +330,10 @@ void GameScene::Draw()
 	skydome_->Draw();
 
 	// 敵の描画
-	enemy_->Draw();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->Draw();
+	}
+	/*enemy_->Draw();*/
 
 	// プレイヤーの描画
 	player_->Draw();
@@ -386,7 +413,10 @@ void GameScene::DebugDraw() {
 	player_->DebugDraw();
 
 	// 敵
-	enemy_->DebugDraw();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->DebugDraw();
+	}
+	/*enemy_->DebugDraw();*/
 
 	// パーティクル
 	ParticleManager::GetInstance()->ImGui();

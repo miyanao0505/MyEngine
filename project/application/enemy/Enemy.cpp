@@ -23,7 +23,7 @@ const MyBase::Vector3 Enemy::kInitialRotation = { 0.0f, pi_v<float>, 0.0f };// �
 
 const float Enemy::kColliderRadius = 1.50f;						// コライダーの半径
 
-const int Enemy::kInitialHP = 50;				// 初期体力
+const int Enemy::kInitialHP = 30;				// 初期体力
 const int Enemy::kInitialAttackPower = 10;		// 初期攻撃力
 
 const MyBase::Vector3 Enemy::kEmitterSize = { 1.0f, 1.0f, 1.0f };		// エミッターサイズ
@@ -216,7 +216,6 @@ void Enemy::DamageReactionUpdate()
 		// タイマーリセットと色リセット
 		damageReactionTimer_ = 0.0f;
 		object_->GetModel()->GetModelMaterial()->color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		return;
 	}
 
 	return;

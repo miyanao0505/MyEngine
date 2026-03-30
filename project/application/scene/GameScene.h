@@ -29,6 +29,9 @@ private:
 	// プレイヤー
 	static const MyBase::Vector3 kPlayerInitialTranslate;
 
+	// 敵
+	static const std::vector<MyBase::Vector3> kEnemyInitialTranslates;
+
 	// カメラ初期設定
 	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 5.0f,-40.0f };
 	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
@@ -117,7 +120,8 @@ private:	// メンバ変数
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 	// 敵
-	std::unique_ptr<Enemy> enemy_ = nullptr;
+	std::list<std::unique_ptr<Enemy>> enemies_;
+	//std::unique_ptr<Enemy> enemy_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 

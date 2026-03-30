@@ -153,6 +153,12 @@ public:	// setter
 	/// <param name="player">プレイヤーのポインタ</param>
 	void SetPlayer(Player* player) { player_ = player; }
 
+	/// <summary>
+	/// ワールド座標を設定
+	/// </summary>
+	/// <param name="pos">座標の設定</param>
+	void SetWorldPosition(const MyBase::Vector3& pos) { object_->SetTranslate(pos); object_->Update(); }
+
 private:	/// メンバ変数
 	// 敵の弾リスト
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
