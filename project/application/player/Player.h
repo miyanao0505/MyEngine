@@ -12,8 +12,11 @@ class Player : public BaseObject
 {
 private:
 #pragma region 定数
-	static constexpr float kMoveSpeed = 10.0f;								// プレイヤーの移動速度
+	static constexpr float kDamageReactionDuration = 0.1f;	// ダメージリアクション時間
+	static constexpr float kDeadReactionDuration = 1.0f;	// 死亡リアクション時間
 	static constexpr float kAttackCoolTime = 0.5f;							// 攻撃クールタイム
+
+	static constexpr float kMoveSpeed = 10.0f;								// プレイヤーの移動速度
 	static constexpr int kMaxBulletCount = 10;								// 最大弾数
 	static constexpr float kBulletDrawDistance = 500.0f;					// 弾の描画距離
 	static constexpr MyBase::Vector3 kBulletOffset = {0.0f, 0.0f, 1.0f};	// 弾の発射位置オフセット
@@ -64,6 +67,21 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="damage">ダメージ値</param>
 	void Damage(int damage);
+
+	/// <summary>
+	/// ダメージリアクションの開始
+	/// </summary>
+	void DamageReactionStart();
+
+	/// <summary>
+	/// ダメージリアクションの更新
+	/// </summary>
+	void DamageReactionUpdate();
+
+	/// <summary>
+	/// 死亡リアクション
+	/// </summary>
+	void DeadReaction();
 
 #ifdef _DEBUG
 	/// <summary>
@@ -150,6 +168,10 @@ private:	// メンバ変数
 	int hp_;
 	int attackPower_ = 1;
 	bool isDead_ = false;
+
+	// 演出系
+	float damageReactionTimer_;
+	float deadReactionTimer_;
 	
 	MyBase::Vector2 moveInput_;	// 入力意図(-1～1)
 	MyBase::Vector3 externalPosition_; // 外部からの位置影響（ノックバックなど）

@@ -14,7 +14,7 @@ using namespace numbers;
 const MyBase::Vector3 Player::kInitialScale = { 1.0f, 1.0f, 1.0f };
 const float Player::kColliderRadius = 1.0f;
 
-const int Player::kInitialHP = 30;
+const int Player::kInitialHP = 50;
 const int Player::kInitialAttackPower = 10;
 
 #ifdef _DEBUG
@@ -26,14 +26,12 @@ const MyBase::ScopeF Player::kScaleScope = { 0.01f, 10.0f };
 #pragma endregion
 
 /// デストラクタ
-Player::~Player()
-{
+Player::~Player() {
 
 }
 
 /// 初期化
-void Player::Initialize(const MyBase::Vector3& position)
-{
+void Player::Initialize(const MyBase::Vector3& position) {
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("player", "player.obj");
 	SetName("Player");
@@ -59,8 +57,7 @@ void Player::Initialize(const MyBase::Vector3& position)
 }
 
 /// 更新
-void Player::Update(float deltaTime)
-{
+void Player::Update(float deltaTime) {
 	// 移動処理
 	ReadMoveInput();
 
@@ -88,11 +85,17 @@ void Player::Update(float deltaTime)
 	if (attackCoolTime_ > 0) {
 		attackCoolTime_ -= deltaTime;
 	}
+
+	// ダメージリアクションの更新
+	if (damageReactionTimer_ > 0.0f) {
+		// ダメージリアクションタイマーの更新
+		damageReactionTimer_ -= deltaTime;
+		DamageReactionUpdate();
+	}
 }
 
 /// 描画
-void Player::Draw()
-{
+void Player::Draw() {
 	// プレイヤー
 	object_->Draw();
 
@@ -104,19 +107,48 @@ void Player::Draw()
 }
 
 /// ダメージ処理
-void Player::Damage(int damage)
-{
-	hp_ -= damage;
-	if (hp_ <= 0) {
-		isDead_ = true;
-		hp_ = 0;
+void Player::Damage(int damage) {
+	if (damageReactionTimer_ > 0.0f) {
+		return; // ダメージリアクション中はダメージを受け付けない
 	}
+
+	hp_ -= damage;
+
+	if (hp_ > 0.0f) {
+		// ダメージリアクション開始
+		DamageReactionStart();
+	}
+}
+
+/// ダメージリアクションの開始
+void Player::DamageReactionStart() {
+	// ダメージリアクションタイマーをリセット
+	damageReactionTimer_ = kDamageReactionDuration;
+
+	// 赤を強調
+	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+}
+
+/// ダメージリアクションの更新
+void Player::DamageReactionUpdate() {
+	// ダメージリアクション終了確認
+	if (damageReactionTimer_ <= 0.0f) {
+		// タイマーリセットと色リセット
+		damageReactionTimer_ = 0.0f;
+		object_->GetModel()->GetModelMaterial()->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
+	return;
+}
+
+/// 死亡リアクション
+void Player::DeadReaction() {
+
 }
 
 #ifdef _DEBUG
 /// デバック描画
-void Player::DebugDraw()
-{
+void Player::DebugDraw() {
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Player"))
 	{
@@ -143,8 +175,7 @@ void Player::DebugDraw()
 
 
 /// 移動処理
-void Player::ReadMoveInput()
-{
+void Player::ReadMoveInput() {
 	moveInput_ = { 0.0f, 0.0f };
 
 	if (Input::GetInstance()->PushKey(DIK_W)) moveInput_.y += kMoveSpeed;
@@ -159,8 +190,7 @@ void Player::ReadMoveInput()
 }
 
 /// 攻撃
-void Player::Attack()
-{
+void Player::Attack() {
 	// 攻撃不可なら早期リターン
 	if (!CanAttack()) return;
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
@@ -170,8 +200,7 @@ void Player::Attack()
 }
 
 /// 攻撃可能かどうか
-bool Player::CanAttack()
-{
+bool Player::CanAttack() {
 	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0) {
 		return true;
 	}
@@ -179,8 +208,7 @@ bool Player::CanAttack()
 }
 
 /// 弾生成
-void Player::SpawnBullet()
-{
+void Player::SpawnBullet() {
 	auto bullet = std::make_unique<PlayerBullet>();
 	MyBase::Vector3 direction = Matrix::TransformNormal(kBulletOffset, object_->GetWorldTransform()->GetWorldMatrix());
 	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
@@ -190,8 +218,7 @@ void Player::SpawnBullet()
 }
 
 /// 衝突を検出したら呼び出されるコールバック関数
-void Player::OnCollision([[maybe_unused]] Collider* other)
-{
+void Player::OnCollision([[maybe_unused]] Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeId();
 
@@ -207,8 +234,7 @@ void Player::OnCollision([[maybe_unused]] Collider* other)
 }
 
 /// ワールド座標を設定
-void Player::SetWorldPosition(const MyBase::Vector3& pos)
-{
+void Player::SetWorldPosition(const MyBase::Vector3& pos) {
 	externalPosition_ = pos;
 	object_->SetTranslate(pos);
 	object_->Update();
