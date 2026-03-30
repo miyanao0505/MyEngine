@@ -29,6 +29,10 @@ const vector<Vector3> GameScene::kRailPoints{
 	{ 0.0f, 0.0f, 0.0f },
 	{ 0.0f, 0.0f, 250.0f },
 	{ 0.0f, 0.0f, 500.0f },
+	{ 0.0f, 0.0f, 750.0f },
+	{ 0.0f, 0.0f, 1000.0f },
+	{ 0.0f, 0.0f, 1250.0f },
+	{ 0.0f, 0.0f, 1500.0f },
 	{ 0.0f, 0.0f, 2000.0f },
 };
 #pragma endregion
