@@ -11,22 +11,24 @@
 
 using namespace std;
 using namespace numbers;
+using namespace MyBase;
 
 #pragma region 定数定義
 const int Enemy::kMaxBulletCount = 10;									// 最大弾数
 const float Enemy::kBulletDrawDistance = 500.0f;						// 弾の描画距離
-const MyBase::Vector3 Enemy::kBulletSpawnOffset = { 0.0f, 0.0f, -1.0f }; // 弾の発射位置オフセット
+const Vector3 Enemy::kBulletSpawnOffset = { 0.0f, 0.0f, -1.0f }; // 弾の発射位置オフセット
 
-const MyBase::Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 500.0f };	// 敵の初期位置
-const MyBase::Vector3 Enemy::kInitialScale = { 1.0f, 1.0f, 1.0f };			// 敵の初期スケール
-const MyBase::Vector3 Enemy::kInitialRotation = { 0.0f, pi_v<float>, 0.0f };// 敵の初期回転
+const Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 500.0f };	// 敵の初期位置
+const Vector3 Enemy::kInitialScale = { 1.0f, 1.0f, 1.0f };			// 敵の初期スケール
+const Vector3 Enemy::kInitialRotation = { 0.0f, pi_v<float>, 0.0f };// 敵の初期回転
+const Vector4 Enemy::kInitialColor = { 1.0f, 1.0f, 1.0f, 1.0f };	// 敵の初期色
 
 const float Enemy::kColliderRadius = 1.50f;						// コライダーの半径
 
-const int Enemy::kInitialHP = 30;				// 初期体力
+const int Enemy::kInitialHP = 10;				// 初期体力
 const int Enemy::kInitialAttackPower = 10;		// 初期攻撃力
 
-const MyBase::Vector3 Enemy::kEmitterSize = { 1.0f, 1.0f, 1.0f };		// エミッターサイズ
+const Vector3 Enemy::kEmitterSize = { 1.0f, 1.0f, 1.0f };		// エミッターサイズ
 const ParticleSystem::ParticleGroupData Enemy::kHitEffectParams = {
 	.size = { 1.f, 10.0f },
 	.energy = { 1.0f, 1.0f },
@@ -52,20 +54,17 @@ const ParticleSystem::ParticleGroupData Enemy::kHitEffectRingParams = {
 
 #ifdef _DEBUG
 const float Enemy::kImGuiDragSpeed = 0.01f;				// ImGuiドラッグ速度
-const MyBase::ScopeF Enemy::kTranslateScope = { -100.0f, 100.0f };	// 平行移動範囲
-const MyBase::ScopeF Enemy::kRotateScope = { -pi_v<float>, pi_v<float> };		// 回転範囲
-const MyBase::ScopeF Enemy::kScaleScope = { 0.1f, 10.0f };		// スケール範囲
+const ScopeF Enemy::kTranslateScope = { -100.0f, 100.0f };	// 平行移動範囲
+const ScopeF Enemy::kRotateScope = { -pi_v<float>, pi_v<float> };		// 回転範囲
+const ScopeF Enemy::kScaleScope = { 0.1f, 10.0f };		// スケール範囲
 #endif // _DEBUG
 #pragma endregion
 
-Enemy::~Enemy()
-{
-
+Enemy::~Enemy() {
 }
 
 // 初期化
-void Enemy::Initialize()
-{
+void Enemy::Initialize() {
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("enemy", "enemy.obj");
 	
@@ -73,6 +72,7 @@ void Enemy::Initialize()
 	object_->SetTranslate(kInitialPosition);	// 初期位置
 	object_->SetScale(kInitialScale);			// 初期スケール
 	object_->SetRotate(kInitialRotation);		// 初期回転
+	object_->GetModel()->GetModelMaterial()->color = kInitialColor; // 初期色
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
@@ -104,8 +104,7 @@ void Enemy::Initialize()
 }
 
 // 更新
-void Enemy::Update(float deltaTime)
-{
+void Enemy::Update(float deltaTime) {
 	// 敵の更新処理
 	if (isDead_) {
 		return; // 死んでいる場合は更新しない
@@ -143,6 +142,13 @@ void Enemy::Update(float deltaTime)
 		DamageReactionUpdate();
 	}
 
+	// 死亡リアクションの更新
+	if(deadReactionTimer_ > 0.0f){
+		// 死亡リアクションタイマーの更新
+		deadReactionTimer_ -= deltaTime;
+		DeadReactionUpdate();
+	}
+
 	if (state_) {
 		state_->Update();
 	}
@@ -152,8 +158,7 @@ void Enemy::Update(float deltaTime)
 }
 
 // 描画
-void Enemy::Draw()
-{
+void Enemy::Draw() {
 	// 敵の描画処理
 	if (isDead_) {
 		return; // 死んでいる場合は描画しない
@@ -170,15 +175,13 @@ void Enemy::Draw()
 }
 
 // Updateのステートチェンジ
-void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state)
-{
+void Enemy::ChangeState(std::unique_ptr<EnemyBaseState> state) {
 	state_ = std::move(state);
 	state_->Initialize();
 }
 
 // ダメージ処理
-void Enemy::Damage(int damage)
-{
+void Enemy::Damage(int damage) {
 	if(damageReactionTimer_ > 0.0f){
 		return; // ダメージリアクション中はダメージを受け付けない
 	}
@@ -193,14 +196,12 @@ void Enemy::Damage(int damage)
 }
 
 // ダメージリアクション開始
-void Enemy::DamageReactionStart()
-{
+void Enemy::DamageReactionStart() {
 	// ダメージリアクションタイマーをリセット
 	damageReactionTimer_ = kDamageReactionDuration;
 
 	// パーティクルエミッターの更新
 	particleEmitter_->Update();
-
 	// パーティクルを発生させる
 	particleEmitter_->Emit();
 
@@ -209,35 +210,51 @@ void Enemy::DamageReactionStart()
 }
 
 // ダメージリアクション
-void Enemy::DamageReactionUpdate()
-{
+void Enemy::DamageReactionUpdate() {
 	// ダメージリアクション終了確認
 	if (damageReactionTimer_ <= 0.0f) {
 		// タイマーリセットと色リセット
 		damageReactionTimer_ = 0.0f;
-		object_->GetModel()->GetModelMaterial()->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		object_->GetModel()->GetModelMaterial()->color = kInitialColor;
 	}
 
 	return;
 }
 
 // 死亡リアクション
-void Enemy::DeadReaction()
-{
+void Enemy::DeadReactionStart() {
+	// 死亡リアクションタイマーをリセット
+	deadReactionTimer_ = kDeadReactionDuration;
 
+	// パーティクルエミッターの更新
+	particleEmitter_->Update();
+	// パーティクルを発生させる
+	particleEmitter_->Emit();
+
+	// 赤を強調
+	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+}
+
+void Enemy::DeadReactionUpdate() {
+	// 死亡リアクション終了確認
+	if (deadReactionTimer_ <= 0.0f) {
+		// タイマーリセットと状態更新
+		deadReactionTimer_ = 0.0f;
+		isDead_ = true;
+	}
+	return;
 }
 
 #ifdef _DEBUG
 // デバッグ描画
-void Enemy::DebugDraw()
-{
+void Enemy::DebugDraw() {
 	ImGui::PushID(this);
 	if (ImGui::CollapsingHeader("Enemy")) {
 		// ステータス表示
 		ImGui::Text("HP: %d\n", hp_);
 		ImGui::Text("Attack Power: %d\n", attackPower_);
 
-		MyBase::Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
+		Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
 
 		// 移動
 		ImGui::DragFloat3("Translate", &transform.translate.x, kImGuiDragSpeed, kTranslateScope.min, kTranslateScope.max);
@@ -258,26 +275,23 @@ void Enemy::DebugDraw()
 }
 #endif // _DEBUG
 
-void Enemy::Attack()
-{
+void Enemy::Attack() {
 	// 攻撃不可なら早期リターン
 	if (!CanAttack()) return;
 	// 弾の生成
 	SpawnBullet();
 }
 
-bool Enemy::CanAttack()
-{
+bool Enemy::CanAttack() {
 	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0.0f) {
 		return true;
 	}
 	return false;
 }
 
-void Enemy::SpawnBullet()
-{
+void Enemy::SpawnBullet() {
 	auto bullet = std::make_unique<EnemyBullet>();
-	MyBase::Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
+	Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
 	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
 	bullet->SetAttackPower(attackPower_);
 	bullets_.emplace_back(std::move(bullet));
@@ -286,8 +300,7 @@ void Enemy::SpawnBullet()
 }
 
 // 当たり判定
-void Enemy::OnCollision([[maybe_unused]] Collider* other)
-{
+void Enemy::OnCollision([[maybe_unused]] Collider* other) {
 	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeId();
 
@@ -297,7 +310,7 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other)
 		// プレイヤーの攻撃力分ダメージを受ける
 		Damage(player_->GetAttackPower());
 		if (hp_ <= 0) {
-			isDead_ = true;
+			DeadReactionStart(); // 死亡リアクション開始
 		}
 	}
 }

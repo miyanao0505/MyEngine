@@ -28,6 +28,7 @@ private:
 	static const MyBase::Vector3 kInitialPosition;	// 敵の初期位置
 	static const MyBase::Vector3 kInitialScale;		// 敵の初期スケール
 	static const MyBase::Vector3 kInitialRotation;	// 敵の初期回転
+	static const MyBase::Vector4 kInitialColor;		// 敵の初期色
 
 	static const float kColliderRadius;				// コライダーの半径
 
@@ -95,9 +96,14 @@ public:	// メンバ関数
 	void DamageReactionUpdate();
 
 	/// <summary>
-	/// 死亡リアクション
+	/// 死亡リアクションの開始
 	/// </summary>
-	void DeadReaction();
+	void DeadReactionStart();
+
+	/// <summary>
+	/// 死亡リアクションの更新
+	/// </summary>
+	void DeadReactionUpdate();
 
 #ifdef _DEBUG
 	/// <summary>
@@ -173,8 +179,8 @@ private:	/// メンバ変数
 	std::unique_ptr<EnemyBaseState> state_;
 
 	// 演出系
-	float damageReactionTimer_;
-	float deadReactionTimer_;
+	float damageReactionTimer_ = 0.0f;
+	float deadReactionTimer_ = 0.0f;
 
 	// 敵の攻撃クールタイム
 	float attackCoolTime_ = 0.0f;		// 現在のクールタイム
