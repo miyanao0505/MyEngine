@@ -1,7 +1,11 @@
 #include "FollowCamera.h"
 #include "CameraManager.h"
 #include "MyTools.h"
+#ifdef _DEBUG
 #include "imgui.h"
+#endif // _DEBUG
+
+using namespace MyBase;
 
 /// 初期化
 void FollowCamera::Initialize(Camera* camera)
@@ -36,14 +40,16 @@ void FollowCamera::UpdateFollowTranslate(float deltaTime)
 {
 	if (!isTargetSet_) return;
 
+	Vector3 offsetWorld = MyTools::Add(MyTools::Add(MyTools::Multiply(offset_.x, basisRight_), MyTools::Multiply(offset_.y, basisUp_)), MyTools::Multiply(offset_.z, basisForward_));
+
 	// 理想のカメラ位置
-	MyBase::Vector3 idealPos = MyTools::Add(target_, offset_);
+	Vector3 idealPos = MyTools::Add(target_, offsetWorld);
 
 	// 現在位置
-	MyBase::Vector3 currentPos = camera_->GetTranslate();
+	Vector3 currentPos = camera_->GetTranslate();
 
 	// スムージング
-	MyBase::Vector3 newPos = MyTools::Lerp(currentPos, idealPos, deltaTime * followSmooth_);
+	Vector3 newPos = MyTools::Lerp(currentPos, idealPos, deltaTime * followSmooth_);
 
 	// カメラ位置反映
 	camera_->SetTranslate(newPos);
@@ -56,12 +62,14 @@ void FollowCamera::UpdateFollowTranslate(float deltaTime)
 void FollowCamera::UpdateLookAtTarget()
 {
 	// カメラの向きをプレイヤーの方向に設定
-	MyBase::Vector3 direction = MyTools::Subtract(target_, currentFollowPosition_);
+	Vector3 direction = MyTools::Subtract(target_, currentFollowPosition_);
 	direction = MyTools::Normalize(direction);
-	// カメラの回転を計算(見下ろし型)
 	float horizontalLength = sqrt(direction.x * direction.x + direction.z * direction.z);
+
+	// カメラの回転を計算(見下ろし型)
 	float pitch = -atan2(direction.y, horizontalLength);
-	camera_->SetRotate({ pitch, 0.0f, 0.0f });
+	float yaw = atan2(direction.x, direction.z);
+	camera_->SetRotate({ pitch, yaw, 0.0f });
 }
 
 #ifdef _DEBUG
@@ -72,7 +80,7 @@ void FollowCamera::DebugDraw() {
 	if (ImGui::CollapsingHeader("FollowCamera"))
 	{
 		// オフセット
-		MyBase::Vector3 offset = offset_;
+		Vector3 offset = offset_;
 		
 		// ImGuiを用いた変更
 		ImGui::DragFloat3(kOffsetLabel, &offset.x, kOffsetDragSpeed);

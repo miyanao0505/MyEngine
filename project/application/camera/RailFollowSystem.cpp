@@ -17,15 +17,17 @@ void RailFollowSystem::Update()
 	railCamera_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	// レール終了判定
-	if (railCamera_->GetRailLerpT() >= 1.0f) {
-		isFinished_ = true;
-	}
+	if (railCamera_->IsFinished()) isFinished_ = true;
 
 	// レール情報取得
 	MyBase::RailData rail = railCamera_->GetRailData();
 
 	// レール基準座標系構築
-	const MyBase::Vector3 worldUp = { 0.0f, 1.0f, 0.0f };
+	MyBase::Vector3 worldUp = { 0.0f, 1.0f, 0.0f };
+
+	if (abs(MyTools::Dot(railCamera_->GetRailDirection(), worldUp)) > 0.99f) {
+		worldUp = { 0.0f, 0.0f, 1.0f };
+	}
 
 	MyBase::Vector3 right = MyTools::Normalize(MyTools::Cross(worldUp, rail.forward));
 	MyBase::Vector3 up = MyTools::Normalize(MyTools::Cross(rail.forward, right));
@@ -47,6 +49,9 @@ void RailFollowSystem::Update()
 
 	// 最終座標
 	playerPos_ = MyTools::Add(rail.position, offset_);
+
+	// FollowCamera にオフセットの基準座標系を渡す
+	followCamera_->SetBasis(right, up, rail.forward);
 
 	// FollowCamera に追従対象を渡す
 	followCamera_->SetTargetPosition(playerPos_);

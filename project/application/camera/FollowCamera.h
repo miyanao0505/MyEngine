@@ -88,6 +88,14 @@ public:	// setter
 	/// <param name="offset"></param>
 	void SetOffset(MyBase::Vector3 offset) { offset_ = offset; }
 
+	/// <summary>
+	/// オフセットの方向の設定
+	/// </summary>
+	/// <param name="right">左右</param>
+	/// <param name="up">上下</param>
+	/// <param name="forward">前後</param>
+	void SetBasis(MyBase::Vector3 right, MyBase::Vector3 up, MyBase::Vector3 forward) { basisRight_ = right; basisUp_ = up; basisForward_ = forward; }
+
 private:	// メンバ変数
 	Camera* camera_ = nullptr;
 
@@ -95,6 +103,10 @@ private:	// メンバ変数
 	MyBase::Vector3 offset_;	// ターゲットからの相対位置
 	float followSmooth_;		// 補間係数
 	
+	MyBase::Vector3 basisRight_;		// オフセットの基準座標系の右方向
+	MyBase::Vector3 basisUp_;			// オフセットの基準座標系の上方向
+	MyBase::Vector3 basisForward_;		// オフセットの基準座標系の前方向
+
 	bool isTargetSet_ = false;	// 追従対象がセットされたかどうか
 
 	// カメラの方向

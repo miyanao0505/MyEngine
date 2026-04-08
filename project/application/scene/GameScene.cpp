@@ -26,14 +26,22 @@ const vector<Vector3> GameScene::kEnemyInitialTranslates{
 	{ 5.0f, 7.0f, 1750.0f },
 };
 const vector<Vector3> GameScene::kRailPoints{
-	{ 0.0f, 0.0f, 0.0f },
+	/*{ 0.0f, 0.0f, 0.0f },
 	{ 0.0f, 0.0f, 250.0f },
 	{ 0.0f, 0.0f, 500.0f },
 	{ 0.0f, 0.0f, 750.0f },
 	{ 0.0f, 0.0f, 1000.0f },
 	{ 0.0f, 0.0f, 1250.0f },
 	{ 0.0f, 0.0f, 1500.0f },
-	{ 0.0f, 0.0f, 2000.0f },
+	{ 0.0f, 0.0f, 2000.0f },*/
+	{ 0, 0, 0 },
+	{ 50, 20, 250 },
+	{ -100, 0, 500 },
+	{ 150, -50, 750 },
+	{ 0, 0, 1000 },
+	{ -200, 100, 1250 },
+	{ 100, 50, 1500 },
+	{ 0, 0, 2000 },
 };
 #pragma endregion
 
@@ -70,9 +78,6 @@ void GameScene::Initialize()
 		enemy->SetWorldPosition(kEnemyInitialTranslates[i]);
 		enemies_.push_back(std::move(enemy));
 	}
-	/*enemy_ = make_unique<Enemy>();
-	enemy_->Initialize();
-	enemy_->SetPlayer(player_.get());*/
 
 	// 天球
 	skydome_ = make_unique<Skydome>();
@@ -178,7 +183,6 @@ void GameScene::Finalize()
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy.reset();
 	}
-	/*enemy_.reset();*/
 	player_.reset();
 
 	// スプライト
@@ -281,7 +285,6 @@ void GameScene::Update()
 	for(std::unique_ptr<Enemy>& enemy : enemies_){
 		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
 	}
-	/*enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());*/
 
 	// 天球の更新
 	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
@@ -337,7 +340,6 @@ void GameScene::Draw()
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy->Draw();
 	}
-	/*enemy_->Draw();*/
 
 	// プレイヤーの描画
 	player_->Draw();
@@ -420,7 +422,6 @@ void GameScene::DebugDraw() {
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy->DebugDraw();
 	}
-	/*enemy_->DebugDraw();*/
 
 	// パーティクル
 	ParticleManager::GetInstance()->ImGui();
