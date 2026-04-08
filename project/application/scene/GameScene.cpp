@@ -280,6 +280,7 @@ void GameScene::Update()
 	railFollowSystem_->Update();
 
 	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
+	player_->GetObject3D()->SetRotate(railFollowSystem_->GetPlayerRotate());
 
 	// 敵の更新処理
 	for(std::unique_ptr<Enemy>& enemy : enemies_){

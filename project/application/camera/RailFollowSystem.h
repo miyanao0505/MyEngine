@@ -30,6 +30,12 @@ public:	// getter
 	MyBase::Vector3 GetPlayerPosition() const { return playerPos_; }
 
 	/// <summary>
+	/// プレイヤーの回転の取得
+	/// </summary>
+	/// <returns>プレイヤーの回転</returns>
+	MyBase::Vector3 GetPlayerRotate() const { return playerRotate_; }
+
+	/// <summary>
 	/// 終了判定の取得
 	/// </summary>
 	/// <returns></returns>
@@ -78,8 +84,9 @@ private:	// メンバ変数
 	MyBase::Vector3 offsetY_;		// Y方向のオフセット
 	MyBase::Vector3 offset_;		// 現在のオフセット
 
-	MyBase::Vector3 playerPos_;	// プレイヤーの位置
-	float playerSpeed_;			// プレイヤーの速度
+	MyBase::Vector3 playerPos_;		// プレイヤーの位置
+	MyBase::Vector3 playerRotate_;	// プレイヤーの回転
+	float playerSpeed_;				// プレイヤーの速度
 
 	bool isFinished_ = false;	// レール追従終了フラグ
 };
