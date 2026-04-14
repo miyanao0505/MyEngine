@@ -7,8 +7,16 @@
 /// レール追従システムクラス。
 /// レール動作以外の追従位置を合成するシステムクラス。
 /// </summary>
-class RailFollowSystem
-{
+class RailFollowSystem {
+private:
+#pragma region 定数
+	static constexpr float kMaxOffsetX = 30.0f;	// X方向の最大オフセット
+	static constexpr float kMaxOffsetY = 20.0f;	// Y方向の最大オフセット
+
+	static constexpr float kInputSensitivityX = 0.2f;	// 左右入力感度
+	static constexpr float kInputSensitivityY = 0.1f;	// 上下入力感度
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -77,12 +85,12 @@ private:	// メンバ変数
 	FollowCamera* followCamera_ = nullptr;	// 追従カメラ
 
 	// 入力合成用
-	MyBase::Vector2 input_;			// -1.0f ～ 1.0f の範囲で入力される想定
-	float maxOffsetX_ = 30.0f;		// X方向の最大オフセット
-	float maxOffsetY_ = 20.0f;		// Y方向の最大オフセット
-	MyBase::Vector3 offsetX_;		// X方向のオフセット
-	MyBase::Vector3 offsetY_;		// Y方向のオフセット
-	MyBase::Vector3 offset_;		// 現在のオフセット
+	MyBase::Vector2 input_;				// -1.0f ～ 1.0f の範囲で入力される想定
+	float maxOffsetX_ = kMaxOffsetX;	// X方向の最大オフセット
+	float maxOffsetY_ = kMaxOffsetY;	// Y方向の最大オフセット
+	MyBase::Vector3 offsetX_;			// X方向のオフセット
+	MyBase::Vector3 offsetY_;			// Y方向のオフセット
+	MyBase::Vector3 offset_;			// 現在のオフセット
 
 	MyBase::Vector3 playerPos_;		// プレイヤーの位置
 	MyBase::Vector3 playerRotate_;	// プレイヤーの回転

@@ -279,8 +279,10 @@ void GameScene::Update()
 	// レール追従システムの更新
 	railFollowSystem_->Update();
 
+	Vector3 playerRotate = MyTools::Lerp(player_->GetObject3D()->GetRotate(), railFollowSystem_->GetPlayerRotate(), 0.1f);
+
 	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
-	player_->GetObject3D()->SetRotate(railFollowSystem_->GetPlayerRotate());
+	player_->GetObject3D()->SetRotate(playerRotate);
 
 	// 敵の更新処理
 	for(std::unique_ptr<Enemy>& enemy : enemies_){

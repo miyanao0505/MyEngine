@@ -59,8 +59,9 @@ void RailFollowSystem::Update() {
 	float horizontalLength = sqrt(forward.x * forward.x + forward.z * forward.z);
 	float pitch = -atan2(forward.y, horizontalLength);
 
-	// roll (とりあえず0)
-	float roll = 0.0f;
+	// 入力による傾き
+	float roll = -input_.x * kInputSensitivityX;	// 傾きの強さは適宜調整
+	pitch += -input_.y * kInputSensitivityY;			// 傾きの強さは適宜調整
 
 	// プレイヤーの回転を設定
 	playerRotate_ = { pitch, yaw, roll };
