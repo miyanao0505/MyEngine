@@ -207,8 +207,7 @@ namespace MyBase
 	/// <summary>
 	/// バネ
 	/// </summary>
-	struct Spring
-	{
+	struct Spring {
 		Vector3 anchor;				// アンカー。固定された端の位置
 		float naturalLength;		// 自然長
 		float stiffness;			// 剛性。バネ定数k

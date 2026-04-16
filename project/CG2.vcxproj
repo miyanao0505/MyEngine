@@ -34,7 +34,10 @@
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
     <ClCompile Include="engine\3d\debug\DebugLineBase.cpp" />
-    <ClCompile Include="engine\3d\debug\DebugLineRenderer.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineDrawer.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineLayer.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineManager.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLinePrimitive.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
     <ClCompile Include="engine\base\TimeManager.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
@@ -110,7 +113,11 @@
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
     <ClInclude Include="engine\3d\debug\DebugLineBase.h" />
-    <ClInclude Include="engine\3d\debug\DebugLineRenderer.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineCategory.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineDrawer.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineLayer.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineManager.h" />
+    <ClInclude Include="engine\3d\debug\DebugLinePrimitive.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
     <ClInclude Include="engine\base\AssetPath.h" />
     <ClInclude Include="engine\base\TimeManager.h" />

@@ -372,14 +372,23 @@
     <ClCompile Include="application\ui\PauseButton.cpp">
       <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\debug\DebugLineRenderer.cpp">
-      <Filter>ソース ファイル\engine\3d\debug</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\debug\DebugLineBase.cpp">
       <Filter>ソース ファイル\engine\3d\debug</Filter>
     </ClCompile>
     <ClCompile Include="engine\math\MyBase.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineLayer.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineManager.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineDrawer.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLinePrimitive.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -608,10 +617,22 @@
     <ClInclude Include="application\ui\PauseButtonType.h">
       <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\debug\DebugLineRenderer.h">
+    <ClInclude Include="engine\3d\debug\DebugLineBase.h">
       <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
     </ClInclude>
-    <ClInclude Include="engine\3d\debug\DebugLineBase.h">
+    <ClInclude Include="engine\3d\debug\DebugLineCategory.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineLayer.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineManager.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineDrawer.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLinePrimitive.h">
       <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
     </ClInclude>
   </ItemGroup>

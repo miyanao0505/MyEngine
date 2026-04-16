@@ -9,7 +9,7 @@ unique_ptr<AudioManager> AudioManager::sInstance_ = nullptr;
 
 /// Singleton Instance を取得
 AudioManager* AudioManager::GetInstance() {
-	if (sInstance_ == nullptr) {
+	if (!sInstance_) {
 		sInstance_ = make_unique<AudioManager>(AudioManager::ConstructorKey{});
 	}
 	return sInstance_.get();
