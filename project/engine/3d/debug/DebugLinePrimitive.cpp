@@ -7,6 +7,7 @@
 using namespace std;
 using namespace MyBase;
 
+#ifdef _DEBUG
 /// ラインの生成
 void DebugLinePrimitive::CreateaLine(std::vector<MyBase::DebugLine>& outLines, const MyBase::Vector3& start, const MyBase::Vector3& end, const MyBase::Vector4& color, bool isHit) {
 	outLines.push_back({start, end, color, isHit});
@@ -46,7 +47,7 @@ void DebugLinePrimitive::CreateBox(std::vector<MyBase::DebugLine>& outLines, con
 
 /// スフィアの生成
 void DebugLinePrimitive::CreateSphere(std::vector<MyBase::DebugLine>& outLines, const MyBase::Vector3& center, float radius, uint32_t segment, const MyBase::Vector4& color, bool isHit) {
-	const float step = 2.0f * M_PI / static_cast<float>(segment);
+	const float step = 2.0f * float(M_PI) / static_cast<float>(segment);
 
 	// XY / XZ / YZ の3円描画
 	for (int axis = 0; axis < 3; ++axis) {
@@ -119,16 +120,22 @@ void DebugLinePrimitive::CreateOBB(std::vector<MyBase::DebugLine>& outLines, con
 void DebugLinePrimitive::CreateSpline(std::vector<MyBase::DebugLine>& outLines, const std::vector<MyBase::Vector3>& controlPoints, uint32_t division, const MyBase::Vector4& color, bool isHit) {
 	if (controlPoints.size() < 4) return;
 
-	for (size_t i = 0; i < controlPoints.size() - 3; ++i) {
-		Vector3 prev = controlPoints[i + 1]; // 最初の点は制御点の2番目
+	std::vector<Vector3> pts;
+	pts.push_back(controlPoints[0]); // 最初の点は制御点の最初
+	pts.insert(pts.end(), controlPoints.begin(), controlPoints.end());
+	pts.push_back(controlPoints.back()); // 最後の点は制御点の最後
+
+	for (size_t i = 0; i < pts.size() - 3; ++i) {
+		Vector3 prev = pts[i + 1]; // 最初の点は制御点の2番目
 
 		for (uint32_t j = 1; j <= division; ++j) {
 			float t = float(j) / division;
 
-			Vector3 curr = MyTools::CatmullRomInterpolation(controlPoints[i], controlPoints[i + 1], controlPoints[i + 2], controlPoints[i + 3], t);
+			Vector3 curr = MyTools::CatmullRomInterpolation(pts[i], pts[i + 1], pts[i + 2], pts[i + 3], t);
 
 			outLines.push_back({ prev, curr, color, isHit });
 			prev = curr;
 		}
 	}
 }
+#endif // _DEBUG

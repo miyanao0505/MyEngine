@@ -1,9 +1,12 @@
 #include "MNFramework.h"
 #include "SceneFactory.h"
+#ifdef _DEBUG
+#include "DebugLineBase.h"
+#include "DebugLineManager.h"
+#endif // _DEBUG
 
 // 初期化
-void MNFramework::Initialize(const wchar_t* windowTitle)
-{
+void MNFramework::Initialize(const wchar_t* windowTitle) {
 	// COMの初期化
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 
@@ -37,6 +40,8 @@ void MNFramework::Initialize(const wchar_t* windowTitle)
 
 	// デバッグラインの初期化
 	DebugLineBase::GetInstance()->Initialize(dxBase_);
+	// デバッグラインマネージャの初期化
+	DebugLineManager::GetInstance()->Initialize();
 #endif // _DEBUG
 
 	// オフスクリーンの作成
@@ -85,8 +90,7 @@ void MNFramework::Initialize(const wchar_t* windowTitle)
 }
 
 // 終了
-void MNFramework::Finalize()
-{
+void MNFramework::Finalize() {
 	// 終了
 	sceneManager_->Finalize();
 	timeManager_->Finalize();
@@ -98,6 +102,7 @@ void MNFramework::Finalize()
 	cameraManager_->Finalize();
 	collisionManager_->Finalize();
 #ifdef _DEBUG
+	DebugLineManager::GetInstance()->Finalize();
 	DebugLineBase::GetInstance()->Finalize();
 	imGuiManager_->Finalize();
 #endif // _DEBUG
@@ -107,8 +112,11 @@ void MNFramework::Finalize()
 }
 
 // 毎フレーム更新
-void MNFramework::Update()
-{
+void MNFramework::Update() {
+#ifdef _DEBUG
+	DebugLineManager::GetInstance()->BeginFrame();
+#endif // _DEBUG
+
 	// ゲーム処理
 
 	// 入力の更新処理
@@ -135,8 +143,7 @@ void MNFramework::Update()
 #endif // _DEBUG
 }
 
-void MNFramework::Run(const wchar_t* windowTitle)
-{
+void MNFramework::Run(const wchar_t* windowTitle) {
 	// ゲームの初期化
 	Initialize(windowTitle);
 

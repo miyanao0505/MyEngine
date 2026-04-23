@@ -1,5 +1,6 @@
 #include "DebugLineLayer.h"
 
+#ifdef _DEBUG
 /// 初期化
 void DebugLineLayer::Initialize(uint32_t maxLineCount) {
 	maxLineCount_ = maxLineCount;
@@ -18,3 +19,4 @@ void DebugLineLayer::AddLine(const MyBase::DebugLine& line) {
 	}
 	lines_.push_back(line);
 }
+#endif // _DEBUG

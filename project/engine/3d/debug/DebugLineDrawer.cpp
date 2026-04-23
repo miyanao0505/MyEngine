@@ -3,6 +3,7 @@
 
 using namespace MyBase;
 
+#ifdef _DEBUG
 /// 初期化
 void DebugLineDrawer::Initialize(DebugLineBase* base, uint32_t maxLineCount) {
 	base_ = base;
@@ -55,3 +56,4 @@ void DebugLineDrawer::UpdateVertexBuffer(const std::vector<DebugLine>& lines) {
 	}
 	memcpy(mappedData_, vertices_.data(), sizeof(DebugLineVertexData) * vertices_.size());
 }
+#endif // _DEBUG

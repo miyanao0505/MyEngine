@@ -3,6 +3,9 @@
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 #pragma comment(lib, "dxcompiler.lib")
+#ifdef _DEBUG
+#include "DebugLineManager.h"
+#endif // _DEBUG
 
 // 初期化
 void MyGame::Initialize(const wchar_t* windowTitle)

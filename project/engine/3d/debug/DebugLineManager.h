@@ -5,11 +5,17 @@
 #include "MyBase.h"
 #include <memory>
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグライン管理クラス
 /// デバッグラインの管理を行うクラス。
 /// </summary>
 class DebugLineManager {
+private:
+#pragma region 定数
+	static constexpr uint32_t kMaxLineCount = 1500;
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// Singleton Instance を取得
@@ -132,7 +138,18 @@ public:	// メンバ関数
 	/// </summary>
 	void DrawAll();
 
+	/// <summary>
+	/// デバッグの描画
+	/// </summary>
+	void DebugDraw();
+
 public:	// getter
+	/// <summary>
+	/// デバッグラインの有効/無効取得
+	/// </summary>
+	/// <param name="cat">デバッグラインのカテゴリ</param>
+	/// <returns>有効/無効フラグ</returns>
+	bool GetEnable(DebugLineCategory cat) const { return enableFlags_[size_t(cat)]; }
 
 public:	// setter
 	/// <summary>
@@ -141,6 +158,12 @@ public:	// setter
 	/// <param name="cat">デバッグラインのカテゴリ</param>
 	/// <param name="enable">有効/無効フラグ</param>
 	void SetEnable(DebugLineCategory cat, bool enable) { enableFlags_[size_t(cat)] = enable; }
+
+	/// <summary>
+	/// 全てのデバッグラインの有効/無効設定
+	/// </summary>
+	/// <param name="enable">有効/無効フラグ</param>
+	void SetEnableAll(bool enable) { for (auto& flag : enableFlags_) flag = enable; }
 
 public:	// Singleton Instance
 	static std::unique_ptr<DebugLineManager> sInstance_;
@@ -152,3 +175,4 @@ private:	// メンバ変数
 
 	std::unique_ptr<DebugLineDrawer> drawer_;
 };
+#endif // _DEBUG

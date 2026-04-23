@@ -1,9 +1,11 @@
 #include "DebugLineManager.h"
 #include "DebugLinePrimitive.h"
+#include <imgui.h>
 
 using namespace std;
 using namespace MyBase;
 
+#ifdef _DEBUG
 /// static member 定義
 unique_ptr<DebugLineManager> DebugLineManager::sInstance_ = nullptr;
 
@@ -19,11 +21,14 @@ DebugLineManager* DebugLineManager::GetInstance() {
 void DebugLineManager::Initialize() {
 	// レイヤーの初期化
 	for (auto& layer : layers_) {
-		layer.Initialize(1000); // 最大1000ライン
+		layer.Initialize(kMaxLineCount);
 	}
+
+	enableFlags_.fill(true);	// 全てのカテゴリを有効にする
+
 	// 描画クラスの初期化
 	drawer_ = make_unique<DebugLineDrawer>();
-	drawer_->Initialize(DebugLineBase::GetInstance(), 1000);
+	drawer_->Initialize(DebugLineBase::GetInstance(), kMaxLineCount);
 }
 
 /// 終了
@@ -120,3 +125,15 @@ void DebugLineManager::DrawAll() {
 		drawer_->Draw(layers_[i].GetLines());
 	}
 }
+
+/// デバッグの描画
+void DebugLineManager::DebugDraw() {
+	ImGui::PushID(this);
+	if (ImGui::CollapsingHeader("DebugLineManager")) {
+		for (size_t i = 0; i < layers_.size(); ++i) {
+			ImGui::Checkbox(Miyazawa::ToString(static_cast<DebugLineCategory>(i)), &enableFlags_[i]);
+		}
+	}
+	ImGui::PopID();
+}
+#endif // _DEBUG

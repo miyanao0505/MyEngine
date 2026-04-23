@@ -46,8 +46,7 @@ const vector<Vector3> GameScene::kRailPoints{
 #pragma endregion
 
 // 初期化
-void GameScene::Initialize()
-{
+void GameScene::Initialize() {
 #pragma region シーン初期化
 	BaseScene::Initialize();
 
@@ -115,10 +114,6 @@ void GameScene::Initialize()
 #pragma region デバッグ
 #ifdef _DEBUG
 	DebugLineBase::GetInstance()->Initialize(DirectXBase::GetInstance());
-
-	// デバッグラインレンダラー
-	debugLineRenderer_ = make_unique<DebugLineRenderer>();
-	debugLineRenderer_->Initialize(DebugLineBase::GetInstance());
 #endif // _DEBUG
 #pragma endregion
 
@@ -167,8 +162,7 @@ void GameScene::Initialize()
 }
 
 // 終了
-void GameScene::Finalize()
-{
+void GameScene::Finalize() {
 	jsonLoader_.reset();
 	startSequence_.reset();
 	for(unique_ptr<PlayerSpawnData>& spawnPoint : spawnPoints_){
@@ -189,8 +183,6 @@ void GameScene::Finalize()
 	escapeUI_.reset();
 	
 #ifdef _DEBUG
-	// デバッグライン関連の解放
-	debugLineRenderer_.reset();
 	DebugLineBase::Finalize();
 #endif // _DEBUG
 
@@ -323,8 +315,7 @@ void GameScene::Update()
 }
 
 // 描画
-void GameScene::Draw()
-{
+void GameScene::Draw() {
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
@@ -356,13 +347,11 @@ void GameScene::Draw()
 
 #pragma endregion パーティクル
 
-#ifdef _DEBUG
 #pragma region デバッグライン
-	if (railCamera_->IsDebugMode()) {
-		debugLineRenderer_->DrawAll();
-	}
-#pragma endregion
+#ifdef _DEBUG
+	DebugLineManager::GetInstance()->DrawAll();
 #endif // _DEBUG
+#pragma endregion デバッグライン
 
 #pragma region スプライト
 
@@ -410,6 +399,7 @@ void GameScene::DebugDraw() {
 	railCamera_->DebugDraw();
 	if(railCamera_->IsDebugMode()){
 		DebugLineBase::GetInstance()->DebugDraw();
+		DebugLineManager::GetInstance()->DebugDraw();
 	}
 
 	// Lighting
@@ -433,23 +423,13 @@ void GameScene::DebugDraw() {
 }
 
 /// デバッグライン追加
-void GameScene::AddDebugLines()
-{
-	// レールの通過点を結ぶラインを追加
-	for (size_t i = 0; i + 1 < kRailPoints.size(); ++i) {
-		DebugLine line{};
-		line.start = kRailPoints[i];
-		line.end = kRailPoints[i + 1];
-		line.color = { 0.0f, 1.0f, 0.0f, 1.0f };	// 緑(レール)
-		
-		debugLineRenderer_->AddLine(line);
-	}
+void GameScene::AddDebugLines() {
+	DebugLineManager::GetInstance()->DrawSpline(DebugLineCategory::rail, kRailPoints, 32,{ 0.0f, 1.0f, 0.0f, 1.0f });
 }
 #endif // _DEBUG
 
 // JSONファイルの読み込み
-void GameScene::LoadJsonFile([[maybe_unused]] const string& filePath)
-{
+void GameScene::LoadJsonFile([[maybe_unused]] const string& filePath) {
 	// レベルデータの読み込み
 	unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 	

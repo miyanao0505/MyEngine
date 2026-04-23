@@ -2,6 +2,7 @@
 #include <vector>
 #include "MyBase.h"
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグラインプリミティブクラス
 /// 各種形状をラインの集合として生成するユーティリティ。
@@ -59,3 +60,4 @@ public:	// メンバ関数
 	/// <param name="isHit">曲線がヒットしているかどうか</param>
 	static void CreateSpline(std::vector<MyBase::DebugLine>& outLines, const std::vector<MyBase::Vector3>& controlPoints, uint32_t division, const MyBase::Vector4& color, bool isHit);
 };
+#endif // _DEBUG

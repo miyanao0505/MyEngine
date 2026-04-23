@@ -15,7 +15,7 @@
 #include "MyBase.h"
 #ifdef _DEBUG
 #include <imgui.h>
-#include "DebugLineRenderer.h"
+#include "DebugLineManager.h"
 #endif // _DEBUG
 
 /// <summary>
@@ -137,11 +137,6 @@ private:	// メンバ変数
 
 	// ポーズ管理
 	std::unique_ptr<PauseController> pauseController_ = nullptr;
-
-#ifdef _DEBUG
-	// デバッグラインレンダラー
-	std::unique_ptr<DebugLineRenderer> debugLineRenderer_ = nullptr;
-#endif // _DEBUG
 
 	// パーティクル
 

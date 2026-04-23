@@ -2,6 +2,7 @@
 #include <vector>
 #include "DebugLineBase.h"
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグライン描画クラス
 /// DebugLineManager から呼び出され、実際の描画処理を行うクラス。
@@ -53,3 +54,4 @@ private:	// メンバ変数
 
 	uint32_t maxVertexCount_ = 0;
 };
+#endif // _DEBUG

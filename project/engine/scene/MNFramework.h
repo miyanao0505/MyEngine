@@ -17,15 +17,13 @@
 #include "AbstractSceneFactory.h"
 #ifdef _DEBUG
 #include "ImGuiManager.h"
-#include "DebugLineBase.h"
 #endif // _DEBUG
 
 /// <summary>
 /// ゲームフレームワーク基底クラス(MNFramework)
 /// ゲーム全体のライフサイクル管理と各種マネージャの統括を行う抽象クラスです。
 /// </summary>
-class MNFramework
-{
+class MNFramework {
 public:	// メンバ関数
 	virtual ~MNFramework() = default;
 

@@ -2,6 +2,7 @@
 #include <cstdint>
 #include "MyBase.h"
 
+#ifdef _DEBUG
 /// <summary>
 /// デバッグラインレイヤークラス
 /// デバッグラインの描画レイヤーを管理するクラス。
@@ -36,3 +37,4 @@ private:	// メンバ変数
 	std::vector<MyBase::DebugLine> lines_;
 	uint32_t maxLineCount_ = 0;
 };
+#endif // _DEBUG
