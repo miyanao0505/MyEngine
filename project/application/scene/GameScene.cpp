@@ -26,14 +26,6 @@ const vector<Vector3> GameScene::kEnemyInitialTranslates{
 	{ 5.0f, 7.0f, 1750.0f },
 };
 const vector<Vector3> GameScene::kRailPoints{
-	/*{ 0.0f, 0.0f, 0.0f },
-	{ 0.0f, 0.0f, 250.0f },
-	{ 0.0f, 0.0f, 500.0f },
-	{ 0.0f, 0.0f, 750.0f },
-	{ 0.0f, 0.0f, 1000.0f },
-	{ 0.0f, 0.0f, 1250.0f },
-	{ 0.0f, 0.0f, 1500.0f },
-	{ 0.0f, 0.0f, 2000.0f },*/
 	{ 0, 0, 0 },
 	{ 0, 0, 250 },
 	{ 40, 20, 500 },
@@ -153,7 +145,6 @@ void GameScene::Initialize() {
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
 	}
-	/*enemy_->Update(TimeManager::GetInstance()->GetDeltaTime());*/
 	skydome_->Update();
 	followCamera_->SetTargetPosition(player_->GetWorldPosition());
 	followCamera_->UpdateLookAtTarget();
