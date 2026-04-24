@@ -268,7 +268,12 @@ void GameScene::Update()
 	player_->GetObject3D()->SetRotate(playerRotate);
 
 	// 敵の更新処理
-	for(std::unique_ptr<Enemy>& enemy : enemies_){
+	for (auto& enemy : enemies_) {
+		// 敵死亡している場合はリストから削除
+		if (enemy->IsDead()) {
+			enemy.reset();
+			continue;
+		}
 		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
 	}
 
