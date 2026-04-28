@@ -240,6 +240,7 @@ void Enemy::DeadReactionUpdate() {
 	if (deadReactionTimer_ <= 0.0f) {
 		// タイマーリセットと状態更新
 		deadReactionTimer_ = 0.0f;
+		object_->GetModel()->GetModelMaterial()->color = kInitialColor;
 		isDead_ = true;
 	}
 	return;

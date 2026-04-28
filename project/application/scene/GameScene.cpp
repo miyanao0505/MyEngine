@@ -268,13 +268,16 @@ void GameScene::Update()
 	player_->GetObject3D()->SetRotate(playerRotate);
 
 	// 敵の更新処理
-	for (auto& enemy : enemies_) {
+	for (auto it = enemies_.begin(); it != enemies_.end(); ) {
+		const bool isDead = (*it)->IsDead();
 		// 敵死亡している場合はリストから削除
-		if (enemy->IsDead()) {
-			enemy.reset();
-			continue;
+		if(isDead || (*it)->GetWorldPosition().z < player_->GetWorldPosition().z + 50.0f){
+			it = enemies_.erase(it); // listから完全に削除
 		}
-		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
+		else {
+			(*it)->Update(TimeManager::GetInstance()->GetDeltaTime());
+			++it;
+		}
 	}
 
 	// 天球の更新
