@@ -126,7 +126,7 @@ void Player::DamageReactionStart() {
 	damageReactionTimer_ = kDamageReactionDuration;
 
 	// 赤を強調
-	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+	object_->SetColor({1.0f, 0.5f, 0.5f, 1.0f});
 }
 
 /// ダメージリアクションの更新
@@ -135,7 +135,7 @@ void Player::DamageReactionUpdate() {
 	if (damageReactionTimer_ <= 0.0f) {
 		// タイマーリセットと色リセット
 		damageReactionTimer_ = 0.0f;
-		object_->GetModel()->GetModelMaterial()->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		object_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 	}
 
 	return;
@@ -157,15 +157,7 @@ void Player::DebugDraw() {
 		ImGui::Text("Attack Power: %d", attackPower_);
 		ImGui::Text("\n");
 
-		MyBase::Transform transform = {object_->GetScale(), object_->GetRotate(), object_->GetTranslate()};
-
-		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, kDebugMoveSpeed, kTranslateScope.min, kTranslateScope.max);
-		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, kDebugMoveSpeed, kRotateScope.min, kRotateScope.max);
-		// 拡縮
-		ImGui::DragFloat3("Scale", &transform.scale.x, kDebugMoveSpeed, kScaleScope.min, kScaleScope.max);
-		object_->SetTransform(transform);
+		BaseObject::DebugDraw();
 
 		ImGui::Text("\n");
 	}

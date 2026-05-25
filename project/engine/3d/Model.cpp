@@ -7,12 +7,6 @@
 #include "Matrix.h"
 #include "TextureManager.h"
 
-#pragma region 定数
-const MyBase::Vector4 Model::kDefaultMaterialColor{ 1.0f, 1.0f,1.0f,1.0f };
-const float Model::kDefaultShininess = 40.8f;
-const float Model::kDefaultReflectivity = 0.0f;
-#pragma endregion
-
 // 初期化
 void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, const std::string& fileName)
 {
@@ -25,9 +19,6 @@ void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, c
 	// 頂点データの作成
 	CreateVertexData();
 
-	// マテリアルデータの作成
-	CreateMaterialData();
-
 	// .objの参照しているテクスチャファイル読み込み
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 	// 読み込んだテクスチャの番号を取得
@@ -35,12 +26,12 @@ void Model::Initialize(ModelBase* modelBase, const std::string& directoryPath, c
 }
 
 // 描画処理
-void Model::Draw()
+void Model::Draw(ID3D12Resource* materialResource)
 {
 	// VBVの設定
 	modelBase_->GetDxBase()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// マテリアルCBufferの場所を設定
-	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(kRootParamMaterialCBV, materialResource_.Get()->GetGPUVirtualAddress());
+	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootConstantBufferView(kRootParamMaterialCBV, materialResource->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
 	modelBase_->GetDxBase()->GetCommandList()->SetGraphicsRootDescriptorTable(kRootParamMainTexture, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 	// 環境マップのテクスチャがある場合のみ設定。
@@ -154,25 +145,6 @@ void Model::CreateVertexData()
 	// 頂点リソースにデータを書き込む
 	vertexResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataPtr_));									// 書き込むためのアドレスを取得
 	std::memcpy(vertexDataPtr_, modelData_.vertices.data(), sizeof(MyBase::ModelVertexData) * modelData_.vertices.size());	// 頂点データをリソースにコピー
-}
-
-// マテリアルデータ作成
-void Model::CreateMaterialData()
-{
-	// マテリアル用のリソースを作る
-	materialResource_ = modelBase_->GetDxBase()->CreateBufferResource(sizeof(MyBase::ModelMaterial));
-	// 書き込むためのアドレスを取得
-	materialResource_.Get()->Map(0, nullptr, reinterpret_cast<void**>(&materialDataPtr_));
-	// 白で読み込む
-	materialDataPtr_->color = kDefaultMaterialColor;
-	// 単位行列で初期化
-	materialDataPtr_->uvTransform = Matrix::MakeIdentity4x4();
-	// 光沢度
-	materialDataPtr_->shininess = kDefaultShininess;
-	// 反射強度
-	materialDataPtr_->reflectivity = kDefaultReflectivity;
-	// Lightingを有効にする
-	materialDataPtr_->enableLighting = true;
 }
 
 // Node情報を読み込む

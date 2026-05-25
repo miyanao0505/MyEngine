@@ -72,7 +72,7 @@ void BaseObject::DebugDraw()
 		//ImGui::Text("\n");
 		if (ImGui::TreeNode("Material")) {
 			// 現在のマテリアル情報を取得
-			MyBase::ModelMaterial* materialData = object_->GetModel()->GetModelMaterial();
+			MyBase::ModelMaterial* materialData = object_->GetMaterialData();
 
 			// 色
 			ImGui::ColorEdit4("color", &materialData->color.x);
@@ -86,7 +86,7 @@ void BaseObject::DebugDraw()
 			materialData->enableLighting = isEnabled;
 
 			// 変更したマテリアル情報をオブジェクトに設定
-			object_->GetModel()->SetModelMaterial(materialData);
+			object_->SetMaterialData(materialData);
 
 			ImGui::TreePop();
 		}

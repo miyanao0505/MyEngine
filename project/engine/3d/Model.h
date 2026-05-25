@@ -24,7 +24,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	/// <param name="materialResource">マテリアル用の定数バッファリソースへのポインタ</param>
+	void Draw(ID3D12Resource* materialResource);
 	
 	/// <summary>
 	/// .mtl(マテリアル)ファイルを読み込み、MaterialData を生成
@@ -54,36 +55,12 @@ public:	// getter
 	/// <returns>テクスチャファイル名への参照</returns>
 	const std::string& GetTexture() const { return modelData_.material.textureFilePath; }
 	
-	/// <summary>
-	/// モデルのマテリアル情報を取得
-	/// </summary>
-	/// <returns>ModelMaterial へのポインタ。マテリアル未設定の場合は nullptr</returns>
-	MyBase::ModelMaterial* GetModelMaterial() const { return (materialDataPtr_ == nullptr) ? nullptr : materialDataPtr_; }
-	
-	/// <summary>
-	/// ライティングの有効状態を取得
-	/// </summary>
-	/// <returns>有効なら 1、無効なら 0</returns>
-	bool GetEnableLighting() const { return materialDataPtr_->enableLighting; }
-
 public:	// setter
-	/// <summary>
-	/// ライティングの有効/無効を設定
-	/// </summary>
-	/// <param name="enableLighting">true でライティング有効、false で無効</param>
-	void SetEnableLighting(bool enableLighting) { materialDataPtr_->enableLighting = enableLighting; }
-	
 	/// <summary>
 	/// モデルに使用するテクスチャを設定
 	/// </summary>
 	/// <param name="fileName">設定するテクスチャファイル名</param>
 	void SetTexture(const std::string& fileName);
-	
-	/// <summary>
-	/// モデルのマテリアル情報を設定
-	/// </summary>
-	/// <param name="materialData">設定する ModelMaterial へのポインタ</param>
-	void SetModelMaterial(MyBase::ModelMaterial* materialData) { materialDataPtr_ = materialData; }
 	
 	/// <summary>
 	/// 環境マップ用のテクスチャ名を設定
@@ -119,11 +96,9 @@ private:	// メンバ変数
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
 
 	// バッファリソース内のデータを指すポインタ
 	MyBase::ModelVertexData* vertexDataPtr_ = nullptr;								// vertex
-	MyBase::ModelMaterial* materialDataPtr_ = nullptr;								// マテリアル
 
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};									// vertex
@@ -143,9 +118,5 @@ private:
 
 	static constexpr float kPositionW = 1.0f;
 	static constexpr float kLeftHandedFlipSign = -1.0f;
-
-	static const MyBase::Vector4 kDefaultMaterialColor;
-	static const float kDefaultShininess;
-	static const float kDefaultReflectivity;
 #pragma endregion
 };

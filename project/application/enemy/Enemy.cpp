@@ -72,7 +72,7 @@ void Enemy::Initialize() {
 	object_->SetTranslate(kInitialPosition);	// 初期位置
 	object_->SetScale(kInitialScale);			// 初期スケール
 	object_->SetRotate(kInitialRotation);		// 初期回転
-	object_->GetModel()->GetModelMaterial()->color = kInitialColor; // 初期色
+	object_->SetColor(kInitialColor);			// 初期色
 
 	// 敵のコライダーの初期化
 	auto col = make_unique<BaseObjectCollider>(this);
@@ -206,7 +206,7 @@ void Enemy::DamageReactionStart() {
 	particleEmitter_->Emit();
 
 	// 赤を強調
-	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+	object_->SetColor({ 1.0f, 0.5f, 0.5f, 1.0f });
 }
 
 // ダメージリアクション
@@ -215,7 +215,7 @@ void Enemy::DamageReactionUpdate() {
 	if (damageReactionTimer_ <= 0.0f) {
 		// タイマーリセットと色リセット
 		damageReactionTimer_ = 0.0f;
-		object_->GetModel()->GetModelMaterial()->color = kInitialColor;
+		object_->SetColor(kInitialColor);
 	}
 
 	return;
@@ -232,7 +232,7 @@ void Enemy::DeadReactionStart() {
 	particleEmitter_->Emit();
 
 	// 赤を強調
-	object_->GetModel()->GetModelMaterial()->color = { 1.0f, 0.5f, 0.5f, 1.0f };
+	object_->SetColor({ 1.0f, 0.5f, 0.5f, 1.0f });
 }
 
 void Enemy::DeadReactionUpdate() {
@@ -240,7 +240,7 @@ void Enemy::DeadReactionUpdate() {
 	if (deadReactionTimer_ <= 0.0f) {
 		// タイマーリセットと状態更新
 		deadReactionTimer_ = 0.0f;
-		object_->GetModel()->GetModelMaterial()->color = kInitialColor;
+		object_->SetColor(kInitialColor);
 		isDead_ = true;
 	}
 	return;
@@ -255,17 +255,17 @@ void Enemy::DebugDraw() {
 		ImGui::Text("HP: %d\n", hp_);
 		ImGui::Text("Attack Power: %d\n", attackPower_);
 
-		Transform transform = { object_->GetScale(), object_->GetRotate(), object_->GetTranslate() };
-
-		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, kImGuiDragSpeed, kTranslateScope.min, kTranslateScope.max);
-		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, kImGuiDragSpeed, kRotateScope.min, kRotateScope.max);
-		// 拡縮
-		ImGui::DragFloat3("Scale", &transform.scale.x, kImGuiDragSpeed, kScaleScope.min, kScaleScope.max);
-		object_->SetTransform(transform);
+		BaseObject::DebugDraw();
 
 		ImGui::Text("\n");
+
+		// ダメージ
+		if (ImGui::Button("Damage")) {
+			Damage(player_->GetAttackPower()); // ダメージを受ける
+			if (hp_ <= 0) {
+				DeadReactionStart(); // 死亡リアクション開始
+			}
+		}
 
 		// パーティクルエミッターのデバッグUI
 		if (particleEmitter_) {
