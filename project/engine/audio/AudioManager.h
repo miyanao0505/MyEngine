@@ -34,8 +34,14 @@ private:	// オーディオ関係の構造体
 	// 音声データ
 	struct SoundData {
 		WAVEFORMATEX wfex;			// 波形フォーマット
-		BYTE* buffer;				// バッファの先頭アドレス
-		unsigned int bufferSize;	// バッファのサイズ
+		std::vector<BYTE> buffer;	// バッファの先頭アドレス
+	};
+
+	// 再生中の音声情報
+	struct ActiveVoice {
+		std::string filename;		// 音声ファイル名
+		IXAudio2SourceVoice* voice;	// 再生中のSourceVoice
+		bool isLoop = false;		// ループ再生の有無
 	};
 
 public:	// メンバ関数
@@ -45,7 +51,7 @@ public:	// メンバ関数
 	/// <returns>AudioManager</returns>
 	static AudioManager* GetInstance();
 
-	/// ------ Passkey Idion ------
+	/// ------ Passkey Idiom ------
 	/// コントラクタを渡すための鍵
 	class ConstructorKey {
 	private:
@@ -66,6 +72,11 @@ public:	// メンバ関数
 	void Initialize();
 
 	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
+
+	/// <summary>
 	/// 終了
 	/// </summary>
 	void Finalize();
@@ -77,7 +88,6 @@ public:	// メンバ関数
 	/// <param name="filename">ファイル名 パスは "resources/audio/" に続く</param>
 	void LoadAudioWave(const std::string& filename);
 
-
 	/// 音声再生
 	/// <summary>
 	/// 音声再生(Wave)
@@ -85,8 +95,7 @@ public:	// メンバ関数
 	/// <param name="filename">ファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="loop">ループの有無</param>
-	void PlayWave(const std::string& filename, const float& volume = kDefaultVolume, const bool& loop = false);
-
+	void PlayWave(const std::string& filename, float volume = kDefaultVolume, bool loop = false);
 
 	/// 音声停止
 	/// <summary>
@@ -94,7 +103,6 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="filename">ファイル名</param>
 	void StopWave(const std::string& filename);
-
 
 	/// <summary>
 	/// 読み込んだ音声データを解放
@@ -107,6 +115,27 @@ public:	// getter
 
 public:	// setter
 
+private:	// メンバ関数
+	/// <summary>
+	/// RIFFヘッダの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="riffHeader">読み込んだRIFFヘッダ</param>
+	void ReadRiffHeader(std::ifstream& file, RiffHeader& riffHeader);
+
+	/// <summary>
+	/// FMTチャンクの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="formatChunk">読み込んだFMTチャンク</param>
+	void ReadFormatChunk(std::ifstream& file, FormatChunk& formatChunk);
+
+	/// <summary>
+	/// Dataチャンクの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="dataChunk">読み込んだDataチャンク</param>
+	void ReadDataChunk(std::ifstream& file, ChunkHeader& dataChunk);
 
 public:	// Singleton Instance
 	static std::unique_ptr<AudioManager> sInstance_;
@@ -117,7 +146,7 @@ private:	// メンバ変数
 
 	// 音声データ
 	std::unordered_map<std::string, SoundData> soundDataMap_;
-	std::unordered_map<std::string, IXAudio2SourceVoice*> playingVoices_;
+	std::vector<ActiveVoice> activeVoices_;
 
 #pragma region 定数
 	static constexpr char kRiffId[] = "RIFF";
