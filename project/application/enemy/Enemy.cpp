@@ -14,9 +14,9 @@ using namespace numbers;
 using namespace MyBase;
 
 #pragma region 定数定義
-const int Enemy::kMaxBulletCount = 10;									// 最大弾数
-const float Enemy::kBulletDrawDistance = 500.0f;						// 弾の描画距離
-const Vector3 Enemy::kBulletSpawnOffset = { 0.0f, 0.0f, -1.0f }; // 弾の発射位置オフセット
+const int Enemy::kMaxBulletCount = 10;								// 最大弾数
+const float Enemy::kBulletDrawDistance = 150.0f;					// プレイヤーからの距離がこれ以上の弾は描画しない
+const Vector3 Enemy::kBulletSpawnOffset = { 0.0f, 0.0f, -1.0f };	// 弾の発射位置オフセット
 
 const Vector3 Enemy::kInitialPosition = { 10.0f, 0.0f, 500.0f };	// 敵の初期位置
 const Vector3 Enemy::kInitialScale = { 1.0f, 1.0f, 1.0f };			// 敵の初期スケール
@@ -119,9 +119,8 @@ void Enemy::Update(float deltaTime) {
 	// 弾更新
 	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
 		const bool isDead = (*it)->IsDead();
-		const float distance = MyTools::Length(MyTools::Subtract((*it)->GetWorldPosition(), GetWorldPosition()));
 
-		if (isDead || distance >= kBulletDrawDistance) {
+		if (isDead || (*it)->GetWorldPosition().z < player_->GetWorldPosition().z - kBulletDrawDistance) {
 			it = bullets_.erase(it); // listから完全に削除
 		}
 		else {
