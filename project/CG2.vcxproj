@@ -76,6 +76,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\bullet\BulletType.h" />
     <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="application\camera\RailFollowSystem.h" />
     <ClInclude Include="application\collision\BaseObjectCollider.h" />

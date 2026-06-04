@@ -154,6 +154,24 @@
     <Filter Include="ヘッダー ファイル\application\sequence">
       <UniqueIdentifier>{349a0770-6496-42ba-bbaa-faa876093a7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\application\system">
+      <UniqueIdentifier>{1c056994-15dc-4bcf-9990-5845c16bd55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\system">
+      <UniqueIdentifier>{bc0d3fc7-909d-486e-a036-7eef9a94502e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\engine\3d\debug">
+      <UniqueIdentifier>{34a4a042-4ab5-4291-8434-53b66d9bd376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\3d\debug">
+      <UniqueIdentifier>{04b2a4c7-a42a-4820-ac40-d8fb3b8d5cd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\application\bullet">
+      <UniqueIdentifier>{9ee0b3dd-81d1-4fbd-bc4c-6c3a5ab02ab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\application\bullet">
+      <UniqueIdentifier>{e2ebe498-916e-4c00-9c28-303d68241873}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -541,6 +559,57 @@
     </ClInclude>
     <ClInclude Include="engine\scene\SceneName.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\AssetPath.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\TimeManager.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="application\enemy\EnemyBullet.h">
+      <Filter>ヘッダー ファイル\application\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseUI.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\system\PauseController.h">
+      <Filter>ヘッダー ファイル\application\system</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseInput.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButton.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\InputTypes.h">
+      <Filter>ヘッダー ファイル\engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButtonDesc.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ui\PauseButtonType.h">
+      <Filter>ヘッダー ファイル\application\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineBase.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineCategory.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineLayer.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineManager.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLineDrawer.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\debug\DebugLinePrimitive.h">
+      <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="application\bullet\BulletType.h">
+      <Filter>ヘッダー ファイル\application\bullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
