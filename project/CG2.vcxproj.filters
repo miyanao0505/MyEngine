@@ -396,6 +396,9 @@
     <ClCompile Include="engine\3d\debug\DebugLinePrimitive.cpp">
       <Filter>ソース ファイル\engine\3d\debug</Filter>
     </ClCompile>
+    <ClCompile Include="application\bullet\BaseBullet.cpp">
+      <Filter>ソース ファイル\application\bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -642,6 +645,12 @@
       <Filter>ヘッダー ファイル\engine\3d\debug</Filter>
     </ClInclude>
     <ClInclude Include="application\bullet\BulletType.h">
+      <Filter>ヘッダー ファイル\application\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="application\bullet\BaseBullet.h">
+      <Filter>ヘッダー ファイル\application\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="application\bullet\BulletOwner.h">
       <Filter>ヘッダー ファイル\application\bullet</Filter>
     </ClInclude>
   </ItemGroup>

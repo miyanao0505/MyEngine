@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="application\bullet\BaseBullet.cpp" />
     <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="application\camera\RailFollowSystem.cpp" />
     <ClCompile Include="application\collision\BaseObjectCollider.cpp" />
@@ -87,6 +88,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="application\bullet\BaseBullet.h" />
+    <ClInclude Include="application\bullet\BulletOwner.h" />
     <ClInclude Include="application\bullet\BulletType.h" />
     <ClInclude Include="application\camera\RailCamera.h" />
     <ClInclude Include="application\camera\RailFollowSystem.h" />
