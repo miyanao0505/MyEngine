@@ -399,6 +399,9 @@
     <ClCompile Include="application\bullet\BaseBullet.cpp">
       <Filter>ソース ファイル\application\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="application\bullet\StraightBullet.cpp">
+      <Filter>ソース ファイル\application\bullet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -651,6 +654,9 @@
       <Filter>ヘッダー ファイル\application\bullet</Filter>
     </ClInclude>
     <ClInclude Include="application\bullet\BulletOwner.h">
+      <Filter>ヘッダー ファイル\application\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="application\bullet\StraightBullet.h">
       <Filter>ヘッダー ファイル\application\bullet</Filter>
     </ClInclude>
   </ItemGroup>

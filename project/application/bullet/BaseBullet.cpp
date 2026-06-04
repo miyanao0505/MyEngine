@@ -2,10 +2,10 @@
 
 /// 更新
 void BaseBullet::Update() {
-	BaseObject::Update();
+	object_->Update();
 }
 
 /// 描画
 void BaseBullet::Draw() {
-	BaseObject::Draw();
+	object_->Draw();
 }

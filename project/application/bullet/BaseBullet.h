@@ -37,8 +37,6 @@ public:	// getter
 	BulletOwner GetOwner() const { return owner_; }
 
 protected:	// メンバ変数
-	std::unique_ptr<BaseObject> object_;	// 弾のモデル
-
 	MyBase::Vector3 direction_;	// 弾の移動方向
 
 	float speed_;			// 弾の速度
