@@ -28,32 +28,29 @@ void StraightBullet::Initialize(const MyBase::Vector3& position, const MyBase::V
 	
 	// 弾の移動方向を設定
 	direction_ = direction;
+
+	// 弾の寿命を設定
+	deathTimer_ = kLifeTime;
+
+	// 弾の移動速度を設定
+	speed_ = kMoveSpeed;
 }
 
 /// 更新
 void StraightBullet::Update() {
 	if (isDead_) return; // 弾が消滅している場合は更新しない
 
-	// 移動距離 = 方向ベクトル * 速度 * 経過時間
-	MyBase::Vector3 move = MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime() * speed_, direction_);
+	// 移動処理
+	Move();
 
-	// 現在の位置を取得
-	MyBase::Vector3 currentPosition = object_->GetTranslate();
-
-	// 移動後の位置を計算
-	currentPosition = MyTools::Add(currentPosition, move);
-	
-	// 移動後の位置をオブジェクトに設定
-	object_->SetTranslate(currentPosition);
-
-	// オブジェクトの更新
-	object_->Update();
+	// 寿命を減らす
+	BaseBullet::Update();
 }
 
 /// 描画
 void StraightBullet::Draw() {
 	if (isDead_) return; // 弾が消滅している場合は描画しない
-	object_->Draw();
+	BaseBullet::Draw();
 }
 
 /// 衝突判定処理
@@ -66,4 +63,19 @@ void StraightBullet::OnCollision(Collider* other) {
 		typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemyBullet)) {	// 敵弾の属性
 		isDead_ = true;
 	}
+}
+
+/// 弾の移動処理
+void StraightBullet::Move() {
+	// 移動距離 = 方向ベクトル * 速度 * 経過時間
+	MyBase::Vector3 move = MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime() * speed_, direction_);
+
+	// 現在の位置を取得
+	MyBase::Vector3 currentPosition = object_->GetTranslate();
+
+	// 移動後の位置を計算
+	currentPosition = MyTools::Add(currentPosition, move);
+
+	// 移動後の位置をオブジェクトに設定
+	object_->SetTranslate(currentPosition);
 }

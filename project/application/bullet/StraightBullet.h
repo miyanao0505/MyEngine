@@ -5,6 +5,12 @@
 /// 直線弾クラス
 /// </summary>
 class StraightBullet : public BaseBullet {
+private:	// 定数
+#pragma region 定数
+	static constexpr float kMoveSpeed = 150.0f;		// 弾の移動速度
+	static constexpr float kLifeTime = 5.0f;		// 弾の寿命
+#pragma endregion
+
 public:	// クラス関数
 	/// <summary>
 	/// コンストラクタ
@@ -60,4 +66,10 @@ public:	// setter
 	/// </summary>
 	/// <param name="damage">弾のダメージ量</param>
 	void SetDamage(int damage) { damage_ = damage; }
+
+private:	// メンバ関数
+	/// <summary>
+	/// 弾の移動処理
+	/// </summary>
+	void Move();
 };

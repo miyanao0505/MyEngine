@@ -18,14 +18,14 @@ const MyBase::ScopeF BaseObject::kScaleScope{ 0.01f, 10.0f };
 const MyBase::ScopeF BaseObject::kMaterialScope{ 0.0f, 1.0f };
 #endif // _DEBUG
 
-BaseObject::~BaseObject()
-{
-	CollisionManager::GetInstance()->Unregister(collider_.get());
+BaseObject::~BaseObject() {
+	if (CollisionManager::Exists()) {
+		CollisionManager::GetInstance()->Unregister(collider_.get());
+	}
 }
 
 // 初期化
-void BaseObject::Initialize(const std::string& folderPath, const std::string& filePath)
-{
+void BaseObject::Initialize(const std::string& folderPath, const std::string& filePath) {
 	// モデル読み込み
 	ModelManager::GetInstance()->LoadModel(folderPath, filePath);
 
@@ -35,21 +35,18 @@ void BaseObject::Initialize(const std::string& folderPath, const std::string& fi
 }
 
 // 更新
-void BaseObject::Update([[maybe_unused]] float deltaTime)
-{
+void BaseObject::Update([[maybe_unused]] float deltaTime) {
 	object_->Update();
 }
 
 // 描画
-void BaseObject::Draw()
-{
+void BaseObject::Draw() {
 	object_->Draw();
 }
 
 #ifdef _DEBUG
 // デバック描画
-void BaseObject::DebugDraw()
-{
+void BaseObject::DebugDraw() {
 	ImGui::PushID(this);
 
 	if (ImGui::CollapsingHeader("object")) {
@@ -97,22 +94,19 @@ void BaseObject::DebugDraw()
 
 
 // 衝突判定処理
-void BaseObject::OnCollision(Collider* other)
-{
+void BaseObject::OnCollision(Collider* other) {
 	if (collider_) {
 		collider_->OnCollision(other);
 	}
 }
 
 /// オブジェクトのワールド座標を取得
-MyBase::Vector3 BaseObject::GetWorldPosition() const
-{
+MyBase::Vector3 BaseObject::GetWorldPosition() const {
 	return object_ ? object_->GetTranslate() : kZeroVector;
 }
 
 /// Collider インスタンスを設定
-void BaseObject::SetCollider(std::unique_ptr<Collider> collider)
-{
+void BaseObject::SetCollider(std::unique_ptr<Collider> collider) {
 	collider_ = std::move(collider);
 
 	CollisionManager::GetInstance()->Register(collider_.get());

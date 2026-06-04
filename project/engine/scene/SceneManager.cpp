@@ -24,6 +24,7 @@ SceneManager* SceneManager::GetInstance() {
 
 // 終了
 void SceneManager::Finalize() {
+	scene_->Finalize();
 	scene_.reset();
 
 	sInstance_.reset();

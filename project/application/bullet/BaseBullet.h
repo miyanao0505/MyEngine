@@ -39,8 +39,9 @@ public:	// getter
 protected:	// メンバ変数
 	MyBase::Vector3 direction_;	// 弾の移動方向
 
-	float speed_ = 0.0f;	// 弾の速度
-	int damage_ = 0;		// 弾のダメージ量
+	float speed_ = 0.0f;		// 弾の速度
+	int damage_ = 0;			// 弾のダメージ量
+	float deathTimer_ = 0.0f;	// 弾の寿命タイマー
 
 	bool isDead_ = false;	// 弾が死亡しているか
 	BulletOwner owner_;		// 弾の所有者

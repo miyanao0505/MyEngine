@@ -161,10 +161,7 @@ public:	// setter
 	/// <param name="pos">新たな座標</param>
 	void SetWorldPosition(const MyBase::Vector3& pos);
 
-private:	// メンバ変数	
-	// プレイヤーの弾リスト
-	std::list<std::unique_ptr<BaseBullet>> bullets_;
-	
+private:	// メンバ変数		
 	// ステータス
 	int hp_;
 	int attackPower_ = 1;

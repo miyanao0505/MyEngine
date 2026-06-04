@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application\bullet\BaseBullet.cpp" />
+    <ClCompile Include="application\bullet\BulletManager.cpp" />
     <ClCompile Include="application\bullet\StraightBullet.cpp" />
     <ClCompile Include="application\camera\RailCamera.cpp" />
     <ClCompile Include="application\camera\RailFollowSystem.cpp" />
@@ -90,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application\bullet\BaseBullet.h" />
+    <ClInclude Include="application\bullet\BulletManager.h" />
     <ClInclude Include="application\bullet\BulletOwner.h" />
     <ClInclude Include="application\bullet\BulletType.h" />
     <ClInclude Include="application\bullet\StraightBullet.h" />

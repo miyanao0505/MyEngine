@@ -8,6 +8,7 @@
 #include "RailCamera.h"
 #include "RailFollowSystem.h"
 #include "Enemy.h"
+#include "BulletManager.h"
 #include "Skydome.h"
 #include "StartSequence.h"
 #include "PauseController.h"
@@ -121,6 +122,8 @@ private:	// メンバ変数
 	std::unique_ptr<Player> player_ = nullptr;
 	// 敵
 	std::list<std::unique_ptr<Enemy>> enemies_;
+	// 弾管理
+	BulletManager* bulletManager_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 

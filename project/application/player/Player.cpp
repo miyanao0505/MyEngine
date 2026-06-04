@@ -3,6 +3,7 @@
 #include "ModelManager.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "BulletManager.h"
 #include "StraightBullet.h"
 #include "BulletType.h"
 #include "BulletOwner.h"
@@ -49,9 +50,6 @@ void Player::Initialize(const MyBase::Vector3& position) {
 	col->SetTypeId(static_cast<uint32_t>(CollisionTypeIdDef::kPlayer));
 	SetCollider(std::move(col)); // コライダーをセット
 
-	// 弾の初期化
-	bullets_.clear();
-
 	// ステータスの初期化
 	hp_ = kInitialHP;
 	attackPower_ = kInitialAttackPower;
@@ -70,20 +68,6 @@ void Player::Update(float deltaTime) {
 	// 攻撃
 	Attack();
 
-	// 弾更新
-	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
-		const bool isDead = (*it)->IsDead();
-		const float distance = MyTools::Length(MyTools::Subtract((*it)->GetWorldPosition(), GetWorldPosition()));
-
-		if (isDead || distance >= kBulletDrawDistance) {
-			it = bullets_.erase(it); // listから完全に削除
-		}
-		else {
-			it->get()->Update(); // 弾の更新
-			++it;
-		}
-	}
-
 	// 攻撃のクールタイムを減らす
 	if (attackCoolTime_ > 0) {
 		attackCoolTime_ -= deltaTime;
@@ -101,12 +85,6 @@ void Player::Update(float deltaTime) {
 void Player::Draw() {
 	// プレイヤー
 	object_->Draw();
-
-	// 弾の描画
-	for (auto it = bullets_.begin(); it != bullets_.end(); ) {
-		it->get()->Draw();
-		++it;
-	}
 }
 
 /// ダメージ処理
@@ -196,7 +174,7 @@ void Player::Attack() {
 
 /// 攻撃可能かどうか
 bool Player::CanAttack() {
-	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0) {
+	if (BulletManager::GetInstance()->GetPlayerBulletCount() < kMaxBulletCount && attackCoolTime_ <= 0) {
 		return true;
 	}
 	return false;
@@ -209,7 +187,7 @@ void Player::SpawnBullet() {
 	bullet->Initialize(object_->GetTranslate(), MyTools::Normalize(direction));
 	bullet->SetSpeed(kBulletSpeed);
 	bullet->SetDamage(attackPower_);
-	bullets_.emplace_back(std::move(bullet));
+	BulletManager::GetInstance()->AddBullet(std::move(bullet));
 
 	// 攻撃のクールタイムを設定
 	attackCoolTime_ = kAttackCoolTime;

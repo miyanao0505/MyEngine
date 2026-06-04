@@ -70,6 +70,10 @@ void GameScene::Initialize() {
 		enemies_.push_back(std::move(enemy));
 	}
 
+	// 弾管理
+	bulletManager_ = BulletManager::GetInstance();
+	bulletManager_->Initialize();
+
 	// 天球
 	skydome_ = make_unique<Skydome>();
 	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
@@ -165,6 +169,7 @@ void GameScene::Finalize() {
 
 	// 3Dオブジェクト
 	skydome_.reset();
+	bulletManager_->Finalize();
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy.reset();
 	}
@@ -280,6 +285,9 @@ void GameScene::Update()
 		}
 	}
 
+	// 弾の更新処理
+	bulletManager_->Update();
+
 	// 天球の更新
 	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
 	skydome_->Update();
@@ -328,6 +336,9 @@ void GameScene::Draw() {
 
 	// 天球の描画
 	skydome_->Draw();
+
+	// 弾の描画
+	bulletManager_->Draw();
 
 	// 敵の描画
 	for(unique_ptr<Enemy>& enemy : enemies_){

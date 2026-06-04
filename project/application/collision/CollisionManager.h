@@ -70,6 +70,9 @@ public:	// メンバ関数
 	/// <param name="colliderB">ColliderB</param>
 	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
+	
+	static bool Exists() { return sInstance_ != nullptr; }
+
 private:	// Singleton Instance
 	static std::unique_ptr<CollisionManager>sInstance_;
 
