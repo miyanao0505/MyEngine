@@ -3,6 +3,9 @@
 #include "ModelManager.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "StraightBullet.h"
+#include "BulletType.h"
+#include "BulletOwner.h"
 #include "MyTools.h"
 #include <imgui.h>
 #include <numbers>
@@ -76,7 +79,7 @@ void Player::Update(float deltaTime) {
 			it = bullets_.erase(it); // listから完全に削除
 		}
 		else {
-			it->get()->Update(deltaTime); // 弾の更新
+			it->get()->Update(); // 弾の更新
 			++it;
 		}
 	}
@@ -201,10 +204,13 @@ bool Player::CanAttack() {
 
 /// 弾生成
 void Player::SpawnBullet() {
-	auto bullet = std::make_unique<PlayerBullet>();
+	auto bullet = std::make_unique<StraightBullet>(BulletOwner::Player);
 	MyBase::Vector3 direction = Matrix::TransformNormal(kBulletOffset, object_->GetWorldTransform()->GetWorldMatrix());
-	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
+	bullet->Initialize(object_->GetTranslate(), MyTools::Normalize(direction));
+	bullet->SetSpeed(kBulletSpeed);
+	bullet->SetDamage(attackPower_);
 	bullets_.emplace_back(std::move(bullet));
+
 	// 攻撃のクールタイムを設定
 	attackCoolTime_ = kAttackCoolTime;
 }

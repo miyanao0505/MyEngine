@@ -2,7 +2,7 @@
 #include "BaseObject.h"
 #include <list>
 #include "TextureManager.h"
-#include "PlayerBullet.h"
+#include "BaseBullet.h"
 
 /// <summary>
 /// プレイヤーキャラクターを表すクラス。
@@ -16,16 +16,17 @@ private:
 	static constexpr float kDeadReactionDuration = 1.0f;	// 死亡リアクション時間
 	static constexpr float kAttackCoolTime = 0.5f;							// 攻撃クールタイム
 
-	static constexpr float kMoveSpeed = 10.0f;								// プレイヤーの移動速度
+	static constexpr float kMoveSpeed = 10.0f;		// プレイヤーの移動速度
+	static const int kInitialHP;					// 初期HP
+	static const int kInitialAttackPower;			// 初期攻撃力
+	
+	static constexpr float kBulletSpeed = 150.0f;							// 弾の移動速度
 	static constexpr int kMaxBulletCount = 10;								// 最大弾数
 	static constexpr float kBulletDrawDistance = 500.0f;					// 弾の描画距離
 	static constexpr MyBase::Vector3 kBulletOffset = {0.0f, 0.0f, 1.0f};	// 弾の発射位置オフセット
 
 	static const MyBase::Vector3 kInitialScale;		// 初期スケール
 	static const float kColliderRadius;				// コライダー半径
-
-	static const int kInitialHP;					// 初期HP
-	static const int kInitialAttackPower;			// 初期攻撃力
 
 #ifdef _DEBUG
 	static const float kDebugMoveSpeed;	// デバッグ用移動速度
@@ -162,7 +163,7 @@ public:	// setter
 
 private:	// メンバ変数	
 	// プレイヤーの弾リスト
-	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+	std::list<std::unique_ptr<BaseBullet>> bullets_;
 	
 	// ステータス
 	int hp_;
