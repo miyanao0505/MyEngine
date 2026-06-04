@@ -7,16 +7,23 @@
 /// レール追従システムクラス。
 /// レール動作以外の追従位置を合成するシステムクラス。
 /// </summary>
-class RailFollowSystem
-{
+class RailFollowSystem {
+private:
+#pragma region 定数
+	static constexpr float kMaxOffsetX = 30.0f;	// X方向の最大オフセット
+	static constexpr float kMaxOffsetY = 20.0f;	// Y方向の最大オフセット
+
+	static constexpr float kInputSensitivityX = 0.2f;	// 左右入力感度
+	static constexpr float kInputSensitivityY = 0.1f;	// 上下入力感度
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="rail">レールカメラ</param>
 	/// <param name="follow">フォローカメラ</param>
-	/// <param name="outCamera">カメラ</param>
-	void Initialize(RailCamera* rail, FollowCamera* follow, Camera* outCamera);
+	void Initialize(RailCamera* rail, FollowCamera* follow);
 	
 	/// <summary>
 	/// 更新
@@ -24,9 +31,43 @@ public:	// メンバ関数
 	void Update();
 
 public:	// getter
+	/// <summary>
+	/// プレイヤーの位置の取得
+	/// </summary>
+	/// <returns>プレイヤーの位置</returns>
+	MyBase::Vector3 GetPlayerPosition() const { return playerPos_; }
 
+	/// <summary>
+	/// プレイヤーの回転の取得
+	/// </summary>
+	/// <returns>プレイヤーの回転</returns>
+	MyBase::Vector3 GetPlayerRotate() const { return playerRotate_; }
+
+	/// <summary>
+	/// 終了判定の取得
+	/// </summary>
+	/// <returns></returns>
+	bool IsFinished() const { return isFinished_; }
 
 public:	// setter
+	/// <summary>
+	/// プレイヤーの位置の設定
+	/// </summary>
+	/// <param name="playerPos">プレイヤーの位置</param>
+	void SetPlayerPosition(const MyBase::Vector3& playerPos) { playerPos_ = playerPos; }
+
+	/// <summary>
+	/// プレイヤーの速度の設定
+	/// </summary>
+	/// <param name="speed">プレイヤーの速度</param>
+	void SetPlayerSpeed(float speed) { playerSpeed_ = speed; }
+
+	/// <summary>
+	/// 入力の設定
+	/// </summary>
+	/// <param name="input">入力</param>
+	void SetInput(const MyBase::Vector2& input) { input_ = input; }
+
 	/// <summary>
 	/// X方向の最大オフセットの設定
 	/// </summary>
@@ -42,9 +83,18 @@ public:	// setter
 private:	// メンバ変数
 	RailCamera* railCamera_ = nullptr;		// レールカメラ
 	FollowCamera* followCamera_ = nullptr;	// 追従カメラ
-	Camera* camera_ = nullptr;				// 出力カメラ
 
-	float maxOffsetX_ = 5.0f;			// X方向の最大オフセット
-	float maxOffsetY_ = 3.0f;			// Y方向の最大オフセット
+	// 入力合成用
+	MyBase::Vector2 input_;				// -1.0f ～ 1.0f の範囲で入力される想定
+	float maxOffsetX_ = kMaxOffsetX;	// X方向の最大オフセット
+	float maxOffsetY_ = kMaxOffsetY;	// Y方向の最大オフセット
+	MyBase::Vector3 offsetX_;			// X方向のオフセット
+	MyBase::Vector3 offsetY_;			// Y方向のオフセット
+	MyBase::Vector3 offset_;			// 現在のオフセット
+
+	MyBase::Vector3 playerPos_;		// プレイヤーの位置
+	MyBase::Vector3 playerRotate_;	// プレイヤーの回転
+	float playerSpeed_;				// プレイヤーの速度
+
+	bool isFinished_ = false;	// レール追従終了フラグ
 };
-

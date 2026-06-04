@@ -26,13 +26,13 @@ void ParticleSystem::ImGui(const std::string& name)
 		ImGui::PushID(ID.c_str());
 		if (ImGui::CollapsingHeader(ID.c_str())) {
 			ImGui::Text("Group Name: %s", groupName.c_str());
-			ImGui::DragFloat2("Size", &groupData->size.min, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat2("Energy", &groupData->energy.min, 0.01f, 0.0f, 10.0f);
-			ImGui::DragInt2("Count", &groupData->count.min, 1, 1, 100);
-			ImGui::DragFloat2("Speed", &groupData->speed.min, 0.01f, 0.0f, 10.0f);
-			ImGui::DragFloat3("Direction", &groupData->direction.x, 0.01f, -1.0f, 1.0f);
+			ImGui::DragFloat2("Size", &groupData->size.min, kImGuiDragSpeed, kSize.min, kSize.max);
+			ImGui::DragFloat2("Energy", &groupData->energy.min, kImGuiDragSpeed, kEnergy.min, kEnergy.max);
+			ImGui::DragInt2("Count", &groupData->count.min, kImGuiCountDragSpeed, kParticleCount.min, kParticleCount.max);
+			ImGui::DragFloat2("Speed", &groupData->speed.min, kImGuiDragSpeed, kSpeed.min, kSpeed.max);
+			ImGui::DragFloat3("Direction", &groupData->direction.x, kImGuiDragSpeed, kDirection.min, kDirection.max);
 			ImGui::ColorEdit4("Color", &groupData->color.x);
-			ImGui::DragFloat("Frequency", &groupData->frequency, 0.01f, 0.1f, 5.0f);
+			ImGui::DragFloat("Frequency", &groupData->frequency, kImGuiDragSpeed, kFrequency.min, kFrequency.max);
 			ImGui::Checkbox("IsBillboard", &groupData->isBillboard);
 			ImGui::Checkbox("IsEmitUpdate", &groupData->isEmitUpdate);
 		}

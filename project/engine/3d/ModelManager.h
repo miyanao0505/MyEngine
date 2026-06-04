@@ -7,18 +7,33 @@
 #include "Model.h"
 
 /// <summary>
-/// 3Dモデルの読み込み・管理を行うシングルトンクラス。
+/// 3Dモデルの読み込み・管理を行うマネージャークラス。
 /// ModelManager クラスは、ゲーム内で使用される全ての 3D モデルを一元的に管理します。
 /// </summary>
 class ModelManager
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスを取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>ModelManager の唯一のインスタンス</returns>
+	/// <returns>ModelManager</returns>
 	static ModelManager* GetInstance();
 	
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class ModelManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit ModelManager(ConstructorKey) {}
+
+	/// コピー禁止
+	ModelManager(const ModelManager&) = delete;
+	ModelManager& operator=(const ModelManager&) = delete;
+
 	/// <summary>
 	/// ModelManager を終了(解放)
 	/// </summary>
@@ -62,13 +77,8 @@ public:	// setter
 	/// <param name="blendMode">適用するブレンドモード (Object3dBase::BlendMode 列挙型)</param>
 	void SetBlendMode(Object3dBase::BlendMode blendMode);
 
-private:	// シングルトン
-	static ModelManager* sInstance;
-
-	ModelManager() = default;
-	~ModelManager() = default;
-	ModelManager(const ModelManager&) = delete;
-	ModelManager& operator=(const ModelManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<ModelManager> sInstance_;
 
 private:	// メンバ変数
 	// モデルデータ

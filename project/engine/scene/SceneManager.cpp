@@ -2,48 +2,57 @@
 #include <cassert>
 #include <imgui.h>
 
-SceneManager* SceneManager::instance = nullptr;
+using namespace std;
 
-SceneManager* SceneManager::GetInstance()
-{
-	if (instance == nullptr) {
-		instance = new SceneManager();
+namespace {
+	constexpr float kDebugSceneWindowPosX = 20.0f;
+	constexpr float kDebugSceneWindowPosY = 20.0f;
+	constexpr float kDebugSceneWindowWidth = 350.0f;
+	constexpr float kDebugSceneWindowHeight = 150.0f;
+}
+
+/// static member 定義
+unique_ptr<SceneManager> SceneManager::sInstance_ = nullptr;
+
+/// Singleton Instance を取得
+SceneManager* SceneManager::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<SceneManager>(SceneManager::ConstructoKey{});
 	}
-	return instance;
+	return sInstance_.get();
 }
 
 // 終了
-void SceneManager::Finalize()
-{
+void SceneManager::Finalize() {
 	scene_.reset();
 
-	delete instance;
-	instance = nullptr;
+	sInstance_.reset();
 }
 
 // 更新
-void SceneManager::Update()
-{
+void SceneManager::Update() {
 #ifdef _DEBUG
-	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(ImVec2(kDebugSceneWindowPosX, kDebugSceneWindowPosY), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(kDebugSceneWindowWidth, kDebugSceneWindowHeight), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	
+	// シーン変更するボタン
 	ImGui::Begin("scene");
-	if (ImGui::Button("Title")) {
+	if (ImGui::Button("Title")) {	// タイトルへ
 		nextScene_ = sceneFactory_->CreateScene(SceneName::Title);
 	}
-	if (ImGui::Button("Game")) {
+	if (ImGui::Button("Game")) {	// ゲーム
 		nextScene_ = sceneFactory_->CreateScene(SceneName::Game);
 	}
-	if (ImGui::Button("Clear")) {
+	if (ImGui::Button("Clear")) {	// クリア
 		nextScene_ = sceneFactory_->CreateScene(SceneName::Clear);
 	}
-	if (ImGui::Button("GameOver")) {
+	if (ImGui::Button("GameOver")) {	// ゲームオーバー
 		nextScene_ = sceneFactory_->CreateScene(SceneName::GameOver);
 	}
 	ImGui::End();
 #endif // _DEBUG
 
-	// ▼ 起動直後（scene_がnullptr）の場合は即シーン切り替え
+	// 起動直後（scene_がnullptr）の場合は即シーン切り替え
 	if (!scene_ && nextScene_) {
 		scene_ = std::move(nextScene_);
 		scene_->SetSceneManager(this);
@@ -51,17 +60,17 @@ void SceneManager::Update()
 		return;
 	}
 
-	// ▼ フェード演出中の更新
+	// フェード演出中の更新
 	if (transition_.IsActive()) {
 		transition_.Update();
 		return; // フェード中はこれで抜ける
 	}
 
-	// ▼ 次のシーンが予約されている場合、フェードアウト開始
+	// 次のシーンが予約されている場合、フェードアウト開始
 	if (nextScene_) {
 		// シーン切替演出を開始
 		transition_.Start([this]() {
-			// ▼ シーン切替完了後の処理
+			// シーン切替完了後の処理
 			scene_.reset(); // 古いシーンを終了・解放
 			scene_ = std::move(nextScene_);
 			scene_->SetSceneManager(this);
@@ -70,15 +79,14 @@ void SceneManager::Update()
 		return; // ここでフェード演出開始、まだ切り替えは完了していない
 	}
 
-	// ▼ 通常更新
+	// 通常更新
 	if (scene_) {
 		scene_->Update();
 	}
 }
 
 // 描画
-void SceneManager::Draw()
-{
+void SceneManager::Draw() {
 	if (scene_) scene_->Draw();
 
 	// フェード描画（上に重ねる）
@@ -86,8 +94,7 @@ void SceneManager::Draw()
 }
 
 /// 次のシーン予約
-void SceneManager::ChangeScene(SceneName sceneName)
-{
+void SceneManager::ChangeScene(SceneName sceneName) {
 	assert(sceneFactory_);
 	assert(!nextScene_);
 

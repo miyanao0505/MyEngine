@@ -11,17 +11,19 @@ class SpriteBase
 {
 public:	// 列挙型
 	// ブレンドモード
-	enum class BlendMode {
+	enum class BlendMode : size_t {
 		kBlendModeNone,			//!< ブレンドなし
 		kBlendModeNormal,		//!< 通常αブレンド。デフォルト。 Src * SrcA + Dest * (1 - SrcA)
 		kBlendModeAdd,			//!< 加算。 Src * SrcA + Dest * 1
 		kBlendModeSubtract,		//!< 減算。 Dest * 1 - Src * SrcA
 		kBlendModeMultiply,		//!< 乗算。 Src * 0 + Dest * Src
 		kBlendModeScreen,		//!< スクリーン。 Src * (1 - Dest) + Dest * 1
-		kBlendModeExclusion,	//!< 除外。(1 - Dest) * Src + (1 - Src) * Dest
 
 		kCountOfBlendMode,	//!< 内部管理用(配列サイズなどで使用)。ユーザーは使用しない
 	};
+
+public:
+	using BlendFunc = D3D12_BLEND_DESC(SpriteBase::*)();
 
 public:	// メンバ関数
 	/// <summary>
@@ -56,12 +58,6 @@ public:	// setter
 	/// <param name="blendMode">適用するブレンドモード。BlendMode 列挙型を使用します</param>
 	void SetBlendMode(BlendMode blendMode);
 
-private:	// メンバ関数
-	/// <summary>
-	/// スプライト描画用のルートシグネチャを作成
-	/// </summary>
-	void CreateRootSignature();
-
 	// ブレンドモード設計
 	D3D12_BLEND_DESC SetBlendModeNone();
 	D3D12_BLEND_DESC SetBlendModeNormal();
@@ -70,19 +66,15 @@ private:	// メンバ関数
 	D3D12_BLEND_DESC SetBlendModeMultiply();
 	D3D12_BLEND_DESC SetBlendModeScreen();
 
+private:	// メンバ関数
+	/// <summary>
+	/// スプライト描画用のルートシグネチャを作成
+	/// </summary>
+	void CreateRootSignature();
+
 	// ブレンドモードごとに対応するメンバ関数へのポインタテーブル
 	// BlendMode の列挙値をインデックスとして対応関数を呼び出す
-	static D3D12_BLEND_DESC(SpriteBase::* spFuncTable[])();
-
-public:
-	// スプライト描画で使用する共通の View 行列
-	// 2D 描画ではカメラが固定のため、一度計算した行列を全スプライトで共有し、
-	// 毎フレーム行列を生成するコストを削減している
-	static inline MyBase::Matrix4x4 sViewMatrix = Matrix::MakeIdentity4x4();
-	// スプライト描画で使用する共通の射影行列(正射影)
-	// ウィンドウサイズに応じて一度だけ生成し、Sprite::Update で毎回計算しないようにする
-	// DirectX12 のパフォーマンス最適化において非常に有効
-	static inline MyBase::Matrix4x4 sProjectionMatrix = Matrix::MakeOrthographicMatrix(0.0f, 0.0f, float(WindowsAPI::kClientWidth), float(WindowsAPI::kClientHeight), 0.0f, 100.0f);
+	static BlendFunc spFuncTable[];
 
 private:	// メンバ変数
 	// ルートシグネチャ
@@ -95,5 +87,40 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
-};
 
+#pragma region 定数
+	// ルートパラメータ数
+	static constexpr uint32_t kRootParameterCount = 4;
+
+	// Descriptor / Sampler 数
+	static constexpr uint32_t kSrvDescriptorCount = 1;
+	static constexpr uint32_t kStaticSamplerCount = 1;
+
+	// InputLayout 数
+	static constexpr uint32_t kInputElementCount = 3;
+
+	// レンダーターゲット数
+	static constexpr uint32_t kRenderTargetCount = 1;
+
+	// Sprite用正射影行列設定
+	static constexpr float kOrthoNearZ = 0.0f;
+	static constexpr float kOrthoFarZ = 100.0f;
+#pragma endregion
+
+public:
+	// スプライト描画で使用する共通の View 行列
+	// 2D 描画ではカメラが固定のため、一度計算した行列を全スプライトで共有し、
+	// 毎フレーム行列を生成するコストを削減している
+	static inline MyBase::Matrix4x4 sViewMatrix = Matrix::MakeIdentity4x4();
+	// スプライト描画で使用する共通の射影行列(正射影)
+	// ウィンドウサイズに応じて一度だけ生成し、Sprite::Update で毎回計算しないようにする
+	// DirectX12 のパフォーマンス最適化において非常に有効
+	static inline MyBase::Matrix4x4 sProjectionMatrix =
+		Matrix::MakeOrthographicMatrix(
+			0.0f,
+			0.0f,
+			static_cast<float>(WindowsAPI::kClientWidth),
+			static_cast<float>(WindowsAPI::kClientHeight),
+			kOrthoNearZ,
+			kOrthoFarZ);
+};

@@ -11,7 +11,6 @@ enum class BlendMode {
 	kBlendModeSubtract,		//!< 減算。 Dest * 1 - Src * SrcA
 	kBlendModeMultiply,		//!< 乗算。 Src * 0 + Dest * Src
 	kBlendModeScreen,		//!< スクリーン。 Src * (1 - Dest) + Dest * 1
-	kBlendModeExclusion,	//!< 除外。(1 - Dest) * Src + (1 - Src) * Dest
 
 	kCountOfBlendMode,	//!< 利用してはいけない
 };

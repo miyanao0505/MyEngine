@@ -19,7 +19,7 @@ void SpriteBase::CreateRootSignature()
 	HRESULT hr;
 
 	// DescriptorRange作成
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	D3D12_DESCRIPTOR_RANGE descriptorRange[kSrvDescriptorCount] = {};
 	descriptorRange[0].BaseShaderRegister = 0;														// 0から始まる
 	descriptorRange[0].NumDescriptors = 1;															// 数は1つ
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;									// SRVを使う
@@ -30,7 +30,7 @@ void SpriteBase::CreateRootSignature()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。複数設定できるので配列。
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	D3D12_ROOT_PARAMETER rootParameters[kRootParameterCount] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;					// CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
 	rootParameters[0].Descriptor.ShaderRegister = 0;									// レジスタ番号0とバインド
@@ -48,7 +48,7 @@ void SpriteBase::CreateRootSignature()
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		// 配列の長さ
 
 	// Samplerの設定
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[kStaticSamplerCount] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;			// バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;		// 0～1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -83,7 +83,7 @@ void SpriteBase::CreateGraphicsPipeline()
 	CreateRootSignature();
 
 	// InputLayer
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[kInputElementCount] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -268,11 +268,30 @@ D3D12_BLEND_DESC SpriteBase::SetBlendModeScreen()
 	return blendDesc;
 }
 
-D3D12_BLEND_DESC(SpriteBase::* SpriteBase::spFuncTable[])() = {
-	&SpriteBase::SetBlendModeNone,
-	&SpriteBase::SetBlendModeNormal,
-	&SpriteBase::SetBlendModeAdd,
-	&SpriteBase::SetBlendModeSubtract,
-	&SpriteBase::SetBlendModeMultiply,
-	&SpriteBase::SetBlendModeScreen,
+namespace {
+	using BlendFunc = SpriteBase::BlendFunc;
+
+	constexpr BlendFunc kBlendFuncTable[] = {
+		&SpriteBase::SetBlendModeNone,
+		&SpriteBase::SetBlendModeNormal,
+		&SpriteBase::SetBlendModeAdd,
+		&SpriteBase::SetBlendModeSubtract,
+		&SpriteBase::SetBlendModeMultiply,
+		&SpriteBase::SetBlendModeScreen,
+	};
+
+	static_assert(
+		std::size(kBlendFuncTable) ==
+		static_cast<size_t>(SpriteBase::BlendMode::kCountOfBlendMode),
+		"BlendMode と BlendFuncTable の対応が不一致"
+		);
+}
+
+SpriteBase::BlendFunc SpriteBase::spFuncTable[] = {
+	kBlendFuncTable[0],
+	kBlendFuncTable[1],
+	kBlendFuncTable[2],
+	kBlendFuncTable[3],
+	kBlendFuncTable[4],
+	kBlendFuncTable[5],
 };

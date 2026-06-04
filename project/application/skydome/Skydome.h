@@ -9,6 +9,17 @@
 /// </summary>
 class Skydome : public BaseObject
 {
+private:
+#pragma region 定数
+#ifdef _DEBUG
+	// デバッグ用定数
+	static const float kImGuiDragSpeed;				// ImGui のドラッグ速度
+	static const MyBase::ScopeF kTranslateScope;	// 平行移動の範囲
+	static const MyBase::ScopeF kRotateScope;		// 回転の範囲
+	static const MyBase::ScopeF kScaleScope;		// スケールの範囲
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -31,7 +42,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	void Update(float deltaTime = 0) override;
 
 	/// <summary>
 	/// 描画

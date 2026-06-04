@@ -1,16 +1,19 @@
 #include "MNFramework.h"
 #include "SceneFactory.h"
+#ifdef _DEBUG
+#include "DebugLineBase.h"
+#include "DebugLineManager.h"
+#endif // _DEBUG
 
 // 初期化
-void MNFramework::Initialize()
-{
+void MNFramework::Initialize(const wchar_t* windowTitle) {
 	// COMの初期化
 	CoInitializeEx(0, COINIT_MULTITHREADED);
 
 #pragma region ゲームウィンドウ作成
 	// WindowsAPIの初期化
-	winApi_.reset(new WindowsAPI());
-	winApi_->Initialize(L"進空戦");
+	winApi_ = std::make_unique<WindowsAPI>();
+	winApi_->Initialize(windowTitle);
 #pragma endregion ゲームウィンドウ作成
 
 #pragma region DirectX初期化
@@ -27,17 +30,22 @@ void MNFramework::Initialize()
 
 #pragma region 基盤システム初期化
 	// SRVマネージャーの初期化
-	srvManager_.reset(new SrvManager());
+	srvManager_ = std::make_unique<SrvManager>();
 	srvManager_->Initialize();
 
 #ifdef _DEBUG
 	// ImGuiManagerの初期化
-	imGuiManager_.reset(new ImGuiManager());
+	imGuiManager_ = std::make_unique<ImGuiManager>();
 	imGuiManager_->Initialize(winApi_.get(), srvManager_.get());
+
+	// デバッグラインの初期化
+	DebugLineBase::GetInstance()->Initialize(dxBase_);
+	// デバッグラインマネージャの初期化
+	DebugLineManager::GetInstance()->Initialize();
 #endif // _DEBUG
 
 	// オフスクリーンの作成
-	offScreen_.reset(new OffScreen());
+	offScreen_ = std::make_unique<OffScreen>();
 	offScreen_->Initialize();
 	dxBase_->CreateOffScreenSRV(srvManager_.get());
 
@@ -70,18 +78,22 @@ void MNFramework::Initialize()
 	audioManager_ = AudioManager::GetInstance();
 	audioManager_->Initialize();
 
+	// タイムマネージャの初期化
+	timeManager_ = TimeManager::GetInstance();
+	timeManager_->Initialize();
+
 	// シーンマネージャの生成
-	sceneFactory_.reset(new SceneFactory());
+	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_ = SceneManager::GetInstance();
 	sceneManager_->SetSceneFactory(sceneFactory_.get());
 #pragma endregion マネージャ初期化
 }
 
 // 終了
-void MNFramework::Finalize()
-{
+void MNFramework::Finalize() {
 	// 終了
 	sceneManager_->Finalize();
+	timeManager_->Finalize();
 	audioManager_->Finalize();
 	modelManager_->Finalize();
 	particleManager_->Finalize();
@@ -90,6 +102,8 @@ void MNFramework::Finalize()
 	cameraManager_->Finalize();
 	collisionManager_->Finalize();
 #ifdef _DEBUG
+	DebugLineManager::GetInstance()->Finalize();
+	DebugLineBase::GetInstance()->Finalize();
 	imGuiManager_->Finalize();
 #endif // _DEBUG
 	input_->Finalize();
@@ -98,15 +112,18 @@ void MNFramework::Finalize()
 }
 
 // 毎フレーム更新
-void MNFramework::Update()
-{
+void MNFramework::Update() {
+#ifdef _DEBUG
+	DebugLineManager::GetInstance()->BeginFrame();
+#endif // _DEBUG
+
 	// ゲーム処理
 
 	// 入力の更新処理
 	Input::GetInstance()->Update();
 
 	// 終了
-	if (winApi_->ProcessMessage() || input_->IsKeyTriggered(DIK_ESCAPE)) {
+	if (winApi_->ProcessMessage()) {
 		endRequest_ = true;
 		return;
 	}
@@ -126,10 +143,9 @@ void MNFramework::Update()
 #endif // _DEBUG
 }
 
-void MNFramework::Run()
-{
+void MNFramework::Run(const wchar_t* windowTitle) {
 	// ゲームの初期化
-	Initialize();
+	Initialize(windowTitle);
 
 	while (true)	// ゲームループ
 	{

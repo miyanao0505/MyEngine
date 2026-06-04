@@ -1,7 +1,6 @@
 #include "ParticleEmitter.h"
 #include "ParticleManager.h"
 #include "ParticleSystem.h"
-#include <imgui.h>
 
 ParticleEmitter::ParticleEmitter()
 {
@@ -21,12 +20,17 @@ void ParticleEmitter::Update()
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
 
+	if (!groupDataPtr) return;
+
 	// 登録されている分だけパーティクルを発生させる
-	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+	for (size_t i = 0; i < particleGroupNames_.size(); i++) {
 		groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
+
+		if (!groupDataPtr) continue;
+
 		if (groupDataPtr->isEmitUpdate) {
 			groupDataPtr->frequencyTime -= kDeltaTime_;
-			if (groupDataPtr->frequencyTime <= 0.0f) {
+			if (groupDataPtr->frequencyTime <= kEmitThresholdTime) {
 				groupDataPtr->frequencyTime = groupDataPtr->frequency;
 				ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupDataPtr);
 			}
@@ -38,8 +42,10 @@ void ParticleEmitter::Emit()
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[0]);
 
+	if (!groupDataPtr) return;
+
 	// 登録されている分だけパーティクルを発生させる
-	for (uint32_t i = 0; i < particleGroupNames_.size(); i++) {
+	for (size_t i = 0; i < particleGroupNames_.size(); i++) {
 		groupDataPtr = particleSystem_->GetParticleGroupData(particleGroupNames_[i]);
 		if (groupDataPtr) {
 			ParticleManager::GetInstance()->Emit(particleGroupNames_[i], transform_.translate, *groupDataPtr);
@@ -53,14 +59,18 @@ void ParticleEmitter::CreateParticleGroup(const std::string& name, const std::st
 
 	ParticleManager::GetInstance()->CreateIndexResource(type);
 
-	if (type == ParticleType::kEllipse) {
+	switch (type) {
+	case ParticleType::kEllipse:
 		ParticleManager::GetInstance()->CreateParticleGroup(name, textureFilePath);
-	}
-	if (type == ParticleType::kRing) {
+		break;
+	case ParticleType::kRing:
 		ParticleManager::GetInstance()->CreateParticleGroupRing(name, textureFilePath);
-	}
-	if (type == ParticleType::kCylinder) {
+		break;
+	case ParticleType::kCylinder:
 		ParticleManager::GetInstance()->CreateParticleGroupCylinder(name, textureFilePath);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -73,16 +83,16 @@ void ParticleEmitter::ImGui(const std::string& name)
 	{
 		ImGui::PushID(id.c_str());
 		// 座標
-		ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
+		ImGui::DragFloat3("Translate", &transform_.translate.x, kImGuiDragSpeed);
 		// 回転
-		//ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
+		ImGui::SliderAngle("particleEmitter_.Rotate", &transform_.rotate.x);
 		// 拡縮
-		ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
+		ImGui::DragFloat3("Scale", &transform_.scale.x, kImGuiDragSpeed);
 		// 各パーティクルグループの設定を表示
 		particleSystem_->ImGui(name);
 
 		// 発生させる
-		if (ImGui::Button("Emit", { 100,50 })) {
+		if (ImGui::Button("Emit", kEmitButtonSize)) {
 			Emit();
 		}
 		ImGui::PopID();
@@ -97,6 +107,7 @@ void ParticleEmitter::ImGui(const std::string& name)
 const ParticleSystem::ParticleGroupData& ParticleEmitter::GetParticleGroupData(const std::string& name)
 {
 	auto groupDataPtr = particleSystem_->GetParticleGroupData(name);
+
 	if (groupDataPtr) {
 		return *groupDataPtr; // データを返す
 	}

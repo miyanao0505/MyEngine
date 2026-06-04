@@ -1,6 +1,6 @@
 #pragma once
-#define _USE_MATH_DEFINES
 #include <cmath>
+#include <numbers>
 #include "MyBase.h"
 
 /// <summary>
@@ -8,14 +8,17 @@
 /// </summary>
 class MyTools
 {
-public:
+public:	// メンバ変数
+	static constexpr int kColumnWidth = 60;			// 表示文字サイズ_横幅
+	static constexpr int kRowHeight = 20;			// 表示文字サイズ_縦幅
 
-	// メンバ変数
-	static const int kColumnWidth = 60;			// 表示文字サイズ_横幅
-	static const int kRowHeight = 20;			// 表示文字サイズ_縦幅
+private:
+#pragma region 定数
+	static constexpr uint32_t kOBBVertexCount = 8;
+	static constexpr uint32_t kSeparationAxisCount = 15;
+#pragma endregion
 
-	// メンバ関数
-
+public:	// メンバ関数
 #pragma region ツール関数	
 	/// <summary>
 	/// 範囲内の値を返す関数
@@ -24,7 +27,7 @@ public:
 	/// <param name="min">最低値</param>
 	/// <param name="max">最大値</param>
 	/// <returns>範囲内の値</returns>
-	static float Clamp(const float& num, const float& min, const float& max);
+	static float Clamp(float num, float min, float max);
 
 	/// <summary>
 	/// 線形補間
@@ -33,7 +36,7 @@ public:
 	/// <param name="num2">数値2</param>
 	/// <param name="t">媒介変数</param>
 	/// <returns>補間後の値</returns>
-	static float Lerp(const float& num1, const float& num2, const float& t);
+	static float Lerp(float num1, float num2, float t);
 
 	/// <summary>
 	/// 三角形の存在する平面情報を求める関数
@@ -205,7 +208,31 @@ public:
 	static float LenSegOnSeparateAxis(const MyBase::Vector3* seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3);
 #pragma endregion ツール関数
 
-#pragma region 2次元ベクトル	
+#pragma region 2次元ベクトル
+	/// <summary>
+	/// 2次元ベクトルの加算を返す関数
+	/// </summary>
+	/// <param name="v1">ベクトルA</param>
+	/// <param name="v2">ベクトルB</param>
+	/// <returns>加算結果のベクトル</returns>
+	static MyBase::Vector2 Add(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
+
+	/// <summary>
+	/// 2次元ベクトルの減算を返す関数
+	/// </summary>
+	/// <param name="v1">ベクトルA</param>
+	/// <param name="v2">ベクトルB</param>
+	/// <returns>減算結果のベクトル</returns>
+	static MyBase::Vector2 Subtract(const MyBase::Vector2& v1, const MyBase::Vector2& v2);
+
+	/// <summary>
+	/// 2次元ベクトルのスカラー倍
+	/// </summary>
+	/// <param name="scalar">スカラー倍</param>
+	/// <param name="v">ベクトル</param>
+	/// <returns>スカラー倍したベクトル</returns>
+	static MyBase::Vector2 Multiply(float scalar, const MyBase::Vector2 v);
+
 	/// <summary>
 	/// 2次元ベクトルの内積を返す関数
 	/// </summary>
@@ -231,12 +258,26 @@ public:
 	static float Length(float x, float y);
 
 	/// <summary>
+	/// 2次元ベクトルの長さ(ノルム)を返す関数
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>ベクトルの長さ</returns>
+	static float Length(const MyBase::Vector2& v);
+
+	/// <summary>
 	/// 2次元ベクトルの正規化した値を返す関数
 	/// </summary>
 	/// <param name="x">ベクトルのX軸の値</param>
 	/// <param name="y">ベクトルのY軸の値</param>
 	/// <returns>正規化したベクトル</returns>
 	static MyBase::Vector2 Normalize(float x, float y);
+
+	/// <summary>
+	/// 2次元ベクトルの正規化した値を返す関数
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns>正規化したベクトル</returns>
+	static MyBase::Vector2 Normalize(const MyBase::Vector2& v);
 
 	/// <summary>
 	/// 2次元ベクトルの方向を求める関数

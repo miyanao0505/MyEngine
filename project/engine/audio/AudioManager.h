@@ -34,21 +34,47 @@ private:	// オーディオ関係の構造体
 	// 音声データ
 	struct SoundData {
 		WAVEFORMATEX wfex;			// 波形フォーマット
-		BYTE* buffer;				// バッファの先頭アドレス
-		unsigned int bufferSize;	// バッファのサイズ
+		std::vector<BYTE> buffer;	// バッファの先頭アドレス
+	};
+
+	// 再生中の音声情報
+	struct ActiveVoice {
+		std::string filename;		// 音声ファイル名
+		IXAudio2SourceVoice* voice;	// 再生中のSourceVoice
+		bool isLoop = false;		// ループ再生の有無
 	};
 
 public:	// メンバ関数
 	/// <summary>
-	/// 音声管理システムのシングルトンインスタンスを取得します。
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>AudioManager のインスタンス</returns>
+	/// <returns>AudioManager</returns>
 	static AudioManager* GetInstance();
+
+	/// ------ Passkey Idiom ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class AudioManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit AudioManager(ConstructorKey) {}
+
+	/// コピー禁止
+	AudioManager(const AudioManager&) = delete;
+	AudioManager& operator=(const AudioManager&) = delete;
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
+	void Update();
 
 	/// <summary>
 	/// 終了
@@ -59,9 +85,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 音声データ(Wave)の読み込み
 	/// </summary>
-	/// <param name="filename">ファイル名 パスは "resources/" に続く</param>
+	/// <param name="filename">ファイル名 パスは "resources/audio/" に続く</param>
 	void LoadAudioWave(const std::string& filename);
-
 
 	/// 音声再生
 	/// <summary>
@@ -70,8 +95,7 @@ public:	// メンバ関数
 	/// <param name="filename">ファイル名</param>
 	/// <param name="volume">音量</param>
 	/// <param name="loop">ループの有無</param>
-	void PlayWave(const std::string& filename, const float& volume = 1.0f, const bool& loop = false);
-
+	void PlayWave(const std::string& filename, float volume = kDefaultVolume, bool loop = false);
 
 	/// 音声停止
 	/// <summary>
@@ -79,7 +103,6 @@ public:	// メンバ関数
 	/// </summary>
 	/// <param name="filename">ファイル名</param>
 	void StopWave(const std::string& filename);
-
 
 	/// <summary>
 	/// 読み込んだ音声データを解放
@@ -92,14 +115,30 @@ public:	// getter
 
 public:	// setter
 
+private:	// メンバ関数
+	/// <summary>
+	/// RIFFヘッダの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="riffHeader">読み込んだRIFFヘッダ</param>
+	void ReadRiffHeader(std::ifstream& file, RiffHeader& riffHeader);
 
-public:	// シングルトンインスタンス
-	static AudioManager* sInstance;
+	/// <summary>
+	/// FMTチャンクの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="formatChunk">読み込んだFMTチャンク</param>
+	void ReadFormatChunk(std::ifstream& file, FormatChunk& formatChunk);
 
-	AudioManager() = default;
-	~AudioManager() = default;
-	AudioManager(const AudioManager&) = delete;
-	AudioManager& operator=(const AudioManager&) = delete;
+	/// <summary>
+	/// Dataチャンクの読み込み
+	/// </summary>
+	/// <param name="file">ファイルストリーム</param>
+	/// <param name="dataChunk">読み込んだDataチャンク</param>
+	void ReadDataChunk(std::ifstream& file, ChunkHeader& dataChunk);
+
+public:	// Singleton Instance
+	static std::unique_ptr<AudioManager> sInstance_;
 
 private:	// メンバ変数
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2_ = nullptr;
@@ -107,6 +146,16 @@ private:	// メンバ変数
 
 	// 音声データ
 	std::unordered_map<std::string, SoundData> soundDataMap_;
-	std::unordered_map<std::string, IXAudio2SourceVoice*> playingVoices_;
-};
+	std::vector<ActiveVoice> activeVoices_;
 
+#pragma region 定数
+	static constexpr char kRiffId[] = "RIFF";
+	static constexpr char kWaveId[] = "WAVE";
+	static constexpr char kFmtId[] = "fmt ";
+	static constexpr char kDataId[] = "data";
+	static constexpr char kJunkId[] = "JUNK";
+
+	static constexpr size_t kChunkIdSize = 4;
+	static constexpr float kDefaultVolume = 1.0f;
+#pragma endregion
+};

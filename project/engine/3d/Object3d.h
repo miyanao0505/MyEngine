@@ -66,15 +66,27 @@ public:	// getter
 	/// <summary>
 	/// ライティングの有効状態を取得
 	/// </summary>
-	/// <returns>有効なら 1、無効なら 0</returns>
-	const int GetEnableLighting() const { return model_->GetEnableLighting(); }
+	/// <returns>有効なら true、無効なら false</returns>
+	bool GetEnableLighting() const { return materialData_->enableLighting; }
+
+	/// <summary>
+	/// オブジェクトのマテリアル情報を取得
+	/// </summary>
+	/// <returns>マテリアル情報へのポインタ</returns>
+	MyBase::ModelMaterial* GetMaterialData() const { return materialData_; }
+
+	/// <summary>
+	/// オブジェクトの色を取得
+	/// </summary>
+	/// <returns>色</returns>
+	const MyBase::Vector4& GetColor() const { return materialData_->color; }
 
 public:	// setter
 	/// <summary>
 	/// モデルを指定して設定
 	/// </summary>
 	/// <param name="model">設定するモデル</param>
-	void SetModel(Model* model) { model_ = model; }
+	void SetModel(Model* model) { assert(model);  model_ = model; }
 	
 	/// <summary>
 	/// モデルファイルを指定して読み込み・設定
@@ -122,7 +134,19 @@ public:	// setter
 	/// ライティングの有効/無効を設定
 	/// </summary>
 	/// <param name="enableLighting">true でライティング有効、false で無効</param>
-	void SetEnableLighting(bool enableLighting) { model_->SetEnableLighting(enableLighting); }
+	void SetEnableLighting(bool enableLighting) { materialData_->enableLighting = enableLighting; }
+
+	/// <summary>
+	/// オブジェクトのマテリアル情報を設定
+	/// </summary>
+	/// <param name="materialData">設定するマテリアル情報へのポインタ</param>
+	void SetMaterialData(MyBase::ModelMaterial* materialData) { materialData_ = materialData; }
+
+	/// <summary>
+	/// オブジェクトの色を設定
+	/// </summary>
+	/// <param name="color">色</param>
+	void SetColor(const MyBase::Vector4& color) { materialData_->color = color; }
 
 private:	// メンバ関数
 	/// <summary>
@@ -135,6 +159,11 @@ private:	// メンバ関数
 	/// </summary>
 	void CreateCameraData();
 
+	/// <summary>
+	/// マテリアルデータを GPU に送信するためのリソースを生成
+	/// </summary>
+	void CreateMaterialData();
+
 private:	// メンバ変数
 	Object3dBase* object3dBase_ = nullptr;
 
@@ -143,9 +172,11 @@ private:	// メンバ変数
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationMatrixResource_ = nullptr;	// 座標変換行列
 	Microsoft::WRL::ComPtr<ID3D12Resource> cameraResource_ = nullptr;				// カメラ
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
 	// バッファリソース内のデータを指すポインタ
 	MyBase::TransformationMatrix* transformationMatrixData_ = nullptr;				// 座標変換行列
 	MyBase::CameraForGPU* cameraData_ = nullptr;									// カメラ
+	MyBase::ModelMaterial* materialData_ = nullptr;									// マテリアル
 
 	// WorldTransform
 	std::unique_ptr<WorldTransform> worldTransform_ = nullptr;		// ワールドトランスフォーム
@@ -153,4 +184,3 @@ private:	// メンバ変数
 	// Texture
 	std::string textureFileName_;
 };
-

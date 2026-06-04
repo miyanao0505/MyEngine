@@ -11,18 +11,18 @@ void SceneTransition::Start(FinishCallback onSwitch)
 
 	// フェード用スプライトを作成
 	fadeSprite_ = std::make_unique<Sprite>();
-	fadeSprite_->Initialize("blackback.png");
+	fadeSprite_->Initialize("white1x1.png");
 	fadeSprite_->SetPosition({ 0.0f, 0.0f });
-	fadeSprite_->SetSize({ 1280.0f, 720.0f }); // 画面全体を覆うサイズにする
-	fadeSprite_->SetAnchorPoint({ 0.0f, 0.0f }); // 左上を基準点にする
-	fadeSprite_->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f }); // 最初は透明
+	fadeSprite_->SetSize(kScreenSize);					// 画面全体を覆うサイズにする
+	fadeSprite_->SetAnchorPoint({ 0.0f, 0.0f });		// 左上を基準点にする
+	fadeSprite_->SetColor({ 0.0f, 0.0f, 0.0f, 0.0f });	// 最初は透明
 }
 
 void SceneTransition::Update()
 {
 	if (phase_ == Phase::kNone) return;
 
-	timer_ += 1.0f / 60.0f; // 仮で60FPS固定
+	timer_ += kDeltaTime;
 
 	if (timer_ >= kFadeTime) {
 		timer_ = 0.0f;
@@ -45,7 +45,7 @@ void SceneTransition::Update()
 	if (phase_ == Phase::kFadeOut) {
 		alpha = 1.0f - alpha; // フェードアウト時は逆転
 	}
-	fadeSprite_->SetColor({ 1.0f, 1.0f, 1.0f, alpha });
+	fadeSprite_->SetColor({ 0.0f, 0.0f, 0.0f, alpha });
 	fadeSprite_->Update();
 }
 

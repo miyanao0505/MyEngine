@@ -1,10 +1,15 @@
 #include "WorldTransform.h"
 
+namespace {
+	static constexpr MyBase::Vector3 kDefaultScale{ 1.0f, 1.0f, 1.0f };
+	static constexpr MyBase::Vector3 kZeroVector{ 0.0f, 0.0f, 0.0f };
+}
+
 // 初期化
 void WorldTransform::Initialize()
 {
 	// 初期化
-	transform_ = { .scale{1.0f, 1.0f, 1.0f}, .rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} };
+	transform_ = { .scale = kDefaultScale, .rotate = kZeroVector, .translate = kZeroVector };
 	worldMatrix_ = Matrix::MakeIdentity4x4();
 	parent_ = nullptr;
 	isDirty_ = true; // 初期状態ではワールド行列を更新する必要がある

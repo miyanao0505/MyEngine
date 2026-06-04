@@ -17,6 +17,7 @@
     <ClCompile Include="application\collision\Collider.cpp" />
     <ClCompile Include="application\collision\CollisionManager.cpp" />
     <ClCompile Include="application\enemy\Enemy.cpp" />
+    <ClCompile Include="application\enemy\EnemyBullet.cpp" />
     <ClCompile Include="application\enemy\state\EnemyBaseState.cpp" />
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
@@ -24,12 +25,23 @@
     <ClCompile Include="application\sequence\ClearSequence.cpp" />
     <ClCompile Include="application\sequence\GameOverSequence.cpp" />
     <ClCompile Include="application\sequence\StartSequence.cpp" />
+    <ClCompile Include="application\system\PauseController.cpp" />
     <ClCompile Include="application\ui\ClearLogo.cpp" />
     <ClCompile Include="application\ui\GameOverLogo.cpp" />
+    <ClCompile Include="application\ui\PauseButton.cpp" />
+    <ClCompile Include="application\ui\PauseInput.cpp" />
+    <ClCompile Include="application\ui\PauseUI.cpp" />
     <ClCompile Include="application\ui\TitleLogo.cpp" />
     <ClCompile Include="engine\3d\BaseObject.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineBase.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineDrawer.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineLayer.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLineManager.cpp" />
+    <ClCompile Include="engine\3d\debug\DebugLinePrimitive.cpp" />
     <ClCompile Include="engine\3d\Skybox.cpp" />
+    <ClCompile Include="engine\base\TimeManager.cpp" />
     <ClCompile Include="engine\loader\JsonLoader.cpp" />
+    <ClCompile Include="engine\math\MyBase.cpp" />
     <ClCompile Include="engine\math\Quaternion.cpp" />
     <ClCompile Include="engine\math\WorldTransform.cpp" />
     <ClCompile Include="engine\scene\BaseScene.cpp" />
@@ -62,7 +74,6 @@
     <ClCompile Include="engine\input\Input.cpp" />
     <ClCompile Include="engine\light\LightManager.cpp" />
     <ClCompile Include="engine\math\Matrix.cpp" />
-    <ClCompile Include="engine\math\MyBase.cpp" />
     <ClCompile Include="engine\math\MyTools.cpp" />
     <ClCompile Include="engine\offscreen\OffScreen.cpp" />
     <ClCompile Include="engine\particle\ParticleBase.cpp" />
@@ -84,6 +95,7 @@
     <ClInclude Include="application\collision\CollisionConfig.h" />
     <ClInclude Include="application\collision\CollisionManager.h" />
     <ClInclude Include="application\enemy\Enemy.h" />
+    <ClInclude Include="application\enemy\EnemyBullet.h" />
     <ClInclude Include="application\enemy\state\EnemyBaseState.h" />
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h" />
     <ClInclude Include="application\player\Player.h" />
@@ -91,11 +103,26 @@
     <ClInclude Include="application\sequence\ClearSequence.h" />
     <ClInclude Include="application\sequence\GameOverSequence.h" />
     <ClInclude Include="application\sequence\StartSequence.h" />
+    <ClInclude Include="application\system\PauseController.h" />
     <ClInclude Include="application\ui\ClearLogo.h" />
     <ClInclude Include="application\ui\GameOverLogo.h" />
+    <ClInclude Include="application\ui\PauseButton.h" />
+    <ClInclude Include="application\ui\PauseButtonDesc.h" />
+    <ClInclude Include="application\ui\PauseButtonType.h" />
+    <ClInclude Include="application\ui\PauseInput.h" />
+    <ClInclude Include="application\ui\PauseUI.h" />
     <ClInclude Include="application\ui\TitleLogo.h" />
     <ClInclude Include="engine\3d\BaseObject.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineBase.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineCategory.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineDrawer.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineLayer.h" />
+    <ClInclude Include="engine\3d\debug\DebugLineManager.h" />
+    <ClInclude Include="engine\3d\debug\DebugLinePrimitive.h" />
     <ClInclude Include="engine\3d\Skybox.h" />
+    <ClInclude Include="engine\base\AssetPath.h" />
+    <ClInclude Include="engine\base\TimeManager.h" />
+    <ClInclude Include="engine\input\InputTypes.h" />
     <ClInclude Include="engine\loader\JsonLoader.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\WorldTransform.h" />
@@ -159,6 +186,14 @@
     <FxCompile Include="resources\shaders\CopyImage.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.PS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -226,15 +261,23 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="resources\shaders\DebugLine.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="resources\shaders\Fullscreen.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="resources\shaders\Object3d.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="resources\shaders\Particle.hlsli" />
-    <None Include="resources\shaders\Skybox.hlsli" />
+    <None Include="resources\shaders\Particle.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="resources\shaders\Skybox.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="resources\shaders\Sprite2d.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
@@ -294,12 +337,12 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\3d\debug;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
       <AdditionalLibraryDirectories>$(ProjectDir)externals\assimp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4049 /ignore:4098 %(AdditionalOptions)</AdditionalOptions>
@@ -321,7 +364,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)engine\2d;$(ProjectDir)engine\3d;$(ProjectDir)engine\3d\camera;$(ProjectDir)engine\3d\debug;$(ProjectDir)engine\audio;$(ProjectDir)engine\base;$(ProjectDir)engine\input;$(ProjectDir)engine\scene;$(ProjectDir)engine\particle;$(ProjectDir)engine\light;$(ProjectDir)engine\offscreen;$(ProjectDir)engine\math;$(ProjectDir)engine\loader;$(ProjectDir)application\collision;$(ProjectDir)application\player;$(ProjectDir)application\enemy;$(ProjectDir)application\scene;$(ProjectDir)application\skydome;$(ProjectDir)externals\assimp\include;$(ProjectDir)externals\imgui;$(ProjectDir)externals\DirectXTex;$(ProjectDir)application\enemy\state;$(ProjectDir)application\camera;$(ProjectDir)application\ui;$(ProjectDir)application\sequence;$(ProjectDir)application\system;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

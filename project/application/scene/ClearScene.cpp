@@ -1,11 +1,11 @@
 #include "ClearScene.h"
-#include <imgui.h>
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include "SceneManager.h"
+#include "TimeManager.h"
 #include "MyTools.h"
 
 // 初期化
@@ -16,17 +16,17 @@ void ClearScene::Initialize()
 
 #pragma region カメラ
 	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 0.0f, -40.0f });
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.0f, 0.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kCameraRotate);
 #pragma endregion カメラ
 
 #pragma region ライト
 	MyBase::PointLight pointLight;
-	pointLight.color = { 1.0f, 1.0f, 1.0f, 1.0f };
-	pointLight.position = { 0.0f, 0.0f, -40.0f };
-	pointLight.intensity = 1.0f;
-	pointLight.radius = 500.0f;
-	pointLight.decay = 2.0f;
+	pointLight.color = kClearLightColor;
+	pointLight.position = kClearLightPos;
+	pointLight.intensity = kClearLightIntensity;
+	pointLight.radius = kClearLightRadius;
+	pointLight.decay = kClearLightDecay;
 	LightManager::GetInstance()->SetPointLight(pointLight);
 #pragma endregion ライト
 
@@ -38,9 +38,14 @@ void ClearScene::Initialize()
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
-	// 3Dオブジェクト
+	// プレイヤー
+	player_ = std::make_unique<Player>();
+	player_->Initialize(kPlayerTranslate);
+	player_->GetObject3D()->SetScale(kPlayerScale);
+
+	// 天球
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, { 100.0f, 100.0f, 100.0f });
+	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 
 	// ロゴ
 	clearLogo_ = std::make_unique<ClearLogo>();
@@ -56,16 +61,17 @@ void ClearScene::Initialize()
 	isParticleActive_ = true;
 	
 	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	acceleration_ = kAcceleration;
+	area_ = kAccelArea;
 #pragma endregion 変数
 
 #pragma endregion シーン初期化
 
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 	skydome_->Update();
-	clearLogo_->Update();
+	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 }
 
 // 終了
@@ -90,7 +96,7 @@ void ClearScene::Update()
 #endif // _DEBUG
 
 	// タイトルシーンへの遷移
-	if (input_->IsKeyTriggered(DIK_RETURN)) {
+	if (input_->TriggerKey(DIK_RETURN)) {
 		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 		return;
 	}
@@ -99,11 +105,14 @@ void ClearScene::Update()
 	CameraManager::GetInstance()->GetCamera()->Update();
 
 	// 3Dオブジェクトの更新処理
+	// プレイヤーの更新
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+
 	// 天球の更新
 	skydome_->Update();
 
-	// ロゴ
-	clearLogo_->Update();
+	// ロゴの更新
+	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
@@ -113,7 +122,7 @@ void ClearScene::Update()
 				MyBase::Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime(), acceleration_));
 				}
 
 				++it;
@@ -137,7 +146,10 @@ void ClearScene::Draw()
 	ModelManager::GetInstance()->SetCommonScreen();
 
 	// 全ての3DObject個々の描画
-	// 天球の描画
+	// プレイヤー
+	player_->Draw();
+
+	// 天球
 	skydome_->Draw();
 
 	// ロゴ
@@ -167,12 +179,12 @@ void ClearScene::Draw()
 void ClearScene::DebugUpdate()
 {
 	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
+	if (input_->TriggerKey(DIK_N)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
 	}
 	// Bキーを押したら
-	if (input_->IsKeyTriggered(DIK_B)) {
+	if (input_->TriggerKey(DIK_B)) {
 		// シーン切り替え依頼
 		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
 	}
@@ -184,12 +196,31 @@ void ClearScene::DebugUpdate()
 void ClearScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(kDebugWindowPos, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSize, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Clear");
 	ImGui::Text("N key : titleScene");
 	ImGui::Text("B key : eventScene");
+	ImGui::End();
+
+	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
+	ImGui::SetNextWindowPos(kDebugWindowPosSettings, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSizeSettings, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+
+	ImGui::Begin("Settings");
+	// Camera
+	CameraManager::GetInstance()->DebugDraw();
+
+	// Lighting
+	LightManager::GetInstance()->DebugDraw();
+
+	// Skydome
+	skydome_->DebugDraw();
+
+	// プレイヤー
+	player_->DebugDraw();
+
 	ImGui::End();
 }
 #endif // _DEBUG

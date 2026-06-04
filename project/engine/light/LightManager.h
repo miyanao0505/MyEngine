@@ -4,7 +4,7 @@
 #include "Object3dBase.h"
 
 /// <summary>
-/// 3Dシーン内で使用されるライトの種類を表す列挙型。
+/// 3Dシーン内で使用されるライトの種類を表す列挙型
 /// </summary>
 enum class LightType {
 	Directional,
@@ -13,16 +13,40 @@ enum class LightType {
 };
 
 /// <summary>
-/// 3Dシーン内のライト(平行光源・点光源・スポットライト)を管理するシングルトンクラス。
+/// ルートパラメータのインデックスを表す列挙型
+/// </summary>
+enum RootParameterIndex {
+	kDirectionalLight = 3,
+	kPointLight = 5,
+	kSpotLight = 6,
+};
+
+/// <summary>
+/// 3Dシーン内のライト(平行光源・点光源・スポットライト)を管理するマネージャークラス。
 /// </summary>
 class LightManager
 {
 public:	// メンバ関数
 	/// <summary>
-	/// シングルトンインスタンスの取得
+	/// Singleton Instance を取得
 	/// </summary>
-	/// <returns>LightManager のインスタンス</returns>
+	/// <returns>LightManager</returns>
 	static LightManager* GetInstance();
+
+	/// ------ Passkey Idion ------
+	/// コントラクタを渡すための鍵
+	class ConstructorKey {
+	private:
+		ConstructorKey() = default;
+		friend class LightManager;
+	};
+
+	/// PassKeyを受け取るコンストラクタ
+	explicit LightManager(ConstructorKey) {}
+
+	/// コピー禁止
+	LightManager(const LightManager&) = delete;
+	LightManager& operator=(const LightManager&) = delete;
 
 	/// <summary>
 	/// 終了
@@ -281,25 +305,29 @@ public:	// setter
 	/// <param name="lightCosAngle">スポットライトの余弦</param>
 	void SetSpotLightCosAngle(float lightCosAngle) { spotLightMapped_->cosAngle = lightCosAngle; }
 
-private:	// シングルトンインスタンス
-	static LightManager* sInstance;
-
-	LightManager() = default;
-	~LightManager() = default;
-	LightManager(const LightManager&) = delete;
-	LightManager& operator=(const LightManager&) = delete;
+private:	// Singleton Instance
+	static std::unique_ptr<LightManager> sInstance_;
 
 private:	// メンバ変数
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
 
 	// バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightBuffer_ = nullptr;		// 平行光源
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightBuffer_ = nullptr;	// 平行光源
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightBuffer_ = nullptr;			// 点光源
 	Microsoft::WRL::ComPtr<ID3D12Resource> spotLightBuffer_ = nullptr;			// スポットライト
 
 	// バッファリソース内のデータを指すポインタ
-	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;
-	MyBase::PointLight* pointLightMapped_ = nullptr;									// 点光源
-	MyBase::SpotLight* spotLightMapped_ = nullptr;
+	MyBase::DirectionalLight* directionalLightMapped_ = nullptr;				// 平行光源
+	MyBase::PointLight* pointLightMapped_ = nullptr;							// 点光源
+	MyBase::SpotLight* spotLightMapped_ = nullptr;								// スポットライト
+
+#pragma region 定数
+	static constexpr float kDefaultSpotLightCosAngle = 0.125f;
+
+#ifdef _DEBUG
+	static constexpr MyBase::ScopeF kLightIntensity = { 0.0f, 10.0f };
+	static constexpr float kLightIntensitySpeed = 0.01f;
+#endif // _DEBUG
+#pragma endregion
 };

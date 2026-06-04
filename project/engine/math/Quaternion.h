@@ -2,6 +2,14 @@
 #include "Matrix.h"
 #include "MyBase.h"
 
+namespace {
+	constexpr float kZero = 0.0f;
+	constexpr float kOne = 1.0f;
+	constexpr float kDouble = 2.0f;
+	constexpr float kHalf = 0.5f;
+	constexpr float kInvert = -1.0f;
+}
+
 /// <summary>
 /// クォータニオン操作クラス
 /// </summary>
@@ -16,7 +24,7 @@ public:	// メンバ変数
 
 public:	// メンバ関数
 	// コンストラクタ
-	Quaternion() : w(1.0f), x(0.0f), y(0.0f), z(0.0f) {}
+	Quaternion() : w(kOne), x(kZero), y(kZero), z(kZero) {}
 	Quaternion(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
 	/// 複合代入演算子
@@ -131,4 +139,3 @@ public:	// メンバ関数
 	/// <returns>補間結果のQuaternion</returns>
 	static Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 };
-

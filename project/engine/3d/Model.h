@@ -24,7 +24,8 @@ public:	// メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	/// <param name="materialResource">マテリアル用の定数バッファリソースへのポインタ</param>
+	void Draw(ID3D12Resource* materialResource);
 	
 	/// <summary>
 	/// .mtl(マテリアル)ファイルを読み込み、MaterialData を生成
@@ -54,25 +55,7 @@ public:	// getter
 	/// <returns>テクスチャファイル名への参照</returns>
 	const std::string& GetTexture() const { return modelData_.material.textureFilePath; }
 	
-	/// <summary>
-	/// モデルのマテリアル情報を取得
-	/// </summary>
-	/// <returns>ModelMaterial へのポインタ。マテリアル未設定の場合は nullptr</returns>
-	MyBase::ModelMaterial* GetModelMaterial() const { return (materialDataPtr_ == nullptr) ? nullptr : materialDataPtr_; }
-	
-	/// <summary>
-	/// ライティングの有効状態を取得
-	/// </summary>
-	/// <returns>有効なら 1、無効なら 0</returns>
-	bool GetEnableLighting() const { return materialDataPtr_->enableLighting; }
-
 public:	// setter
-	/// <summary>
-	/// ライティングの有効/無効を設定
-	/// </summary>
-	/// <param name="enableLighting">true でライティング有効、false で無効</param>
-	void SetEnableLighting(const bool& enableLighting) { materialDataPtr_->enableLighting = enableLighting; }
-	
 	/// <summary>
 	/// モデルに使用するテクスチャを設定
 	/// </summary>
@@ -80,16 +63,10 @@ public:	// setter
 	void SetTexture(const std::string& fileName);
 	
 	/// <summary>
-	/// モデルのマテリアル情報を設定
-	/// </summary>
-	/// <param name="materialData">設定する ModelMaterial へのポインタ</param>
-	void SetModelMaterial(MyBase::ModelMaterial* materialData) { materialDataPtr_ = materialData; }
-	
-	/// <summary>
 	/// 環境マップ用のテクスチャ名を設定
 	/// </summary>
 	/// <param name="textureName">設定する環境テクスチャ名</param>
-	void SetEnvironmentTexture(const std::string& textureName) { environmentTexturePath_ = textureName; }
+	void SetEnvironmentTexture(const std::string textureName) { environmentTexturePath_ = textureName; }
 
 private:	// メンバ関数
 	/// <summary>
@@ -119,12 +96,27 @@ private:	// メンバ変数
 
 	// バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;				// vertex
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;				// マテリアル
 
 	// バッファリソース内のデータを指すポインタ
-	MyBase::ModelVertexData* vertexDataPtr_ = nullptr;										// vertex
-	MyBase::ModelMaterial* materialDataPtr_ = nullptr;									// マテリアル
+	MyBase::ModelVertexData* vertexDataPtr_ = nullptr;								// vertex
 
 	// バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};									// vertex
+
+#pragma region 定数
+private:
+	static constexpr uint32_t kRootParamMaterialCBV = 0;	// ルートパラメータ：マテリアル用 CBV
+	static constexpr uint32_t kRootParamMainTexture = 2;	// ルートパラメータ：メインテクスチャ SRV
+	static constexpr uint32_t kRootParamEnviromentTexture = 7;	// ルートパラメータ：環境テクスチャ SRV
+
+	static constexpr uint32_t kDefaultInstanceCount = 1;
+	static constexpr uint32_t kVertexStartOffset = 0;
+	static constexpr uint32_t kInstanceStartOffset = 0;
+
+	static constexpr uint32_t kTriangleVertexCount = 3;
+	static constexpr uint32_t kMatrixSize = 4;
+
+	static constexpr float kPositionW = 1.0f;
+	static constexpr float kLeftHandedFlipSign = -1.0f;
+#pragma endregion
 };

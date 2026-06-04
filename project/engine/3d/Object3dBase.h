@@ -1,6 +1,15 @@
 #pragma once
 #include "DirectXBase.h"
 
+// RootParameterIndex enum
+enum class Object3dRootParam : UINT {
+	kTransformationMatrix = 1,
+	kMaterial,
+	kTexture,
+	kCamera,
+	kLight,
+};
+
 /// <summary>
 /// 3Dオブジェクト描画に共通する処理を管理する基底クラス
 /// </summary>
@@ -77,5 +86,8 @@ private:	// メンバ変数
 
 	// DirectXBase
 	DirectXBase* dxBase_ = nullptr;
-};
 
+#pragma region 定数
+	static constexpr UINT kInputElementCount = 3;
+#pragma endregion
+};

@@ -294,9 +294,6 @@
     <ClCompile Include="engine\math\Matrix.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\math\MyBase.cpp">
-      <Filter>ソース ファイル\engine\math</Filter>
-    </ClCompile>
     <ClCompile Include="engine\math\MyTools.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
@@ -362,6 +359,42 @@
     </ClCompile>
     <ClCompile Include="application\scene\SceneFactory.cpp">
       <Filter>ソース ファイル\application\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\TimeManager.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="application\enemy\EnemyBullet.cpp">
+      <Filter>ソース ファイル\application\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseUI.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\system\PauseController.cpp">
+      <Filter>ソース ファイル\application\system</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseInput.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\ui\PauseButton.cpp">
+      <Filter>ソース ファイル\application\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineBase.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\MyBase.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineLayer.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineManager.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLineDrawer.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\debug\DebugLinePrimitive.cpp">
+      <Filter>ソース ファイル\engine\3d\debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -664,6 +697,12 @@
     <FxCompile Include="resources\shaders\Skybox.VS.hlsl">
       <Filter>シェダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.PS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\DebugLine.VS.hlsl">
+      <Filter>シェダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Object3d.hlsli">
@@ -679,6 +718,9 @@
       <Filter>シェダー ファイル</Filter>
     </None>
     <None Include="resources\shaders\Skybox.hlsli">
+      <Filter>シェダー ファイル</Filter>
+    </None>
+    <None Include="resources\shaders\DebugLine.hlsli">
       <Filter>シェダー ファイル</Filter>
     </None>
   </ItemGroup>

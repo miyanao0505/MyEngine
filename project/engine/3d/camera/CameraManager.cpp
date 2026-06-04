@@ -3,25 +3,25 @@
 
 using namespace std;
 
-CameraManager* CameraManager::sInstance = nullptr;
+/// static member 定義
+unique_ptr<CameraManager> CameraManager::sInstance_ = nullptr;
 
-// シングルトンインスタンスの取得
+// Singleton Instance を取得
 CameraManager* CameraManager::GetInstance() {
-	if (sInstance == nullptr) {
-		sInstance = new CameraManager;
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<CameraManager>(CameraManager::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 終了
 void CameraManager::Finalize() {
-	delete sInstance;
-	sInstance = nullptr;
+	sInstance_.reset();
 }
 
 // 初期化
 void CameraManager::Initialize() {
-
+	cameras_.clear();
 }
 
 // 更新
@@ -29,9 +29,7 @@ void CameraManager::Update(float deltaTime) {
 	if (!activeCamera_) return;
 
 	// シェイク中でなければ何もしない
-	if (!shakeState_.active) {
-		return;
-	}
+	if (!shakeState_.active) return;
 
 	// 経過時間を蓄積し、シェイク進行度を算出
 	shakeState_.timer += deltaTime;
@@ -71,14 +69,15 @@ void CameraManager::Update(float deltaTime) {
 		// 復帰
 		StopShake();
 	}
+
+	// カメラ更新
+	activeCamera_->Update();
 }
 
 // 新しいカメラを追加し、cameras_ に登録する
 void CameraManager::AddCamera(const std::string& cameraName) {
 	// 同名カメラが既に登録済みなら重複生成を避け早期return
-	if (cameras_.contains(cameraName)) {
-		return;
-	}
+	if (cameras_.contains(cameraName)) return;
 
 	// 新しいカメラの生成
 	unique_ptr<Camera> camera = make_unique<Camera>();
@@ -120,8 +119,7 @@ void CameraManager::StopShake() {
 #ifdef _DEBUG
 // デバック用の描画
 void CameraManager::DebugDraw() {
-	if (ImGui::CollapsingHeader("Camera"))
-	{
+	if (ImGui::CollapsingHeader("Camera")) {
 		// 登録されているカメラ名一覧を取得
 		vector<string> cameraNames = GetAllNames();
 		string cameraNowValue;
@@ -147,10 +145,8 @@ void CameraManager::DebugDraw() {
 		static ImGuiComboFlags flags = 0;
 		static int cameraIndex = 0;
 
-		if (ImGui::BeginCombo("Now Camera", cameraNowValue.c_str(), flags))
-		{
-			for (int i = 0; i < cameraNames.size(); i++)
-			{
+		if (ImGui::BeginCombo("Now Camera", cameraNowValue.c_str(), flags))	{
+			for (int i = 0; i < cameraNames.size(); i++) {
 				const bool isSelected = (cameraIndex == i);
 				if (ImGui::Selectable(cameraNames[i].c_str(), isSelected)) {
 					cameraIndex = i;
@@ -200,9 +196,7 @@ vector<string> CameraManager::GetAllNames() {
 // 既存のカメラの中からアクティブカメラを選択する
 void CameraManager::SetCamera(const string& cameraName) {
 	// 既にそのカメラを選択している場合は早期return
-	if (activeCameraName_ == cameraName) {
-		return;
-	}
+	if (activeCameraName_ == cameraName) return;
 
 	// 登録済みのカメラのみ選択可能
 	if (cameras_.contains(cameraName)) {

@@ -14,21 +14,26 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 using namespace Logger;
 using namespace StringUtility;
+using namespace std;
 
-DirectXBase* DirectXBase::sInstance = nullptr;
+#pragma region 定数
+/// static member 定義
+/// 青っぽい色。RGBAの順
+const float DirectXBase::kDefaultClearColor[4]{ 0.1f, 0.25f, 0.5f, 1.0f };
 
-// シングルトンインスタンスの取得
-DirectXBase* DirectXBase::GetInstance()
-{
-	if (sInstance == nullptr) {
-		sInstance = new DirectXBase();
+unique_ptr<DirectXBase> DirectXBase::sInstance_ = nullptr;
+#pragma endregion
+
+/// シングルトンインスタンスの取得
+DirectXBase* DirectXBase::GetInstance() {
+	if (sInstance_ == nullptr) {
+		sInstance_ = make_unique<DirectXBase>(DirectXBase::ConstructorKey{});
 	}
-	return sInstance;
+	return sInstance_.get();
 }
 
 // 初期化
-void DirectXBase::Initialize(WindowsAPI* winApi)
-{
+void DirectXBase::Initialize(WindowsAPI* winApi) {
 	// NULL検出
 	assert(winApi);
 
@@ -62,20 +67,17 @@ void DirectXBase::Initialize(WindowsAPI* winApi)
 	CreateDxcCompiler();
 }
 
-void DirectXBase::Finalize()
-{
-	delete sInstance;
-	sInstance = nullptr;
+void DirectXBase::Finalize() {
+	sInstance_.reset();
 }
 
 // 描画前処理(RenderTexture)
-void DirectXBase::PreRenderTexture()
-{
+void DirectXBase::PreRenderTexture() {
 	// 描画先のRTVとDSVを設定する
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[2], false, &dsvHandle);
+	commandList_->OMSetRenderTargets(1, &rtvHandles_[kRTV_RenderTexture], false, &dsvHandle);
 	// 指定した色で画面全体をクリアする
-	commandList_->ClearRenderTargetView(rtvHandles_[2], clearValue_.Color, 0, nullptr);
+	commandList_->ClearRenderTargetView(rtvHandles_[kRTV_RenderTexture], clearValue_.Color, 0, nullptr);
 	// 指定した深度で画面全体をクリアする
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
@@ -84,8 +86,7 @@ void DirectXBase::PreRenderTexture()
 }
 
 // 描画前処理
-void DirectXBase::PreDraw()
-{
+void DirectXBase::PreDraw() {
 	// TransitionBarrierを張る
 	BarrierTransition(renderTextureResource_.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	
@@ -98,15 +99,13 @@ void DirectXBase::PreDraw()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
 	// 指定した色で画面全体をクリアする
-	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };	// 青っぽい色。RGBAの順
-	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], kDefaultClearColor, 0, nullptr);
 	commandList_->RSSetViewports(1, &viewport_);		// Viewportを設定
 	commandList_->RSSetScissorRects(1, &scissorRect_);	// Scirssorを設定
 }
 
 // 描画後処理
-void DirectXBase::PostDraw()
-{
+void DirectXBase::PostDraw() {
 	HRESULT hr;
 	
 	// TransitionBarrierを張る
@@ -137,8 +136,7 @@ void DirectXBase::PostDraw()
 
 	// Fenceの値が指定したSignal値にたどり着いているか確認する
 	// GetCompletedValueの初期値はFence作成時に渡した初期値
-	if (fence_->GetCompletedValue() < fenceValue_)
-	{
+	if (fence_->GetCompletedValue() < fenceValue_) {
 		// 指定したSignalにたどりついていないので、たどり着くまで待つようにイベントを設定する
 		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
 		// イベント待つ
@@ -153,16 +151,15 @@ void DirectXBase::PostDraw()
 }
 
 // オフスクリーンのSRV作成
-void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
-{
+void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager) {
 	// SRV確保
 	offScreenSrvIndex_ = srvManager->Allocate();
 
 	DirectX::TexMetadata metadata;
 	
 	// TexMetadata を手動で構築
-	metadata.width = 1024;
-	metadata.height = 1024;
+	metadata.width = WindowsAPI::kClientWidth;
+	metadata.height = WindowsAPI::kClientHeight;
 	metadata.arraySize = 1;
 	metadata.depth = 1;
 	metadata.miscFlags = 0;
@@ -178,8 +175,7 @@ void DirectXBase::CreateOffScreenSRV(SrvManager* srvManager)
 }
 
 /// バリアを貼る
-void DirectXBase::BarrierTransition(ID3D12Resource* pResource, D3D12_RESOURCE_STATES Before, D3D12_RESOURCE_STATES After)
-{
+void DirectXBase::BarrierTransition(ID3D12Resource* pResource, D3D12_RESOURCE_STATES Before, D3D12_RESOURCE_STATES After) {
 	// TransitionBarrierの設定
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -191,36 +187,31 @@ void DirectXBase::BarrierTransition(ID3D12Resource* pResource, D3D12_RESOURCE_ST
 }
 
 // RTVの指定番号のCPUデスクリプタハンドルを取得する
-D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetRTVCPUDescriptorHandle(uint32_t index)
-{
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetRTVCPUDescriptorHandle(uint32_t index) {
 	return GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, index);
 }
 
 // RTVの指定番号のGPUデスクリプタハンドルを取得
-D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetRTVGPUDescriptorHandle(uint32_t index)
-{
+D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetRTVGPUDescriptorHandle(uint32_t index) {
 	return GetGPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, index);
 }
 
 // DSVの指定番号のCPUデスクリプタハンドルを取得
-D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetDSVCPUDescriptorHandle(uint32_t index)
-{
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetDSVCPUDescriptorHandle(uint32_t index) {
 	return GetCPUDescriptorHandle(dsvDescriptorHeap_, descriptorSizeDSV_, index);
 }
 
 // DSVの指定番号のGPUデスクリプタハンドルを取得
-D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetDSVGPUDescriptorHandle(uint32_t index)
-{
+D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetDSVGPUDescriptorHandle(uint32_t index) {
 	return GetGPUDescriptorHandle(dsvDescriptorHeap_, descriptorSizeDSV_, index);
 }
 
 // ShaderをCompileをする関数
-ComPtr<IDxcBlob> DirectXBase::CompileShader(const std::wstring& filePath, const wchar_t* profile)
-{
+ComPtr<IDxcBlob> DirectXBase::CompileShader(const wstring& filePath, const wchar_t* profile) {
 	// ここの中身をこの後書いていく
 	// 1. hlslファイルを読む
 	// これからシェーダーをコンパイルする旨をログに出す
-	Log(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
+	Log(ConvertString(format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
 	// hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
 	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
@@ -269,7 +260,7 @@ ComPtr<IDxcBlob> DirectXBase::CompileShader(const std::wstring& filePath, const 
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 	assert(SUCCEEDED(hr));
 	// 成功したログを出す
-	Log(ConvertString(std::format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
+	Log(ConvertString(format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
 	// もう使わないリソースを解放
 	shaderSource->Release();
 	shaderResult->Release();
@@ -278,8 +269,7 @@ ComPtr<IDxcBlob> DirectXBase::CompileShader(const std::wstring& filePath, const 
 }
 
 // バッファーリソースの生成
-ComPtr<ID3D12Resource> DirectXBase::CreateBufferResource(size_t sizeInBytes)
-{
+ComPtr<ID3D12Resource> DirectXBase::CreateBufferResource(size_t sizeInBytes) {
 	// 頂点リソース用のヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
 	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;				// UploadHeapを使う
@@ -306,8 +296,7 @@ ComPtr<ID3D12Resource> DirectXBase::CreateBufferResource(size_t sizeInBytes)
 }
 
 // TextureResource作成の関数
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateTextureResource(const TexMetadata& metadata)
-{
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateTextureResource(const TexMetadata& metadata) {
 	// 1. metadataを基にResourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = UINT(metadata.width);								// Textureの幅
@@ -336,8 +325,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateTextureResource(const 
 }
 
 // RenderTextureの生成
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const MyBase::Vector4& clearColor)
-{
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateRenderTextureResource(uint32_t width, uint32_t height, DXGI_FORMAT format, const MyBase::Vector4& clearColor) {
 	// Resourceの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = width;												// Textureの幅
@@ -377,9 +365,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::CreateRenderTextureResource(
 }
 
 // データを転送する関数
-Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::UploadTextureData(ID3D12Resource* texture, const ScratchImage& mipImages)
-{
-	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::UploadTextureData(ID3D12Resource* texture, const ScratchImage& mipImages) {
+	vector<D3D12_SUBRESOURCE_DATA> subresources;
 	PrepareUpload(device_.Get(), mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
 	uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, UINT(subresources.size()));
 	ComPtr<ID3D12Resource> intermediateResource = CreateBufferResource(intermediateSize);
@@ -397,11 +384,10 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXBase::UploadTextureData(ID3D12Reso
 	return intermediateResource;
 }
 
-ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
-{
+ScratchImage DirectXBase::LoadTexture(const string& filePath) {
 	// テクスチャファイルを読んでプログラムで扱えるようにする
 	ScratchImage image{};
-	std::wstring filePathW = ConvertString(filePath);
+	wstring filePathW = ConvertString(filePath);
 	HRESULT hr;
 	// .ddsで終わっていたらddsとみなす。
 	if(filePathW.ends_with(L".dds")) {
@@ -416,7 +402,7 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 	const TexMetadata& metadata = image.GetMetadata();
 
 	// デフォルトは元画像
-	ScratchImage resultImage = std::move(image);
+	ScratchImage resultImage = move(image);
 
 	//ミニマップの作成
 	// 非圧縮 & ミップ生成可能なサイズのみ
@@ -427,7 +413,7 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 		hr = GenerateMipMaps(resultImage.GetImages(), resultImage.GetImageCount(), resultImage.GetMetadata(), TEX_FILTER_SRGB, 0, mipImages);
 
 		if (SUCCEEDED(hr) && mipImages.GetImageCount() > 0) {
-			resultImage = std::move(mipImages);
+			resultImage = move(mipImages);
 		}
 	}
 
@@ -442,8 +428,7 @@ ScratchImage DirectXBase::LoadTexture(const std::string& filePath)
 /// 
 
 // デバイスの生成
-void DirectXBase::CreateDevice()
-{
+void DirectXBase::CreateDevice() {
 	HRESULT hr;
 
 #ifdef _DEBUG
@@ -475,7 +460,7 @@ void DirectXBase::CreateDevice()
 		// ソフトウェアアダプタでなければ採用！
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 			// 採用したアダプタの情報をログに出力。wstringの方なので注意
-			Log(ConvertString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+			Log(ConvertString(format(L"Use Adapter:{}\n", adapterDesc.Description)));
 			break;
 		}
 		useAdapter = nullptr;		// ソフトウェアアダプタの場合は見なかったことにする
@@ -496,7 +481,7 @@ void DirectXBase::CreateDevice()
 		// 指定した機能レベルでデバイスが生成できたかを確認
 		if (SUCCEEDED(hr)) {
 			// 生成できたのでログ出力を行って抜ける
-			Log(std::format("FeatureLevel : {}\n", featureLevelStrings[i]));
+			Log(format("FeatureLevel : {}\n", featureLevelStrings[i]));
 			break;
 		}
 	}
@@ -536,8 +521,7 @@ void DirectXBase::CreateDevice()
 }
 
 // コマンド関連の生成
-void DirectXBase::CreateCommand()
-{
+void DirectXBase::CreateCommand() {
 	HRESULT hr;
 
 	// コマンドアロケータの生成
@@ -561,8 +545,7 @@ void DirectXBase::CreateCommand()
 }
 
 // スワップチェーンの生成
-void DirectXBase::CreateSwapChain()
-{
+void DirectXBase::CreateSwapChain() {
 	HRESULT hr;
 
 	swapChainDesc_.Width = WindowsAPI::kClientWidth;				// 画面の幅。ウィンドウのクライアント領域を同じものにしておく
@@ -570,7 +553,7 @@ void DirectXBase::CreateSwapChain()
 	swapChainDesc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;				// 色の形式
 	swapChainDesc_.SampleDesc.Count = 1;							// マルチサンプルしない
 	swapChainDesc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;	// 描画のターゲットとして利用する
-	swapChainDesc_.BufferCount = 2;									// ダブルバッファ
+	swapChainDesc_.BufferCount = kBackBuffferCount;									// ダブルバッファ
 	swapChainDesc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;		// モニタにうつしたら、中身を破棄
 	// コマンドキュー、ウィンドウハンドル、設定を渡して生成する
 	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), winApi_->GetHwnd(), &swapChainDesc_, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
@@ -578,8 +561,7 @@ void DirectXBase::CreateSwapChain()
 }
 
 // 深度バッファの生成
-void DirectXBase::CreateDepthStencil()
-{
+void DirectXBase::CreateDepthStencil() {
 	HRESULT hr;
 
 	// 生成するResourceの設定
@@ -617,8 +599,7 @@ void DirectXBase::CreateDepthStencil()
 }
 
 // デスクリプタヒープの生成
-ComPtr<ID3D12DescriptorHeap> DirectXBase::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
-{
+ComPtr<ID3D12DescriptorHeap> DirectXBase::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) {
 	ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 	descriptorHeapDesc.Type = heapType;
@@ -633,25 +614,23 @@ ComPtr<ID3D12DescriptorHeap> DirectXBase::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 }
 
 // 各種デスクリプタヒープの生成
-void DirectXBase::CreateDescriptorHeapAllKinds()
-{
+void DirectXBase::CreateDescriptorHeapAllKinds() {
 	// RTV用のDescriptorSizeを取得しておく
 	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	// DSV用のDescriptorSizeを取得しておく
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	// RTV用のデスクリプタヒープの生成
-	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 100, false);
+	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kMaxRTVCount, false);
 	// DSV用のデスクリプタヒープの生成
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 }
 
 // レンダーターゲットビューの初期化
-void DirectXBase::InitializeRenderTargetView()
-{
+void DirectXBase::InitializeRenderTargetView() {
 	HRESULT hr;
 
-	backBuffer_.resize(2);
+	backBuffer_.resize(kBackBuffferCount);
 
 	// SwapChainからResourceを引っ張ってくる
 	hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&backBuffer_[0]));
@@ -665,7 +644,7 @@ void DirectXBase::InitializeRenderTargetView()
 	rtvDesc_.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;	// 2dテクスチャとして書き込む
 	
 	// 要素の2つ分
-	for (uint32_t i = 0; i < 2; ++i) {
+	for (uint32_t i = 0; i < kBackBuffferCount; ++i) {
 		// RTVハンドルを取得
 		rtvHandles_[i].ptr = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart().ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * i;
 		// レンダーターゲットビューの生成
@@ -676,29 +655,26 @@ void DirectXBase::InitializeRenderTargetView()
 	const MyBase::Vector4 kRenderTargetClearValue{ 0.1f, 0.25f, 0.5f, 1.0f };
 	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kClientWidth, WindowsAPI::kClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 	// RTVハンドルの取得
-	rtvHandles_[2].ptr = rtvHandles_[1].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, rtvHandles_[2]);
+	rtvHandles_[kRTV_RenderTexture].ptr = rtvHandles_[kRTV_BackBuffer1].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	device_->CreateRenderTargetView(renderTextureResource_.Get(), &rtvDesc_, rtvHandles_[kRTV_RenderTexture]);
 }
 
 // CPUDescriptorHandle取得関数
-D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetCPUDescriptorHandle(ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
-{
+D3D12_CPU_DESCRIPTOR_HANDLE DirectXBase::GetCPUDescriptorHandle(ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index) {
 	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	handleCPU.ptr += (descriptorSize * index);
 	return handleCPU;
 }
 
 // GPUDescriptorHandle取得関数
-D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetGPUDescriptorHandle(ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index)
-{
+D3D12_GPU_DESCRIPTOR_HANDLE DirectXBase::GetGPUDescriptorHandle(ComPtr<ID3D12DescriptorHeap> descriptorHeap, uint32_t descriptorSize, uint32_t index) {
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
 }
 
 // 深度ステンシルビューの初期化
-void DirectXBase::InitializeDepthStencilView()
-{
+void DirectXBase::InitializeDepthStencilView() {
 	// DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;			// Format。基本的にはResourceに合わせる
@@ -709,8 +685,7 @@ void DirectXBase::InitializeDepthStencilView()
 }
 
 // フェンスの生成
-void DirectXBase::CreateFence()
-{
+void DirectXBase::CreateFence() {
 	HRESULT hr;
 
 	// 初期値0でFenceを作る
@@ -725,8 +700,7 @@ void DirectXBase::CreateFence()
 }
 
 // ビューポート矩形の生成
-void DirectXBase::CreateViewPort()
-{
+void DirectXBase::CreateViewPort() {
 	// クライアント領域のサイズと一緒にして画面企画に表示
 	viewport_.Width = WindowsAPI::kClientWidth;
 	viewport_.Height = WindowsAPI::kClientHeight;
@@ -737,8 +711,7 @@ void DirectXBase::CreateViewPort()
 }
 
 // シザリング矩形の生成
-void DirectXBase::CreateScissorRect()
-{
+void DirectXBase::CreateScissorRect() {
 	// 基本的にビューポートと同じ矩形が構成されるようにする
 	scissorRect_.left = 0;
 	scissorRect_.right = WindowsAPI::kClientWidth;
@@ -747,8 +720,7 @@ void DirectXBase::CreateScissorRect()
 }
 
 // DXCコンパイラの生成
-void DirectXBase::CreateDxcCompiler()
-{
+void DirectXBase::CreateDxcCompiler() {
 	HRESULT hr;
 
 	// dxcCompilerを初期化
@@ -763,36 +735,31 @@ void DirectXBase::CreateDxcCompiler()
 }
 
 // FPS固定初期化
-void DirectXBase::InitializeFixFPS()
-{
+void DirectXBase::InitializeFixFPS() {
 	// 現在時間を記録する
-	reference_ = std::chrono::steady_clock::now();
+	reference_ = chrono::steady_clock::now();
 }
 
 // FPS固定更新
-void DirectXBase::UpdateFixFPS()
-{
+void DirectXBase::UpdateFixFPS() {
 	// 1/60秒ぴったりの時間
-	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	const chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
 	// 1/60秒よりわずかに短い時間
-	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+	const chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
 
 	// 現在時間を取得する
-	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+	chrono::steady_clock::time_point now = chrono::steady_clock::now();
 	// 前回記録からの経過時間を取得する
-	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+	chrono::microseconds elapsed = chrono::duration_cast<chrono::microseconds>(now - reference_);
 
 	// 1/60秒（よりわずかに短い時間）経っていない場合
 	if (elapsed < kMinCheckTime) {
 		// 1/60秒経過するまで微小なスリープを繰り返す
-		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+		while (chrono::steady_clock::now() - reference_ < kMinTime) {
 			// 1マイクロ秒スリープ
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
+			this_thread::sleep_for(chrono::microseconds(1));
 		}
 	}
 	// 現在の時間を記録する
-	reference_ = std::chrono::steady_clock::now();
+	reference_ = chrono::steady_clock::now();
 }
-
-
-

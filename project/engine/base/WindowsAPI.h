@@ -54,14 +54,20 @@ public:	// getter
 	/// <returns>HINSTANCE</returns>
 	HINSTANCE GetHInstance() const { return windowClass_.hInstance; }
 
-public:	// 定数
-	// クライアント領域のサイズ
-	static const int32_t kClientWidth = 1280;
-	static const int32_t kClientHeight = 720;
-
 private:
 	// ウィンドウハンドル
 	HWND hwnd = nullptr;
 	// ウィンドウクラスの設定
 	WNDCLASS windowClass_{};
+
+#pragma region 定数
+	public:
+	// クライアント領域のサイズ
+	static const int32_t kClientWidth = 1280;
+	static const int32_t kClientHeight = 720;
+
+private:
+	static constexpr UINT kTimerResolutionMs = 1; // タイマーの分解能[ms]
+	static constexpr wchar_t kWindowClassName[] = L"MyEngineWindowClass";
+#pragma endregion
 };

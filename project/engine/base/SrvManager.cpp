@@ -70,7 +70,7 @@ void SrvManager::CreateSRVForStructuredBuffer(uint32_t srvIndex, ID3D12Resource*
 	instancingSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
 	instancingSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	instancingSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	instancingSrvDesc.Buffer.FirstElement = 0;
+	instancingSrvDesc.Buffer.FirstElement = kFirstElementOffset;
 	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	instancingSrvDesc.Buffer.NumElements = numElements;
 	instancingSrvDesc.Buffer.StructureByteStride = structureByteStride;
@@ -97,8 +97,8 @@ void SrvManager::CreateSRVForTextureCube(uint32_t srvIndex, DirectX::TexMetadata
 void SrvManager::PreDraw()
 {
 	// 描画用のDescriptorHeapの設定
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descriptorHeaps[] = { descriptorHeap_.Get()};
-	dxBase_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps->GetAddressOf());
+	ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap_.Get()};
+	dxBase_->GetCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 }
 
 // SRVセットコマンド

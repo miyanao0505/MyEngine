@@ -1,11 +1,12 @@
 #include "EventScene.h"
-#include <imgui.h>
 #include "CameraManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
+#include "TimeManager.h"
 #include "MyTools.h"
+#include "DebugLineBase.h"
 
 // 初期化
 void EventScene::Initialize()
@@ -27,10 +28,7 @@ void EventScene::Initialize()
 #pragma endregion シーン初期化
 
 #pragma region 変数
-	isParticleActive_ = true;
-	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	
 #pragma endregion 変数
 }
 
@@ -52,34 +50,11 @@ void EventScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
-	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
-	}
-
-	DebugDraw();
+	DebugUpdate();
 #endif // _DEBUG
 
 	// 3Dオブジェクトの更新処理
 	
-
-	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
-			ParticleManager::ParticleGroup& group = *pair.second;
-			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
-
-				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
-				}
-
-				++it;
-				++index;
-			}
-		}
-	}
 
 	// パーティクルの更新処理
 	ParticleManager::GetInstance()->Update();
@@ -120,12 +95,24 @@ void EventScene::Draw()
 }
 
 #ifdef _DEBUG
+// デバッグ更新
+void EventScene::DebugUpdate()
+{
+	// Nキーを押したら
+	if (input_->TriggerKey(DIK_N)) {
+		// シーン切り替え依頼
+		SceneManager::GetInstance()->ChangeScene(SceneName::Title);
+	}
+
+	DebugDraw();
+}
+
 // デバッグ描画
 void EventScene::DebugDraw()
 {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(kDebugWindowPos, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSize, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Event");
 	ImGui::Text("N key : titleScene");

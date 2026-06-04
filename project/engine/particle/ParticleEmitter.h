@@ -1,6 +1,9 @@
 #pragma once
 #include "MyBase.h"
 #include "ParticleSystem.h"
+#ifdef _DEBUG
+#include <imgui.h>
+#endif // _DEBUG
 
 /// <summary>
 /// パーティクルタイプ
@@ -141,5 +144,14 @@ private:	// メンバ変数
 
 	// デルタタイム
 	const float kDeltaTime_ = 1.0f / 60.0f;
+
+#pragma region 定数
+	static constexpr float kEmitThresholdTime = 0.0f;
+
+#ifdef _DEBUG
+	static constexpr float kImGuiDragSpeed = 0.1f;
+	static constexpr ImVec2 kEmitButtonSize = { 100.0f, 50.0f };
+#endif // _DEBUG
+#pragma endregion
 };
 

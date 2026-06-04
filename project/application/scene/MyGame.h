@@ -7,11 +7,19 @@
 /// </summary>
 class MyGame : public MNFramework
 {
+private:
+#pragma region 定数
+	static constexpr MyBase::Vector3 kDefaultCameraTranslate{ 0.0f, 7.0f, -15.0f };
+	static constexpr MyBase::Vector3 kDefaultCameraRotate{ 0.4f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector3 kSubCameraTranslate{ -15.0f, 7.0f, 0.0f };
+	static constexpr MyBase::Vector3 kSubCameraRotate{ 0.3f, 1.57f, 0.0f };
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize() override;
+	void Initialize(const wchar_t* windowTitle) override;
 
 	/// <summary>
 	/// 終了

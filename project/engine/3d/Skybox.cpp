@@ -4,6 +4,22 @@
 #include "TextureManager.h"
 #include "imgui.h"
 
+#pragma region 定数
+const size_t Skybox::kVertexCount = 24;
+const size_t Skybox::kIndexCount = 36;
+
+#ifdef _DEBUG
+const float Skybox::kPi = 3.14159265359f;
+const float Skybox::kImGuiDragSpeed = 0.01f;
+const MyBase::ScopeF Skybox::kTranslateScope{ -100.0f, 100.0f };
+const MyBase::ScopeF Skybox::kRotateScope{ -kPi, kPi };
+const MyBase::ScopeF Skybox::kScaleScope{ 0.0f, 100.0f };
+#endif // _DEBUG
+
+const float Skybox::kDefaultShininess = 40.8f;
+const float Skybox::kDefaultReflectivity = 0.0f;
+#pragma endregion
+
 // 初期化
 void Skybox::Initialize(const std::string& filePath, MyBase::Vector3 scale)
 {
@@ -75,18 +91,18 @@ void Skybox::Draw()
 	SetCommonScreen();
 
 	// ルートパラメータ 1：座標変換行列(WVP)用のCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationMatrixBuffer_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootParam::kTransform), transformationMatrixBuffer_.Get()->GetGPUVirtualAddress());
 	// ルートパラメータ 4：カメラ情報用のCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(4, cameraBuffer_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootParam::kCamera), cameraBuffer_.Get()->GetGPUVirtualAddress());
 
 	// VBVの設定
 	dxBase_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 	// IndexBufferViewを設定
 	dxBase_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
 	// マテリアルCBufferの場所を設定
-	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialBuffer_.Get()->GetGPUVirtualAddress());
+	dxBase_->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootParam::kMaterial), materialBuffer_.Get()->GetGPUVirtualAddress());
 	// SRVのDescriptorTableの先頭を設定。2はrootParameter[2]である。
-	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_));
+	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootParam::kTexture), TextureManager::GetInstance()->GetSrvHandleGPU(textureFileName_));
 	// 描画！(DrawCall/ドローコール)。3頂点で1つのインスタンス。
 	dxBase_->GetCommandList()->DrawIndexedInstanced(UINT(kIndexCount), 1, 0, 0, 0);
 }
@@ -102,11 +118,11 @@ void Skybox::DebugDraw()
 		MyBase::Transform transform = GetTransform();
 
 		// 移動
-		ImGui::DragFloat3("Translate", &transform.translate.x, 0.01f, -100.0f, 100.0f);
+		ImGui::DragFloat3("Translate", &transform.translate.x, kImGuiDragSpeed, kTranslateScope.min, kTranslateScope.max);
 		// 回転
-		ImGui::DragFloat3("Rotate", &transform.rotate.x, 0.01f, -3.14f, 3.14f);
+		ImGui::DragFloat3("Rotate", &transform.rotate.x, kImGuiDragSpeed, kRotateScope.min, kRotateScope.max);
 		// スケール
-		ImGui::DragFloat3("Scale", &transform.scale.x, 0.01f, 0.00f, 100.0f);
+		ImGui::DragFloat3("Scale", &transform.scale.x, kImGuiDragSpeed, kScaleScope.min, kScaleScope.max);
 		
 		// 変更したTransformを適用
 		SetTransform(transform);
@@ -133,7 +149,7 @@ void Skybox::CreateRootSignature()
 	HRESULT hr;
 
 	// DescriptorRange作成
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	D3D12_DESCRIPTOR_RANGE descriptorRange[kDescriptorCount] = {};
 	descriptorRange[0].BaseShaderRegister = 0;														// 0から始まる
 	descriptorRange[0].NumDescriptors = 1;															// 数は1つ
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;									// SRVを使う
@@ -144,7 +160,7 @@ void Skybox::CreateRootSignature()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。複数設定できるので配列。
-	D3D12_ROOT_PARAMETER rootParameters[7] = {};
+	D3D12_ROOT_PARAMETER rootParameters[kRootParamCount] = {};
 	// PixelShader 用 CBV(レジスタ b0)
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;					// CBVを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
@@ -175,7 +191,7 @@ void Skybox::CreateRootSignature()
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		// 配列の長さ
 
 	// Samplerの設定
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[kSamplerCount] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;			// バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;		// 0～1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -211,7 +227,7 @@ void Skybox::CreateGraphicsPipeline()
 	CreateRootSignature();
 
 	// InputLayer
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[kInputElementCount] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;

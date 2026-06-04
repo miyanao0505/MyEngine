@@ -6,11 +6,17 @@
 #include "Player.h"
 #include "FollowCamera.h"
 #include "RailCamera.h"
+#include "RailFollowSystem.h"
 #include "Enemy.h"
 #include "Skydome.h"
 #include "StartSequence.h"
+#include "PauseController.h"
 #include "ParticleEmitter.h"
 #include "MyBase.h"
+#ifdef _DEBUG
+#include <imgui.h>
+#include "DebugLineManager.h"
+#endif // _DEBUG
 
 /// <summary>
 /// プレイヤーが実際に操作し、敵との戦闘や進行を行うゲーム本編のメインシーンを管理するクラス。
@@ -18,6 +24,50 @@
 /// </summary>
 class GameScene : public BaseScene
 {
+private:
+#pragma region 定数
+	// プレイヤー
+	static const MyBase::Vector3 kPlayerInitialTranslate;
+
+	// 敵
+	static const std::vector<MyBase::Vector3> kEnemyInitialTranslates;
+
+	// カメラ初期設定
+	static constexpr MyBase::Vector3 kCameraTranslate{ 0.0f, 5.0f,-40.0f };
+	static constexpr MyBase::Vector3 kCameraRotate{ 0.0f, 0.0f, 0.0f };
+
+	// ライト初期設定
+	static constexpr MyBase::Vector4 kClearLightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+	static constexpr MyBase::Vector3 kClearLightPos{ 0.0f, 0.0f, -40.0f };
+	static constexpr float kClearLightIntensity = 1.0f;
+	static constexpr float kClearLightRadius = 500.0f;
+	static constexpr float kClearLightDecay = 2.0f;
+
+	// Skydome初期設定
+	static constexpr MyBase::Vector3 kSkydomeTranslate{ 0.0f, 0.0f, 0.0f };
+	static constexpr MyBase::Vector3 kSkydomeScale{ 800.0f, 800.0f, 800.0f };
+
+	// ゲームクリア演出時間
+	static constexpr float kGameClearDuration = 1.0f;
+
+	// ゲームオーバー演出時間
+	static constexpr float kGameOverDuration = 1.0f;
+
+	// パーティクル加速フィールド初期設定
+	static constexpr MyBase::Vector3 kAcceleration{ 15.0f, 0.0f, 0.0f };
+	static constexpr MyBase::AABB kAccelArea{ .min{ -1.0f, -1.0f, -1.0f }, .max{1.0f, 1.0f, 1.0f} };
+
+	// レール通過点
+	static const std::vector<MyBase::Vector3> kRailPoints;
+#ifdef _DEBUG
+	// ImGui
+	static constexpr ImVec2 kDebugWindowPosScene{ 20.0f, 350.0f };
+	static constexpr ImVec2 kDebugWindowSizeScene{ 350.0f, 150.0f };
+	static constexpr ImVec2 kDebugWindowPosSettings{ 900.0f, 20.0f };
+	static constexpr ImVec2 kDebugWindowSizeSettings{ 350.0f, 150.0f };
+#endif // _DEBUG
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// 初期化
@@ -49,6 +99,11 @@ public:	// メンバ関数
 	/// デバッグ描画
 	/// </summary>
 	void DebugDraw() override;
+
+	/// <summary>
+	/// デバッグライン追加
+	/// </summary>
+	void AddDebugLines();
 #endif // _DEBUG
 
 	/// <summary>
@@ -59,19 +114,20 @@ public:	// メンバ関数
 
 private:	// メンバ変数
 	// スプライト
-
+	std::unique_ptr<Sprite> escapeUI_ = nullptr;
 	
 	// 3Dオブジェクト
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 	// 敵
-	std::unique_ptr<Enemy> enemy_ = nullptr;
+	std::list<std::unique_ptr<Enemy>> enemies_;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
 
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;
 	std::unique_ptr<RailCamera> railCamera_ = nullptr;
+	std::unique_ptr<RailFollowSystem> railFollowSystem_ = nullptr;
 	
 	// スポーンポイント
 	std::vector<std::unique_ptr<MyBase::PlayerSpawnData>> spawnPoints_;
@@ -79,7 +135,8 @@ private:	// メンバ変数
 	// シーケンス
 	std::unique_ptr<StartSequence> startSequence_ = nullptr;
 
-	// 3Dオブジェクト
+	// ポーズ管理
+	std::unique_ptr<PauseController> pauseController_ = nullptr;
 
 	// パーティクル
 
@@ -91,6 +148,9 @@ private:	// メンバ変数
 	MyBase::Vector3 acceleration_{};
 	MyBase::AABB area_{};
 
-	// デルタイム
-	const float kDeltaTime = 1.0f / 60.0f;
+	bool isGameClear_ = false;
+	float gameClearTimer_ = 0.0f;
+
+	bool isGameOver_ = false;
+	float gameOverTimer_ = 0.0f;
 };

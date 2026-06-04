@@ -4,13 +4,10 @@
 #include <vector>
 
 /// <summary>
-/// 基本データ型・構造体の集約クラス
+/// 基本データ型・構造体の集約
 /// </summary>
-class MyBase
+namespace MyBase
 {
-public:
-	// 構造体
-	
 	/// <summary>
 	/// 2次元ベクトル
 	/// </summary>
@@ -166,6 +163,16 @@ public:
 	};
 
 	/// <summary>
+	/// デバック3Dライン
+	/// </summary>
+	struct DebugLine {
+		Vector3 start;		//!< 始点
+		Vector3 end;		//!< 終点
+		Vector4 color;		//!< 色
+		bool isHit = false;	//!< 当たっているか(Collider用)
+	};
+
+	/// <summary>
 	/// 平面
 	/// </summary>
 	struct Plane {
@@ -200,8 +207,7 @@ public:
 	/// <summary>
 	/// バネ
 	/// </summary>
-	struct Spring
-	{
+	struct Spring {
 		Vector3 anchor;				// アンカー。固定された端の位置
 		float naturalLength;		// 自然長
 		float stiffness;			// 剛性。バネ定数k
@@ -268,7 +274,7 @@ public:
 	};
 
 	/// <summary>
-	/// 頂点データ(パーティクル)
+	/// 頂点データ(パーティクル用)
 	/// </summary>
 	struct ParticleVertexData {
 		Vector4 position;
@@ -277,6 +283,13 @@ public:
 		Vector4 color;
 	};
 	
+	/// <summary>
+	/// 頂点データ(デバック3Dライン用)
+	/// </summary>
+	struct DebugLineVertexData {
+		Vector3 position;
+		Vector4 color;
+	};
 
 	/// <summary>
 	/// マテリアル(モデル用)
@@ -301,12 +314,26 @@ public:
 	};
 
 	/// <summary>
+	/// マテリアル(デバッグ3Dライン用)
+	/// </summary>
+	struct DebugLineMaterial {
+		Vector4 color;
+	};
+
+	/// <summary>
 	/// トランスフォーメーション行列
 	/// </summary>
 	struct TransformationMatrix {
 		Matrix4x4 WVP;
 		Matrix4x4 World;
 		Matrix4x4 WorldInverseTranspose;
+	};
+
+	/// <summary>
+	/// トランスフォーメーション行列(デバッグ3Dライン用)
+	/// </summary>
+	struct DebugLineTransformationMatrix {
+		Matrix4x4 WVP;
 	};
 
 	/// <summary>
@@ -420,5 +447,21 @@ public:
 	struct PlayerSpawnData {
 		Vector3 translation;	// 平行移動
 		Vector3 rotation;		// 回転角
+	};
+
+	/// <summary>
+	/// 敵キャラの生成データ
+	/// </summary>
+	struct EnemySpawnData {
+		Vector3 translation;	// 平行移動
+		Vector3 rotation;		// 回転角
+	};
+
+	/// <summary>
+	/// レール上のデータ
+	/// </summary>
+	struct RailData {
+		Vector3 position;		// レール上の座標
+		Vector3 forward;		// 接線方向(進行方向)
 	};
 };

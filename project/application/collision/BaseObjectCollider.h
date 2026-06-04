@@ -8,6 +8,11 @@
 /// </summary>
 class BaseObjectCollider : public Collider
 {
+private:
+#pragma region 定数
+	static constexpr MyBase::Vector3 kZeroBector{ 0.0f, 0.0f, 0.0f };
+#pragma endregion
+
 public:	// メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -26,7 +31,7 @@ public:	// getter
 	/// ワールド座標を取得
 	/// </summary>
 	/// <returns>ワールド座標(Vector3)</returns>
-	MyBase::Vector3 GetWorldPosition() const override { return owner_ ? owner_->GetWorldPosition() : MyBase::Vector3{ 0.0f, 0.0f, 0.0f }; }
+	MyBase::Vector3 GetWorldPosition() const override { return owner_ ? owner_->GetWorldPosition() : kZeroBector; }
 
 private: // メンバ変数
 	BaseObject* owner_ = nullptr;	// 所有者のBaseObject

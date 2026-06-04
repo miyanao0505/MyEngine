@@ -20,7 +20,7 @@ void OffScreen::CreateRootSignature()
 	HRESULT hr;
 
 	// DescriptorRange作成
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	D3D12_DESCRIPTOR_RANGE descriptorRange[kSrvDescriptorCount] = {};
 	descriptorRange[0].BaseShaderRegister = 0;														// 0から始まる
 	descriptorRange[0].NumDescriptors = 1;															// 数は1つ
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;									// SRVを使う
@@ -31,7 +31,7 @@ void OffScreen::CreateRootSignature()
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成。複数設定できるので配列。
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	D3D12_ROOT_PARAMETER rootParameters[kRootParameterCount] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;		// DescriptorTableを使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;					// PixelShaderで使う
 	rootParameters[0].DescriptorTable.pDescriptorRanges = descriptorRange;				// Tableの中身の配列を指定	// Tableの中身の配列を指定
@@ -40,14 +40,14 @@ void OffScreen::CreateRootSignature()
 	descriptionRootSignature.NumParameters = _countof(rootParameters);		// 配列の長さ
 
 	// Samplerの設定
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[2] = {};
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[kStaticSamplerCount] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;			// バイリニアフィルタ
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;		// 0～1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;		// 比較しない
 	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;						// ありったけのMipmapを使う
-	staticSamplers[0].ShaderRegister = 0;								// レジスタ番号0を使う
+	staticSamplers[0].ShaderRegister = kMainTextureRegister;			// レジスタ番号0を使う
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	// PixelShaderで使う
 	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;			// バイリニアフィルタ
 	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;		// 0～1の範囲外をリピート
@@ -55,7 +55,7 @@ void OffScreen::CreateRootSignature()
 	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;		// 比較しない
 	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;						// ありったけのMipmapを使う
-	staticSamplers[1].ShaderRegister = 1;								// レジスタ番号0を使う
+	staticSamplers[1].ShaderRegister = kDepthTextureRegister;			// レジスタ番号0を使う
 	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;	// PixelShaderで使う
 	descriptionRootSignature.pStaticSamplers = staticSamplers;
 	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
@@ -114,12 +114,12 @@ void OffScreen::CreateGraphicsPipeline()
 	graphicsPipelineStateDesc.BlendState = blendDesc;															// BlendState
 	graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;													// RasterizerState
 	// 書き込むRTVの情報
-	graphicsPipelineStateDesc.NumRenderTargets = 1;
+	graphicsPipelineStateDesc.NumRenderTargets = kRenderTargetCount;
 	graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	// 利用するトポロジ(形状)のタイプ。三角形
 	graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	// どのように画面に色を打ち込むかの設定(気にしなくて良い)
-	graphicsPipelineStateDesc.SampleDesc.Count = 1;
+	graphicsPipelineStateDesc.SampleDesc.Count = kSampleCount;
 	graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	// DepthStencilStateの設定
@@ -132,7 +132,7 @@ void OffScreen::CreateGraphicsPipeline()
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;		// Depthのフォーマット
 	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;	// シェーダーのコンポーネントマッピング
 	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;	// 2Dテクスチャ
-	depthTextureSrvDesc.Texture2D.MipLevels = 1;
+	depthTextureSrvDesc.Texture2D.MipLevels = kMipLevelCount;
 	
 	// DepthStencilの設定
 	graphicsPipelineStateDesc.DepthStencilState = depthStencilDesc;
@@ -153,5 +153,5 @@ void OffScreen::Draw()
 	D3D12_GPU_DESCRIPTOR_HANDLE offScreenSrvHandleGPU = dxBase_->GetOffScreenSRVGPUDescriptorHandle();
 	dxBase_->GetCommandList()->SetGraphicsRootDescriptorTable(0, offScreenSrvHandleGPU);
 	// 頂点3つ描画
-	dxBase_->GetCommandList()->DrawInstanced(3, 1, 0, 0);
+	dxBase_->GetCommandList()->DrawInstanced(kFullScreenTriangleVertexCount, kInstanceCount, 0, 0);
 }

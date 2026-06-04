@@ -3,12 +3,15 @@
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 #pragma comment(lib, "dxcompiler.lib")
+#ifdef _DEBUG
+#include "DebugLineManager.h"
+#endif // _DEBUG
 
 // 初期化
-void MyGame::Initialize()
+void MyGame::Initialize(const wchar_t* windowTitle)
 {
 	// 基底クラスの初期化処理
-	MNFramework::Initialize();
+	MNFramework::Initialize(windowTitle);
 
 	// シーンマネージャに最初のシーンをセット
 	SceneManager::GetInstance()->ChangeScene(SceneName::Title);
@@ -16,12 +19,12 @@ void MyGame::Initialize()
 #pragma region カメラ
 	CameraManager::GetInstance()->AddCamera("default");
 	CameraManager::GetInstance()->SetCamera("default");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.4f, 0.0f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ 0.0f, 7.0f, -15.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kDefaultCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kDefaultCameraRotate);
 	CameraManager::GetInstance()->AddCamera("sub");
 	CameraManager::GetInstance()->SetCamera("sub");
-	CameraManager::GetInstance()->GetCamera()->SetRotate({ 0.3f, 1.57f, 0.0f });
-	CameraManager::GetInstance()->GetCamera()->SetTranslate({ -15.0f, 7.0f, 0.0f });
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kSubCameraTranslate);
+	CameraManager::GetInstance()->GetCamera()->SetRotate(kSubCameraRotate);
 
 	CameraManager::GetInstance()->SetCamera("default");
 #pragma endregion

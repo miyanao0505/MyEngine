@@ -1,68 +1,113 @@
 #include "GameScene.h"
-#include <imgui.h>
 #include "CameraManager.h"
 #include "LightManager.h"
 #include "ModelManager.h"
 #include "TextureManager.h"
 #include "ParticleManager.h"
 #include "AudioManager.h"
-#include"SceneManager.h"
+#include "SceneManager.h"
+#include "TimeManager.h"
 #include "MyTools.h"
+#ifdef _DEBUG
+#include "DebugLineBase.h"
+#endif // _DEBUG
 
 using namespace std;
+using namespace MyBase;
+
+#pragma region 定数
+const Vector3 GameScene::kPlayerInitialTranslate{ 0.0f, 0.0f, 0.0f };
+const vector<Vector3> GameScene::kEnemyInitialTranslates{
+	{ 5.0f, 0.0f, 500.0f },
+	{ 5.0f, 7.0f, 750.0f },
+	{ -5.0f, 0.0f, 1000.0f },
+	{ -5.0f, 7.0f, 1250.0f },
+	{ 5.0f, -7.0f, 1500.0f },
+	{ 5.0f, 7.0f, 1750.0f },
+};
+const vector<Vector3> GameScene::kRailPoints{
+	{ 0, 0, 0 },
+	{ 0, 0, 250 },
+	{ 40, 20, 500 },
+	{ -50, 0, 750 },
+	{ 50, -50, 1000 },
+	{ 0, 0, 1250 },
+	{ 0, 0, 1500 },
+	{ 0, 0, 2000 },
+};
+#pragma endregion
 
 // 初期化
-void GameScene::Initialize()
-{
+void GameScene::Initialize() {
 #pragma region シーン初期化
 	BaseScene::Initialize();
 
 #pragma region ライト
-	LightManager::GetInstance()->Initialize();
+	LightManager::GetInstance()->SetPointLightIntensity(0.0f);
+	LightManager::GetInstance()->SetDirectionalLightIntensity(1.0f);
+	LightManager::GetInstance()->SetSpotLightIntensity(0.0f);
 #pragma endregion ライト
 
 #pragma region スプライト
-	// テクスチャの読み込み
-
 	// スプライト
-
+	escapeUI_ = make_unique<Sprite>();
+	escapeUI_->Initialize("EscButton.png");
+	escapeUI_->SetPosition({ 20.0f, 20.0f });
+	escapeUI_->SetSize({ 100.0f, 50.0f });
 #pragma endregion スプライト
 
 #pragma region 3Dオブジェクト
 	// プレイヤー
-	player_ = std::make_unique<Player>();
-	player_->Initialize({ 0.0f, 0.0f, 0.0f });
+	player_ = make_unique<Player>();
+	player_->Initialize(kPlayerInitialTranslate);
 
 	// 敵
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize();
-	enemy_->SetPlayer(player_.get());
+	for(size_t i = 0; i < kEnemyInitialTranslates.size(); ++i){
+		unique_ptr<Enemy> enemy = make_unique<Enemy>();
+		enemy->Initialize();
+		enemy->SetPlayer(player_.get());
+		enemy->SetWorldPosition(kEnemyInitialTranslates[i]);
+		enemies_.push_back(std::move(enemy));
+	}
 
 	// 天球
-	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize("skyback.png", { 0.0f, 0.0f, 0.0f }, {100.0f, 100.0f, 100.0f});
+	skydome_ = make_unique<Skydome>();
+	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 	
 #pragma endregion 3Dオブジェクト
 
 #pragma region カメラ
+	CameraManager::GetInstance()->AddCamera("FollowCamera");
+	CameraManager::GetInstance()->SetCamera("FollowCamera");
 	// フォローカメラ
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	followCamera_->SetPlayer(player_.get());
+	followCamera_ = make_unique<FollowCamera>();
+	followCamera_->Initialize(CameraManager::GetInstance()->GetCamera());
 	// レールカメラ
-	railCamera_ = std::make_unique<RailCamera>();
-	railCamera_->Initialize({
-		{ 0.0f, 0.0f, -50.0f },
-		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 50.0f },
-		});
+	railCamera_ = make_unique<RailCamera>();
+	railCamera_->Initialize();
+	railCamera_->SetRailPoints(kRailPoints);
+	// レール追従システム
+	railFollowSystem_ = make_unique<RailFollowSystem>();
+	railFollowSystem_->Initialize(railCamera_.get(), followCamera_.get());
 #pragma endregion カメラ
 
 #pragma region シーケンス
 	// シーケンス
-	startSequence_ = std::make_unique<StartSequence>();
+	startSequence_ = make_unique<StartSequence>();
 	startSequence_->Initialize();
 #pragma endregion シーケンス
+
+#pragma region ポーズ管理
+	// ポーズコントローラ
+	pauseController_ = make_unique<PauseController>();
+	pauseController_->Initialize();
+#pragma endregion
+
+#pragma region デバッグ
+#ifdef _DEBUG
+	DebugLineBase::GetInstance()->Initialize(DirectXBase::GetInstance());
+#endif // _DEBUG
+#pragma endregion
 
 #pragma region パーティクル
 	// パーティクル
@@ -71,7 +116,7 @@ void GameScene::Initialize()
 
 #pragma region jsonローダー
 	// jsonローダー
-	jsonLoader_ = std::make_unique<JsonLoader>();
+	jsonLoader_ = make_unique<JsonLoader>();
 	LoadJsonFile("gameScene.json");
 #pragma endregion jsonローダー
 
@@ -79,33 +124,39 @@ void GameScene::Initialize()
 	// BGM
 
 	// お試し用
-	AudioManager::GetInstance()->LoadAudioWave("audio/fanfare.wav");
+	AudioManager::GetInstance()->LoadAudioWave("fanfare.wav");
 #pragma endregion オーディオ
 
 #pragma region 変数
 	isParticleActive_ = true;
 	isAccelerationField_ = false;
-	acceleration_ = { 15.0f, 0.0f, 0.0f };
-	area_ = { .min{-1.0f, -1.0f, -1.0f}, .max{1.0f, 1.0f, 1.0f} };
+	acceleration_ = kAcceleration;
+	area_ = kAccelArea;
+
+	isGameClear_ = false;
+	gameClearTimer_ = 0.0f;
 #pragma endregion 変数
 
 	// 最初の更新
-	railCamera_->Update(kDeltaTime);
-	followCamera_->Update(kDeltaTime);
+	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
 	CameraManager::GetInstance()->GetCamera()->Update();
-	player_->Update();
-	enemy_->Update();
+	escapeUI_->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
+	}
 	skydome_->Update();
+	followCamera_->SetTargetPosition(player_->GetWorldPosition());
+	followCamera_->UpdateLookAtTarget();
 
 #pragma endregion シーン初期化
 }
 
 // 終了
-void GameScene::Finalize()
-{
+void GameScene::Finalize() {
 	jsonLoader_.reset();
 	startSequence_.reset();
-	for(std::unique_ptr<MyBase::PlayerSpawnData>& spawnPoint : spawnPoints_){
+	for(unique_ptr<PlayerSpawnData>& spawnPoint : spawnPoints_){
 		spawnPoint.reset();
 	}
 	spawnPoints_.clear();
@@ -114,10 +165,17 @@ void GameScene::Finalize()
 
 	// 3Dオブジェクト
 	skydome_.reset();
-	enemy_.reset();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy.reset();
+	}
 	player_.reset();
 
 	// スプライト
+	escapeUI_.reset();
+	
+#ifdef _DEBUG
+	DebugLineBase::Finalize();
+#endif // _DEBUG
 
 	BaseScene::Finalize();
 }
@@ -128,54 +186,113 @@ void GameScene::Update()
 	BaseScene::Update();
 
 #ifdef _DEBUG
+	// デバッグ更新
 	DebugUpdate();
 #endif // _DEBUG
 
 	// カメラマネージャーの更新
-	CameraManager::GetInstance()->Update(kDeltaTime);
+	CameraManager::GetInstance()->Update(TimeManager::GetInstance()->GetDeltaTime());
 	// カメラの更新
 	if (CameraManager::GetInstance()->GetCamera()) {
 		CameraManager::GetInstance()->GetCamera()->Update();
 	}
 
-	// スタート演出中
-	if (!startSequence_->IsFinished()) {
-		startSequence_->Update(kDeltaTime);
+	// クリアフラグが立っている場合
+	if (isGameClear_) {
+		// クリアタイマー更新
+		gameClearTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		// タイマーが0以下になったら
+		if (gameClearTimer_ <= 0.0f) {
+			// シーン切り替え依頼
+			SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
+		}
 		return;
 	}
+
+	// ゲームオーバーフラグが立っている場合
+	if (isGameOver_) {
+		// ゲームオーバータイマー更新
+		gameOverTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
+		// タイマーが0以下になったら
+		if (gameOverTimer_ <= 0.0f) {
+			// シーン切り替え
+			SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
+		}
+		return;
+	}
+
+	// スタート演出中
+	if (!startSequence_->IsFinished()) {
+		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
+		return;
+	}
+
+	// ポーズ入力の更新
+	pauseController_->Update();
 	
+	// ポーズ中ならゲーム更新を止める
+	if (pauseController_->IsPaused()) return;
+
 	// クリア条件
-	if (enemy_->IsDead()) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
+	if (railFollowSystem_->IsFinished()) {
+		// ゲームクリアフラグON
+		isGameClear_ = true;
+		// クリアタイマーセット
+		gameClearTimer_ = kGameClearDuration;
+		return;
+	}
+
+	// ゲームオーバー条件
+	if (player_->IsDead()) {
+		// ゲームオーバーフラグON
+		isGameOver_ = true;
+		// ゲームオーバータイマーセット
+		gameOverTimer_ = kGameOverDuration;
 		return;
 	}
 
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
-	player_->Update();
+	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
 
-	// フォローカメラの更新
-	followCamera_->Update(kDeltaTime);
+	railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
+	railFollowSystem_->SetPlayerSpeed(player_->GetMoveSpeed());
+	railFollowSystem_->SetInput(player_->GetMoveInput());
 
-	// レールカメラの更新
-	railCamera_->Update(kDeltaTime);
+	// レール追従システムの更新
+	railFollowSystem_->Update();
+
+	Vector3 playerRotate = MyTools::Lerp(player_->GetObject3D()->GetRotate(), railFollowSystem_->GetPlayerRotate(), 0.1f);
+
+	player_->SetWorldPosition(railFollowSystem_->GetPlayerPosition());
+	player_->GetObject3D()->SetRotate(playerRotate);
 
 	// 敵の更新処理
-	enemy_->Update();
+	for (auto it = enemies_.begin(); it != enemies_.end(); ) {
+		const bool isDead = (*it)->IsDead();
+		// 敵死亡している場合はリストから削除
+		if(isDead || (*it)->GetWorldPosition().z < player_->GetWorldPosition().z + 50.0f){
+			it = enemies_.erase(it); // listから完全に削除
+		}
+		else {
+			(*it)->Update(TimeManager::GetInstance()->GetDeltaTime());
+			++it;
+		}
+	}
 
 	// 天球の更新
+	skydome_->GetObject3D()->SetTranslate(player_->GetWorldPosition());
 	skydome_->Update();
 
 	if (isAccelerationField_) {
-		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
+		for (pair<const string, unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {
 			ParticleManager::ParticleGroup& group = *pair.second;
 			int index = 0;
-			for (std::list<MyBase::Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
-				MyBase::Particle& particle = *it;
+			for (list<Particle>::iterator it = group.particles.begin(); it != group.particles.end();) {
+				Particle& particle = *it;
 
 				if (MyTools::IsCollision(area_, particle.transform.translate)) {
-					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(kDeltaTime, acceleration_));
+					particle.velocity = MyTools::Add(particle.velocity, MyTools::Multiply(TimeManager::GetInstance()->GetDeltaTime(), acceleration_));
 				}
 
 				++it;
@@ -188,11 +305,16 @@ void GameScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
+	escapeUI_->Update();
+
+#ifdef _DEBUG
+	// デバッグラインの追加
+	AddDebugLines();
+#endif // _DEBUG
 }
 
 // 描画
-void GameScene::Draw()
-{
+void GameScene::Draw() {
 #pragma region 3Dオブジェクト
 
 	// 3Dオブジェクトの描画準備。3Dオブジェクトの描画に共通のグラフィックスコマンドを積む
@@ -208,7 +330,9 @@ void GameScene::Draw()
 	skydome_->Draw();
 
 	// 敵の描画
-	enemy_->Draw();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->Draw();
+	}
 
 	// プレイヤーの描画
 	player_->Draw();
@@ -222,62 +346,48 @@ void GameScene::Draw()
 
 #pragma endregion パーティクル
 
+#pragma region デバッグライン
+#ifdef _DEBUG
+	DebugLineManager::GetInstance()->DrawAll();
+#endif // _DEBUG
+#pragma endregion デバッグライン
+
 #pragma region スプライト
 
 	// Spriteの描画準備。Spriteの描画に共通のグラフィックスコマンドを積む
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
+	escapeUI_->Draw();
 
 #pragma endregion スプライト
+
+#pragma region ポーズ関連
+	// ポーズ中はUIを最前面に描画
+	if (pauseController_->IsPaused()) {
+		pauseController_->Draw();
+	}
+#pragma endregion
 }
 
 #ifdef _DEBUG
 // デバッグ更新
-void GameScene::DebugUpdate()
-{
-	// Nキーを押したら
-	if (input_->IsKeyTriggered(DIK_N)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
-	}
-	// Mキーを押したら
-	if (input_->IsKeyTriggered(DIK_M)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
-	}
-	// Bキーを押したら
-	if (input_->IsKeyTriggered(DIK_B)) {
-		// シーン切り替え依頼
-		SceneManager::GetInstance()->ChangeScene(SceneName::Event);
+void GameScene::DebugUpdate() {
+	if (railCamera_->IsDebugMode()) {
+		Matrix4x4 wvp = CameraManager::GetInstance()->GetCamera()->GetViewProjectionMatrix();
+
+		DebugLineBase::GetInstance()->UpdateMatrix(wvp);
+		DebugLineBase::GetInstance()->UpdateMaterial({ 0.0f, 1.0f, 0.0f, 1.0f });
 	}
 
 	DebugDraw();
 }
 
 // デバッグ描画
-void GameScene::DebugDraw()
-{
+void GameScene::DebugDraw() {
 	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(20, 350), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
-
-	ImGui::Begin("Game");
-	ImGui::Text("N key : clearScene");
-	ImGui::Text("M key : gameOverScene");
-	ImGui::Text("B key : eventScene");
-	ImGui::Text("\n");
-	ImGui::Text("P key : particle On / Off");
-	ImGui::Text("O key : acceleration On / Off");
-	ImGui::Text("\n");
-	ImGui::Text("K key : sampleAudio Play");
-	ImGui::Text("U key : sampleAudio UnLoad");
-	ImGui::Text("L key : sampleAudio Load");
-	ImGui::End();
-
-	// 開発用UIの処理。実際に開発用のUIを出す場合はここをゲーム固有の処理に置き換える
-	ImGui::SetNextWindowPos(ImVec2(900, 20), ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(350, 150), ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowPos(kDebugWindowPosSettings, ImGuiCond_Once);		// ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(kDebugWindowSizeSettings, ImGuiCond_Once);		// ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Settings");
 	// Camera
@@ -286,30 +396,41 @@ void GameScene::DebugDraw()
 	followCamera_->DebugDraw();
 	// RailCamera
 	railCamera_->DebugDraw();
+	if(railCamera_->IsDebugMode()){
+		DebugLineBase::GetInstance()->DebugDraw();
+		DebugLineManager::GetInstance()->DebugDraw();
+	}
 
 	// Lighting
 	LightManager::GetInstance()->DebugDraw();
 
-	// Skybox
+	// Skydome
+	skydome_->DebugDraw();
 
 	// プレイヤー
 	player_->DebugDraw();
 
 	// 敵
-	enemy_->DebugDraw();
+	for(unique_ptr<Enemy>& enemy : enemies_){
+		enemy->DebugDraw();
+	}
 
 	// パーティクル
 	ParticleManager::GetInstance()->ImGui();
 
 	ImGui::End();
 }
+
+/// デバッグライン追加
+void GameScene::AddDebugLines() {
+	DebugLineManager::GetInstance()->DrawSpline(DebugLineCategory::rail, kRailPoints, 32,{ 0.0f, 1.0f, 0.0f, 1.0f });
+}
 #endif // _DEBUG
 
 // JSONファイルの読み込み
-void GameScene::LoadJsonFile([[maybe_unused]] const std::string& filePath)
-{
+void GameScene::LoadJsonFile([[maybe_unused]] const string& filePath) {
 	// レベルデータの読み込み
-	std::unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
+	unique_ptr<JsonLevelData> levelData = jsonLoader_->LoadFile(filePath);
 	
 	// 3Dオブジェクトの読み込み
 	for (const JsonObjectData& objectData : levelData->objects) {
