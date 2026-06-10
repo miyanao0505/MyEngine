@@ -35,7 +35,7 @@ void BaseObject::Initialize(const std::string& folderPath, const std::string& fi
 }
 
 // 更新
-void BaseObject::Update([[maybe_unused]] float deltaTime) {
+void BaseObject::Update() {
 	object_->Update();
 }
 

@@ -40,7 +40,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	virtual void Update(float deltaTime = 0.0f);
+	virtual void Update();
 	
 	/// <summary>
 	/// 描画

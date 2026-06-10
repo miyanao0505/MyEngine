@@ -405,6 +405,9 @@
     <ClCompile Include="application\bullet\BulletManager.cpp">
       <Filter>ソース ファイル\application\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="application\player\Reticle.cpp">
+      <Filter>ソース ファイル\application\player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\input\Input.h">
@@ -664,6 +667,9 @@
     </ClInclude>
     <ClInclude Include="application\bullet\BulletManager.h">
       <Filter>ヘッダー ファイル\application\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="application\player\Reticle.h">
+      <Filter>ヘッダー ファイル\application\player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
