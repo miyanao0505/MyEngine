@@ -3,6 +3,7 @@
 #include "MyTools.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "TimeManager.h"
 #include "imgui.h"
 
 using namespace std;
@@ -30,12 +31,12 @@ void EnemyBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vect
 }
 
 // 更新
-void EnemyBullet::Update(float deltaTime)
+void EnemyBullet::Update()
 {
 	// 移動処理
-	Move(deltaTime);
+	Move(TimeManager::GetInstance()->GetDeltaTime());
 	// デスタイマー更新
-	deathTimer_ -= deltaTime;
+	deathTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 	if (deathTimer_ <= 0.0f)
 	{
 		isDead_ = true;

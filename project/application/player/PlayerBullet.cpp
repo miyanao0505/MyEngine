@@ -3,6 +3,7 @@
 #include "MyTools.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "TimeManager.h"
 #include <imgui.h>
 #include <numbers>
 
@@ -42,15 +43,15 @@ void PlayerBullet::Initialize(const MyBase::Vector3& position, const MyBase::Vec
 }
 
 // 更新
-void PlayerBullet::Update(float deltaTime)
+void PlayerBullet::Update()
 {
 	if (isDead_) return; // 弾が消滅している場合は更新しない
 
 	// 移動処理
-	Move(deltaTime);
+	Move(TimeManager::GetInstance()->GetDeltaTime());
 
 	// 寿命を減らす
-	deathTimer_ -= deltaTime;
+	deathTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 	// 寿命が尽きたら消滅フラグを立てる
 	if (deathTimer_ <= 0.0f) {
 		isDead_ = true;

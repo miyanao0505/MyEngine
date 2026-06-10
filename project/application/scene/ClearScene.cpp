@@ -69,9 +69,9 @@ void ClearScene::Initialize()
 
 	// 最初の更新
 	CameraManager::GetInstance()->GetCamera()->Update();
-	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	player_->Update();
 	skydome_->Update();
-	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	clearLogo_->Update();
 }
 
 // 終了
@@ -106,13 +106,13 @@ void ClearScene::Update()
 
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新
-	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	player_->Update();
 
 	// 天球の更新
 	skydome_->Update();
 
 	// ロゴの更新
-	clearLogo_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	clearLogo_->Update();
 
 	if (isAccelerationField_) {
 		for (std::pair<const std::string, std::unique_ptr<ParticleManager::ParticleGroup>>& pair : ParticleManager::GetInstance()->GetParticleGroups()) {

@@ -7,6 +7,7 @@
 #include "StraightBullet.h"
 #include "BulletType.h"
 #include "BulletOwner.h"
+#include "TimeManager.h"
 #include "MyTools.h"
 #include <imgui.h>
 #include <numbers>
@@ -58,7 +59,7 @@ void Player::Initialize(const MyBase::Vector3& position) {
 }
 
 /// 更新
-void Player::Update(float deltaTime) {
+void Player::Update() {
 	// 移動処理
 	ReadMoveInput();
 
@@ -70,13 +71,13 @@ void Player::Update(float deltaTime) {
 
 	// 攻撃のクールタイムを減らす
 	if (attackCoolTime_ > 0) {
-		attackCoolTime_ -= deltaTime;
+		attackCoolTime_ -= TimeManager::GetInstance()->GetDeltaTime();
 	}
 
 	// ダメージリアクションの更新
 	if (damageReactionTimer_ > 0.0f) {
 		// ダメージリアクションタイマーの更新
-		damageReactionTimer_ -= deltaTime;
+		damageReactionTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 		DamageReactionUpdate();
 	}
 }

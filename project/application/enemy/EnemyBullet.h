@@ -35,8 +35,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="deltaTime">前フレームからの経過時間[秒]</param>
-	void Update(float deltaTime) override;
+	void Update() override;
 
 	/// <summary>
 	/// 描画

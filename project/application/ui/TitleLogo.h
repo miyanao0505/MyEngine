@@ -36,7 +36,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(float deltaTime);
+	void Update();
 
 	/// <summary>
 	/// 描画

@@ -145,9 +145,9 @@ void GameScene::Initialize() {
 	CameraManager::GetInstance()->GetCamera()->SetTranslate(kCameraTranslate);
 	CameraManager::GetInstance()->GetCamera()->Update();
 	escapeUI_->Update();
-	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	player_->Update();
 	for(unique_ptr<Enemy>& enemy : enemies_){
-		enemy->Update(TimeManager::GetInstance()->GetDeltaTime());
+		enemy->Update();
 	}
 	skydome_->Update();
 	followCamera_->SetTargetPosition(player_->GetWorldPosition());
@@ -258,7 +258,7 @@ void GameScene::Update()
 
 	// 3Dオブジェクトの更新処理
 	// プレイヤーの更新処理
-	player_->Update(TimeManager::GetInstance()->GetDeltaTime());
+	player_->Update();
 
 	railFollowSystem_->SetPlayerPosition(player_->GetWorldPosition());
 	railFollowSystem_->SetPlayerSpeed(player_->GetMoveSpeed());
@@ -280,7 +280,7 @@ void GameScene::Update()
 			it = enemies_.erase(it); // listから完全に削除
 		}
 		else {
-			(*it)->Update(TimeManager::GetInstance()->GetDeltaTime());
+			(*it)->Update();
 			++it;
 		}
 	}

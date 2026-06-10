@@ -1,5 +1,6 @@
 #include "TitleLogo.h"
 #include "ModelManager.h"
+#include "TimeManager.h"
 #include "MyTools.h"
 
 #pragma region 定数
@@ -54,20 +55,20 @@ void TitleLogo::Finalize() {
 }
 
 // 更新
-void TitleLogo::Update(float deltaTime) {
-	Move(deltaTime);
+void TitleLogo::Update() {
+	Move(TimeManager::GetInstance()->GetDeltaTime());
 
 	if (titleCharFirst_) {
-		titleCharFirst_->Update(deltaTime);
+		titleCharFirst_->Update();
 	}
 	if (titleCharSecond_) {
-		titleCharSecond_->Update(deltaTime);
+		titleCharSecond_->Update();
 	}
 	if (titleCharThird_) {
-		titleCharThird_->Update(deltaTime);
+		titleCharThird_->Update();
 	}
 	if (startButton_) {
-		startButton_->Update(deltaTime);
+		startButton_->Update();
 	}
 }
 

@@ -39,7 +39,7 @@ void Skydome::Initialize(const std::string& filePath, MyBase::Vector3 position, 
 	object_->SetTranslate(position);
 }
 
-void Skydome::Update([[maybe_unused]] float deltaTime)
+void Skydome::Update()
 {
 	object_->Update();
 }

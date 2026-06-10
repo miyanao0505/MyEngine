@@ -42,7 +42,7 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(float deltaTime = 0) override;
+	void Update() override;
 
 	/// <summary>
 	/// 描画

@@ -38,14 +38,14 @@ void ClearLogo::Finalize() {
 }
 
 /// 更新
-void ClearLogo::Update(float deltaTime) {
-	Move(deltaTime);
+void ClearLogo::Update() {
+	Move(TimeManager::GetInstance()->GetDeltaTime());
 
 	if (clearChar_) {
-		clearChar_->Update(deltaTime);
+		clearChar_->Update();
 	}
 	if (transitionButton_) {
-		transitionButton_->Update(deltaTime);
+		transitionButton_->Update();
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "TextureManager.h"
 #include "BaseObjectCollider.h"
 #include "CollisionConfig.h"
+#include "TimeManager.h"
 #include "Player.h"
 #include "MyTools.h"
 
@@ -104,7 +105,7 @@ void Enemy::Initialize() {
 }
 
 // 更新
-void Enemy::Update(float deltaTime) {
+void Enemy::Update() {
 	// 敵の更新処理
 	if (isDead_) {
 		return; // 死んでいる場合は更新しない
@@ -124,27 +125,27 @@ void Enemy::Update(float deltaTime) {
 			it = bullets_.erase(it); // listから完全に削除
 		}
 		else {
-			it->get()->Update(deltaTime); // 弾の更新
+			it->get()->Update(); // 弾の更新
 			++it;
 		}
 	}
 
 	// 攻撃のクールタイムを減らす
 	if (attackCoolTime_ > 0.0f) {
-		attackCoolTime_ -= deltaTime;
+		attackCoolTime_ -= TimeManager::GetInstance()->GetDeltaTime();
 	}
 
 	// ダメージリアクションの更新
 	if(damageReactionTimer_ > 0.0f){
 		// ダメージリアクションタイマーの更新
-		damageReactionTimer_ -= deltaTime;
+		damageReactionTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 		DamageReactionUpdate();
 	}
 
 	// 死亡リアクションの更新
 	if(deadReactionTimer_ > 0.0f){
 		// 死亡リアクションタイマーの更新
-		deadReactionTimer_ -= deltaTime;
+		deadReactionTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
 		DeadReactionUpdate();
 	}
 
