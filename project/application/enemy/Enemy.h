@@ -22,6 +22,7 @@ private:
 	static constexpr float kAttackCoolTime = 1.5f;			// 攻撃クールタイム
 
 	static const int kMaxBulletCount;					// 最大弾数
+	static const float kAttackDistance;					// 攻撃する距離
 	static const float kBulletDrawDistance;				// プレイヤーからの距離がこれ以上の弾は描画しない
 	static const MyBase::Vector3 kBulletSpawnOffset;	// 弾の発射位置オフセット
 

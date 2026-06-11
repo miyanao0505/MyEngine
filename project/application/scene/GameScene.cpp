@@ -276,7 +276,7 @@ void GameScene::Update()
 	for (auto it = enemies_.begin(); it != enemies_.end(); ) {
 		const bool isDead = (*it)->IsDead();
 		// 敵死亡している場合はリストから削除
-		if(isDead || (*it)->GetWorldPosition().z < player_->GetWorldPosition().z + 50.0f){
+		if(isDead || (*it)->GetWorldPosition().z < player_->GetWorldPosition().z - 50.0f){
 			it = enemies_.erase(it); // listから完全に削除
 		}
 		else {

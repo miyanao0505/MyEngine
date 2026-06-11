@@ -16,6 +16,7 @@ using namespace MyBase;
 
 #pragma region 定数定義
 const int Enemy::kMaxBulletCount = 10;								// 最大弾数
+const float Enemy::kAttackDistance = 300.0f;						// 攻撃する距離
 const float Enemy::kBulletDrawDistance = 150.0f;					// プレイヤーからの距離がこれ以上の弾は描画しない
 const Vector3 Enemy::kBulletSpawnOffset = { 0.0f, 0.0f, -1.0f };	// 弾の発射位置オフセット
 
@@ -284,7 +285,13 @@ void Enemy::Attack() {
 }
 
 bool Enemy::CanAttack() {
-	if (bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0.0f) {
+	// プレイヤーとの距離
+	float distance = MyTools::Length(MyTools::Subtract(GetWorldPosition(), player_->GetWorldPosition()));
+
+	// 攻撃可能距離以内であり、プレイヤーより前に居る
+	// 弾の上限数内であり、クールタイム回復している時
+	if (distance <= kAttackDistance && GetWorldPosition().z > player_->GetWorldPosition().z && 
+		bullets_.size() < kMaxBulletCount && attackCoolTime_ <= 0.0f) {
 		return true;
 	}
 	return false;
@@ -292,8 +299,11 @@ bool Enemy::CanAttack() {
 
 void Enemy::SpawnBullet() {
 	auto bullet = std::make_unique<EnemyBullet>();
+
+	// プレイヤーを狙う
+	Vector3 target = player_->GetWorldPosition();
 	Vector3 direction = Matrix::TransformNormal({ 0.0f, 0.0f, 1.0f }, object_->GetWorldTransform()->GetWorldMatrix());
-	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(direction));
+	bullet->Initialize(MyTools::Add(object_->GetTranslate(), direction), MyTools::Normalize(MyTools::Subtract(target, GetWorldPosition())));
 	bullet->SetAttackPower(attackPower_);
 	bullets_.emplace_back(std::move(bullet));
 	// 攻撃のクールタイムを設定
