@@ -288,9 +288,6 @@
     <ClCompile Include="engine\scene\BaseScene.cpp">
       <Filter>ソース ファイル\engine\scene</Filter>
     </ClCompile>
-    <ClCompile Include="application\player\PlayerBullet.cpp">
-      <Filter>ソース ファイル\application\player</Filter>
-    </ClCompile>
     <ClCompile Include="engine\math\Matrix.cpp">
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
@@ -526,9 +523,6 @@
     </ClInclude>
     <ClInclude Include="engine\scene\BaseScene.h">
       <Filter>ヘッダー ファイル\engine\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="application\player\PlayerBullet.h">
-      <Filter>ヘッダー ファイル\application\player</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Matrix.h">
       <Filter>ヘッダー ファイル\engine\math</Filter>

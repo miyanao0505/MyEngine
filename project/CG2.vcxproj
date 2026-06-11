@@ -24,7 +24,6 @@
     <ClCompile Include="application\enemy\state\EnemyBaseState.cpp" />
     <ClCompile Include="application\enemy\state\EnemyStateRoot.cpp" />
     <ClCompile Include="application\player\Player.cpp" />
-    <ClCompile Include="application\player\PlayerBullet.cpp" />
     <ClCompile Include="application\player\Reticle.cpp" />
     <ClCompile Include="application\sequence\ClearSequence.cpp" />
     <ClCompile Include="application\sequence\GameOverSequence.cpp" />
@@ -107,7 +106,6 @@
     <ClInclude Include="application\enemy\state\EnemyBaseState.h" />
     <ClInclude Include="application\enemy\state\EnemyStateRoot.h" />
     <ClInclude Include="application\player\Player.h" />
-    <ClInclude Include="application\player\PlayerBullet.h" />
     <ClInclude Include="application\player\Reticle.h" />
     <ClInclude Include="application\sequence\ClearSequence.h" />
     <ClInclude Include="application\sequence\GameOverSequence.h" />
