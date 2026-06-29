@@ -28,12 +28,12 @@ public:	// getter
 	/// 
 	/// </summary>
 	/// <returns></returns>
-	const Vector2& GetScreenPosition() const { return screenPosition_; }
+	const MyBase::Vector2& GetScreenPosition() const { return screenPosition_; }
 
 private:	// メンバ変数
 	Sprite* sprite_ = nullptr;
 
-	Vector2 screenPosition_;
+	MyBase::Vector2 screenPosition_;
 
 	bool isVisible_ = true;
 };
