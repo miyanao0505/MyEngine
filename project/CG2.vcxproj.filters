@@ -403,7 +403,7 @@
       <Filter>ソース ファイル\application\bullet</Filter>
     </ClCompile>
     <ClCompile Include="application\player\Reticle.cpp">
-      <Filter>ソース ファイル\application\player</Filter>
+      <Filter>ソース ファイル\application\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -663,7 +663,7 @@
       <Filter>ヘッダー ファイル\application\bullet</Filter>
     </ClInclude>
     <ClInclude Include="application\player\Reticle.h">
-      <Filter>ヘッダー ファイル\application\player</Filter>
+      <Filter>ヘッダー ファイル\application\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

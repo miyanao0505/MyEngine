@@ -3,6 +3,7 @@
 #include <list>
 #include "TextureManager.h"
 #include "BaseBullet.h"
+#include "Reticle.h"
 
 /// <summary>
 /// プレイヤーキャラクターを表すクラス。
@@ -161,6 +162,12 @@ public:	// setter
 	/// <param name="pos">新たな座標</param>
 	void SetWorldPosition(const MyBase::Vector3& pos);
 
+	/// <summary>
+	/// レティクルを設定
+	/// </summary>
+	/// <param name="reticle">レティクルのポインタ</param>
+	void SetReticle(Reticle* reticle) { reticle_ = reticle; }
+
 private:	// メンバ変数		
 	// ステータス
 	int hp_;
@@ -179,4 +186,7 @@ private:	// メンバ変数
 
 	// 弾の発射位置
 	MyBase::Vector3 bulletSpawnPosition_ = { 0.0f, 0.0f, 1.0f }; // プレイヤーの前方に発射
+
+	// 照準用のレティクル
+	Reticle* reticle_ = nullptr;
 };

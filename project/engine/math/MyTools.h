@@ -2,6 +2,7 @@
 #include <cmath>
 #include <numbers>
 #include "MyBase.h"
+#include "Matrix.h"
 
 /// <summary>
 /// ゲームエンジン・3Dグラフィックス向けユーティリティクラス

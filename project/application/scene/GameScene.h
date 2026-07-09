@@ -114,10 +114,13 @@ public:	// メンバ関数
 	void LoadJsonFile([[maybe_unused]] const std::string& filePath) override;
 
 private:	// メンバ変数
-	// スプライト
+#pragma region スプライト
+	// UI
+	std::unique_ptr<Reticle> reticle_ = nullptr;
 	std::unique_ptr<Sprite> escapeUI_ = nullptr;
-	
-	// 3Dオブジェクト
+#pragma endregion
+
+#pragma region 3Dオブジェクト
 	// プレイヤー
 	std::unique_ptr<Player> player_ = nullptr;
 	// 敵
@@ -126,6 +129,9 @@ private:	// メンバ変数
 	BulletManager* bulletManager_ = nullptr;
 	// 天球
 	std::unique_ptr<Skydome> skydome_ = nullptr;
+	// 3DReticle
+	std::unique_ptr<BaseObject> reticle3D_ = nullptr;
+#pragma endregion
 
 	// カメラ
 	std::unique_ptr<FollowCamera> followCamera_ = nullptr;

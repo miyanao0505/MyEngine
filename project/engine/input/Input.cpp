@@ -144,18 +144,18 @@ void Input::MousePosUpdate() {
 	GetCursorPos(&pos);
 	ScreenToClient(winApi_->GetHwnd(), &pos);
 
-	mousePos_ = pos;
+	mousePos_ = { static_cast<float>(pos.x), static_cast<float>(pos.y) };
 }
 
 /// マウス移動量更新
 void Input::MouseMoveUpdate() {
-	mouseMove_.x = mouseState_.lX;
-	mouseMove_.y = mouseState_.lY;
+	mouseMove_.x = static_cast<float>(mouseState_.lX);
+	mouseMove_.y = static_cast<float>(mouseState_.lY);
 }
 
 /// マウスホイールの更新
 void Input::MouseWheelUpdate() {
-	wheelDelta_ = mouseState_.lZ;
+	wheelDelta_ = static_cast<int>(mouseState_.lZ);
 }
 #pragma endregion
 
@@ -236,12 +236,12 @@ bool Input::ReleaseMouse(MouseButton button) {
 }
 
 /// マウスカーソルの座標取得
-POINT Input::GetMousePosition() {
+MyBase::Vector2 Input::GetMousePosition() {
 	return mousePos_;
 }
 
 /// マウスカーソルの移動距離取得
-POINT Input::GetMouseMove() {
+MyBase::Vector2 Input::GetMouseMove() {
 	return mouseMove_;
 }
 

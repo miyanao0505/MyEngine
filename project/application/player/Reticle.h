@@ -1,40 +1,16 @@
 #pragma once
 #include "Sprite.h"
-#include "BaseObject.h"
-#include "MyBase.h"
 #include <memory>
-
-/// 前方宣言
-class Enemy;
 
 /// <summary>
 /// レティクルクラス
 /// </summary>
-class Reticle : public BaseObject {
+class Reticle {
 private:
 #pragma region 定数
-	static constexpr float kDistance = 100.0f;
-	static const MyBase::Vector3 kInitialScale;
-
-#ifdef _DEBUG
-	static const float kDebugMoveSpeed;
-	static const MyBase::ScopeF kTranslateScope;
-	static const MyBase::ScopeF kRotateScope;
-	static const MyBase::ScopeF kScaleScope;
-#endif // _DEBUG
-
+	static constexpr float kDistance3DReticle = 100.0f;
 #pragma endregion
-
 public:	// メンバ関数
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	Reticle() = default;
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Reticle() = default;
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -43,63 +19,51 @@ public:	// メンバ関数
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw() override;
-
-#ifdef _DEBUG
-	/// <summary>
-	/// デバッグ描画
-	/// </summary>
-	void DebugDraw() override;
-#endif // _DEBUG
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="playerPos"></param>
-	/// <param name="forward"></param>
-	void FollowPlayer(const MyBase::Vector3& playerPos, const MyBase::Vector3& forward);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="target"></param>
-	void LockOn(Enemy* target);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void ReleaseLockOn();
+	void Draw();
 
 public:	// getter
 	/// <summary>
-	/// 
+	/// スクリーン座標を取得
 	/// </summary>
-	/// <returns></returns>
-	MyBase::Vector3 GetWorldPosition() const override { return BaseObject::GetWorldPosition(); }
+	/// <returns>スクリーン座標</returns>
+	const MyBase::Vector2& GetScreenPosition() const { return screenPosition_; }
 
 	/// <summary>
-	/// 
+	/// ワールド座標を取得
 	/// </summary>
-	/// <returns></returns>
-	bool IsLockOn() const { return target_ != nullptr; }
+	/// <returns>ワールド座標</returns>
+	const MyBase::Vector3& GetWorldPosition() const { return worldPosition_; }
 
 	/// <summary>
-	/// 
+	/// 表示状態を取得
 	/// </summary>
-	/// <returns></returns>
-	Enemy* GetTarget() const { return target_; }
+	/// <returns>表示状態</returns>
+	bool isVisible() const { return isVisible_; }
+
+public:	// setter
+	/// <summary>
+	/// 表示状態を設定
+	/// </summary>
+	/// <param name="visible">表示状態</param>
+	void SetVisible(bool visible) { isVisible_ = visible; }
+
 private:	// メンバ関数
-	
+	/// <summary>
+	/// ワールド座標をスクリーン座標に変換
+	/// </summary>
+	void UpdateWorldPosition();
 
 private:	// メンバ変数
-	Enemy* target_ = nullptr;
+	std::unique_ptr<Sprite> sprite_ = nullptr;
 
-	MyBase::Vector3 position_;
+	MyBase::Vector2 screenPosition_;
+
+	MyBase::Vector3 worldPosition_;
 
 	bool isVisible_ = true;
 };

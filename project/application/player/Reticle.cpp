@@ -1,62 +1,59 @@
 #include "Reticle.h"
-#include "Enemy.h"
+#include "Input.h"
+#include "CameraManager.h"
 #include "MyTools.h"
+#include "Matrix.h"
+#include "WindowsAPI.h"
 
-using namespace std;
 using namespace MyBase;
-
-#pragma region 定数
-const Vector3 Reticle::kInitialScale = { 1.0f, 1.0f, 1.0f };
-#pragma endregion
 
 /// 初期化
 void Reticle::Initialize() {
-	BaseObject::Initialize("reticle", "reticle.obj");
+	// スクリーン座標の初期化
+	screenPosition_ = Input::GetInstance()->GetMousePosition();
 
-	SetName("Reticle");
-
-	object_->SetScale(kInitialScale);
+	// スプライトの初期化
+	sprite_ = std::make_unique<Sprite>();
+	sprite_->Initialize("2DReticle.png");
+	sprite_->SetAnchorPoint({ 0.5f, 0.5f });
+	sprite_->SetPosition(screenPosition_);
+	sprite_->SetSize({ 50.0f, 50.0f });
 }
 
 /// 更新
 void Reticle::Update() {
-	// ロックオン中
-	if (target_ != nullptr) {
-		position_ = target_->GetWorldPosition();
+	screenPosition_ = Input::GetInstance()->GetMousePosition();
+
+	UpdateWorldPosition();
+
+	sprite_->SetPosition(screenPosition_);
+
+	if (sprite_) {
+		sprite_->Update();
 	}
-
-	// 座標をセット
-	object_->SetTranslate(position_);
-
-	// 更新
-	object_->Update();
 }
 
 /// 描画
 void Reticle::Draw() {
-	if (!isVisible_) return;
-
-	object_->Draw();
+	if (sprite_) {
+		sprite_->Draw();
+	}
 }
 
-#ifdef _DEBUG
-/// デバッグ描画
-void Reticle::DebugDraw() {
+/// ワールド座標をスクリーン座標に変換
+void Reticle::UpdateWorldPosition() {
+	auto camera = CameraManager::GetInstance()->GetCamera();
 
-}
-#endif // _DEBUG
+	Matrix4x4 matViewport = Matrix::MakeViewportMatrix(0.0f, 0.0f, WindowsAPI::kClientWidth, WindowsAPI::kClientHeight, 0.0f, 1.0f);
+	Matrix4x4 matVPV = Matrix::Multiply(camera->GetViewProjectionMatrix(), matViewport);
+	Matrix4x4 matInverseVPV = Matrix::Inverse(matVPV);
 
-/// 
-void Reticle::FollowPlayer(const Vector3& playerPos, const Vector3& forward) {
-	position_ = MyTools::Add(playerPos, MyTools::Multiply(kDistance, forward));
-}
+	Vector3 posNear = Vector3{ screenPosition_.x, screenPosition_.y, 0.0f };
+	Vector3 posFar = Vector3{ screenPosition_.x, screenPosition_.y, 1.0f };
 
-/// 
-void Reticle::LockOn(Enemy* target) {
-	target_ = target;
-}
+	posNear = Matrix::Transform(posNear, matInverseVPV);
+	posFar = Matrix::Transform(posFar, matInverseVPV);
 
-/// 
-void Reticle::ReleaseLockOn() {
-	target_ = nullptr;
+	Vector3 mouseDirection = MyTools::Normalize(MyTools::Subtract(posFar, posNear));
+	worldPosition_ = MyTools::Add(posNear, MyTools::Multiply(kDistance3DReticle, mouseDirection));
 }
