@@ -41,6 +41,7 @@ void BaseObject::Update() {
 
 // 描画
 void BaseObject::Draw() {
+	if (isDisabled_) return;
 	object_->Draw();
 }
 

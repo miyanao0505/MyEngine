@@ -6,6 +6,7 @@
 #include <wrl.h>
 #include <array>
 #include "WindowsAPI.h"
+#include "MyBase.h"
 #include "InputTypes.h"
 
 /// <summary>
@@ -153,13 +154,13 @@ public:	// getter
 	/// マウスカーソルの座標取得
 	/// </summary>
 	/// <returns>マウスカーソルの座標</returns>
-	POINT GetMousePosition();
+	MyBase::Vector2 GetMousePosition();
 
 	/// <summary>
 	/// マウスカーソルの移動距離取得
 	/// </summary>
 	/// <returns>マウスカーソルの移動距離</returns>
-	POINT GetMouseMove();
+	MyBase::Vector2 GetMouseMove();
 
 	/// <summary>
 	/// マウスホイールの回転量取得
@@ -187,7 +188,6 @@ private: // メンバ変数
 #pragma region マウス
 	// マウスのデバイス
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouseDevice_;
-	HRESULT mouseHr;
 
 	// マウス状態(DirectInput)
 	DIMOUSESTATE2 mouseState_;
@@ -199,11 +199,11 @@ private: // メンバ変数
 	std::array <BYTE, kMouseCount> mouseButtons_;
 
 	// 前回のマウスカーソルの座標
-	POINT mousePosPre_;
+	MyBase::Vector2 mousePosPre_;
 	// マウスカーソルの座標
-	POINT mousePos_;
+	MyBase::Vector2 mousePos_;
 	// マウスの移動量
-	POINT mouseMove_;
+	MyBase::Vector2 mouseMove_;
 
 	// ホイールの回転量
 	int wheelDelta_ = 0;

@@ -17,8 +17,7 @@ namespace {
 /// 
 
 /// 範囲内の値を返す関数
-float MyTools::Clamp(float num, float min, float max)
-{
+float MyTools::Clamp(float num, float min, float max) {
 	if (num < min) {
 		return min;
 	} else if (num > max) {
@@ -28,14 +27,12 @@ float MyTools::Clamp(float num, float min, float max)
 	}
 }
 
-float MyTools::Lerp(float num1, float num2, float t)
-{
+float MyTools::Lerp(float num1, float num2, float t) {
 	return num1 * (1 - t) + num2 * t;
 }
 
 /// 三角形の存在する平面情報を求める関数
-MyBase::Plane MyTools::TriangleToPlane(const MyBase::Triangle& triangle)
-{
+MyBase::Plane MyTools::TriangleToPlane(const MyBase::Triangle& triangle) {
 	// ベクトルv1,v2を求める
 	MyBase::Vector3 v1 = Subtract(triangle.vertices[1], triangle.vertices[0]);
 	MyBase::Vector3 v2 = Subtract(triangle.vertices[2], triangle.vertices[1]);
@@ -50,8 +47,7 @@ MyBase::Plane MyTools::TriangleToPlane(const MyBase::Triangle& triangle)
 }
 
 /// 球と球の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Sphere& sphere1, const MyBase::Sphere& sphere2)
-{
+bool MyTools::IsCollision(const MyBase::Sphere& sphere1, const MyBase::Sphere& sphere2) {
 	// 2つの球の中心点間の距離を求める
 	float distance = Length(Subtract(sphere2.center, sphere1.center));
 
@@ -64,8 +60,7 @@ bool MyTools::IsCollision(const MyBase::Sphere& sphere1, const MyBase::Sphere& s
 }
 
 /// 球と平面の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& plane)
-{
+bool MyTools::IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& plane) {
 	// 平面と球の中心点との距離
 	float k = Dot(plane.normal, sphere.center) - plane.distance;
 	// 絶対値
@@ -79,8 +74,7 @@ bool MyTools::IsCollision(const MyBase::Sphere& sphere, const MyBase::Plane& pla
 }
 
 /// 直線と平面の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Line& line, const MyBase::Plane& plane)
-{
+bool MyTools::IsCollision(const MyBase::Line& line, const MyBase::Plane& plane) {
 	// まず垂直判定を行うために、法線と線の内積を求める
 	float dot = Dot(plane.normal, line.diff);
 
@@ -94,8 +88,7 @@ bool MyTools::IsCollision(const MyBase::Line& line, const MyBase::Plane& plane)
 }
 
 /// 半直線と平面の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane)
-{
+bool MyTools::IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane) {
 	// まず垂直判定を行うために、法線と線の内積を求める
 	float dot = Dot(plane.normal, ray.diff);
 
@@ -115,8 +108,7 @@ bool MyTools::IsCollision(const MyBase::Ray& ray, const MyBase::Plane& plane)
 }
 
 /// 線分と平面の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Segment& segment, const MyBase::Plane& plane)
-{
+bool MyTools::IsCollision(const MyBase::Segment& segment, const MyBase::Plane& plane) {
 	// まず垂直判定を行うために、法線と線の内積を求める
 	float dot = Dot(plane.normal, segment.diff);
 
@@ -136,8 +128,7 @@ bool MyTools::IsCollision(const MyBase::Segment& segment, const MyBase::Plane& p
 }
 
 /// 三角形と直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& line)
-{
+bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& line) {
 	// 三角形の存在する平面を求める
 	MyBase::Plane plane = TriangleToPlane(triangle);
 
@@ -166,8 +157,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Line& 
 }
 
 /// 三角形と半直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& ray)
-{
+bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& ray) {
 	// 三角形の存在する平面を求める
 	MyBase::Plane plane = TriangleToPlane(triangle);
 
@@ -195,8 +185,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Ray& r
 }
 
 /// 三角形と線分の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Segment& segment)
-{
+bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Segment& segment) {
 	// 三角形の存在する平面を求める
 	MyBase::Plane plane = TriangleToPlane(triangle);
 
@@ -224,8 +213,7 @@ bool MyTools::IsCollision(const MyBase::Triangle& triangle, const MyBase::Segmen
 }
 
 /// AABB同士の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2) {
 	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && 
 		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && 
 		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z))	{
@@ -234,8 +222,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb1, const MyBase::AABB& aabb2)
 	return false;
 }
 /// AABBと球の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere) {
 	// 最近接点を求める
 	MyBase::Vector3 closestPoint{
 		std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
@@ -253,8 +240,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Sphere& sphere
 }
 
 /// AABBと直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line) {
 	// 近い方(tが小さい)
 	float tNearX = min((aabb.min.x - line.origin.x) / line.diff.x, (aabb.max.x - line.origin.x) / line.diff.x);
 	float tNearY = min((aabb.min.y - line.origin.y) / line.diff.y, (aabb.max.y - line.origin.y) / line.diff.y);
@@ -277,8 +263,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Line& line)
 }
 
 /// AABBと半直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray) {
 	// 近い方(tが小さい)
 	float tNearX = min((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
 	float tNearY = min((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
@@ -303,8 +288,7 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Ray& ray)
 }
 
 /// AABBと線分の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segment)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segment) {
 	// 各衝突点の媒介変数
 	float tXmin = (aabb.min.x - segment.origin.x) / segment.diff.x;
 	float tXmax = (aabb.max.x - segment.origin.x) / segment.diff.x;
@@ -337,16 +321,14 @@ bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Segment& segme
 }
 
 /// AABBと点の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Vector3& point)
-{
+bool MyTools::IsCollision(const MyBase::AABB& aabb, const MyBase::Vector3& point) {
 	return (point.x >= aabb.min.x && point.x <= aabb.max.x &&
 			point.y >= aabb.min.y && point.y <= aabb.max.y &&
 			point.z >= aabb.min.z && point.z <= aabb.max.z);
 }
 
 /// OBBと球の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Sphere& sphere)
-{
+bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Sphere& sphere) {
 	// ワールド行列
 	MyBase::Matrix4x4 obbWorldMatrix = {
 		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
@@ -366,8 +348,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Sphere& sphere)
 }
 
 /// OBBと直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Line& line)
-{
+bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Line& line) {
 	// ワールド行列
 	MyBase::Matrix4x4 obbWorldMatrix = {
 		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
@@ -387,8 +368,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Line& line)
 }
 
 /// OBBと半直線の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray)
-{
+bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray) {
 	// ワールド行列
 	MyBase::Matrix4x4 obbWorldMatrix = {
 		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
@@ -408,8 +388,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Ray& ray)
 }
 
 /// OBBと線分の衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment)
-{
+bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment) {
 	// ワールド行列
 	MyBase::Matrix4x4 obbWorldMatrix = {
 		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
@@ -429,8 +408,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb, const MyBase::Segment& segment
 }
 
 /// OBBとOBBの衝突判定を返す関数
-bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
-{
+bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2) {
 	// AABBでの各頂点座標(ローカル座標)を求める
 	MyBase::Vector3 obb1Vertex[kOBBVertexCount] =
 	{
@@ -554,8 +532,7 @@ bool MyTools::IsCollision(const MyBase::OBB& obb1, const MyBase::OBB& obb2)
 }
 
 /// 分離軸に投影された軸成分から投影線分長を算出
-float MyTools::LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3)
-{
+float MyTools::LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Vector3* e1, const MyBase::Vector3* e2, const MyBase::Vector3* e3) {
 	float r1 = fabsf(Dot(*Seg, *e1));
 	float r2 = fabsf(Dot(*Seg, *e2));
 	float r3 = e3 ? (fabsf(Dot(*Seg, *e3))) : 0;
@@ -572,49 +549,41 @@ float MyTools::LenSegOnSeparateAxis(const MyBase::Vector3* Seg, const MyBase::Ve
 ///
 
 /// 2次元ベクトルの加算を返す関数
-MyBase::Vector2 MyTools::Add(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
-{
+MyBase::Vector2 MyTools::Add(const MyBase::Vector2& v1, const MyBase::Vector2& v2) {
 	return MyBase::Vector2{ v1.x + v2.x, v1.y + v2.y };
 }
 
 /// 2次元ベクトルの減算を返す関数
-MyBase::Vector2 MyTools::Subtract(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
-{
+MyBase::Vector2 MyTools::Subtract(const MyBase::Vector2& v1, const MyBase::Vector2& v2) {
 	return MyBase::Vector2{ v1.x - v2.x, v1.y - v2.y };
 }
 
 /// 2次元ベクトルのスカラー倍
-MyBase::Vector2 MyTools::Multiply(float scalar, const MyBase::Vector2 v)
-{
+MyBase::Vector2 MyTools::Multiply(float scalar, const MyBase::Vector2 v) {
 	return MyBase::Vector2{ scalar * v.x, scalar * v.y };
 }
 
 /// 2次元ベクトルの内積を返す関数
-float MyTools::Dot(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
-{
+float MyTools::Dot(const MyBase::Vector2& v1, const MyBase::Vector2& v2) {
 	return v1.x * v2.x + v1.y * v2.y;
 }
 
 /// 2次元ベクトルのクロス積(外積)を返す関数
-float MyTools::Cross(const MyBase::Vector2& v1, const MyBase::Vector2& v2)
-{
+float MyTools::Cross(const MyBase::Vector2& v1, const MyBase::Vector2& v2) {
 	return v1.x * v2.y - v1.y * v2.x;
 }
 
 /// 2次元ベクトルの長さ(ノルム)を返す関数
-float MyTools::Length(float x, float y)
-{
+float MyTools::Length(float x, float y) {
 	return sqrtf(x * x + y * y);
 }
 
-float MyTools::Length(const MyBase::Vector2& v)
-{
+float MyTools::Length(const MyBase::Vector2& v) {
 	return Length(v.x, v.y);
 }
 
 /// 2次元ベクトルの正規化した値を返す関数
-MyBase::Vector2 MyTools::Normalize(float x, float y)
-{
+MyBase::Vector2 MyTools::Normalize(float x, float y) {
 	float length = Length(x, y);
 	if (length != 0) {
 		x = x / length;
@@ -623,14 +592,12 @@ MyBase::Vector2 MyTools::Normalize(float x, float y)
 	return MyBase::Vector2{ x,y };
 }
 
-MyBase::Vector2 MyTools::Normalize(const MyBase::Vector2& v)
-{
+MyBase::Vector2 MyTools::Normalize(const MyBase::Vector2& v) {
 	return Normalize(v.x, v.y);
 }
 
 /// 2次元ベクトルの方向を求める関数
-MyBase::Vector2 MyTools::Direction(float x, float y)
-{
+MyBase::Vector2 MyTools::Direction(float x, float y) {
 	return Normalize(x, y);
 }
 
@@ -643,44 +610,37 @@ MyBase::Vector2 MyTools::Direction(float x, float y)
 /// 
 
 /// 3次元ベクトルの加算を返す関数
-MyBase::Vector3 MyTools::Add(const MyBase::Vector3& v1, const MyBase::Vector3& v2)
-{
+MyBase::Vector3 MyTools::Add(const MyBase::Vector3& v1, const MyBase::Vector3& v2) {
 	return MyBase::Vector3{ v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
 
 /// 3次元ベクトルの減算を返す関数
-MyBase::Vector3 MyTools::Subtract(const MyBase::Vector3& v1, const MyBase::Vector3& v2)
-{
+MyBase::Vector3 MyTools::Subtract(const MyBase::Vector3& v1, const MyBase::Vector3& v2) {
 	return MyBase::Vector3{ v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
 }
 
 /// 3次元ベクトルのスカラー倍を返す関数
-MyBase::Vector3 MyTools::Multiply(float scalar, const MyBase::Vector3& v)
-{
+MyBase::Vector3 MyTools::Multiply(float scalar, const MyBase::Vector3& v) {
 	return MyBase::Vector3{ scalar * v.x, scalar * v.y, scalar * v.z };
 }
 
 /// 3次元ベクトルの内積を返す関数
-float MyTools::Dot(const MyBase::Vector3& v1, const MyBase::Vector3& v2)
-{
+float MyTools::Dot(const MyBase::Vector3& v1, const MyBase::Vector3& v2) {
 	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 /// 3次元ベクトルのクロス積(外積)を返す関数
-MyBase::Vector3 MyTools::Cross(const MyBase::Vector3& v1, const MyBase::Vector3& v2)
-{
+MyBase::Vector3 MyTools::Cross(const MyBase::Vector3& v1, const MyBase::Vector3& v2) {
 	return MyBase::Vector3{ v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x };
 }
 
 /// 3次元ベクトル長さ(ノルム)を返す関数
-float MyTools::Length(const MyBase::Vector3& v)
-{
+float MyTools::Length(const MyBase::Vector3& v) {
 	return sqrtf(Dot(v, v));
 }
 
 /// 3次元ベクトルの正規化した値を返す関数
-MyBase::Vector3 MyTools::Normalize(const MyBase::Vector3& v)
-{
+MyBase::Vector3 MyTools::Normalize(const MyBase::Vector3& v) {
 	float length = Length(v);
 	float x = v.x, y = v.y, z = v.z;
 	if (length != 0) {
@@ -693,8 +653,7 @@ MyBase::Vector3 MyTools::Normalize(const MyBase::Vector3& v)
 }
 
 /// 3次元ベクトルを標準化して返す関数
-MyBase::Vector3 MyTools::Standardization(const MyBase::Vector3& v)
-{
+MyBase::Vector3 MyTools::Standardization(const MyBase::Vector3& v) {
 	float mean = kZero;					// 平均
 	float standardDeviation = kOne;		// 標準偏差
 	float meanValue = (v.x + v.y + v.z) / 3.0f;	// 平均値
@@ -711,14 +670,12 @@ MyBase::Vector3 MyTools::Standardization(const MyBase::Vector3& v)
 }
 
 /// 線形補間
-MyBase::Vector3 MyTools::Lerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t)
-{
+MyBase::Vector3 MyTools::Lerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t) {
 	return Add(vector1, Multiply(t, Subtract(vector2, vector1)));
 }
 
 /// 球面線形補間
-MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t)
-{
+MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vector3& vector2, float t) {
 	// 正規化ベクトルを求める
 	MyBase::Vector3 start = Normalize(vector1);
 	MyBase::Vector3 end = Normalize(vector2);
@@ -757,8 +714,7 @@ MyBase::Vector3 MyTools::Slerp(const MyBase::Vector3& vector1, const MyBase::Vec
 }
 
 /// CatmullRom補間
-MyBase::Vector3 MyTools::CatmullRomInterpolation(const MyBase::Vector3& p0, const MyBase::Vector3& p1, const MyBase::Vector3& p2, const MyBase::Vector3& p3, float t)
-{
+MyBase::Vector3 MyTools::CatmullRomInterpolation(const MyBase::Vector3& p0, const MyBase::Vector3& p1, const MyBase::Vector3& p2, const MyBase::Vector3& p3, float t) {
 	const float s = kHalf;	// 数式に出てくる 1/2 のこと。
 	float t2 = t * t;	// t の2乗
 	float t3 = t2 * t;	// t の3乗
@@ -787,8 +743,7 @@ MyBase::Vector3 MyTools::CatmullRomInterpolation(const MyBase::Vector3& p0, cons
 }
 
 /// CatmullRomスプライン曲線上の座標を得る
-MyBase::Vector3 MyTools::CatmullRomPosition(const std::vector<MyBase::Vector3>& points, float t)
-{
+MyBase::Vector3 MyTools::CatmullRomPosition(const std::vector<MyBase::Vector3>& points, float t) {
 	assert(points.size() >= 4 && "制御点は4点以上必要です");
 
 	// 区間数は制御点の数-1
@@ -833,14 +788,12 @@ MyBase::Vector3 MyTools::CatmullRomPosition(const std::vector<MyBase::Vector3>& 
 }
 
 /// 正射影ベクトル(ベクトル射影)を返す関数
-MyBase::Vector3 MyTools::Project(const MyBase::Vector3& v1, const MyBase::Vector3& v2)
-{
+MyBase::Vector3 MyTools::Project(const MyBase::Vector3& v1, const MyBase::Vector3& v2) {
 	return Multiply(Dot(v1, Normalize(v2)), Normalize(v2));
 }
 
 /// 最近接点を返す関数
-MyBase::Vector3 MyTools::ClosestPoint(const MyBase::Vector3& point, const MyBase::Segment& segment)
-{
+MyBase::Vector3 MyTools::ClosestPoint(const MyBase::Vector3& point, const MyBase::Segment& segment) {
 	MyBase::Vector3 ans;
 
 	ans = Add(segment.origin, Project(Subtract(point, segment.origin), segment.diff));
@@ -849,8 +802,7 @@ MyBase::Vector3 MyTools::ClosestPoint(const MyBase::Vector3& point, const MyBase
 }
 
 /// 垂直なベクトルを求める関数
-MyBase::Vector3 MyTools::Perpendicular(const MyBase::Vector3& vector)
-{
+MyBase::Vector3 MyTools::Perpendicular(const MyBase::Vector3& vector) {
 	if (vector.x != kZero || vector.y != kZero) {
 		return { -vector.y, vector.x, kZero };
 	}
@@ -859,8 +811,7 @@ MyBase::Vector3 MyTools::Perpendicular(const MyBase::Vector3& vector)
 }
 
 /// 反射ベクトルを求める関数
-MyBase::Vector3 MyTools::Reflect(const MyBase::Vector3& input, const MyBase::Vector3& normal)
-{
+MyBase::Vector3 MyTools::Reflect(const MyBase::Vector3& input, const MyBase::Vector3& normal) {
 	MyBase::Vector3 r;
 	float iDotn = Dot(input, normal);
 
@@ -870,7 +821,6 @@ MyBase::Vector3 MyTools::Reflect(const MyBase::Vector3& input, const MyBase::Vec
 
 	return r;
 }
-
 /// 
 /// 3次元ベクトル ここまで
 /// 
