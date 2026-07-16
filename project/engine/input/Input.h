@@ -188,7 +188,6 @@ private: // メンバ変数
 #pragma region マウス
 	// マウスのデバイス
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouseDevice_;
-	HRESULT mouseHr;
 
 	// マウス状態(DirectInput)
 	DIMOUSESTATE2 mouseState_;

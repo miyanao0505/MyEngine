@@ -8,15 +8,17 @@
 #include "BulletType.h"
 #include "BulletOwner.h"
 #include "TimeManager.h"
+#include "Reticle.h"
 #include "MyTools.h"
 #include <imgui.h>
 #include <numbers>
 
 using namespace std;
 using namespace numbers;
+using namespace MyBase;
 
 #pragma region 定数
-const MyBase::Vector3 Player::kInitialScale = { 1.0f, 1.0f, 1.0f };
+const Vector3 Player::kInitialScale = { 1.0f, 1.0f, 1.0f };
 const float Player::kColliderRadius = 1.0f;
 
 const int Player::kInitialHP = 50;
@@ -24,9 +26,9 @@ const int Player::kInitialAttackPower = 10;
 
 #ifdef _DEBUG
 const float Player::kDebugMoveSpeed = 0.01f;
-const MyBase::ScopeF Player::kTranslateScope = { -100.0f, 100.0f };
-const MyBase::ScopeF Player::kRotateScope = { -pi_v<float>, pi_v<float> };
-const MyBase::ScopeF Player::kScaleScope = { 0.01f, 10.0f };
+const ScopeF Player::kTranslateScope = { -100.0f, 100.0f };
+const ScopeF Player::kRotateScope = { -pi_v<float>, pi_v<float> };
+const ScopeF Player::kScaleScope = { 0.01f, 10.0f };
 #endif // _DEBUG
 #pragma endregion
 
@@ -36,7 +38,7 @@ Player::~Player() {
 }
 
 /// 初期化
-void Player::Initialize(const MyBase::Vector3& position) {
+void Player::Initialize(const Vector3& position) {
 	// ベースオブジェクトの初期化
 	BaseObject::Initialize("player", "player.obj");
 	SetName("Player");
@@ -167,7 +169,8 @@ void Player::ReadMoveInput() {
 void Player::Attack() {
 	// 攻撃不可なら早期リターン
 	if (!CanAttack()) return;
-	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+	if (Input::GetInstance()->PushKey(DIK_SPACE) ||
+		Input::GetInstance()->PushMouse(MouseButton::Left)) {
 		// 弾の生成
 		SpawnBullet();
 	}
@@ -184,8 +187,9 @@ bool Player::CanAttack() {
 /// 弾生成
 void Player::SpawnBullet() {
 	auto bullet = std::make_unique<StraightBullet>(BulletOwner::Player);
-	MyBase::Vector3 direction = Matrix::TransformNormal(kBulletOffset, object_->GetWorldTransform()->GetWorldMatrix());
-	bullet->Initialize(object_->GetTranslate(), MyTools::Normalize(direction));
+	Vector3 position = MyTools::Add(object_->GetTranslate(), MyTools::Normalize(Matrix::TransformNormal(kBulletOffset, object_->GetWorldTransform()->GetWorldMatrix())));
+	Vector3 direction = MyTools::Normalize(MyTools::Subtract(reticle_->GetWorldPosition(), position));
+	bullet->Initialize(position, direction);
 	bullet->SetSpeed(kBulletSpeed);
 	bullet->SetDamage(attackPower_);
 	BulletManager::GetInstance()->AddBullet(std::move(bullet));
@@ -211,7 +215,7 @@ void Player::OnCollision([[maybe_unused]] Collider* other) {
 }
 
 /// ワールド座標を設定
-void Player::SetWorldPosition(const MyBase::Vector3& pos) {
+void Player::SetWorldPosition(const Vector3& pos) {
 	externalPosition_ = pos;
 	object_->SetTranslate(pos);
 	object_->Update();
