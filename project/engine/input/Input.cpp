@@ -89,17 +89,19 @@ void Input::KeyboardUpdate() {
 #pragma region マウス
 // マウスの初期化
 void Input::MouseInitialize() {
+	HRESULT hr;
+
 	// マウスデバイスの生成
-	mouseHr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
-	assert(SUCCEEDED(mouseHr));
+	hr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
+	assert(SUCCEEDED(hr));
 
 	// 入力データ形式のセット
-	mouseHr = mouseDevice_->SetDataFormat(&c_dfDIMouse2);
-	assert(SUCCEEDED(mouseHr));
+	hr = mouseDevice_->SetDataFormat(&c_dfDIMouse2);
+	assert(SUCCEEDED(hr));
 
 	// 排他制御レベルのセット
-	mouseHr = mouseDevice_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	assert(SUCCEEDED(mouseHr));
+	hr = mouseDevice_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(SUCCEEDED(hr));
 }
 
 /// マウスの更新
@@ -119,14 +121,18 @@ void Input::MouseUpdate() {
 
 /// マウス情報の更新
 void Input::MouseStateUpdate() {
+	HRESULT hr;
+
 	// 前回のマウス状態を保存
 	mouseStatePre_ = mouseState_;
 
-	if (FAILED(mouseHr)) {
-		// マウス情報の取得開始
+	// マウス情報の取得開始
+	hr = mouseDevice_->Acquire();
+	// マウス状態取得
+	mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState_);
+
+	if (FAILED(hr)) {
 		mouseDevice_->Acquire();
-		// マウス状態取得
-		mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
 	}
 
 	// マウスボタン状態を配列に反映
@@ -144,18 +150,18 @@ void Input::MousePosUpdate() {
 	GetCursorPos(&pos);
 	ScreenToClient(winApi_->GetHwnd(), &pos);
 
-	mousePos_ = pos;
+	mousePos_ = { static_cast<float>(pos.x), static_cast<float>(pos.y) };
 }
 
 /// マウス移動量更新
 void Input::MouseMoveUpdate() {
-	mouseMove_.x = mouseState_.lX;
-	mouseMove_.y = mouseState_.lY;
+	mouseMove_.x = static_cast<float>(mouseState_.lX);
+	mouseMove_.y = static_cast<float>(mouseState_.lY);
 }
 
 /// マウスホイールの更新
 void Input::MouseWheelUpdate() {
-	wheelDelta_ = mouseState_.lZ;
+	wheelDelta_ = static_cast<int>(mouseState_.lZ);
 }
 #pragma endregion
 
@@ -236,12 +242,12 @@ bool Input::ReleaseMouse(MouseButton button) {
 }
 
 /// マウスカーソルの座標取得
-POINT Input::GetMousePosition() {
+MyBase::Vector2 Input::GetMousePosition() {
 	return mousePos_;
 }
 
 /// マウスカーソルの移動距離取得
-POINT Input::GetMouseMove() {
+MyBase::Vector2 Input::GetMouseMove() {
 	return mouseMove_;
 }
 

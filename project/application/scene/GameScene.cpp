@@ -49,7 +49,10 @@ void GameScene::Initialize() {
 #pragma endregion ライト
 
 #pragma region スプライト
-	// スプライト
+	// UI
+	reticle_ = make_unique<Reticle>();
+	reticle_->Initialize();
+
 	escapeUI_ = make_unique<Sprite>();
 	escapeUI_->Initialize("EscButton.png");
 	escapeUI_->SetPosition({ 20.0f, 20.0f });
@@ -60,6 +63,7 @@ void GameScene::Initialize() {
 	// プレイヤー
 	player_ = make_unique<Player>();
 	player_->Initialize(kPlayerInitialTranslate);
+	player_->SetReticle(reticle_.get());
 
 	// 敵
 	for(size_t i = 0; i < kEnemyInitialTranslates.size(); ++i){
@@ -78,6 +82,10 @@ void GameScene::Initialize() {
 	skydome_ = make_unique<Skydome>();
 	skydome_->Initialize("skyback.png", kSkydomeTranslate, kSkydomeScale);
 	
+	// 3Dレティクル
+	reticle3D_ = make_unique<BaseObject>();
+	reticle3D_->Initialize("debug/cube", "cube.obj");
+	reticle3D_->SetDisabled(true);
 #pragma endregion 3Dオブジェクト
 
 #pragma region カメラ
@@ -149,6 +157,8 @@ void GameScene::Initialize() {
 	for(unique_ptr<Enemy>& enemy : enemies_){
 		enemy->Update();
 	}
+	reticle3D_->Update();
+	reticle3D_->GetObject3D()->SetTransform({ {0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f} });
 	skydome_->Update();
 	followCamera_->SetTargetPosition(player_->GetWorldPosition());
 	followCamera_->UpdateLookAtTarget();
@@ -168,6 +178,7 @@ void GameScene::Finalize() {
 	followCamera_.reset();
 
 	// 3Dオブジェクト
+	reticle3D_.reset();
 	skydome_.reset();
 	bulletManager_->Finalize();
 	for(unique_ptr<Enemy>& enemy : enemies_){
@@ -177,6 +188,7 @@ void GameScene::Finalize() {
 
 	// スプライト
 	escapeUI_.reset();
+	reticle_.reset();
 	
 #ifdef _DEBUG
 	DebugLineBase::Finalize();
@@ -202,25 +214,16 @@ void GameScene::Update()
 		CameraManager::GetInstance()->GetCamera()->Update();
 	}
 
-	// クリアフラグが立っている場合
 	if (isGameClear_) {
-		// クリアタイマー更新
 		gameClearTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
-		// タイマーが0以下になったら
 		if (gameClearTimer_ <= 0.0f) {
-			// シーン切り替え依頼
 			SceneManager::GetInstance()->ChangeScene(SceneName::Clear);
 		}
 		return;
 	}
-
-	// ゲームオーバーフラグが立っている場合
 	if (isGameOver_) {
-		// ゲームオーバータイマー更新
 		gameOverTimer_ -= TimeManager::GetInstance()->GetDeltaTime();
-		// タイマーが0以下になったら
 		if (gameOverTimer_ <= 0.0f) {
-			// シーン切り替え
 			SceneManager::GetInstance()->ChangeScene(SceneName::GameOver);
 		}
 		return;
@@ -231,6 +234,7 @@ void GameScene::Update()
 		startSequence_->Update(TimeManager::GetInstance()->GetDeltaTime());
 		return;
 	}
+	reticle3D_->SetDisabled(false);
 
 	// ポーズ入力の更新
 	pauseController_->Update();
@@ -240,18 +244,14 @@ void GameScene::Update()
 
 	// クリア条件
 	if (railFollowSystem_->IsFinished()) {
-		// ゲームクリアフラグON
 		isGameClear_ = true;
-		// クリアタイマーセット
 		gameClearTimer_ = kGameClearDuration;
 		return;
 	}
 
 	// ゲームオーバー条件
 	if (player_->IsDead()) {
-		// ゲームオーバーフラグON
 		isGameOver_ = true;
-		// ゲームオーバータイマーセット
 		gameOverTimer_ = kGameOverDuration;
 		return;
 	}
@@ -313,7 +313,12 @@ void GameScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	// スプライトの更新処理
+	reticle_->Update();
 	escapeUI_->Update();
+
+	// 3Dレティクルの更新処理
+	reticle3D_->GetObject3D()->SetTranslate(reticle_->GetWorldPosition());
+	reticle3D_->Update();
 
 #ifdef _DEBUG
 	// デバッグラインの追加
@@ -336,6 +341,9 @@ void GameScene::Draw() {
 
 	// 天球の描画
 	skydome_->Draw();
+
+	// 3Dレティクルの描画
+	reticle3D_->Draw();
 
 	// 弾の描画
 	bulletManager_->Draw();
@@ -369,6 +377,7 @@ void GameScene::Draw() {
 	TextureManager::GetInstance()->SetCommonScreen();
 
 	// 全てのSprite個々の描画
+	reticle_->Draw();
 	escapeUI_->Draw();
 
 #pragma endregion スプライト
