@@ -17,6 +17,9 @@ class SrvManager;
 class ParticleManager
 {
 public:	// パーティクルグループ構造体
+	/// <summary>
+	/// 同一設定で生成されるパーティクル群を管理する構造体
+	/// </summary>
 	struct ParticleGroup {
 		MyBase::MaterialData materialData;
 		std::list<MyBase::Particle> particles;
@@ -43,7 +46,9 @@ public:	// メンバ関数
 	static ParticleManager* GetInstance();
 	
 	// ------ Passkey Idion ------
-	// コントラクタを渡すための鍵
+	/// <summary>
+	/// コントラクタを渡すための鍵
+	/// </summary>
 	class ConstructorKey {
 	private:
 		ConstructorKey() = default;

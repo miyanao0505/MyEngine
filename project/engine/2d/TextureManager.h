@@ -15,6 +15,9 @@
 class TextureManager
 {
 private: // テクスチャデータ構造体
+	/// <summary>
+	/// テクスチャリソースとSRV情報を保持する構造体
+	/// </summary>
 	struct TextureData {
 		DirectX::TexMetadata metadata;
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource;

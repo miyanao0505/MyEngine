@@ -9,6 +9,9 @@
 class RailCamera
 {
 private:	// 構造体
+	/// <summary>
+	/// レール経路上の距離と対応するパラメータ値を保持する構造体
+	/// </summary>
 	struct ArcLengthSample {
 		float t;
 		float length;
