@@ -12,6 +12,9 @@
 class CameraManager
 {
 private:	// 構造体
+	/// <summary>
+	/// カメラシェイクの状態を保持する構造体
+	/// </summary>
 	struct ShakeState {
 		bool active{ false };
 		float duration{ 0.0f };

@@ -41,6 +41,9 @@ private:
 #pragma endregion
 
 public: // 構造体
+	/// <summary>
+	/// パーティクルグループの設定情報を保持する構造体
+	/// </summary>
 	struct ParticleGroupData {
 		MyBase::ScopeF size = kDefaultSize;						// パーティクルのサイズ
 		MyBase::ScopeF energy = kDefaultEnergy;					// パーティクルの寿命

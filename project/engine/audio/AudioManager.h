@@ -13,31 +13,41 @@
 class AudioManager
 {
 private:	// オーディオ関係の構造体
-	// チャンクヘッダ
+	/// <summary>
+	/// WAVファイルのチャンクヘッダー情報を保持する構造体
+	/// </summary>
 	struct ChunkHeader {
 		char id[4];		// チャンク毎のID
 		int32_t size;	// チャンクサイズ
 	};
 
-	// RIFFヘッダチャンク
+	/// <summary>
+	/// WAVファイルのRIFFヘッダー情報を保持する構造体
+	/// </summary>
 	struct RiffHeader {
 		ChunkHeader chunk;	// "RIFF"
 		char type[4];		// "WAVE"
 	};
 
-	// FMTチャンク
+	/// <summary>
+	/// WAVファイルのフォーマット情報を保持する構造体
+	/// </summary>
 	struct FormatChunk {
 		ChunkHeader chunk;	// "fmt"
 		WAVEFORMATEX fmt;	// 波形フォーマット
 	};
 
-	// 音声データ
+	/// <summary>
+	/// 読み込んだ音声データを保持する構造体
+	/// </summary>
 	struct SoundData {
 		WAVEFORMATEX wfex;			// 波形フォーマット
 		std::vector<BYTE> buffer;	// バッファの先頭アドレス
 	};
 
-	// 再生中の音声情報
+	/// <summary>
+	/// 再生中の音声情報を管理する構造体
+	/// </summary>
 	struct ActiveVoice {
 		std::string filename;		// 音声ファイル名
 		IXAudio2SourceVoice* voice;	// 再生中のSourceVoice
