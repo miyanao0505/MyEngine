@@ -66,7 +66,10 @@ private:	// メンバ関数
 	/// </summary>
 	void CreateRootSignature();
 
-	// ブレンドモード設計
+	/// <summary>
+	/// 各種ブレンドモードに対応する D3D12 のブレンド設定を生成する
+	/// </summary>
+	/// <returns>設定済みの D3D12_BLEND_DESC</returns>
 	D3D12_BLEND_DESC SetBlendModeNone();
 	D3D12_BLEND_DESC SetBlendModeNormal();
 	D3D12_BLEND_DESC SetBlendModeAdd();
