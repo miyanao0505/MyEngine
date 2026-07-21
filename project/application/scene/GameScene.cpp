@@ -342,9 +342,6 @@ void GameScene::Draw() {
 	// 天球の描画
 	skydome_->Draw();
 
-	// 3Dレティクルの描画
-	reticle3D_->Draw();
-
 	// 弾の描画
 	bulletManager_->Draw();
 
