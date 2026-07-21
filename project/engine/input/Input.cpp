@@ -89,19 +89,17 @@ void Input::KeyboardUpdate() {
 #pragma region マウス
 // マウスの初期化
 void Input::MouseInitialize() {
-	HRESULT hr;
-
 	// マウスデバイスの生成
-	hr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
-	assert(SUCCEEDED(hr));
+	mouseHr = directInput_->CreateDevice(GUID_SysMouse, &mouseDevice_, nullptr);
+	assert(SUCCEEDED(mouseHr));
 
 	// 入力データ形式のセット
-	hr = mouseDevice_->SetDataFormat(&c_dfDIMouse2);
-	assert(SUCCEEDED(hr));
+	mouseHr = mouseDevice_->SetDataFormat(&c_dfDIMouse2);
+	assert(SUCCEEDED(mouseHr));
 
 	// 排他制御レベルのセット
-	hr = mouseDevice_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	assert(SUCCEEDED(hr));
+	mouseHr = mouseDevice_->SetCooperativeLevel(winApi_->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	assert(SUCCEEDED(mouseHr));
 }
 
 /// マウスの更新
@@ -121,18 +119,14 @@ void Input::MouseUpdate() {
 
 /// マウス情報の更新
 void Input::MouseStateUpdate() {
-	HRESULT hr;
-
 	// 前回のマウス状態を保存
 	mouseStatePre_ = mouseState_;
 
-	// マウス情報の取得開始
-	hr = mouseDevice_->Acquire();
-	// マウス状態取得
-	mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE2), &mouseState_);
-
-	if (FAILED(hr)) {
+	if (FAILED(mouseHr)) {
+		// マウス情報の取得開始
 		mouseDevice_->Acquire();
+		// マウス状態取得
+		mouseDevice_->GetDeviceState(sizeof(DIMOUSESTATE), &mouseState_);
 	}
 
 	// マウスボタン状態を配列に反映

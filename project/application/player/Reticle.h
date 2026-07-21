@@ -8,7 +8,7 @@
 class Reticle {
 private:
 #pragma region 定数
-	static constexpr float kDistance3DReticle = 150.0f;
+	static constexpr float kDistance3DReticle = 100.0f;
 #pragma endregion
 public:	// メンバ関数
 	/// <summary>

@@ -63,7 +63,6 @@ void GameScene::Initialize() {
 	// プレイヤー
 	player_ = make_unique<Player>();
 	player_->Initialize(kPlayerInitialTranslate);
-	player_->SetReticle(reticle_.get());
 
 	// 敵
 	for(size_t i = 0; i < kEnemyInitialTranslates.size(); ++i){

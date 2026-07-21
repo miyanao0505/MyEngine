@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "Sprite.h"
-#include "Reticle.h"
 #include "Player.h"
 #include "FollowCamera.h"
 #include "RailCamera.h"
