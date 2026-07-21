@@ -3,7 +3,9 @@
 #include <list>
 #include "TextureManager.h"
 #include "BaseBullet.h"
-#include "Reticle.h"
+
+/// 前方宣言
+class Reticle;
 
 /// <summary>
 /// プレイヤーキャラクターを表すクラス。
